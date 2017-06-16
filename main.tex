@@ -1,0 +1,35 @@
+\documentclass[acmsmall,10pt,review,anonymous]{acmart}
+\settopmatter{printfolios=true}
+
+\citestyle{acmauthoryear}
+\usepackage{adjustbox}
+\usepackage{algorithmicx} 
+
+\input init
+\input comm
+\sloppy
+
+
+
+
+\begin{document}
+\maketitle
+
+%% \input abstract.tex
+\input introduction
+\input related-work
+\input overview
+\input programs
+%% \input linearizability
+%% \input observers
+\input semantics 
+%% \input data-abstraction
+\input thabstraction
+\input shape-analysis-formalized
+%% \input experiments
+%% \input conclusion
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{bibdatabase}
+
+%% \input examples
+\end{document}

@@ -1,0 +1,102 @@
+\section{Thread Abstraction}
+\label{thabstraction:section}
+By Theorem~\ref{thm:soundness}, linearizability can be verified by
+establishing a 
+reachability property for the product $\system=\augprog\compose\monitor$.
+This verification must handle the challenges of
+an unbounded number of threads, an unbounded heap, and unbounded data domain.
+In this section, we describe
+how we handle an unbounded number of threads by adapting
+the thread-modular approach~\cite{BLMRS:cav08}, and extending it to
+handle global transitions where several threads synchronize,
+due to interaction between controllers. 
+%% Handling of unbounded heap and data is described in
+%% Section~\ref{sec:annotations}.
+
+In this section, we describe how the global program state is projected onto
+a particular thread. Note that this projection is different from the
+projection defined in Section~\ref{semantics:section}.
+\bjcom{We need to fix the terminology of view/projection, etc.}
+
+
+Let a heap cell $\cell$ be {\em accessible} from a thread $\thread$ if
+it is reachable (directly or via sequence of
+next-pointers) from a global variable or local variable of $\thread_1$.
+A {\it thread abstracted} configuration of $\system$
+is  a pair $\taconftuple$, where
+$\taconf \in \confsetof{\system}$ with
+$\athreadsof{\taconf} = \set{\thread_1}$, such that
+each cell in the heap of $\taconf$ is accessible from $\thread_1$
+(i.e., the heap has no garbage), and where $\private$ is a predicate over the
+cells in the heap of $\taconf$.
+For a system configuration $\sconf$,
+%% thread abstracted configuration $\tuple{\sconf_1,\private}$,
+let $\thabstractionof{\sconf}$ be the set of 
+thread abstracted configurations $\taconftuple$, such that
+%% we write $\sconf \models \taconftuple$ if
+\begin{inparaenum}[(i)]
+\item
+  $\taconf$ can be obtained by
+  removing all threads from $\sconf$ except one,
+  renaming that thread
+  to $\thread_1$, and thereafter removing all heap cells that are not
+  accessible from $\thread_1$,
+\item
+  $\private(\cell)$ is true iff in $\sconf$, the heap cell
+  $\cell$ is accessible only from
+  the thread that is not removed.
+\end{inparaenum}
+For  a set $\confs$ of system configurations, define
+$\thabstractionof{\confs} = \mathop\bigcup_{\sconf \in \confs}\thabstractionof{\sconf}$.
+%% $ be the set of 
+%% define its (thread-modular) abstraction 
+%% $\thabstractionof\confs$ as the set of thread abstracted configurations
+%% $\taconftuple$ such that $\sconf \models \taconftuple$
+%% for some $\sconf \in \confs$.
+Conversely, for a set $\confs$ of thread abstracted configurations,
+define
+$\thconcretizationof\confs=
+\setcomp{\sconf}{\thabstraction(\{\confs\})\subseteq\confs}$.
+%
+Define the postcondition operation $\thpost$ on sets of
+thread abstracted configurations in the standard way by
+\(
+\thpostof{\confs} =
+\thabstraction(\postof{\thconcretization(\confs)})
+\).
+By standard arguments, $\thpost$ then soundly overapproximates
+$\post$.
+%% in the sense that
+%% \(
+%% \thabstractionof{\postof{\confs}} \subseteq \thpostof{\thabstractionof{\confs}}
+%% \).
+
+%% \begin{lemma}
+%% For sets of concrete configurations $\confs_1,\confs_2$ and a set of abstract configuration ${\confs_3}$, 
+%% %if\todo{Is the relation defined for sets of configurations?}
+%% if $\confs_2 = \postof{\confs_1}$ and ${\confs_3} = \thpostof{\thabstractionof{\confs_1}}$, then we have $\confs_2 \subseteq \thconcretizationof{\confs_3}$
+
+ 
+%% %$\thabstractionof{\confs_1}\thabsmovesto{}*\thabstractionof{\confs_2}$.
+%% \end{lemma}
+
+\begin{figure}[h]
+\center
+\input lazy-list-shape	
+\caption{Example of (a) heap state of Lazy Set algorithm, (b) its thread-abstracted version, and (c) symbolic version.
+  The observer register $x$ has value $9$.}
+\label{fig:llshapes}
+\end{figure}
+
+\todo[inline]{Here, we need an example: take, e.g., something from TS Stack}
+
+In Figure~\ref{fig:llshapes} (a) is a possible heap state of the
+Lazy Set algorithm of Figure~\ref{lazy:list:fig}.
+Each cell contains the values of {\tt val}, {\tt mark}, and {\tt lock}
+from top to bottom, where \tick denotes {\tt true}, and \cross denotes
+{\tt false} (or {\it free} for {\tt lock}). There are three threads,
+{\tt 1}, {\tt 2}, and {\tt 3} with
+pointer variable {\tt p[i]} of thread {\tt i} labeling the cell that it points
+to.   The observer register $x$ has value $9$.
+Figure~\ref{fig:llshapes} (b) shows its thread abstraction onto thread {\tt 1}.
+

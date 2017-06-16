@@ -1,0 +1,518 @@
+\section{Semantics}
+\label{semantics:section}
+In this section, we formalize the semantics of programs and
+observers, as introduced in the preceding sections.
+%
+We do this in several steps.
+%
+First, we define the state of the heap and the transition
+relation induced by a single thread.
+%
+From this we derive the semantics of the program and use it to
+define its history set.
+%
+We then define the semantics of observers.
+Finally, we define the product of the augmented program and the observer.
+This product will ensure that observer
+On this basis, we can formally state and prove the correctness of
+our approach, as Theorem~\ref{thm:soundness}.
+%% Finally, we introduce  the soundness theorem 
+%% which states that linearizability of the original program
+%% is implied by the fact that the monitor never enters
+%% its ``error'' state.
+%
+
+For a function $\fun:A\mapsto B$ from a set $A$ to
+a set $B$, we use 
+$\fun[\aelem_1\assigned\belem_1,\ldots,\aelem_\nn\assigned\belem_\nn]$ 
+to denote the function
+$\fun'$ such that $\fun'(\aelem_\ii)=\belem_\ii$ and 
+$\fun'(\aelem)=\fun(\aelem)$ if 
+$\aelem\not\in\set{\aelem_1,\ldots,\aelem_\nn}$.
+%
+
+Below, we assume a program $\prog$  with a set 
+$\glvarset$ of global variables,
+a data structure $\dstruct$ specified as an observer $\observer$.
+%
+%% We assume that each cell contains a set $\fieldset$ of fields
+%% where each field is either a lock or a data field.
+We assume that each thread $\thread$ executes one method
+denoted $\methodof\thread$.
+%
+
+
+\paragraph{Heaps.}
+A {\it heap (state)} is a tuple $\heap=\heaptuple$, where
+(i)
+$\cellset$ is a finite set of cells, including the two special cells
+$\nullconst$ and $\dangconst$ (dangling);
+%
+we define $\mcellset=\cellset-\set{\nullconst,\dangconst}$,
+%
+(ii)
+For each pointer field $\pfield_i$ there is a total function
+$\pfield_i:\mcellset\to\cellset$ is a total
+function that defines to which cell that pointer field points,
+%% the next-pointer relation, i.e., $\priflesuccof{\cell}=\cell'$ means that cell $\cell$ points to $\cell'$,
+(iii)
+$\glval:\glvarset\to\cellset$ maps the global (pointer)
+variables to their values, and
+(iv)
+$\cellval:\cellset\times\fieldset\to\fset\cup\intgrs$
+maps data and lock fields of each cell to their values.
+%
+We assume that the heap is initialized by
+an initialization thread, and let $\initheap$ denote the initial
+heap.
+
+\paragraph{Threads.}
+A {\it local state} $\lstate$ of a thread $\thread$
+wrt.\ a heap $\heap$ defines 
+the values of its local variables, including the program counter
+{\tt pc} and the input parameter for the method executed by $\thread$.
+In addition, there is the special initial state $\idlestate$,
+and terminated state $\terminatedstate$.
+%
+A {\em projection} $\proj$ is a pair
+$\tuple{\lstate,\heap}$, where $\lstate$
+is a local state wrt.\  the heap $\heap$.
+%
+A thread $\thread$ induces a transition relation $\movesto\thread{}$
+on projections.
+%
+Initially, $\thread$ is in the state $\idlestate$.
+%
+It becomes active by executing a transition
+$\tuple{\idlestate,\heap}
+\movesto\thread{{\call\thread\mname\indata}}
+\tuple{\initlstateof\thread,\heap}$,
+labeled by a call action with $\thread$ as the event identifier and
+$\mname=\methodof\thread$.
+It moves to an initial local state $\initlstateof\thread$
+where $\indata$ is the value of its input parameter,
+the value of {\tt pc} is the label of the first statement of the method, and
+the other local variables are undefined.
+%
+Thereafter, $\thread$ executes statements one after one.
+%
+We write $\proj\movesto\thread\lbl\proj'$ 
+to denote that the statement labeled by $\lbl$ can be executed
+from $\proj$, yielding $\proj'$.
+Note that the next move of $\thread$ is uniquely determined
+by $\proj$, since $\thread$ cannot access
+the local states of other threads.
+%
+Finally, $\thread$ terminates
+when executing its {\tt return} command
+giving rise to a transition
+$\tuple{\lstate,\heap}\movesto\thread{\return\thread\mname\outdata}
+\tuple{\terminatedstate,\heap}$, labeled 
+by a return action with $\thread$ as event identifier,
+$\mname=\methodof\thread$, and $\outdata$
+as the returned value.
+%
+
+\paragraph{Programs.}
+A {\it configuration} of a program
+$\prog$ is a tuple
+$\tuple{\athreads,\lstatemapping,\heap}$ where
+$\athreads$ is a set of threads,
+$\heap$ is a heap, and
+$\lstatemapping$ is a {\it local state mapping}
+over $\athreads$ wrt.\ $\heap$
+that maps each thread $\thread\in\athreads$ to its
+local state $\lstatemappingof\thread$ wrt.\ $\heap$.
+%
+%% We use $\confsetof\prog$ to denote the set of configurations
+%% of $\prog$.
+%
+The initial configuration
+%% $\initconfof\prog\in\confsetof\prog$ 
+$\initconfof\prog$ 
+is the pair
+$\tuple{\initlstatemapping,\initheap}$,
+where
+%% $\initheap$ is the initial heap, and
+$\initlstatemappingof\thread=\idlestate$ for each
+$\thread\in\athreads$,
+i.e.,
+$\prog$ starts its execution from a configuration with an initial
+heap, and with each thread in its initial local state.
+%
+A program $\prog$ induces a transition relation
+$\movesto\prog{}$ where each step corresponds
+to one move of a single thread.
+%
+This is captured by the rules 
+{\tt P1}, {\tt P2}, and {\tt P3} of
+Fig.~\ref{semantics:fig} 
+(here $\emptyword$ denotes the empty word.)
+%
+Note that the only visible transitions are those
+corresponding to call and return actions.
+%
+A {\it history} of $\prog$ is a sequence of form
+$\action_1\action_2\cdots\action_\nn$, such that there is a
+sequence
+$
+\conf_0\movesto\prog{\action_1}
+\conf_1\movesto\prog{\action_2}
+\cdots
+\conf_{\nn-1}\movesto\prog{\action_\nn}\conf_\nn
+$
+of transitions from the initial configuration
+$\conf_0=\initconfof\prog$.
+%
+We define $\historyof\prog$ to be the set of histories of $\prog$.
+%
+We say that $\prog$ is linearizable wrt.\ 
+$\dstruct$ if the set 
+$\historyof\prog$ is linearizable wrt.\ $\dstruct$.
+
+%% \paragraph{Controllers.}
+%% The controller of a thread $\thread$ induces a transition
+%% relation $\movesto{\ctrlof\thread}{}$, which depends on the current
+%% view $\view$ of $\thread$. 
+%% %
+%% For an expression $\eexpr$ denoting an operation, broadcast message, or
+%% condition, let $\view(\eexpr)$ denote the result of evaluating $\eexpr$ in
+%% the state $\view$.
+%% For a predicate $\cnd$, we let $\view\models\cnd$ denote that
+%% $\view(\cnd)$ is true.
+%% Transitions are defined by the set $\cruleset{\methodof\thread}$
+%% of rules ($\cruleset\thread$ for short) associated with the method of $\thread$.
+%% Rule {\tt C1} describes transitions
+%% induced by a triggered rule, and
+%% states that if $\cnd$ is true under $\view$,
+%% then the controller emits the operation obtained by instantiating
+%% $\oevent$ and broadcasts the message obtained by instantiating
+%% $\sevent$, according to $\view$.
+%% %
+%% Rule {\tt C2} describes transitions induced by receiving a message
+%% $\event'$, and states that if $\revent$ equals the value of $\event'$ in $\view$, and $\cnd$ evaluates to true in $\view$, then
+%% the operation $\view(\oevent)$ is emitted.
+%% %
+%% %% For a predicate $\cnd$ on the set of local variables of the thread,
+%% %% we write $\view\models\cnd$ to denote that
+%% %% $\cnd$ evaluates to true under $\view$.
+%% %% %
+%% %% %
+%% %% For a send event $\event$, 
+%% %% we use $\view(\sevent)$ to denote the ground send event we get
+%% %% by replacing each variable in $\event$ by its value
+%% %% according to $\view$.
+%% %% %
+%% %% For an observer event $\oevent$, we define $\view(\oevent)$ 
+%% %% analogously.
+%% %
+%% %
+%% %% \input rules-semantics
+%% %
+%% %
+%% In both cases, the controller also emits to the observer the identity
+%% $\thread$ of the thread.
+%% %
+%% This identity will be used for bookkeeping by the monitor (see below.)
+%% %
+
+%% \paragraph{Augmented Threads.}
+%% An {\it augmented view} $\tuple{\cstate,\lstate,\heap}$ extends a view
+%% $\tuple{\lstate,\heap}$ with a state $\cstate$ of the controller.
+%% We define a transition relation $\movesto{\augof\thread}{}$ over
+%% augmented views
+%% that describes the behavior of a thread $\thread$ when augmented
+%% with its controller.
+%% %
+%% For a label $\lbl$ of a statement we write
+%% $\triggered\lbl$ to denote that the corresponding statement is triggered.
+%% %
+%% Rule {\tt TC1} states that a non-triggered statement by the thread
+%% does not affect the state of the controller, and does not emit or broadcast
+%% anything. 
+%% %% %
+%% %% In such a case the augmented thread performs a transition
+%% %% in which only the local state of $\thread$ and the heap will change.
+%% %% %
+%% %% In particular, the controller state will not change and
+%% %% no messages will be emitted/broadcast to the observer 
+%% %% or to the other threads.
+%% %
+%% Rule {\tt TC2} states a return action by the thread. Rule {\tt TC3} states that when
+%% the thread $\thread$ performs a triggered statement,
+%% %
+%% then the controller will emit an operation to the observer and broadcast
+%% messages to the other threads.
+%% %
+%% The reception of broadcast messages will be described in Rule {\tt R}.
+%% %% %
+%% %% This reflects the fact that such messages are not emitted
+%% %% by the thread or its controller.
+%% %% %
+%% %% Such rule are part of the semantics for the augmented 
+%% %% program as describe below.
+
+%% \paragraph{Augmented Programs.}
+%% %
+%% An {\em augmented program} $\augprog$ is obtained from a program $\prog$
+%% by augmenting each thread with its controller.
+%% %
+%% A {\it configuration} $\conf$ of $\augprog$ is a tuple
+%% $\tuple{\athreads,\cstatemapping,\lstatemapping,\heap}$, which extends a
+%% configuration of $\prog$ by
+%% %% where $\athreads$ is a set of threads, $\heap$ is a heap,
+%% a {\it controller state mapping}, $\cstatemapping$, which maps
+%% each thread $\thread\in\athreads$ to the state of its controller.
+%% %% of the controller of $\thread$, and
+%% %% $\lstatemapping$ is a {\it local state mapping}
+%% %% over $\athreads$ wrt. $\heap$
+%% %% that defines, for each thread $\thread\in\athreads$,  the local state 
+%% %% $\lstatemappingof\thread$ of $\thread$ over $\heap$.
+%% %
+%% We define the size $\sizeof\conf=\sizeof\athreads$ and
+%% define $\athreadsof\conf=\athreads$.
+%% %
+%% %
+%% We use $\confsetof\augprog$ to denote the set of configurations
+%% of $\augprog$.
+%% %
+%% Transitions of $\augprog$ are performed by the threads in $\athreads$.
+%% %
+%% The rule {\tt Q1} describes return action or a non-triggered statement in which only its local state and the heap
+%% may change.
+%% %
+%% Rule {\tt Q2} describes the case where a thread
+%% $\senderthread$ executes a triggered statement and hence also
+%% broadcasts a message to the other threads.
+%% %
+%% Before describing this rule, we describe the effect
+%% of message reception.
+%% %
+%% Consider a set $\athreads$ of threads,
+%% a heap $\heap$,
+%% a controller state mapping $\cstatemapping$ over $\athreads$,
+%% and a local state mapping $\lstatemapping$
+%% over $\athreads$ wrt.\ $\heap$.
+%% %
+%% We will define a relation that extracts the set of threads
+%% in $\athreads$ that can receive $\event$ from $\senderthread$.
+%% %
+%% For $\ord\in\set{\before,\after}$,
+%% define
+%% $\enabled\athreads\cstatemapping\lstatemapping\heap\event\ord\senderthread$
+%% to be the set of threads
+%% $\thread\in\athreads$  such that
+%% (i)
+%% $\thread\neq\senderthread$, i.e., a receiver thread should be different from the sender thread,
+%% and
+%% (ii)
+%% $\tuple{\lstatemapping(\thread),\heap}:
+%% \cstatemapping(\thread)\movesto{\ctrlof\thread}{\tuple{\thread,\oevent}\mid\rcv{\tuple{\event,\ord}}}\cstate'$
+%% for some $\cstate'$ and $\oevent$,
+%% i.e., the controller of $\thread$ has an enabled
+%% receiving rule that can receive $\event$, with the ordering flag
+%% given by $\ord$.
+%% %
+%% The rule {\tt R} describes the effect of receiving a message
+%% that has been broadcast by a sender thread $\senderthread$.
+%% %
+%% Each thread that can receive the message will do so, and
+%% the thread potentially will all change their controller state
+%% and emit an operation.
+%% %
+%% Notice that the receiver threads are collected in a set and therefore
+%% the rule allows any ordering of the receiving threads.
+%% %
+%% We are now ready to explain the rule {\tt Q2}.
+%% %
+%% The sender thread $\senderthread$ broadcast a message $\event_2$
+%% that will be received by other threads according to rule {\tt R}.
+%% %
+%% The sender thread and the receiver threads, all emit operations
+%% ($\event_1$ and $\eventseq$ respectively).
+%% %
+%% Depending on the order specified in the specification of the controller,
+%% a receiving thread may linearize {\it before} or {\it after}  $\senderthread$.
+%% %%
+%% Notice that the receiver threads only change the local states of their
+%% controllers and the state of the observer.
+%% %
+%% An {\it initial configuration} of $\augprog\in\confsetof\augprog$ is of the form
+%% $\tuple{\athreads,\initcstatemapping,\initlstatemapping,\initheap}$
+%% where, for each $\thread\in\athreads$,
+%%  $\initlstatemappingof\thread$ is the initial state of
+%% the  controller of $\thread$, and
+%% $\initlstatemappingof\thread=\idlestate$.
+
+\paragraph{Observers.}
+
+Let $\observer=\otuple$.
+%
+A configuration $\conf$ of $\observer$
+is a pair $\tuple{\ostate,\val}$
+where $\ostate\in\ostateset$ is an observer state and
+$\val$ assigns a value to each register in $\observer$.
+%
+%
+We use $\confsetof\observer$ to denote the set of configurations
+of $\observer$.
+%
+The transition relation $\movesto\observer{}$
+of the observer is described by the rules
+{\tt O1} and {\tt O2} of Fig.~\ref{semantics:fig}.
+%
+Rule {\tt O1} states that
+if there is an enabled  transition that is labeled by a given action
+  then such a transition may be performed. 
+%
+Rule {\tt O2} states that if there is no
+such a transition, the observer remains in its current state.
+%
+Notice that the rules imply that the register
+values never change during a run of the observer. 
+%
+An initial configuration of $\observer\in\confsetof\observer$
+is of the form $\tuple{\oinitstate,\val}$.
+
+
+\paragraph{Monitors.}
+%
+The monitor $\monitor$ augments the observer. It keeps track of 
+%% The monitor 
+the observer state, and the sequence of operations and
+call and return actions generated by the threads of the augmented program.
+It reports
+an error if one of the following happens:
+(i)
+a thread terminates without having linearized,
+(ii) 
+the parameters of call and return actions are different from those of
+the corresponding emitted operation,
+%
+(iii)
+a thread linearizes although it has previously changed the state
+of the observer, or
+%
+(iv)
+$\augprog$ generates a trace which violates the specification of the data
+structure $\dstruct$.
+%
+The monitor keeps track of these conditions as follows.
+%
+A {\it configuration} of $\monitor$ is either
+(i) a tuple
+$\tuple{\athreads,\conf,\linstatus,\rvalstatus}$
+where $\athreads$ is a set of threads,
+$\conf$ is an observer configuration,
+$\linstatus:\athreads\mapsto\set{0,1,2}$, and
+$\rvalstatus:\athreads\mapsto\intgrs\cup\fset$;
+or
+(ii) the special state $\errorstate$.
+%
+For a thread $\thread\in\athreads$, 
+the values $0,1,2$ of 
+$\linstatusof\thread$ have the following interpretations:
+$0$ means that $\thread$ has not linearized yet,
+$1$ means that $\thread$ has linearized but not changed the state of the observer,
+and
+$2$ means that $\thread$ has both linearized and changed 
+the state of the observer.
+%
+Furthermore, 
+$\rvalstatusof\thread$ stores the value returned by $\thread$ the latest
+time it performed a linearization.
+\td{We also need to store the call values!!}
+%
+In case $\conf$ is of the first form,
+we define $\athreadsof\conf=\athreads$.
+%
+We use $\confsetof\monitor$ to denote the set of configurations
+of $\monitor$.
+%
+The rules
+{\tt M1} through {\tt M8}
+describe the transition relation
+$\movesto\monitor{}$ induced by $\monitor$. 
+%
+Rule {\tt M1} describes the scenario when the monitor 
+detects an operation $\mname(\indata,\outdata)$ performed by 
+a thread $\thread$ such that $\observer$ does not change its state.
+%
+In such a case, the flag $\linstatus$ for $\thread$
+is updated to $1$ (the thread has linearized but not changed the state
+of the observer), and the latest value $\outdata$
+returned by $\thread$ is stored $\rvalstatus$.
+%
+Rule {\tt M2} is similar except that the observer changes state
+and hence the flag $\linstatus$ is updated to $2$ for $\thread$.
+%
+Notice that in both rules, a premise is that $\thread$ has not
+changed the observer state previously (the flag $\linstatus$ for
+$\thread$ is different from $2$.)
+%
+Rules 
+{\tt M3},
+{\tt M4},
+{\tt M5}, and
+{\tt M6}
+describe the conditions (i), (ii), (iii), and (iv)
+respectively described
+above that lead to the error state.
+%
+The rule {\tt M7} describes the fact that the error state is a sink,
+i.e., once $\monitor$ enters that state then it will never leave it.
+%
+Finally, rule {\tt M8} describes the reflexive transitive closure of
+the relation $\movesto\monitor{}$.
+%
+An initial configuration of $\monitor\in\confsetof\monitor$
+is of the form $\tuple{\athreads,\initconf,\initlinstatus,\initrvalstatus}$
+where $\initconf\in\initconfsetof\observer$ is an initial 
+configuration of $\observer$,
+$\initlinstatusof\thread=0$ and 
+$\initrvalstatusof\thread$ is undefined for every thread $\thread\in\athreads$.
+
+\paragraph{Product.}
+We use $\system=\augprog\compose\monitor$ to denote the system obtained by
+running $\augprog$ and $\monitor$ together.
+%
+A (initial) configuration of $\system$ is of the form
+$\tuple{\conf_1,\conf_2}$ where $\conf_1$ and $\conf_2$
+are (initial) configurations of $\augprog$ and $\monitor$ respectively
+such that $\athreadsof{\conf_1}=\athreadsof{\conf_2}$.
+%
+%
+We use $\confsetof{\system}$ 
+to denote the set of configurations
+of $\system$.
+%
+The induced transition relation $\movesto{\system}{}$
+is described by
+rule {\tt QM} of Fig.~\ref{semantics:fig}.
+%
+Intuitively, in the composed systems, the augmented program and the monitor
+synchronize through the actions they produce.
+%
+For a configuration $\conf\in\confsetof\system$, we define
+$\postof\conf=\setcomp{\conf'}{\conf\movesto\system{}\conf'}$. For a set C of system configurations, we define $\postof{\confs} = \bigcup_{\conf \in \confs} \postof\conf$. 
+We say that that $\errorstate$ is reachable in 
+$\system$ if
+$\conf{\movesto{\system}{}}^*\tuple{\conf',\errorstate}$
+for an initial configuration $\conf$ of 
+$\system$ and configuration $\conf'$ of $\augprog$.
+
+\paragraph{Verifying Linearizability.}
+The correctness of this approach is established in the following theorem.
+
+\begin{theorem}
+\label{thm:soundness}
+%\todo{Define what reachable means.}
+If $\errorstate$ is not reachable in  $\system$ 
+then $\prog$ is linearizable wrt. $\dstruct$.
+\end{theorem}
+\label{Proof}
+\textit{Proof}: To prove $\prog$ is linearizable wrt. $\dstruct$. We must establish that for any history $h$ of $\prog$, there exists a history $h'$ such that $h'$ is linearization of $h$ and $h'$ is valid wrt. $\dstruct$. So, consider a history $h$ of $\prog$. From Condition (i) in the paragraph about monitors in section 5, $h$ is a complete history. Then from Conditions (ii) and (iii), each action in $h$ has a LP and whose call and return parameters are consistent with the corresponding emitted operation by the controller. Therefore, there exists a complete sequential history $h'$ which is a permutation of $h$ whose actions are ordered according to the order of their LPs in $h$. Therefore $h'$ is linearization of $h$. From Condition (iv), $h'$ is $valid$ wrt. $\dstruct$. Therefore, $h$ is $linearizable$ wrt. $\dstruct$. $\Box$
+
+
+
+

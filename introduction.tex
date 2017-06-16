@@ -1,0 +1,72 @@
+\section{Introduction}
+
+In this paper, we consider one of the most difficult current challenges in
+software verification, namely to automate its
+application to algorithms with an unbounded number of
+threads that concurrently access a dynamically allocated shared state.
+Such algorithms are of central importance in concurrent programs. 
+Thye are widely used in libraries,
+such as the Intel Threading Building Blocks or
+the \url{java.util.concurrent} package,
+to provide efficient concurrent realizations of
+simple interface abstractions.
+They are notoriously difficult to get correct and verify, since they
+often employ fine-grained synchronization and avoid locking wherever
+possible. A number of bugs  in published
+algorithms have been reported~\cite{DDGJLMMSS:dcas,MiSc:correction}.
+
+%% It is therefore important to develop efficient techniques for
+%% verifying conformance to simple abstract specifications of overall
+%% functionality, a concurrent implementation of a common
+%% data type abstraction, such as a queue, should be verified to conform
+%% to a simple abstract specification of a (sequential) queue.
+
+A significant research effort has been directed towards this problem.
+A major difficult is that a successful verification technique must be
+able to reason about fine-grained concurrent programs that are infinite-state
+in many dimensions: 
+they consist of an unbounded number of concurrent threads, which
+operate on an unbounded domain of data values, and use
+unbounded dynamically allocated memory. 
+The list of suggested approaches  is long. Many works address the
+challenge by imposing some restrictions, such as
+bounding the number of accessing
+threads~\cite{Amit:comparisonAbstraction,Vechev:spin09,CernyRZCA:CAV10},
+restricting the class of algorithms that can be verified
+\cite{HSV:concur13,Vafeiadis:cav10},
+or requiring auxiliary lemmas
+\cite{OHearnlist,Poling}.
+\todo[inline]{The last list and its description must be improved. We actually should be
+more precise about what previous work has achieved, in terms of which
+combinations of challenges have been overcome}
+Recently, the authors of this paper have presented an approach which
+overcomes these limitations.
+Almost all of these approaches have been applied only to concurrent algorithms
+that represent data structures by singly-linked lists. However, many concurrent
+data structure implementations employ more sophisticated structures, such as
+skip lists, trees, an various extensions of singly-linked lists, e.g., with
+time-stamps.
+There are almost no presented approaches for automatically verifying algorithms
+such more complex data structure representations.
+
+In this paper, we present a technique for automatic verification of
+concurrent data structure implementations that are more complex than
+just singly-linked lists.
+\td{Here, there should be a precise statement of what we cover}
+Our approach is the first framework that can automatically
+verify concurrent data structure implementations that employ skip lists and
+time-stamp queues, while also handling
+an unbounded number of concurrent threads, an
+unbounded domain of data values, and an unbounded heap structures.
+
+
+
+%% It is well understood how to
+%% accomplish this for finite-state programs (as embodied, e.g., in
+%% the SPIN tool~\cite{Holzmann:spin}),
+%% but we lack approaches for handling unbounded data domains in specifications
+%% and implementations in connection with an unbounded number of threads and
+%% dynamically allocated data structures.
+
+\todo[inline]{Here should be a verbose summary of contributions}
+

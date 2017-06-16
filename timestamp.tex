@@ -1,0 +1,73 @@
+\begin{lstlisting}
+struct Node {
+  Data d;
+  Timestamp time;
+  Node* Next;
+  bool mark;
+}
+
+Node push(d){
+  Node top = spPools[threadID];
+  Node newNode = Node(d,false,null);
+  newNode.next = top;
+  top = newNode;
+  Timestamp time = new Timestamp();
+  Node.time = time;
+  Node next = newNode.next;
+  while (next.next != next && !next.mark)
+    next = next.next;
+  newNode.next = next;
+  return newNode;
+}	
+
+Data pop () {
+  Timestamp startTime = newTimestamp();
+  bool success;
+  Data d;
+  do {
+  <success,d> = tryRem(startTime);
+  } while (!success);
+  return d;
+}
+
+<bool, Node> tryRem(startTime) {
+  Node youngest = null;
+  Timestamp ts = -1;
+  SPPool myPool;
+  Node myTop;
+  foreach(current in spPools){
+    node,currTop = current.getYoungest();
+    time = node.time;
+    if (ts < time){
+      youngest = node;
+      ts = time;
+      myPool = current;
+      myTop = currTop;
+    }
+  }
+  if CAS(youngest.mark, false, true){
+     CAS(top, myTop, youngest);
+     if (myTop != youngest) 
+        myTop.next = youngest;
+     node.next = youngest.next;
+     while (next.next != next && next.mark)
+        next = next.next;
+     youngest.next = next;
+     return <true, youngest.d>;   
+  }
+  return <false, null>;
+}
+
+
+<node,node> getYoungest () {
+  Node oldTop = Top;
+  Node result = oldTop;
+  while (true) {
+    if (!result.mark)
+      return <result, oldTop>;
+    else if (result.next = result)
+      return <null, oldTop>;
+    result = result.next;  
+  }
+}
+\end{lstlisting}

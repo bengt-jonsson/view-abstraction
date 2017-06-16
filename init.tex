@@ -1,0 +1,80 @@
+\title{View Abstraction for Concurrent Shape Analysis}
+\author{}
+
+%% \author{Parosh Aziz Abdulla \and Bengt Jonsson \and Cong Quy Trinh
+%% }
+%% \institute{Uppsala University}
+
+\DeclareMathAlphabet{\mathpzc}{OT1}{pzc}{m}{it}
+
+\usepackage{array}
+\usepackage{dsfont,bbm}
+%% ,amsmath,amsthm,amssymb,amsfonts,latexsym,stmaryrd,listings,todonotes,color,pifont,stmaryrd,wrapfig,listings,verbatim,fancyvrb,textcomp}
+\usepackage[ruled,noend,nofillcomment,linesnumbered]{algorithm2e}
+
+
+\usepackage{pgf}
+\usepackage{tikz}
+\usepackage{mdframed}
+\usepackage{caption}
+\usepackage{paralist}
+\usepackage{todonotes}
+\usepackage{url}
+\usepackage{wrapfig}
+\usepackage{multirow}
+\usepackage{times}
+%% \usepackage{hyperref}
+\usepackage{listings}
+\lstset{language=C,numberstyle=\footnotesize,
+basicstyle=\ttfamily\footnotesize
+}
+
+%-----------
+
+\usetikzlibrary{automata,positioning}
+\usetikzlibrary{trees}
+\usetikzlibrary{shapes}
+\usetikzlibrary{petri}
+\usetikzlibrary{arrows}
+\usetikzlibrary{backgrounds}
+\usetikzlibrary{calc}
+\usetikzlibrary{fit}
+\usetikzlibrary{decorations.pathmorphing}
+\usetikzlibrary{decorations.text}
+\usetikzlibrary{shapes.callouts}
+
+
+
+
+%%%%%%  TiKZ styles    %%%%%
+
+\tikzstyle{code-bg}=
+[rounded corners,fill=gray!1!white,draw=gray!80!white,inner xsep=0pt]%
+
+%\tikzstyle{inference-bg}=
+%[rounded corners,fill=blue!5!white,draw=blue!50!white]%
+
+\tikzstyle{inference-bg}=
+[rounded corners,fill=gray!6!white,draw=gray!50!white,inner xsep=0pt]%
+
+  
+\tikzstyle{linenum}=[font={\footnotesize\tt},anchor=east]
+\tikzstyle{linecode}=[font={\footnotesize\tt},anchor=west, scale = 0.9]
+\tikzstyle{lpcode}=[anchor=west,text=blue]
+\tikzstyle{ostate}=[fill=white,circle,minimum size=0pt,inner sep=0pt,text=black,,font=\tiny]
+\tikzstyle{oedge}=[line width=1pt,->,>=stealth]
+\tikzstyle{ctrlnode}=[font=\small,scale = 0.9]
+
+
+
+
+%%%%%%  TiKZ layers    %%%%%
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{bbackground}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{bbackground,background,main,foreground}
+
+
+
+
+

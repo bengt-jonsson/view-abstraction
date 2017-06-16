@@ -1,0 +1,275 @@
+\section{Symbolic Shape and Data Abstraction}
+\label{sec:annotations}
+This section describes how we handle an
+unbounded heap and data domain in
+thread-abstracted configurations.
+We assume that each heap cell contains exactly one $\intgrs$-field.
+%More detailed descriptions of representations and postconditions are described in
+%Appendix~\ref{sec:shape-details}.
+
+The abstraction of thread-abstracted configurations we use is a variation of a
+  well-known abstraction of singly-linked lists ~\cite{MYRS:Canonical}. We explicitly represent only a finite subset of the heap cells, called
+the {\em relevant} cells. The remaining
+cells are summarized into linked-list segments of arbitrary length.
+Thus, we intuitively abstract the heap into a graph-like  structure, whose
+nodes are relevant cells, and whose edges are the connecting segments.
+More precisely, 
+a cell $\cell$ (in a thread-abstracted configuration) is {\em relevant}
+%% (wrt.\ $\tuple{\taconf,\private}$)
+if it is either
+\begin{inparaenum}[(i)]
+\item
+pointed to by a (global or local) pointer variable, or
+\item
+the value of
+${\cell_1.{\tt next}}$ and  ${\cell_2.{\tt next}}$ for
+two different cells $\cell_1$, $\cell_2 \in \cellset$,
+one of which is reachable from some global variable, or
+\item the value of ${\cell'.{\tt next}}$ for some cell $\cell' \in \cellset$
+  such that $\private(\cell')$ but $\neg \private(\cell)$.
+\end{inparaenum}
+Each relevant cell is connected, by a linked-list segment, to a uniquely
+defined next relevant cell.
+%% (which can also be ${\tt null}$ or undefined).
+For instance, the thread abstracted
+heap in Figure~\ref{fig:llshapes}(b) has $5$ relevant
+cells: $4$ cells that are pointed to by variables
+({\tt Head}, {\tt Tail}, {\tt p[1]}, and {\tt c[1]}) and the cell where
+the lower list segment meets the upper one (the second cell in the top row).
+The corresponding symbolic representation, shown 
+in Figure~\ref{fig:llshapes}(c), contains only the relevant cells, and
+connects each relevant cell to its successor relevant cell. 
+Note that the cell containing {\tt 4} is not relevant,
+%% although it is pointed to from two other cells,
+since it is not globally reachable.
+%% Consequently, the next relevant cell of the two relevant cells in the
+%% bottom row is the globally reachable cell in the top row.
+Consequently,
+%% In other words,
+we do not represent the precise branching structure among cells that
+are not globally reachable. This is an optimization to limit the
+size of our symbolic representation.
+
+Our symbolic representation must now represent
+(A) data variables and data fields of relevant cells, and
+(B) data fields of list segments.
+For (A) we do as follows.
+\begin{enumerate}
+\item
+Each  data and lock variable, and each data and lock field of each relevant cell,
+  is mapped to a domain which depends on the set of values it can assume:
+  \begin{inparaenum}[(i)]
+  \item
+  variables and fields that assume values in $\fset$ are mapped to $\fset$,
+\item
+  lock variables and fields are mapped to
+  $\set{\thread_1,\mathit{other},\mathit{free}}$,
+  representing whether the lock was last acquired by $\thread_1$, by
+  another thread, or is free,
+\item
+  variables and fields that assume values in $\intgrs$ are mapped to 
+  $[\ovarset \mapsto{\set{=,\neq}}]$, representing for
+  each observer register $x  \in \ovarset$, whether or not the value of the variable
+  or field equals the value of $x$.
+  \end{inparaenum}
+\item each pair of variables or fields that assume values in $\intgrs$
+  is mapped to a subset of ${\set{<,=,>}}$, representing the
+  set of possible relations between them.=
+\end{enumerate}
+For (B), we define a domain of {\em path expressions}, which
+capture the following information about a segment.
+\begin{itemize}
+\item
+  The possible relations between adjacent $\intgrs$-fields in the heap segment,
+  represented as a subset of ${\set{<,=,>}}$,
+e.g., to represent that the segment is sorted.
+\item
+  The set of observer registers whose value appears in some $\intgrs$-field
+  of the segment. For these
+  registers, the path expression provides
+  \begin{inparaenum}[(i)]
+  \item
+    the order in which the first occurrence of their values appear
+    in the segment; this allows, e.g., to check
+ordering properties between data values for stacks and queues, and
+\item
+  whether there is exactly one,
+  or more than one occurrence of their value.
+  \end{inparaenum}
+\item
+For each data and lock field, 
+the set of possible values of that field in the heap segment, represented
+as a subset of the domain defined in case 1 above.
+This subset is provided both
+for the cells whose $\intgrs$-field is not equal to any
+observer register, and for the cells whose $\intgrs$-field is
+equal to each observer register.
+\end{itemize}
+To illustrate, in
+Figure~\ref{fig:llshapes}(c), each heap segment is labeled by
+a representation of its path expression. The first component of
+each path expression is $\set{<}$, i.e., the segment
+is sorted. The path expression at the top right has as its second component
+the sequence $x^1$, expressing that there is exactly one cell whose
+$\intgrs$-field has the same value as the observer register $x$.
+The row $x:[\set{\mbox{\tick}},\set{\mbox{\cross}}]$ expresses
+that the cells whose $\intgrs$-value is equal to that of $x$, have
+their {\tt mark} field {\tt true}, and their {\tt lock} field {\tt free}.
+The row $\neq:[\set{\mbox{\cross}},\set{\mbox{\cross}}]$ expresses
+that the other cells have
+their {\tt mark} field {\tt false}, and their {\tt lock} field {\tt free}.
+The two lower path expressions express that no cell has a value equal to
+that of $x$, and summarize the possible values of fields.
+  
+
+The symbolic representation combines the above described shape and data
+representations,  representing thread-abstracted configurations by
+{\em symbolic configurations}.
+%% In symbolic configurations, we use
+%% a set of {\em indices} to represent the relevant cells of a
+%% thread-abstract configuration.
+%% Let a {\em data term} be either a data variable (of the thread or
+%% the monitor), or field of a relevant cell, represented as a term
+%% of form $i.\field$ for an index $i$ (representing a relevant cell)
+%% and non-pointer field $\field$, of form
+%% $\lstatemappingof{\thread_1}(\xvar)$ for a local non-pointer variable $x$,
+%% $\linstatus(\thread_1)$, or $\rvalstatus(\thread_1)$.
+%% Let $\ddomainof{\dterm}$ be the domain used to represent the values of
+%% data term $\dterm$ according to case 1.\ above.
+%% We use the term {\em path expression} to denote a summary of the data fields of
+%% a heap segment according to case 3.\ above.
+These are tuples of form
+%% A {\em symbolic configuration} is a tuple
+%$\tuple{\indices,\globmap,\nrglobloc,\pexpglobloc,\dmap,\ordconstr,\eta}$
+$\ac = \tuple{\indices, \pointervarmap, {\tt nextrel}, \pexpglobloc, \datatermmap, \datarelmap,\private}$, where
+\begin{itemize}
+\item
+  $\indices$ is a finite set of {\em indices}, denoting the relevant cells of the heap,
+\item
+  $\pointervarmap$ maps each (global or local) pointer variable to an index in $\indices$,
+\item ${\tt nextrel}$ maps each index $\ii$
+  to $\indices \cup \set{\nullconst,\bot}$,
+\item
+  $\pexpglobloc$ maps each index $\ii$ to
+  a path expression;
+  intuitively, if the index $\ii$ represents the relevant cell $\cell$, then
+${\tt nextrel}(i)$ represents the next relevant cell, and
+  $\pexpglobloc(\ii)$ summarizes  the
+  heap segment between $\cell$ and the cell represented by ${\tt nextrel}(i)$,
+\item
+%%   $\datatermmap$ maps each data term $\dterm$ to an element in $\ddomainof{\dterm}$, and
+  $\datatermmap$ maps data variables and fields of relevant cells to
+  appropriate domains,
+%%  data term $\dterm$ to an element in the appropriate in $\ddomainof{\dterm}$,
+  and
+  $\datarelmap$ maps pair of those that assume values in $\intgrs$ to a subset of $\set{<, =, >}$.
+\item
+  $\private$ is a predicate on indices.
+\end{itemize}
+We define
+%% formalize the above intuition for symbolic configurations by defining
+a satisfaction relation between thread-abstracted and
+symbolic configurations. 
+%% Details are in Appendix~\ref{sec:symbrepsem}.
+A {\em symbolic representation} $\symbrep$ is a set of
+symbolic configurations. 
+A  set of thread-abstracted configurations then satisfies a symbolic
+representation $\symbrep$ if each of its thread-abstracted
+configuration satisfies some symbolic configuration in $\symbrep$.
+
+
+%% \td{Move the following}
+%% \paragraph{Example}
+%% We illustrate our symbolic configurations by the example in
+%% Figure~\ref{fig:llshapes}.
+%% %\todo[inline]{Here, we should have an updated picture, if space permits.
+%% %Below is the old text}
+%% To the left is a picture of a possible
+%% heap structure of the  Lazy Set algorithm of Figure~\ref{lazy:list:fig}.
+%% Each cell contains the values of {\tt val}, {\tt mark}, and {\tt lock}
+%% from top to bottom, where \tick denotes {\tt true}, and \cross denotes
+%% {\tt false} (or {\it free} for {\tt lock}). There are three threads,
+%% {\tt 1}, {\tt 2}, and {\tt 3} with
+%% pointer variable {\tt p[i]} of thread {\tt i} labeling the cell that it points
+%% to. The value of the observer register is assumed to be $9$. Here the
+%% top $5$ cells are globally accessible, and of these all except the $4$th
+%% are relevant.
+%% To the right is a graphical representation of a heap expression that
+%% abstracts the heap structure. The set $\indices$ is represented by the $4$
+%% cells that are horizontally organized in the middle. Note that the branching
+%% structure in the part of the heap that is not globally accessible is
+%% abstracted by only representing how the local pointer variables
+%% {\tt c[i]} and {\tt p[i]} for
+%% $\mathtt{i} \in \set{\mathtt{1},\mathtt{2},\mathtt{3}}$ reach the nearest
+%% relevant node. Each edge is labeled by a path expression. For instance the
+%% incoming edge of the {\tt Tail} node states that the segment is sorted,
+%% has exactly one {\tt val} field that equals the observer register, and no
+%% marked fields or acquired locks. Data variables and data
+%% fields of relevant cells should then be constrained by a data constraint,
+%% which we omit here.
+%% \qed
+
+\expcloseparagraph{Symbolic Postcondition Computation}
+It remains to define a symbolic post operation $\symbpost$ on symbolic
+representations that reflects 
+$\thpost$ on sets of thread-abstracted configurations.
+%% I.e., we must define a symbolic 
+%% the property that whenever 
+%% $\confs \models \symbrep$, then
+%% $\thpostof{\confs} \models \symbpostof{\symbrep}$.
+%% Naturally, $\symbpost$ will mimic $\thpost$.
+%% thread-abstracted configurations.
+Given a set $\symbrep$ of symbolic
+configurations representing possible views of single threads,
+it first generates all ways of merging them to symbolic representations 
+%% representation $\symbrep$, we construct all possible ways of consistently
+%% merging 
+%% $k$ symbolic configurations, representing the individual views of $k$
+%% different threads, into a symbolic configuration representing the
+of combined views of $k$ threads;
+%% We call such a combined view a {\em symbolic $k$-configuration}.
+thereafter computing their postconditions
+%% symbolic $k$-configuration,
+%% we thereafter compute its postcondition 
+wrp.\ to the next statement in each thread; and finally
+projecting the results onto each of the $k$ participating threads.
+As follows from Lemmas~\ref{small:lemma} and~\ref{two:lemma}, it is sufficient
+to consider only bounded values of $k$, and indeed $k=2$ is sufficient
+for all examples that we considered.
+%% it is sufficient to consider the case where $k$ equals $2$.
+%% Details are in Appendix~\ref{sec:symbpost}.
+
+%% e define a projection operation $\symbproj$ from 
+%% symbolic $k$-configurations onto the set of their $k$ projections
+%% onto each thread $\thread_i$ for $i = 1, \ldots, k$, such that
+%% for any $k$-configuration $\sconf_k$ we have that
+%% $\sconf_k \models \ac_k$ implies
+%% $\thabstractionof{\sconf_k} \models \symbproj(\ac_k)$.
+%% We extend $\symbproj$ to sets of symbolic $k$-configurations by
+%% $\symbproj(\symbrep_k) = \mathop\cup_{\ac_k \in \symbrep_k}\symbproj(\ac_k)$.
+%%   In the other direction, we define an operation $\symbintersect$
+%%   on symbolic representations,
+%% which produces a symbolic representation of all ways in which they can
+%% be combined to symbolic $k$-configurations, such that
+%% $\confs \models \symbrep$ implies
+%% $\thconcretizationof{\confs} \models \symbintersect(\symbrep)$.
+%% We can then derive a postcondition operation on symbolic representations
+%% $\symbrep$, which
+%% \begin{inparaenum}[(1)]
+%% \item
+%%   first derives $\symbintersect(\symbrep)$,
+%%   \item
+%%   then for each $\ac_k \in \symbintersect(\symbrep)$ 
+%%   computes its postcondition 
+%%   wrp.\ to the next statement in each thread, in the standard way,
+%%   resulting in   $\symbrep_k'$
+%% \item
+%%   and finally produces $\symbproj(\symbrep_k')$.
+%% \end{inparaenum}
+%% Details of these operations are described in Appendix XXX.
+%% \td{What to do with: ``If the controller is triggered, then ${\tt Val}^{\tt m}$ is updated as is described in the semantic section 5''}
+%% \td{What to do with
+%% ``This procedure  should of course be optimized by
+%% removing redundant symbolic configurations and redundant combinations of
+%% symbolic configurations in standard ways.''}
+
