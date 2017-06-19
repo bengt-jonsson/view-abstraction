@@ -1,73 +1,25 @@
-\begin{lstlisting}
-struct Node {
-  Data d;
-  Timestamp time;
-  Node* Next;
-  bool mark;
-}
+\section{Timestamp Stack}
 
-Node push(d){
-  Node top = spPools[threadID];
-  Node newNode = Node(d,false,null);
-  newNode.next = top;
-  top = newNode;
-  Timestamp time = new Timestamp();
-  Node.time = time;
-  Node next = newNode.next;
-  while (next.next != next && !next.mark)
-    next = next.next;
-  newNode.next = next;
-  return newNode;
-}	
-
-Data pop () {
-  Timestamp startTime = newTimestamp();
-  bool success;
-  Data d;
-  do {
-  <success,d> = tryRem(startTime);
-  } while (!success);
-  return d;
-}
-
-<bool, Node> tryRem(startTime) {
-  Node youngest = null;
-  Timestamp ts = -1;
-  SPPool myPool;
-  Node myTop;
-  foreach(current in spPools){
-    node,currTop = current.getYoungest();
-    time = node.time;
-    if (ts < time){
-      youngest = node;
-      ts = time;
-      myPool = current;
-      myTop = currTop;
-    }
-  }
-  if CAS(youngest.mark, false, true){
-     CAS(top, myTop, youngest);
-     if (myTop != youngest) 
-        myTop.next = youngest;
-     node.next = youngest.next;
-     while (next.next != next && next.mark)
-        next = next.next;
-     youngest.next = next;
-     return <true, youngest.d>;   
-  }
-  return <false, null>;
-}
+\section{Timestamp Abstraction}
+\subsection{View Abstraction}
+For timestamp data structures we have to deal with timestamp ordering and unbound number of lists. The solutions are described as follows:
+\begin{itemize}
+	\item  About timestamp ordering, we add timestamp ordering information for each index of a view. The order of index $\tt i$ of view $\tt v$ is of the form $\tt v.i.ts \diamond x$ where $\diamond\in \set{<,=,>}$ and $\tt x$ is an observer register. Intuitively, $\tt v.i.ts \diamond x$ means that $\diamond$ is the order between the timestamp of $\tt v.i$ and timestamp of an index whose data is equal to $\tt x$. 
+	\item To deal with the problem of unbounded number of lists. We use two kind of views which are c-views $\tt v_c$ in a current list and o-views $\tt v_o$ in other lists. Note that, current list is the list where the current thread is accessing to.
+\end{itemize}
+\subsection{Post-computation}
+The post-computation is quite similar to singly-linked lists with several differences as follows: Before computing the post condition of this statement, we change all o-views in the other list to c-views and previous c-views to o-views.  
+\subsection{Intersection}
+The intersection between two views are computed same as in the case of singly-linked lists with several differences as follows: 
+\begin{itemize}
+	\item Two views of push methods should not be intersected. The reason for it is that we do not have more concurrent pushes in a same list.
+	\item We can intersect o-views and c-views, o-views and o-views as well as c-views and c-views
+\end{itemize}
 
 
-<node,node> getYoungest () {
-  Node oldTop = Top;
-  Node result = oldTop;
-  while (true) {
-    if (!result.mark)
-      return <result, oldTop>;
-    else if (result.next = result)
-      return <null, oldTop>;
-    result = result.next;  
-  }
-}
-\end{lstlisting}
+
+
+
+
+
+
