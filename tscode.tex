@@ -1,73 +1,73 @@
-\begin{lstlisting}
-struct Node {
-  Data d;
-  Timestamp time;
-  Node* Next;
-  bool mark;
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+
+\lstset{ %
+  backgroundcolor=\color{white},   % choose the background color
+  basicstyle=\footnotesize,        % size of fonts used for the code
+  breaklines=true,                 % automatic line breaking only at whitespace
+  captionpos=b,                    % sets the caption-position to bottom
+  commentstyle=\color{mygreen},    % comment style
+  escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
+  keywordstyle=\color{blue},       % keyword style
+  stringstyle=\color{mymauve},     % string literal style
 }
 
-Node push(d){
-  Node top = spPools[threadID];
-  Node newNode = Node(d,false,null);
-  newNode.next = top;
-  top = newNode;
-  Timestamp time = new Timestamp();
-  Node.time = time;
-  Node next = newNode.next;
-  while (next.next != next && !next.mark)
-    next := next.next;
-  newNode.next = next;
-  return newNode;
-}	
+\begin{lstlisting}[language=C]
+struct Node{
+  int data;
+  Timestamp ts;
+  Node* next; 
+  boolean mark;
+};
 
-Data pop () {
-  Timestamp startTime = newTimestamp();
-  bool success;
-  Data d;
-  do {
-  <success,d> = tryRem(startTime);
-  } while (!success);
-  return d;
+Node* pools[maxThreads]; 
+
+void init () {
+  for(int Node* i=0; i<maxThreads; i++)
+    pools[i].next = null;
 }
 
-<bool, Node> tryRem(startTime) {
-  Node youngest = null;
-  Timestamp ts = -1;
-  SPPool myPool;
-  Node myTop;
-  foreach(current in spPools){
-    node,currTop = current.getYoungest();
-    time = node.time;
-    if (ts < time){
-      youngest = node;
-      ts = time;
-      myPool = current;
-      myTop = currTop;
+Node* push(int d) {
+   Node* n = new Node(d,-1,null,false); 
+   n.next = pools[myID];
+   pools[myID] = n; 
+   Timestamp t = new Timestamp();
+   n.ts = t;
+   Node* next = n.next; // Unlinking
+   while (next.next != next && !next.mark)
+         next = next.next;
+   n.next = next;
+  return n;
+}
+
+int pop() {
+  boolean success = false; 
+  int maxTS = -1;
+  Node* youngest = null; 
+  while (!success) {
+    int k;
+    for(int Node* i=0; i<maxThreads; i++){
+     mytop = pools[i];
+     while (n.mark && n.next != n) n.next;
+     if(maxTS < n.ts) {
+         maxTS = n.ts; 
+         youngest = n;
+         k = i;
+     } 
     }
-  }
-  if CAS(youngest.mark, false, true){
-     CAS(top, myTop, youngest);
-     if (myTop != youngest) 
-        myTop.next = youngest;
-     node.next = youngest.next;
+    if (youngest != null) 
+    success= CAS(youngest.mark,false,true);
+    CAS(pools[k], myTop, youngest);
+    // Unlink nodes before node in the list.
+    if (myTop != youngest) 
+       myTop.next = youngest;
+     pools[k].next = youngest.next;
+     // Unlink nodes after node in the list.
+     Node* next=youngest.next
      while (next.next != next && next.mark)
         next = next.next;
      youngest.next = next;
-     return <true, youngest.d>;   
   }
-  return <false, null>;
-}
-
-
-<node,node> getYoungest () {
-  Node oldTop = Top;
-  Node result = oldTop;
-  while (true) {
-    if (!result.mark)
-      return <result, oldTop>;
-    else if (result.next = result)
-      return <null, oldTop>;
-    result = result.next;  
-  }
-}
+  return youngest.data;
 \end{lstlisting}
