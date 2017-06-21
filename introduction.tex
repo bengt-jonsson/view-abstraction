@@ -59,6 +59,17 @@ time-stamp queues, while also handling
 an unbounded number of concurrent threads, an
 unbounded domain of data values, and an unbounded heap structures.
 
+\bjcom{Here is just some text to be developed}
+In this abstraction, one first defines a
+set of {\em tags}. Intuitively, a tag is a predicate on nodes in a heap,
+which consists of constraints on the values of its fields, and lists
+the set of pointer variables that point directly to the node, or that point
+to a node that can reach or be reached from the node by a sequence of
+{\tt next} pointers. Thus, for each program the set of tags is bounded.
+The heap structure is then represented by a set of {\em fragments}. Each
+fragment is a pair of tags, such that each pair of nodes in the
+projection of the heap onto a particular thread is represented by some
+fragment.
 
 
 %% It is well understood how to

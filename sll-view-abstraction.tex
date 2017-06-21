@@ -1,13 +1,13 @@
 \begin{center}
 \begin{figure}
 \input{sll-lazy-list-shape}
-\caption{Example of View Abstraction}
+\caption{Example of Fragment Abstraction}
 \label{lazylist}
 \end{figure}
 \end{center}
-\section{View Abstraction: Singly Linked Lists}
+\section{Fragment Abstraction: Singly Linked Lists}
 \label{sec:annotations}
-This section describes how we employ view abstraction as a symbolic
+This section describes how we employ fragment abstraction as a symbolic
 representation of an unbounded heap and data domain in
 thread-abstracted configurations. In this section, we describe how this is done
 for singly linked lists, i.e., where each heap cell contains exactly one
@@ -61,23 +61,23 @@ $\cell$, denoted $\tagof{\cell}$ as the tuple $\tagtupleof{\cell}$.
 \bjcom{The following should be included more smoothly, if really needed}
 Let $\tt gtag(v,i)$ be the tuple $\tt \tuple{\tt gvars(i), gdata(i),{\tt greachfrom}(\tt i), {\tt reachto}(\tt i), private(i )}$ where $\tt gvars(i)$ is the set of global variables in $\tt vars(i)$ and $\tt greachfrom(i)$ is the set of global variables in $\tt reachfrom(i)$.
 
-We can now define the concept of view.
-An {\em SLL-view} is a triple
+We can now define the concept of fragment.
+An {\em SLL-fragment} is a triple
 $\sllviewtuple$, where $\inputtag$ and $\outputtag$ are tags, and $\datarel$
 is a subset of $\set{<, =, >}$.
 
-Note that in each view $\tt v$, for two indices $\tt i_1$, $\tt i_2$ where $\tt next(i_1) = i_2$, we always have $\tt {\tt reachfrom}(\tt i_1) \subseteq \tt {\tt reachfrom}(\tt i_2)$ and $\tt {\tt reachto}(\tt i_1) = \tt {\tt reachto}(\tt i_2) \cup X$ where $\tt X$ is the set of global variables in ${\tt vars}(\tt i_1)$ and observer registers $\tt z$ which are equal to $\tt i_1.d$ for $\intgrs$-field $\tt d$. 
+Note that in each fragment $\tt v$, for two indices $\tt i_1$, $\tt i_2$ where $\tt next(i_1) = i_2$, we always have $\tt {\tt reachfrom}(\tt i_1) \subseteq \tt {\tt reachfrom}(\tt i_2)$ and $\tt {\tt reachto}(\tt i_1) = \tt {\tt reachto}(\tt i_2) \cup X$ where $\tt X$ is the set of global variables in ${\tt vars}(\tt i_1)$ and observer registers $\tt z$ which are equal to $\tt i_1.d$ for $\intgrs$-field $\tt d$. 
   
 $\tt \tuple{\tt vars(i), data(i),{\tt reachfrom}(\tt i), {\tt reachto}(\tt i), private(i )}$. Let $\tt gtag(v,i)$ be the tuple $\tt \tuple{\tt gvars(i), gdata(i),{\tt greachfrom}(\tt i), {\tt reachto}(\tt i), private(i )}$ where $\tt gvars(i)$ is the set of global variables in $\tt vars(i)$ and $\tt greachfrom(i)$ is the set of global variables in $\tt reachfrom(i)$. 
 
-We first introduce the abstraction at the heart of the method. The abstraction takes its input as a set of pre-defined views, and any heap is ``broken down into pre-defined views''. A view retains the information about a particular part of a heap. This choice of views defines the level of abstraction that transforms heap into views. The abstract function $\alpha_k$ maps a heap into a set of views. Whereas, the concretization function $\gamma_k$ inputs a set of views, and returns the set of heaps that can be reconstructed from these views. 
-\paragraph{Example:} Let us show an example of how a singly linked list (SLL) is split into a set of views. Fig.~\ref{lazylist}(a) shows an example of a concrete shape of a singly linked list. Each cell contains the values of $\tt val$, $\tt mark$, and $\tt lock$ from top to bottom, where \tick \; denotes $\tt true$, and \cross \; denotes $\tt false$ (or $\tt free$ for $\tt lock$) and the value of $\tt val$ is denoted by a pair of the observer register $\tt z$ and a subset of $\set{<, =, >}$. There are two threads $1$ and $2$ with two local variables $\tt c_1$ and $\tt c_2$. There are two global variables $\tt H$ and $\tt T$ pointing to the head and tail of the list. The observer register $\tt z$ has value 8. Fig.~\ref{lazylist}(b) shows the result of splitting the list in Fig.~\ref{lazylist}(a) into views where each heap view is a small list of two nodes. Fig.~\ref{lazylist}(c) shows the abstraction of views in Fig.~\ref{lazylist}(b) where for each cell $\cell$, the value of $val$ is abstracted to a subset in $\tt \{<z, =z, >z\}$, the reachability relation between $\cell$ and global variables and observer registers is abstracted to the predicate $\tt X \mapsto \tt Y$ where $\tt X$, $\tt Y$ are sets of global variables and observer registers, $\tt i$ or $\tt o$ states that $\cell$ is an input or output cell.
+We first introduce the abstraction at the heart of the method. The abstraction takes its input as a set of pre-defined fragments, and any heap is ``broken down into pre-defined fragments''. A fragment retains the information about a particular part of a heap. This choice of fragments defines the level of abstraction that transforms heap into fragments. The abstract function $\alpha_k$ maps a heap into a set of fragments. Whereas, the concretization function $\gamma_k$ inputs a set of fragments, and returns the set of heaps that can be reconstructed from these fragments. 
+\paragraph{Example:} Let us show an example of how a singly linked list (SLL) is split into a set of fragments. Fig.~\ref{lazylist}(a) shows an example of a concrete shape of a singly linked list. Each cell contains the values of $\tt val$, $\tt mark$, and $\tt lock$ from top to bottom, where \tick \; denotes $\tt true$, and \cross \; denotes $\tt false$ (or $\tt free$ for $\tt lock$) and the value of $\tt val$ is denoted by a pair of the observer register $\tt z$ and a subset of $\set{<, =, >}$. There are two threads $1$ and $2$ with two local variables $\tt c_1$ and $\tt c_2$. There are two global variables $\tt H$ and $\tt T$ pointing to the head and tail of the list. The observer register $\tt z$ has value 8. Fig.~\ref{lazylist}(b) shows the result of splitting the list in Fig.~\ref{lazylist}(a) into fragments where each heap fragment is a small list of two nodes. Fig.~\ref{lazylist}(c) shows the abstraction of fragments in Fig.~\ref{lazylist}(b) where for each cell $\cell$, the value of $val$ is abstracted to a subset in $\tt \{<z, =z, >z\}$, the reachability relation between $\cell$ and global variables and observer registers is abstracted to the predicate $\tt X \mapsto \tt Y$ where $\tt X$, $\tt Y$ are sets of global variables and observer registers, $\tt i$ or $\tt o$ states that $\cell$ is an input or output cell.
 
-\paragraph{View Definition:} A heap view of size $\tt k$ is represented as \begin{center}
+\paragraph{Fragment Definition:} A heap fragment of size $\tt k$ is represented as \begin{center}
 	${\tt v} = \viewconf$ where 
 \end{center} 
 
-%We first introduce the abstraction at the heart of the method. The abstraction takes its input as a set of pre-defined views parameterized by a constant $\tt k$, and any heap is “broken down into pieces” of size (at most) k, called views. A view retains the information about $\tt k$ connected cells from a heap and abstracts away the other cells. This choice defines the level of abstraction that transforms heap into views.There is a certain freedom in what information to retain and what to abstract away. The abstract function $\alpha_k$ maps a heap into a set of heap views of sizes $\tt k$. The concretization function $\gamma_k$ inputs a set of heap views, and returns the set of heaps that can be reconstructed from the these views. Let us represent symbolic representations of heap views. A heap view of size $\tt k$ is represented as ${\tt \Omega} = \viewconf$ where 
+%We first introduce the abstraction at the heart of the method. The abstraction takes its input as a set of pre-defined fragments parameterized by a constant $\tt k$, and any heap is “broken down into pieces” of size (at most) k, called fragments. A fragment retains the information about $\tt k$ connected cells from a heap and abstracts away the other cells. This choice defines the level of abstraction that transforms heap into fragments.There is a certain freedom in what information to retain and what to abstract away. The abstract function $\alpha_k$ maps a heap into a set of heap fragments of sizes $\tt k$. The concretization function $\gamma_k$ inputs a set of heap fragments, and returns the set of heaps that can be reconstructed from the these fragments. Let us represent symbolic representations of heap fragments. A heap fragment of size $\tt k$ is represented as ${\tt \Omega} = \viewconf$ where 
 \begin{itemize}
 % \item $\tt key$ maps each pair of pointer variables to a subset of $\set{<, =, >}$,
 % \item $\mathbb{I}$ is a tuple  $\tuple{\tt I, i, o}$ where $\tt I$ is a finite set of $\tt k$ {\em indices}, representing cells. The two sets $\tt i \subseteq I $ and $\tt o \subseteq I$ with $\tt i \cap o = \emptyset$ are sets of {\em input} and {\em output} indices representing {\em input} and {\em output cells}.
@@ -114,27 +114,27 @@ We first introduce the abstraction at the heart of the method. The abstraction t
   \item $\tt private$ maps each index $\tt i \in \indices$ to a boolean value. Intuitively, if $\tt private(i) = true$ then the cell represented by $\tt i$ can be seen only by the concurrent thread.
  
   \end{itemize}
-For a view $\tt v$ and index $\tt i$, let $\tt tag(v,i)$ be the tuple $\tt \tuple{\tt vars(i), data(i),{\tt reachfrom}(\tt i), {\tt reachto}(\tt i), private(i )}$. Let $\tt gtag(v,i)$ be the tuple $\tt \tuple{\tt gvars(i), gdata(i),{\tt greachfrom}(\tt i), {\tt reachto}(\tt i), private(i )}$ where $\tt gvars(i)$ is the set of global variables in $\tt vars(i)$ and $\tt greachfrom(i)$ is the set of global variables in $\tt reachfrom(i)$. Note that in each view $\tt v$, for two indices $\tt i_1$, $\tt i_2$ where $\tt next(i_1) = i_2$, we always have $\tt {\tt reachfrom}(\tt i_1) \subseteq \tt {\tt reachfrom}(\tt i_2)$ and $\tt {\tt reachto}(\tt i_1) = \tt {\tt reachto}(\tt i_2) \cup X$ where $\tt X$ is the set of global variables in ${\tt vars}(\tt i_1)$ and observer registers $\tt z$ which are equal to $\tt i_1.d$ for $\intgrs$-field $\tt d$. 
+For a fragment $\tt v$ and index $\tt i$, let $\tt tag(v,i)$ be the tuple $\tt \tuple{\tt vars(i), data(i),{\tt reachfrom}(\tt i), {\tt reachto}(\tt i), private(i )}$. Let $\tt gtag(v,i)$ be the tuple $\tt \tuple{\tt gvars(i), gdata(i),{\tt greachfrom}(\tt i), {\tt reachto}(\tt i), private(i )}$ where $\tt gvars(i)$ is the set of global variables in $\tt vars(i)$ and $\tt greachfrom(i)$ is the set of global variables in $\tt reachfrom(i)$. Note that in each fragment $\tt v$, for two indices $\tt i_1$, $\tt i_2$ where $\tt next(i_1) = i_2$, we always have $\tt {\tt reachfrom}(\tt i_1) \subseteq \tt {\tt reachfrom}(\tt i_2)$ and $\tt {\tt reachto}(\tt i_1) = \tt {\tt reachto}(\tt i_2) \cup X$ where $\tt X$ is the set of global variables in ${\tt vars}(\tt i_1)$ and observer registers $\tt z$ which are equal to $\tt i_1.d$ for $\intgrs$-field $\tt d$. 
 %\paragraph{Abstract Configuration}:
-%A abstract {\it configuration} of a program $\prog$ in the view of a single thread $\thread$
+%A abstract {\it configuration} of a program $\prog$ in the fragment of a single thread $\thread$
 % is a tuple
 %$\tuple{\tt c,\lambda, \Omega , S}$ where
 %\begin{itemize}
 %\item $\tt c$ is an observer configuration, 
 %\item $\lambda$ is the label of the program statement, 
 %\item $\tt \Omega$ is a tuple $\tt \tuple{\Omega_p, \Omega_l, Val}$ where $\tt \Omega_p$ contains a set ordering constrains between pointer variables, $\tt \Omega_l$ contains a set ordering constrains between data local variables and $\tt Val$ maps each data local variable to its value.
-%\item $\tt S$ is a set of views.
+%\item $\tt S$ is a set of fragments.
 %\end{itemize}
 %
 %% We use $\confsetof\prog$ to denote the set of configurations
 
 \section{Abstract transformers for singly linked lists}
-%For each operation $\tt op$ in the intermediate representation of the analysed program corresponding to the function $\tt f_{\tt op}$ on concrete configurations $\tt F =\tuple{\athreads,\lstatemapping,\heap}$ , we define an abstract transformer ${\tt \Gamma}_{\tt op}$ on a set of views $\tt A$ such that the result of ${\tt \Gamma}_{\tt op}(A)$ denotes the set $\tt f_{\tt op}(F)$. Let us present the abstract transformers corresponding to some operations on the set $\mathbb A$. Two views $\tt \Omega_1$ and $\tt \Omega_2$ are relevant if (I) they have the same program counter and observer register and (II) their global relationship are consistent. The abstract transformer is performed by several following steps:
+%For each operation $\tt op$ in the intermediate representation of the analysed program corresponding to the function $\tt f_{\tt op}$ on concrete configurations $\tt F =\tuple{\athreads,\lstatemapping,\heap}$ , we define an abstract transformer ${\tt \Gamma}_{\tt op}$ on a set of fragments $\tt A$ such that the result of ${\tt \Gamma}_{\tt op}(A)$ denotes the set $\tt f_{\tt op}(F)$. Let us present the abstract transformers corresponding to some operations on the set $\mathbb A$. Two fragments $\tt \Omega_1$ and $\tt \Omega_2$ are relevant if (I) they have the same program counter and observer register and (II) their global relationship are consistent. The abstract transformer is performed by several following steps:
 %\begin{enumerate}
-%\item Combine all relevant views $\tt \Omega_1$,..,$\tt \Omega_n \in \mathbb A$ which contains variables appearing in the operation. Let $\tt \Omega^c_1$,..,$\tt \Omega^c_m$ be the result of the combination.
- %\item For each view $\tt \Omega^c_i$ where $0 \leq \tt i \leq m$, compute the abstract transformer $\tt \Omega_p = {\Gamma}_{\tt op}(\tt \Omega^c_i)$, then split $\tt \Omega_p$ into set of new views 
+%\item Combine all relevant fragments $\tt \Omega_1$,..,$\tt \Omega_n \in \mathbb A$ which contains variables appearing in the operation. Let $\tt \Omega^c_1$,..,$\tt \Omega^c_m$ be the result of the combination.
+ %\item For each fragment $\tt \Omega^c_i$ where $0 \leq \tt i \leq m$, compute the abstract transformer $\tt \Omega_p = {\Gamma}_{\tt op}(\tt \Omega^c_i)$, then split $\tt \Omega_p$ into set of new fragments 
 %\end{enumerate}
-Let us show how to perform the abstract transformer for singly linked list programs on the set of views $\tt S$ depending on the particular statement. In this case, we consider views of size $2$ where $\tt I_{inp} = \{i\}$, $\tt I_{out} = \{o\}$,$\tt I_{int} = \emptyset$ and $\tt next(i) = o$, and views of size $1$ where $\tt I_{inp} = \{i\}$, $\tt I_{out} = \emptyset$, $\tt I_{int} = \emptyset$ and $\tt next(i) = null$ or $\tt next(i) = \bot$. Before describing in detail to compute abstract transformers, let us define several important concepts.
+Let us show how to perform the abstract transformer for singly linked list programs on the set of fragments $\tt S$ depending on the particular statement. In this case, we consider fragments of size $2$ where $\tt I_{inp} = \{i\}$, $\tt I_{out} = \{o\}$,$\tt I_{int} = \emptyset$ and $\tt next(i) = o$, and fragments of size $1$ where $\tt I_{inp} = \{i\}$, $\tt I_{out} = \emptyset$, $\tt I_{int} = \emptyset$ and $\tt next(i) = null$ or $\tt next(i) = \bot$. Before describing in detail to compute abstract transformers, let us define several important concepts.
 
 %\paragraph{Index Consistency:} Let $\tt i_1 \equiv i_2$ denotes that $\tt i_1$ and $\tt i_2$ are equivalent. Intuitively, $\tt i_1 \equiv i_2$ iff  ${\tt Val}^{\tt v}(\tt i_1) = {\tt Val}^{\tt v}(\tt i_2)$, ${\tt Val}^{\tt d}(\tt i_1) = {\tt Val}^{\tt d}(\tt i_2)$, $\tt private(i_1) = private(i_2)$ and $\tt \Phi(i_1.d, z) = \Phi(i_2.d, z)$ for every $\intgrs$-field $\tt d$ and $\intgrs$-term $\tt z$.  The indices $\tt i_1$ and $\tt i_2$ are consistent if they satisfy one of those conditions below
 %\begin{itemize}
@@ -142,18 +142,18 @@ Let us show how to perform the abstract transformer for singly linked list progr
 %	\item $\tt i_1$ is an {\em output} index, $\tt i_2$ is an {\em input} index, $\tt i_1 \equiv i_2$ and ${\tt Val}^{\tt r}(\tt i_1) = {\tt Val}^{\tt r}(\tt i_2)$, or
 %	\item both $\tt i_1$ and $\tt i_2$ are output indices, $\tt i_1 \equiv i_2$, $\tt X_1 \cap X_2 = \emptyset$ and $\tt Y_1 = Y_2$ where $\tt {\tt Val}^{\tt r}(\tt i_1) = X1 \mapsto Y1$,  $\tt {\tt Val}^{\tt r}(\tt i_2) = X2 \mapsto Y2$
 %\end{itemize}
-\paragraph{View Consistency:} For two views $\tt v_1$ and $\tt v_2$ with sizes of 2, let $\tt i$ and $\tt o$ be the {\em input} and {\em output} indices of $\tt v_1$, let $\tt j_i$ and $\tt j_o$ be the {\em input} and {\em output} indices of $\tt v_2$.
+\paragraph{Fragment Consistency:} For two fragments $\tt v_1$ and $\tt v_2$ with sizes of 2, let $\tt i$ and $\tt o$ be the {\em input} and {\em output} indices of $\tt v_1$, let $\tt j_i$ and $\tt j_o$ be the {\em input} and {\em output} indices of $\tt v_2$.
  \begin{itemize}
  \item   $\tt v_1$ and $\tt v_2$ are forward consistent, denoted as $\tt v_1 \hookrightarrow_S v_2$ if $\tt tag( v_1,\tt o) = tag(v_2,\tt j_i)$.   
  \item $\tt v_1$ and $\tt v_2$ is branch consistent, denoted as $\tt v_1 \leftrightarrow_S v_2$ if $\tt tag( v_1,\tt o) = tag(v_2,\tt j_o)$, $\tt G_1 \cap G_2 = \emptyset$ and $\tt v_1.{\tt reachto}(\tt i) = v_2.{\tt reachto}(\tt j_i)$ where $\tt G_1$ is the set of global variables in $\tt v_1.{\tt reachfrom}(\tt o)$,  $\tt G_2$ is the set of global variables in $\tt v_2.{\tt reachfrom}(\tt j_o)$. 
  
     \end{itemize}
-For two views $\tt v_1$ and $\tt v_2$ with sizes of 1, let $\tt i$ be the {\em input} index of $\tt v_1$, let $\tt j_i$ be the {\em input} index of $\tt v_2$.
+For two fragments $\tt v_1$ and $\tt v_2$ with sizes of 1, let $\tt i$ be the {\em input} index of $\tt v_1$, let $\tt j_i$ be the {\em input} index of $\tt v_2$.
  \begin{itemize}
 
  \item $\tt v_1$ and $\tt v_2$ is branch consistent, denoted as $\tt v_1 \leftrightarrow_S v_2$ if $\tt v_1.next(i) = v_2.next(i)$ and $\tt G_1 \cap G_2 = \emptyset$ where $\tt G_1$ is the set of global variables in $\tt v_1.{\tt reachfrom}(\tt i)$,  $\tt G_2$ is the set of global variables in $\tt v_2.{\tt reachfrom}(\tt j_i)$.
  \end{itemize}
-For two views $\tt v_1$ and $\tt v_2$, let we define several more relations between them as following:
+For two fragments $\tt v_1$ and $\tt v_2$, let we define several more relations between them as following:
 \begin{itemize}
 \item  $\tt v_1 \overset{+}\hookrightarrow_S v_2$ if there exists $\tt v$ such that $\tt v_1 \overset{*}\hookrightarrow_S v$ and $\tt v \hookrightarrow_S v_2$  where  $\tt \overset{*}\hookrightarrow_S$ is the transitive closure of $\tt \hookrightarrow_S$. 
 \item $\tt v_1  \overset{**}\leftrightarrow_S  v_2$ if there exist $\tt v_1'$, $\tt v_2'$ such that ($\tt v_1  \overset{*}\hookrightarrow_S v_1'$ or $\tt v_1 = v_1'$), and ($\tt v_2  \overset{*}\hookrightarrow_S v_2'$ or $\tt v_2 = v_2'$) as well as $\tt v_1' \leftrightarrow_S v_2'$. 
@@ -166,7 +166,7 @@ For two views $\tt v_1$ and $\tt v_2$, let we define several more relations betw
 \item $\tt v_1 \overset{+o}\leftrightarrow_S v_2$ if there exist $\tt v_1'$ such that $\tt v_1  \overset{*}\hookrightarrow_S v_1'$, and $\tt v_1' \leftrightarrow_S v_2'$.
 \end{itemize}
  
-\paragraph{View Intersection:} Let us describe the intersection of two views $\tt v_1 \in S_1$ and $\tt v_2 \in S_2$ denoted as $\tt v_1 \sqcap v_2$. Firstly, we consider the case where both $\tt v_1$ and $\tt v_2$ have size 2.
+\paragraph{Fragment Intersection:} Let us describe the intersection of two fragments $\tt v_1 \in S_1$ and $\tt v_2 \in S_2$ denoted as $\tt v_1 \sqcap v_2$. Firstly, we consider the case where both $\tt v_1$ and $\tt v_2$ have size 2.
  \begin{itemize}
  \item if $\tt v_1.greachfrom(i) \neq \emptyset$ and $\tt v_2.greachfrom(i) \neq \emptyset$ then 
   \begin{itemize}
@@ -256,12 +256,12 @@ For two views $\tt v_1$ and $\tt v_2$, let we define several more relations betw
 % \end{itemize}
 % 
 % \end{itemize}
-\paragraph{Local Abstract Transformers:} Firstly, let us show the abstract transformer on the set of view $\tt S$ in the view of the concurrent thread. Let $\tt kill(x,v)$ be the procedure to remove $\tt x$ if it exists from $\tt v.{\tt reachfrom}(\tt i)$, $\tt v.{\tt reachfrom}(\tt o)$, $\tt v.{\tt reachto}(\tt i)$, $\tt v.{\tt reachto}(\tt o)$, $\tt v.{\tt vars}(\tt i)$, and $\tt v.{\tt vars}(\tt o)$. For each program statement, let $\tt S_{post}$ be the set of views after executing the statement. Let $\tt S_{post}$ be initialized as the empty set.
+\paragraph{Local Abstract Transformers:} Firstly, let us show the abstract transformer on the set of fragment $\tt S$ in the fragment of the concurrent thread. Let $\tt kill(x,v)$ be the procedure to remove $\tt x$ if it exists from $\tt v.{\tt reachfrom}(\tt i)$, $\tt v.{\tt reachfrom}(\tt o)$, $\tt v.{\tt reachto}(\tt i)$, $\tt v.{\tt reachto}(\tt o)$, $\tt v.{\tt vars}(\tt i)$, and $\tt v.{\tt vars}(\tt o)$. For each program statement, let $\tt S_{post}$ be the set of fragments after executing the statement. Let $\tt S_{post}$ be initialized as the empty set.
 \begin{itemize}
 
-\item ${\tt x := y}$: The transformer is performed as following: For each view $\tt v_y \in S$ where $\tt y \in v_y.{\tt vars}(\tt i)$,
+\item ${\tt x := y}$: The transformer is performed as following: For each fragment $\tt v_y \in S$ where $\tt y \in v_y.{\tt vars}(\tt i)$,
 \begin{enumerate}
-\item  for each view $\tt v$ where $\tt v \hookrightarrow_S v_y$, create $\tt v'$ which is same as $\tt v$ except that
+\item  for each fragment $\tt v$ where $\tt v \hookrightarrow_S v_y$, create $\tt v'$ which is same as $\tt v$ except that
 \begin{itemize}
 \item $\tt v'.i.vars = v.i.vars \setminus \{x\}$,
 \item $\tt v'.o.vars = v.o.vars \cup \{x\}$,
@@ -271,7 +271,7 @@ For two views $\tt v_1$ and $\tt v_2$, let we define several more relations betw
 \item $\tt v'.o.reachto = v.o.reachto \cup \{x\}$ if $\tt x$ is a global variable,
 \end{itemize}
 and add $\tt v'$ to $\tt S_{post}$,
-\item for each view $\tt v$ where $\tt v \overset{+}\hookrightarrow_S v_y$, create $\tt v'$ which is same as $\tt v$ except that
+\item for each fragment $\tt v$ where $\tt v \overset{+}\hookrightarrow_S v_y$, create $\tt v'$ which is same as $\tt v$ except that
 \begin{itemize}
 \item $\tt v'.i.vars = v.i.vars \setminus \{x\}$,
 \item $\tt v'.o.vars = v.o.vars \setminus \{x\}$,
@@ -281,7 +281,7 @@ and add $\tt v'$ to $\tt S_{post}$,
 \item $\tt v'.o.reachto = v.o.reachto \cup \{x\}$ if $\tt x$ is a global variable,
 \end{itemize}
 and add $\tt v'$ to $\tt S_{post}$,
-\item for each view $\tt v_3$ where $\tt v_y \overset{*}\hookrightarrow_S v$, create $\tt v'$ which is same as $\tt v$ except that
+\item for each fragment $\tt v_3$ where $\tt v_y \overset{*}\hookrightarrow_S v$, create $\tt v'$ which is same as $\tt v$ except that
 \begin{itemize}
 \item $\tt v'.i.vars = v.i.vars \setminus \{x\}$,
 \item $\tt v'.o.vars = v.o.vars \setminus \{x\}$,
@@ -293,7 +293,7 @@ and add $\tt v'$ to $\tt S_{post}$,
 
 \end{itemize}
 and add $\tt v'$ to $\tt S_{post}$,
-\item for each view $\tt v$ where $\tt v_y \overset{*+}\leftrightarrow_S v$, create $\tt v'$ which is same as $\tt v$ except that
+\item for each fragment $\tt v$ where $\tt v_y \overset{*+}\leftrightarrow_S v$, create $\tt v'$ which is same as $\tt v$ except that
 \begin{itemize}
 \item $\tt v'.i.vars = v.i.vars \setminus \{x\}$,
 \item $\tt v'.o.vars = v.o.vars \setminus \{x\}$,
@@ -303,7 +303,7 @@ and add $\tt v'$ to $\tt S_{post}$,
 \item $\tt v'.o.reachto = v.o.reachto \setminus \{x\}$ if $\tt x$ is a global variable,
 \end{itemize}
 and add $\tt v'$ to $\tt S_{post}$,
-\item for each view $\tt v$ where $\tt v_y \overset{*o}\leftrightarrow_S v$, create $\tt v'$ which is same as $\tt v$ except that
+\item for each fragment $\tt v$ where $\tt v_y \overset{*o}\leftrightarrow_S v$, create $\tt v'$ which is same as $\tt v$ except that
 \begin{itemize}
 \item $\tt v'.i.vars = v.i.vars \setminus \{x\}$,
 \item $\tt v'.o.vars = v.o.vars \setminus \{x\}$,
@@ -325,7 +325,7 @@ and add $\tt v'$ to $\tt S_{post}$,
 
 \end{itemize}
 and add $\tt v'$ to $\tt S_{post}$,
-%\item for each view $\tt v'$ in $\tt S_{post}$, assign $\tt v'.data.(i).(y.d)$ to $\tt v'.data.(i).(x.d)$ for $\tt i \in \{i, o\}$.
+%\item for each fragment $\tt v'$ in $\tt S_{post}$, assign $\tt v'.data.(i).(y.d)$ to $\tt v'.data.(i).(x.d)$ for $\tt i \in \{i, o\}$.
 \end{enumerate}
 
 	
@@ -339,9 +339,9 @@ and add $\tt v'$ to $\tt S_{post}$,
 	
 	
 	
-\item ${\tt x := y.next}$: The local abstract transformer is quite similar to the previous case with slightly differences. For each view $\tt v_y \in S$ where $\tt y \in {\tt vars}(\tt i)$,
+\item ${\tt x := y.next}$: The local abstract transformer is quite similar to the previous case with slightly differences. For each fragment $\tt v_y \in S$ where $\tt y \in {\tt vars}(\tt i)$,
 \begin{enumerate}
-\item  for each view $\tt v$ where $\tt v \overset{*}\hookrightarrow_S v_y$, create $\tt v'$ which is same as $\tt v$ except that
+\item  for each fragment $\tt v$ where $\tt v \overset{*}\hookrightarrow_S v_y$, create $\tt v'$ which is same as $\tt v$ except that
 \begin{itemize}
 \item $\tt v'.i.vars = v.i.vars \setminus \{x\}$,
 \item $\tt v'.o.vars = v.o.vars \setminus \{x\}$,
@@ -353,7 +353,7 @@ and add $\tt v'$ to $\tt S_{post}$,
  \item $\tt v'.o.reachto = v.o.reachto \cup \{x\}$ if $\tt x$ is a global variable,
 \end{itemize}
 and add $\tt v'$ to $\tt S_{post}$,
-\item for each view $\tt v$ where $\tt v_y \hookrightarrow_S v$, create $\tt v'$ which is same as $\tt v$ then
+\item for each fragment $\tt v$ where $\tt v_y \hookrightarrow_S v$, create $\tt v'$ which is same as $\tt v$ then
 \begin{itemize}
 \item $\tt v'.i.vars = v.i.vars \cup \{x\}$,
 \item $\tt v'.o.vars = v.o.vars \setminus \{x\}$,
@@ -364,7 +364,7 @@ and add $\tt v'$ to $\tt S_{post}$,
 
 \end{itemize}
 and add $\tt v'$ to $\tt S_{post}$,
-\item for each view $\tt v$ where $\tt v_y \leftrightarrow_S v$, create $\tt v'$ which is same as $\tt v$ except that
+\item for each fragment $\tt v$ where $\tt v_y \leftrightarrow_S v$, create $\tt v'$ which is same as $\tt v$ except that
 \begin{itemize} 
 \item $\tt v'.i.vars = v.i.vars \setminus \{x\}$,
 \item $\tt v'.o.vars = v.o.vars \cup \{x\}$,
@@ -375,7 +375,7 @@ and add $\tt v'$ to $\tt S_{post}$,
 \end{itemize}
 and add $\tt v'$ to $\tt S_{post}$,
 
-\item for each view $\tt v$ where $\tt v_y \overset{+}\hookrightarrow_S v$, create $\tt v'$ which is same as $\tt v$ except that
+\item for each fragment $\tt v$ where $\tt v_y \overset{+}\hookrightarrow_S v$, create $\tt v'$ which is same as $\tt v$ except that
 \begin{itemize}
 \item $\tt v'.i.vars = v.i.vars \setminus \{x\}$,
 \item $\tt v'.o.vars = v.o.vars \setminus \{x\}$,
@@ -386,7 +386,7 @@ and add $\tt v'$ to $\tt S_{post}$,
 
 \end{itemize}
 and add $\tt v'$ to $\tt S_{post}$,
-\item for each view $\tt v$ where $\tt v_y \overset{*o}\leftrightarrow_S v$, create $\tt v'$ which is same as $\tt v$ except that
+\item for each fragment $\tt v$ where $\tt v_y \overset{*o}\leftrightarrow_S v$, create $\tt v'$ which is same as $\tt v$ except that
 \begin{itemize}
 \item $\tt v'.i.vars = v.i.vars \setminus \{x\}$,
 \item $\tt v'.o.vars = v.o.vars \setminus \{x\}$,
@@ -397,7 +397,7 @@ and add $\tt v'$ to $\tt S_{post}$,
 
 \end{itemize}
 and add $\tt v'$ to $\tt S_{post}$,
-\item for each view $\tt v$ where $\tt v_y \overset{*+}\leftrightarrow_S v$, create $\tt v'$ which is same as $\tt v$ except that 
+\item for each fragment $\tt v$ where $\tt v_y \overset{*+}\leftrightarrow_S v$, create $\tt v'$ which is same as $\tt v$ except that 
 \begin{itemize}
 \item $\tt v'.i.vars = v.i.vars \setminus \{x\{$,
 \item $\tt v'.o.vars = v.o.vars \setminus \{x\}$,
@@ -407,7 +407,7 @@ and add $\tt v'$ to $\tt S_{post}$,
 \item $\tt v'.o.reachto = v.o.reachto \setminus \{x\}$ if $\tt x$ is a global variable,
 \end{itemize}
 and add $\tt v'$ to $\tt S_{post}$,
-\item for each view $\tt v$ where $\tt v \overset{+o}\leftrightarrow_S v_y$, create $\tt v'$ which is same as $\tt v$ except that 
+\item for each fragment $\tt v$ where $\tt v \overset{+o}\leftrightarrow_S v_y$, create $\tt v'$ which is same as $\tt v$ except that 
 \begin{itemize}
 \item $\tt v'.i.vars = v.i.vars \setminus \{x\}$,
 \item $\tt v'.o.vars = v.o.vars \setminus \{x\}$,
@@ -428,17 +428,17 @@ and add $\tt v'$ to $\tt S_{post}$,
  \item $\tt v'.o.reachto = v.o.reachto \cup \{x\}$ if $\tt x$ is a global variable,
 \end{itemize}
 and add $\tt v'$ to $\tt S_{post}$,
-%\item for each view $\tt v'$ in $\tt S_o$, assign $\tt v'.data.(i).(y.d)$ to $\tt v'.data.(i).(x.d)$ for $\tt i \in \{i, o\}$.
+%\item for each fragment $\tt v'$ in $\tt S_o$, assign $\tt v'.data.(i).(y.d)$ to $\tt v'.data.(i).(x.d)$ for $\tt i \in \{i, o\}$.
 %
 \end{enumerate}	
 
 
 
 
-\item  ${\tt x.next:= y}$: The local abstract transformer is performed by several steps as follows: For each pair of views $\tt v_x$, $\tt v_y$ in $\tt S$ where $\tt x \in v_x.{\tt vars}(\tt i)$, $\tt y \in v_y.{\tt vars}(\tt i)$, and $\tt v_x \overset{*}\hookrightarrow v_y$ or $\tt v_y \overset{*}\hookrightarrow v_x$ or $\tt v_x \overset{**}\leftrightarrow v_y$
+\item  ${\tt x.next:= y}$: The local abstract transformer is performed by several steps as follows: For each pair of fragments $\tt v_x$, $\tt v_y$ in $\tt S$ where $\tt x \in v_x.{\tt vars}(\tt i)$, $\tt y \in v_y.{\tt vars}(\tt i)$, and $\tt v_x \overset{*}\hookrightarrow v_y$ or $\tt v_y \overset{*}\hookrightarrow v_x$ or $\tt v_x \overset{**}\leftrightarrow v_y$
 \begin{enumerate}
-\item let $\tt v_{new}$ be the view of size 2 where $\tt tag(v_{new},i) = tag(v_x, i)$ and $\tt tag(v_{new},o) = tag(v_y,i)$ except that $\tt v_{new}.o.reachfrom = v_y.i.reachfrom \cup v_x.i.reachfrom$,
-\item  for each view $\tt v \in S$ where $\tt v \overset{*}\hookrightarrow_S v_x$, we do as follows: For each subset $\tt regs$ of observer registers in $\tt v.reachto(\tt i) \cap \tt v_x.i.reachfrom$
+\item let $\tt v_{new}$ be the fragment of size 2 where $\tt tag(v_{new},i) = tag(v_x, i)$ and $\tt tag(v_{new},o) = tag(v_y,i)$ except that $\tt v_{new}.o.reachfrom = v_y.i.reachfrom \cup v_x.i.reachfrom$,
+\item  for each fragment $\tt v \in S$ where $\tt v \overset{*}\hookrightarrow_S v_x$, we do as follows: For each subset $\tt regs$ of observer registers in $\tt v.reachto(\tt i) \cap \tt v_x.i.reachfrom$
 \begin{itemize}
 \item create $\tt v'$ which is same as $\tt v$, except that
 \begin{itemize}
@@ -448,7 +448,7 @@ and add $\tt v'$ to $\tt S_{post}$,
 \item add $\tt v'$ to $\tt S_{post}$
 \end{itemize}
 
-\item for each view $\tt v$ where $\tt v_y \overset{*}\hookrightarrow_S v$ or $\tt v_y = v$, 
+\item for each fragment $\tt v$ where $\tt v_y \overset{*}\hookrightarrow_S v$ or $\tt v_y = v$, 
 \begin{itemize}
 	\item create  $\tt v'$ which is same as $\tt v$ except that
 \begin{itemize}
@@ -457,14 +457,14 @@ and add $\tt v'$ to $\tt S_{post}$,
 \end{itemize}
 \item add $\tt v'$ to $\tt S_{post}$
 \end{itemize}
-\item for each view $\tt v$ where $\tt v_x \overset{**}\leftrightarrow_S v$ and either $\tt v \hookrightarrow_S v_y$ or $\tt v_y \overset{*o}\leftrightarrow_S v$, 
+\item for each fragment $\tt v$ where $\tt v_x \overset{**}\leftrightarrow_S v$ and either $\tt v \hookrightarrow_S v_y$ or $\tt v_y \overset{*o}\leftrightarrow_S v$, 
 \begin{itemize}
 \item  create $\tt v'$ which is same as $\tt v$ except that $\tt \tt v'.o.reachfrom = v_x.i.reachfrom \cup \tt v.o.reachfrom$, 
  \item add $\tt v'$ to $\tt S_{post}$ 
 \end{itemize}
 
 
-\item for each view $\tt v$ where $\tt v_x \overset{*}\hookrightarrow_S v$ and either $\tt v \hookrightarrow_S v_y$ or $\tt v_y \overset{*o}\leftrightarrow_S v$,  
+\item for each fragment $\tt v$ where $\tt v_x \overset{*}\hookrightarrow_S v$ and either $\tt v \hookrightarrow_S v_y$ or $\tt v_y \overset{*o}\leftrightarrow_S v$,  
 \begin{itemize}
 \item create $\tt v'$ which is same as $\tt v$ then except that $\tt \tt v'.o.reachfrom = v_x.i.reachfrom \cup \tt v.o.reachfrom$, 
 \item for each subset $\tt regs$ of observer registers in $\tt v'.i.reachfrom \cap \tt v_x.i.reachfrom$
@@ -474,14 +474,14 @@ and add $\tt v'$ to $\tt S_{post}$,
 \end{itemize}
 \end{itemize}
 
-\item for each view $\tt v$ where $\tt v_x \overset{**}\leftrightarrow_S v$ and either $\tt v \overset{+}\hookrightarrow_S v_y$ or $\tt v \overset{*+}\leftrightarrow_S v_y$, 
+\item for each fragment $\tt v$ where $\tt v_x \overset{**}\leftrightarrow_S v$ and either $\tt v \overset{+}\hookrightarrow_S v_y$ or $\tt v \overset{*+}\leftrightarrow_S v_y$, 
 \begin{itemize}
 \item create $\tt v'$ which is same as $\tt v$
 \item  add $\tt v'$ to $\tt S_{post}$
 \end{itemize}
 
 
-\item for each view $\tt v$ where $\tt v_x \overset{*}\hookrightarrow_S v$ and either $\tt v \overset{+}\hookrightarrow_S v_y$ or $\tt v_y \overset{*+}\leftrightarrow v$, then for each subset $\tt regs$ of observer registers in $\tt v.i.reachfrom \cap \tt v_x.i.reachfrom$, 
+\item for each fragment $\tt v$ where $\tt v_x \overset{*}\hookrightarrow_S v$ and either $\tt v \overset{+}\hookrightarrow_S v_y$ or $\tt v_y \overset{*+}\leftrightarrow v$, then for each subset $\tt regs$ of observer registers in $\tt v.i.reachfrom \cap \tt v_x.i.reachfrom$, 
 \begin{itemize}
 \item create $\tt v'$ which is same as $\tt v$, except that $\tt v'.i.reachfrom = (\tt v.i.reachfrom \setminus v_x.i.reachfrom) \cup regs$. 
  \item for each set $\tt regs'$ of observer registers in $\tt v'.o.reachfrom \cap \tt v_x.i.reachfrom$,  
@@ -497,14 +497,14 @@ and add $\tt v'$ to $\tt S_{post}$,
 
  \end{itemize}
 \section{Abstract transformers for skip-lists}
-Let us show how to perform the abstract transformer for skip-list programs on the set of views $\tt S$ depending on the particular statement.  We consider views of size $2$ where $\tt I_{inp} = \{i\}$, $\tt I_{out} = \{{o}\}$, and $\tt next(i) = {o}$ and views of size $1$ where $\tt I_{inp} = \{i\}$, $\tt I_{out} = \emptyset$, and $\tt next(i) = null$ or $\tt next(i) = \bot$. For each view $\tt v$, let $\tt v.level \in \{1,2\}$ be the level of $\tt v$.
+Let us show how to perform the abstract transformer for skip-list programs on the set of fragments $\tt S$ depending on the particular statement.  We consider fragments of size $2$ where $\tt I_{inp} = \{i\}$, $\tt I_{out} = \{{o}\}$, and $\tt next(i) = {o}$ and fragments of size $1$ where $\tt I_{inp} = \{i\}$, $\tt I_{out} = \emptyset$, and $\tt next(i) = null$ or $\tt next(i) = \bot$. For each fragment $\tt v$, let $\tt v.level \in \{1,2\}$ be the level of $\tt v$.
 
-\paragraph{Local Abstract Transformers:} First, let us show the abstract transformer on the set of view $\tt S$ in the view of the concurrent thread. Let $\tt S_1$ be set of views of level 1 in $\tt S$, $\tt S_2$ be set of views of level 2 in $\tt S$. For each program statement, let $\tt S_{post}$ be the set of views after executing the statement. Let $\tt S_{post}$ be initialized as the empty set.  Let $\tt R$ be the set of pairs of views. Intuitively, in each element in $\tt R$, the second view is the transformation of the first view. Let $\tt R$ be initialized as the empty set.
+\paragraph{Local Abstract Transformers:} First, let us show the abstract transformer on the set of fragment $\tt S$ in the fragment of the concurrent thread. Let $\tt S_1$ be set of fragments of level 1 in $\tt S$, $\tt S_2$ be set of fragments of level 2 in $\tt S$. For each program statement, let $\tt S_{post}$ be the set of fragments after executing the statement. Let $\tt S_{post}$ be initialized as the empty set.  Let $\tt R$ be the set of pairs of fragments. Intuitively, in each element in $\tt R$, the second fragment is the transformation of the first fragment. Let $\tt R$ be initialized as the empty set.
 \begin{itemize}
-\item ${\tt x := y}$: The transformer is performed as follows:  For each view $\tt v_y \in S_1$ where $\tt y \in v_y.{\tt vars}(\tt i)$, 
+\item ${\tt x := y}$: The transformer is performed as follows:  For each fragment $\tt v_y \in S_1$ where $\tt y \in v_y.{\tt vars}(\tt i)$, 
 %\begin{itemize}
 \begin{enumerate}
-\item  for each view $\tt v \in S_1$ where $\tt v \hookrightarrow_S v_y$, create $\tt v'$ which is same as $\tt v$ except that
+\item  for each fragment $\tt v \in S_1$ where $\tt v \hookrightarrow_S v_y$, create $\tt v'$ which is same as $\tt v$ except that
 \begin{itemize}
 \item $\tt v'.i.vars = v.i.vars \setminus \{x\}$,
 \item $\tt v'.o.vars = v.o.vars \cup \{x\}$,
@@ -517,7 +517,7 @@ Let us show how to perform the abstract transformer for skip-list programs on th
 \end{itemize}
 \end{itemize}
 then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt R$
-\item for each view $\tt v \in S_1$ where $\tt v \overset{+}\hookrightarrow_S v_y$, create $\tt v'$ which is same as $\tt v$ except that
+\item for each fragment $\tt v \in S_1$ where $\tt v \overset{+}\hookrightarrow_S v_y$, create $\tt v'$ which is same as $\tt v$ except that
 \begin{itemize}
 \item $\tt v'.i.vars = v.i.vars \setminus \{x\}$,
 \item $\tt v'.o.vars = v.o.vars \setminus \{x\}$,
@@ -530,7 +530,7 @@ then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt R$
 \end{itemize}
 \end{itemize}
 then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt R$
-\item for each view $\tt v \in S_1$ where $\tt v_y \overset{*}\hookrightarrow_S v$, create $\tt v'$ which is same as $\tt v$ except that
+\item for each fragment $\tt v \in S_1$ where $\tt v_y \overset{*}\hookrightarrow_S v$, create $\tt v'$ which is same as $\tt v$ except that
 \begin{itemize}
 \item $\tt v'.i.vars = v.i.vars \setminus \{x\}$,
 \item $\tt v'.o.vars = v.o.vars \setminus \{x\}$,
@@ -543,7 +543,7 @@ then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt R$
 \end{itemize}
 \end{itemize}
 then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt S'$
-\item for each view $\tt v$ where $\tt v_y \overset{*+}\leftrightarrow_S v$, create $\tt v'$ which is same as $\tt v$ except that
+\item for each fragment $\tt v$ where $\tt v_y \overset{*+}\leftrightarrow_S v$, create $\tt v'$ which is same as $\tt v$ except that
 \begin{itemize}
 \item $\tt v'.i.vars = v.i.vars \setminus \{x\}$,
 \item $\tt v'.o.vars = v.o.vars \setminus \{x\}$,
@@ -556,7 +556,7 @@ then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt S'$
 \end{itemize}
 \end{itemize}
 then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt S'$
-\item for each view $\tt v \in S_1$ where $\tt v_y \overset{*o}\leftrightarrow_S v$, create $\tt v'$ which is same as $\tt v$ except that
+\item for each fragment $\tt v \in S_1$ where $\tt v_y \overset{*o}\leftrightarrow_S v$, create $\tt v'$ which is same as $\tt v$ except that
 \begin{itemize}
 \item $\tt v'.i.vars = v.i.vars \setminus \{x\}$,
 \item $\tt v'.o.vars = v.o.vars \setminus \{x\}$,
@@ -582,8 +582,8 @@ then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt S'$
 \end{itemize}
 \end{itemize}
 then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt S'$
-%\item for each view $\tt v'$ in $\tt S_{post}$, assign $\tt v'.data.(i).(y.d)$ to $\tt v'.data.(i).(x.d)$ for $\tt i \in \{i, o\}$.
-\item for each view $\tt v \in S_2$ we do as follows. For each $\tt (v_1,v_1')$, $\tt (v_2,v_2') \in R$, for each pair of indices $\tt i_1$, $\tt i_2$ such that $\tt i_1 \in \{v_1.i, v_1.o\}$, $\tt i_2 \in \{v_2.i, v_2.o\}$, $\tt tag(v,i) = tag(v_1, i_1)$, and $\tt tag(v,o) = tag(v_2, i_2)$. Create $\tt v'$ which is same as $\tt v$ except that 
+%\item for each fragment $\tt v'$ in $\tt S_{post}$, assign $\tt v'.data.(i).(y.d)$ to $\tt v'.data.(i).(x.d)$ for $\tt i \in \{i, o\}$.
+\item for each fragment $\tt v \in S_2$ we do as follows. For each $\tt (v_1,v_1')$, $\tt (v_2,v_2') \in R$, for each pair of indices $\tt i_1$, $\tt i_2$ such that $\tt i_1 \in \{v_1.i, v_1.o\}$, $\tt i_2 \in \{v_2.i, v_2.o\}$, $\tt tag(v,i) = tag(v_1, i_1)$, and $\tt tag(v,o) = tag(v_2, i_2)$. Create $\tt v'$ which is same as $\tt v$ except that 
 \begin{itemize}
 \item $\tt v'.i.vars = v_1'.i_1.vars$,
 \item $\tt v'.o.vars = v_2'.i_2.vars$,
@@ -598,7 +598,7 @@ then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt S'$
 %\end{itemize}
 %\begin{enumerate}
 %%1%
-%\item  for each view $\tt v$ where 
+%\item  for each fragment $\tt v$ where 
 %\begin{itemize}
 %	\item $\tt tag(v,o) = tag(v_y,i)$,
 %	\item $\tt tag(v,i) = tag(v_1,i)$ where $\tt v_1 \overset{*}\hookrightarrow_S v_y$,
@@ -617,7 +617,7 @@ then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt S'$
 %%\end{itemize}
 %%and add $\tt v'$ to $\tt S_{post}$,
 %%2%
-%\item  for each view $\tt v$ where
+%\item  for each fragment $\tt v$ where
 %\begin{itemize}
 %	\item $\tt tag(v,o) = tag(v_y,i)$,
 %	\item $\tt tag(v,i) = tag(v_1,i)$ where $\tt v_y \overset{*+}\leftrightarrow_S v_1$ or $\tt v_1 \overset{*o}\leftrightarrow_S v_y$
@@ -636,7 +636,7 @@ then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt S'$
 %%and add $\tt v'$ to $\tt S_{post}$,
 %
 %%3%
-%\item  for each view $\tt v$ where
+%\item  for each fragment $\tt v$ where
 %\begin{itemize}
 %	\item $\tt tag(v,o) = tag(v_y,i)$,
 %	\item $\tt tag(v,i) = tag(v_1,i)$ where $\tt v_y \overset{*}\hookrightarrow_S v_1$ 
@@ -644,7 +644,7 @@ then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt S'$
 %
 %%4%
 %
-%\item  for each view $\tt v$ where 
+%\item  for each fragment $\tt v$ where 
 %\begin{itemize}
 %	\item $\tt tag(v,o) = tag(v_1,i)$ where $\tt v_1 \overset{*}\hookrightarrow_S v_y$,
 %	\item $\tt tag(v,i) = tag(v_2,i)$ where $\tt v_2 \overset{*}\hookrightarrow_S v_y$,
@@ -652,7 +652,7 @@ then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt S'$
 %
 %
 %%5%
-%\item  for each view $\tt v$ where
+%\item  for each fragment $\tt v$ where
 %\begin{itemize}
 %	\item $\tt tag(v,o) = tag(v_1,i)$ where $\tt v_1 \overset{*}\hookrightarrow_S v_y$,
 %	\item $\tt tag(v,i) = tag(v_2,i)$ where $\tt v_y \overset{*+}\leftrightarrow_S v_2$ or $\tt v_2 \overset{*o}\leftrightarrow_S v_y$
@@ -660,7 +660,7 @@ then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt S'$
 %
 %
 %%6%
-%\item  for each view $\tt v$ where
+%\item  for each fragment $\tt v$ where
 %\begin{itemize}
 %	\item $\tt tag(v,o) = tag(v_1,i)$ where $\tt v_1 \overset{*}\hookrightarrow_S v_y$,
 %	\item $\tt tag(v,i) = tag(v_2,i)$ where $\tt v_y \overset{*}\hookrightarrow_S v_2$ 
@@ -669,7 +669,7 @@ then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt S'$
 %
 %%7%
 %
-%\item  for each view $\tt v$ where 
+%\item  for each fragment $\tt v$ where 
 %\begin{itemize}
 %	\item $\tt tag(v,o) = tag(v_1,i)$ where $\tt v_y \overset{*}\hookrightarrow_S v_1$,
 %	\item $\tt tag(v,i) = tag(v_2,i)$ where $\tt v_2 \overset{*}\hookrightarrow_S v_y$,
@@ -677,7 +677,7 @@ then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt S'$
 %
 %
 %%8%
-%\item  for each view $\tt v$ where
+%\item  for each fragment $\tt v$ where
 %\begin{itemize}
 %	\item $\tt tag(v,o) = tag(v_1,i)$ where $\tt v_y \overset{*}\hookrightarrow_S v_1$,
 %	\item $\tt tag(v,i) = tag(v_2,i)$ where $\tt v_y \overset{*+}\leftrightarrow_S v_2$ or $\tt v_2 \overset{*o}\leftrightarrow_S v_y$
@@ -685,7 +685,7 @@ then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt S'$
 %
 %
 %%9%
-%\item  for each view $\tt v$ where
+%\item  for each fragment $\tt v$ where
 %\begin{itemize}
 %	\item $\tt tag(v,o) = tag(v_1,i)$ where $\tt v_y \overset{*}\hookrightarrow_S v_1$,
 %	\item $\tt tag(v,i) = tag(v_2,i)$ where $\tt v_y \overset{*}\hookrightarrow_S v_2$ 
@@ -694,7 +694,7 @@ then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt S'$
 %
 %%10%
 %
-%\item  for each view $\tt v$ where 
+%\item  for each fragment $\tt v$ where 
 %\begin{itemize}
 %	\item $\tt tag(v,o) = tag(v_1,i)$ where $\tt v_y \overset{*+}\leftrightarrow_S v_1$ or $\tt v_1 \overset{*o} \leftrightarrow_S v_y$,
 %	\item $\tt tag(v,i) = tag(v_2,i)$ where $\tt v_2 \overset{*}\hookrightarrow_S v_y$,
@@ -702,7 +702,7 @@ then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt S'$
 %
 %
 %%11%
-%\item  for each view $\tt v$ where
+%\item  for each fragment $\tt v$ where
 %\begin{itemize}
 %	\item $\tt tag(v,o) = tag(v_1,i)$ where $\tt v_y \overset{*+}\leftrightarrow_S v_1$ or $\tt v_1 \overset{*o} \leftrightarrow_S v_y$,
 %	\item $\tt tag(v,i) = tag(v_2,i)$ where $\tt v_y \overset{*+}\leftrightarrow_S v_2$ or $\tt v_2 \overset{*o}\leftrightarrow_S v_y$
@@ -710,7 +710,7 @@ then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt S'$
 %
 %
 %%12%
-%\item  for each view $\tt v$ where
+%\item  for each fragment $\tt v$ where
 %\begin{itemize}
 %	\item $\tt tag(v,o) = tag(v_1,i)$ where $\tt v_y \overset{*+}\leftrightarrow_S v_1$ or $\tt v_1 \overset{*o} \leftrightarrow_S v_y$,
 %	\item $\tt tag(v,i) = tag(v_2,i)$ where $\tt v_y \overset{*}\hookrightarrow_S v_2$ 
@@ -720,25 +720,25 @@ then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt S'$
 	
 	
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% X := Y.NEXT1 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\item ${\tt x := y.next1}$: The local abstract transformer is quite similar to the previous case with slightly differences. For each view $\tt v_y \in S$ where $\tt y \in {\tt vars}(\tt i)$,
+\item ${\tt x := y.next1}$: The local abstract transformer is quite similar to the previous case with slightly differences. For each fragment $\tt v_y \in S$ where $\tt y \in {\tt vars}(\tt i)$,
 %\begin{enumerate}
 %
 %%1%
-%\item  for each view $\tt v$ where 
+%\item  for each fragment $\tt v$ where 
 %\begin{itemize}
 %	\item $\tt tag(v,o) = tag(v_y,o)$,
 %	\item $\tt tag(v,i) = tag(v_1,i)$ where $\tt v_1 \overset{*}\hookrightarrow_S v_y$ or $\tt v_1 = v_y$,
 %\end{itemize}
 %
 %%2%
-%\item  for each view $\tt v$ where
+%\item  for each fragment $\tt v$ where
 %\begin{itemize}
 %	\item $\tt tag(v,o) = tag(v_y,o)$,
 %	\item $\tt tag(v,i) = tag(v_1,i)$ where $\tt v_y \overset{*+}\leftrightarrow_S v_1$ or $\tt v_1 \overset{*o}\leftrightarrow_S v_y$
 %\end{itemize}
 %
 %%3%
-%\item  for each view $\tt v$ where
+%\item  for each fragment $\tt v$ where
 %\begin{itemize}
 %	\item $\tt tag(v,o) = tag(v_y,o)$,
 %	\item $\tt tag(v,i) = tag(v_1,i)$ where $\tt v_y \overset{+}\hookrightarrow_S v_1$ 
@@ -746,7 +746,7 @@ then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt S'$
 %
 %%-------------------------------------------4------------------------------------------%
 %
-%\item  for each view $\tt v$ where 
+%\item  for each fragment $\tt v$ where 
 %\begin{itemize}
 %	\item $\tt tag(v,o) = tag(v_1,i)$ where $\tt v_1 \overset{*}\hookrightarrow_S v_y$ or $\tt v_1 = v_y$,
 %	\item $\tt tag(v,i) = tag(v_2,i)$ where $\tt v_2 \overset{*}\hookrightarrow_S v_y$,
@@ -754,7 +754,7 @@ then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt S'$
 %
 %
 %%-------------------------------------------5------------------------------------------%
-%\item  for each view $\tt v$ where
+%\item  for each fragment $\tt v$ where
 %\begin{itemize}
 %	\item $\tt tag(v,o) = tag(v_1,i)$ where $\tt v_1 \overset{*}\hookrightarrow_S v_y$ or $\tt v_1 = v_y$,
 %	\item $\tt tag(v,i) = tag(v_2,i)$ where $\tt v_y \overset{*+}\leftrightarrow_S v_2$ or $\tt v_2 \overset{*o}\leftrightarrow_S v_y$
@@ -762,7 +762,7 @@ then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt S'$
 %
 %
 %%-------------------------------------------6------------------------------------------%
-%\item  for each view $\tt v$ where
+%\item  for each fragment $\tt v$ where
 %\begin{itemize}
 %	\item $\tt tag(v,o) = tag(v_1,i)$ where $\tt v_1 \overset{*}\hookrightarrow_S v_y$ or $\tt v_1 = v_y$,
 %	\item $\tt tag(v,i) = tag(v_2,i)$ where $\tt v_y \overset{*}\hookrightarrow_S v_2$ 
@@ -771,7 +771,7 @@ then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt S'$
 %
 %%-------------------------------------------7-------------------------------------------%
 %
-%\item  for each view $\tt v$ where 
+%\item  for each fragment $\tt v$ where 
 %\begin{itemize}
 %	\item $\tt tag(v,o) = tag(v_1,i)$ where $\tt v_y \overset{*+}\leftrightarrow_S v_1$ or $\tt v_1 \overset{*o}\leftrightarrow_S v_y$,
 %	\item $\tt tag(v,i) = tag(v_2,i)$ where $\tt v_2 \overset{*}\hookrightarrow_S v_y$,
@@ -779,7 +779,7 @@ then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt S'$
 %
 %
 %%------------------------------------------8-------------------------------------------%
-%\item  for each view $\tt v$ where
+%\item  for each fragment $\tt v$ where
 %\begin{itemize}
 %	\item $\tt tag(v,o) = tag(v_1,i)$ where $\tt v_y \overset{*+}\leftrightarrow_S v_1$ or $\tt v_1 \overset{*o}\leftrightarrow_S v_y$,
 %	\item $\tt tag(v,i) = tag(v_2,i)$ where $\tt v_y \overset{*+}\leftrightarrow_S v_2$ or $\tt v_2 \overset{*o}\leftrightarrow_S v_y$
@@ -787,7 +787,7 @@ then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt S'$
 %
 %
 %%-----------------------------------------9-------------------------------------------%
-%\item  for each view $\tt v$ where
+%\item  for each fragment $\tt v$ where
 %\begin{itemize}
 %	\item $\tt tag(v,o) = tag(v_1,i)$ where $\tt v_y \overset{*+}\leftrightarrow_S v_1$ or $\tt v_1 \overset{*o}\leftrightarrow_S v_y$,
 %	\item $\tt tag(v,i) = tag(v_2,i)$ where $\tt v_y \overset{*}\hookrightarrow_S v_2$ 
@@ -796,7 +796,7 @@ then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt S'$
 %
 %%-----------------------------------------10-------------------------------------------%
 %
-%\item  for each view $\tt v$ where 
+%\item  for each fragment $\tt v$ where 
 %\begin{itemize}
 %	\item $\tt tag(v,o) = tag(v_1,i)$ where $\tt v_y \overset{*}\hookrightarrow_S v_1$,
 %	\item $\tt tag(v,i) = tag(v_2,i)$ where $\tt v_2 \overset{*}\hookrightarrow_S v_y$,
@@ -804,7 +804,7 @@ then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt S'$
 %
 %
 %%-----------------------------------------11-------------------------------------------%
-%\item  for each view $\tt v$ where
+%\item  for each fragment $\tt v$ where
 %\begin{itemize}
 %	\item $\tt tag(v,o) = tag(v_1,i)$  where $\tt v_y \overset{*}\hookrightarrow_S v_1$,
 %	\item $\tt tag(v,i) = tag(v_2,i)$ where $\tt v_y \overset{*+}\leftrightarrow_S v_2$ or $\tt v_2 \overset{*o}\leftrightarrow_S v_y$
@@ -812,7 +812,7 @@ then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt S'$
 %
 %
 %%-----------------------------------------12-------------------------------------------%
-%\item  for each view $\tt v$ where
+%\item  for each fragment $\tt v$ where
 %\begin{itemize}
 %	\item $\tt tag(v,o) = tag(v_1,i)$ where $\tt v_1y\overset{*}\hookrightarrow_S v_1$,
 %	\item $\tt tag(v,i) = tag(v_2,i)$ where $\tt v_y \overset{*}\hookrightarrow_S v_2$ 
@@ -825,7 +825,7 @@ then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt S'$
 
 
 \begin{enumerate}
-\item  for each view $\tt v \in S_1$ where $\tt v \overset{*}\hookrightarrow_S v_y$, create $\tt v'$ which is same as $\tt v$ except that
+\item  for each fragment $\tt v \in S_1$ where $\tt v \overset{*}\hookrightarrow_S v_y$, create $\tt v'$ which is same as $\tt v$ except that
 \begin{itemize}
 \item $\tt v'.i.vars = v.i.vars \setminus \{x\}$,
 \item $\tt v'.o.vars = v.o.vars \setminus \{x\}$,
@@ -838,7 +838,7 @@ then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt S'$
 \end{itemize}
 \end{itemize}
 then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt R$
-\item for each view $\tt v \in S_1$ where $\tt v_y \hookrightarrow_S v$, create $\tt v'$ which is same as $\tt v$ then
+\item for each fragment $\tt v \in S_1$ where $\tt v_y \hookrightarrow_S v$, create $\tt v'$ which is same as $\tt v$ then
 \begin{itemize}
 \item $\tt v'.i.vars = v.i.vars \cup \{x\}$,
 \item $\tt v'.o.vars = v.o.vars \setminus \{x\}$,
@@ -851,7 +851,7 @@ then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt R$
 \end{itemize}
 \end{itemize}
 then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt R$
-\item for each view $\tt v \in S_1$ where $\tt v_y \leftrightarrow_S v$, create $\tt v'$ which is same as $\tt v$ except that
+\item for each fragment $\tt v \in S_1$ where $\tt v_y \leftrightarrow_S v$, create $\tt v'$ which is same as $\tt v$ except that
 \begin{itemize} 
 \item $\tt v'.i.vars = v.i.vars \setminus \{x\}$,
 \item $\tt v'.o.vars = v.o.vars \cup \{x\}$,
@@ -865,7 +865,7 @@ then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt R$
 \end{itemize}
 then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt R$
 
-\item for each view $\tt v \in S_1$ where $\tt v_y \overset{+}\hookrightarrow_S v$, create $\tt v'$ which is same as $\tt v$ except that
+\item for each fragment $\tt v \in S_1$ where $\tt v_y \overset{+}\hookrightarrow_S v$, create $\tt v'$ which is same as $\tt v$ except that
 \begin{itemize}
 \item $\tt v'.i.vars = v.i.vars \setminus \{x\}$,
 \item $\tt v'.o.vars = v.o.vars \setminus \{x\}$,
@@ -878,7 +878,7 @@ then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt R$
 \end{itemize}
 \end{itemize}
 then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt R$
-\item for each view $\tt v \in S_1$ where $\tt v_y \overset{*o}\leftrightarrow_S v$, create $\tt v'$ which is same as $\tt v$ except that
+\item for each fragment $\tt v \in S_1$ where $\tt v_y \overset{*o}\leftrightarrow_S v$, create $\tt v'$ which is same as $\tt v$ except that
 \begin{itemize}
 \item $\tt v'.i.vars = v.i.vars \setminus \{x\}$,
 \item $\tt v'.o.vars = v.o.vars \setminus \{x\}$,
@@ -891,7 +891,7 @@ then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt R$
 \end{itemize}
 \end{itemize}
 then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt R$
-\item for each view $\tt v \in S_1$ where $\tt v_y \overset{*+}\leftrightarrow_S v$, create $\tt v'$ which is same as $\tt v$ except that 
+\item for each fragment $\tt v \in S_1$ where $\tt v_y \overset{*+}\leftrightarrow_S v$, create $\tt v'$ which is same as $\tt v$ except that 
 \begin{itemize}
 \item $\tt v'.i.vars = v.i.vars \setminus \{x\{$,
 \item $\tt v'.o.vars = v.o.vars \setminus \{x\}$,
@@ -904,7 +904,7 @@ then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt R$
 \end{itemize}
 \end{itemize}
 then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt R$
-\item for each view $\tt v \in S_1$ where $\tt v \overset{+o}\leftrightarrow_S v_y$, create $\tt v'$ which is same as $\tt v$ except that 
+\item for each fragment $\tt v \in S_1$ where $\tt v \overset{+o}\leftrightarrow_S v_y$, create $\tt v'$ which is same as $\tt v$ except that 
 \begin{itemize}
 \item $\tt v'.i.vars = v.i.vars \setminus \{x\}$,
 \item $\tt v'.o.vars = v.o.vars \setminus \{x\}$,
@@ -931,10 +931,10 @@ then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt R$
 \end{itemize}
 \end{itemize}
 then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt R$
-%\item for each view $\tt v'$ in $\tt S_o$, assign $\tt v'.data.(i).(y.d)$ to $\tt v'.data.(i).(x.d)$ for $\tt i \in \{i, o\}$.
+%\item for each fragment $\tt v'$ in $\tt S_o$, assign $\tt v'.data.(i).(y.d)$ to $\tt v'.data.(i).(x.d)$ for $\tt i \in \{i, o\}$.
 %
 
-\item for each view $\tt v \in S_2$ we do as follows. For each $\tt (v_1,v_1')$, $\tt (v_2,v_2') \in R$, for each pair of indices $\tt i_1$, $\tt i_2$ such that $\tt i_1 \in \{v_1.i, v_1.o\}$, $\tt i_2 \in \{v_2.i, v_2.o\}$, $\tt tag(v,i) = tag(v_1, i_1)$, and $\tt tag(v,o) = tag(v_2, i_2)$. Create $\tt v'$ which is same as $\tt v$ except that 
+\item for each fragment $\tt v \in S_2$ we do as follows. For each $\tt (v_1,v_1')$, $\tt (v_2,v_2') \in R$, for each pair of indices $\tt i_1$, $\tt i_2$ such that $\tt i_1 \in \{v_1.i, v_1.o\}$, $\tt i_2 \in \{v_2.i, v_2.o\}$, $\tt tag(v,i) = tag(v_1, i_1)$, and $\tt tag(v,o) = tag(v_2, i_2)$. Create $\tt v'$ which is same as $\tt v$ except that 
 \begin{itemize}
 \item $\tt v'.i.vars = v_1'.i_1.vars$,
 \item $\tt v'.o.vars = v_2'.i_2.vars$,
@@ -951,10 +951,10 @@ then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt R$
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% X.NEXT1 := Y %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\item  ${\tt x.next1:= y}$: The local abstract transformer is performed by several steps as follows: For each pair of views $\tt v_x$, $\tt v_y$ in $\tt S_1$ where $\tt x \in v_x.{\tt vars}(\tt i)$, $\tt y \in v_y.{\tt vars}(\tt i)$, and $\tt v_x \overset{*}\hookrightarrow v_y$ or $\tt v_y \overset{*}\hookrightarrow v_x$ or $\tt v_x \overset{**}\leftrightarrow v_y$, let $\tt R_1$, $\tt R_2$, $\tt R_3$, $\tt R_4$, $\tt R_5$, $\tt R_6$ be initialized as $\tt R$,  
+\item  ${\tt x.next1:= y}$: The local abstract transformer is performed by several steps as follows: For each pair of fragments $\tt v_x$, $\tt v_y$ in $\tt S_1$ where $\tt x \in v_x.{\tt vars}(\tt i)$, $\tt y \in v_y.{\tt vars}(\tt i)$, and $\tt v_x \overset{*}\hookrightarrow v_y$ or $\tt v_y \overset{*}\hookrightarrow v_x$ or $\tt v_x \overset{**}\leftrightarrow v_y$, let $\tt R_1$, $\tt R_2$, $\tt R_3$, $\tt R_4$, $\tt R_5$, $\tt R_6$ be initialized as $\tt R$,  
 \begin{enumerate}
-\item let $\tt v_{new}$ be the view of size 2 and of level 1 where $\tt tag(v_{new},i) = tag(v_x, i)$ and $\tt tag(v_{new},o) = tag(v_y,i)$ except that $\tt v_{new}.o.reachfrom = v_y.i.reachfrom \cup v_x.i.reachfrom$,
-\item  for each view $\tt v \in S_1$ where $\tt v \overset{*}\hookrightarrow_S v_x$, we do as follows: For each subset $\tt regs$ of observer registers in $\tt v.reachto(\tt i) \cap \tt v_x.i.reachfrom$
+\item let $\tt v_{new}$ be the fragment of size 2 and of level 1 where $\tt tag(v_{new},i) = tag(v_x, i)$ and $\tt tag(v_{new},o) = tag(v_y,i)$ except that $\tt v_{new}.o.reachfrom = v_y.i.reachfrom \cup v_x.i.reachfrom$,
+\item  for each fragment $\tt v \in S_1$ where $\tt v \overset{*}\hookrightarrow_S v_x$, we do as follows: For each subset $\tt regs$ of observer registers in $\tt v.reachto(\tt i) \cap \tt v_x.i.reachfrom$
 
 
 \begin{itemize}
@@ -967,7 +967,7 @@ then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt R$
 \item add $\tt (v,v')$ to $\tt R_1$
 \end{itemize}
 
-\item for each view $\tt v \in S_1$ where $\tt v_y \overset{*}\hookrightarrow_S v$ or $\tt v_y = v$, 
+\item for each fragment $\tt v \in S_1$ where $\tt v_y \overset{*}\hookrightarrow_S v$ or $\tt v_y = v$, 
 \begin{itemize}
 	\item create  $\tt v'$ which is same as $\tt v$ except that
 \begin{itemize}
@@ -977,7 +977,7 @@ then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt R$
 \item add $\tt v'$ to $\tt S_{post}$,
 \item add $\tt (v,v')$ to $\tt R_2$
 \end{itemize}
-\item for each view $\tt v \in S_1$ where $\tt v_x \overset{**}\leftrightarrow_S v$ and either $\tt v \hookrightarrow_S v_y$ or $\tt v_y \overset{*o}\leftrightarrow_S v$, 
+\item for each fragment $\tt v \in S_1$ where $\tt v_x \overset{**}\leftrightarrow_S v$ and either $\tt v \hookrightarrow_S v_y$ or $\tt v_y \overset{*o}\leftrightarrow_S v$, 
 \begin{itemize}
 \item  create $\tt v'$ which is same as $\tt v$ except that $\tt \tt v'.o.reachfrom = v_x.i.reachfrom \cup \tt v.o.reachfrom$, 
  \item add $\tt v'$ to $\tt S_{post}$, 
@@ -986,7 +986,7 @@ then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt R$
 \end{itemize}
 
 
-\item for each view $\tt v \in S_1$ where $\tt v_x \overset{*}\hookrightarrow_S v$ and either $\tt v \hookrightarrow_S v_y$ or $\tt v_y \overset{*o}\leftrightarrow_S v$,  
+\item for each fragment $\tt v \in S_1$ where $\tt v_x \overset{*}\hookrightarrow_S v$ and either $\tt v \hookrightarrow_S v_y$ or $\tt v_y \overset{*o}\leftrightarrow_S v$,  
 \begin{itemize}
 \item create $\tt v'$ which is same as $\tt v$ then except that $\tt \tt v'.o.reachfrom = v_x.i.reachfrom \cup \tt v.o.reachfrom$, 
 \item for each subset $\tt regs$ of observer registers in $\tt v'.i.reachfrom \cap \tt v_x.i.reachfrom$
@@ -997,7 +997,7 @@ then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt R$
 \end{itemize}
 \end{itemize}
 
-\item for each view $\tt v \in S_1$ where $\tt v_x \overset{**}\leftrightarrow_S v$ and either $\tt v \overset{+}\hookrightarrow_S v_y$ or $\tt v \overset{*+}\leftrightarrow_S v_y$, 
+\item for each fragment $\tt v \in S_1$ where $\tt v_x \overset{**}\leftrightarrow_S v$ and either $\tt v \overset{+}\hookrightarrow_S v_y$ or $\tt v \overset{*+}\leftrightarrow_S v_y$, 
 \begin{itemize}
 \item create $\tt v'$ which is same as $\tt v$
 \item  add $\tt v'$ to $\tt S_{post}$,
@@ -1006,7 +1006,7 @@ then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt R$
 \end{itemize}
 
 
-\item for each view $\tt v \in S_1$ where $\tt v_x \overset{*}\hookrightarrow_S v$ and either $\tt v \overset{+}\hookrightarrow_S v_y$ or $\tt v_y \overset{*+}\leftrightarrow v$, then for each subset $\tt regs$ of observer registers in $\tt v.i.reachfrom \cap \tt v_x.i.reachfrom$, 
+\item for each fragment $\tt v \in S_1$ where $\tt v_x \overset{*}\hookrightarrow_S v$ and either $\tt v \overset{+}\hookrightarrow_S v_y$ or $\tt v_y \overset{*+}\leftrightarrow v$, then for each subset $\tt regs$ of observer registers in $\tt v.i.reachfrom \cap \tt v_x.i.reachfrom$, 
 \begin{itemize}
 \item create $\tt v'$ which is same as $\tt v$, except that $\tt v'.i.reachfrom = (\tt v.i.reachfrom \setminus v_x.i.reachfrom) \cup regs$. 
  \item for each set $\tt regs'$ of observer registers in $\tt v'.o.reachfrom \cap \tt v_x.i.reachfrom$,  
@@ -1019,7 +1019,7 @@ then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt R$
 \item add $\tt v_{new}$ to $\tt S_{post}$ 
 \end{enumerate}
 
-\item for each view $\tt v \in S_2$ then we do as follows. for each $\tt (v_1,v_1') \in R_i$, $\tt (v_2,v_2') \in R_j$ where $\tt i \neq j$ and $\tt 1 \leq i,j \leq 6$. For each pair of indices $\tt i_1$, $\tt i_2$ such that $\tt i_1 \in \{v_1.i, v_1.o\}$, $\tt i_2 \in \{v_2.i, v_2.o\}$, $\tt tag(v,i) = tag(v_1, i_1)$, $\tt tag(v,o) = tag(v_2, i_2)$. Create $\tt v'$ which is same as $\tt v$ except that 
+\item for each fragment $\tt v \in S_2$ then we do as follows. for each $\tt (v_1,v_1') \in R_i$, $\tt (v_2,v_2') \in R_j$ where $\tt i \neq j$ and $\tt 1 \leq i,j \leq 6$. For each pair of indices $\tt i_1$, $\tt i_2$ such that $\tt i_1 \in \{v_1.i, v_1.o\}$, $\tt i_2 \in \{v_2.i, v_2.o\}$, $\tt tag(v,i) = tag(v_1, i_1)$, $\tt tag(v,o) = tag(v_2, i_2)$. Create $\tt v'$ which is same as $\tt v$ except that 
 \begin{itemize}
 \item $\tt v'.i.vars = v_1'.i_1.vars$,
 \item $\tt v'.o.vars = v_2'.i_2.vars$,
@@ -1034,7 +1034,7 @@ then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt R$
 \newpage
  \end{itemize}
  
- \paragraph{View Intersection:} Let us describe the intersection of two views $\tt v_1 \in S_1$ and $\tt v_2 \in S_2$ denoted as $\tt v_1 \sqcap v_2$. Firstly, we consider the case where both $\tt v_1$ and $\tt v_2$ have size 2.
+ \paragraph{Fragment Intersection:} Let us describe the intersection of two fragments $\tt v_1 \in S_1$ and $\tt v_2 \in S_2$ denoted as $\tt v_1 \sqcap v_2$. Firstly, we consider the case where both $\tt v_1$ and $\tt v_2$ have size 2.
  \begin{itemize}
  \item if $\tt v_1.greachfrom(i,\{1,2\}) \neq \emptyset$ and $\tt v_2.greachfrom(i,\{1,2\}) \neq \emptyset$ then 
   \begin{itemize}

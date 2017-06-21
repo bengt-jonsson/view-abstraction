@@ -10,7 +10,6 @@ a concurrent data structure implementation.
 
 \todo[inline]{Provide a description of the algorithm}
 
-\todo[inline]{Describe how we form concurrent programs that call methods}
 \todo[inline]{We may need to assume that programs are data-independent}
 
 \subsection{Specifying Correctness}
@@ -39,11 +38,13 @@ push operations may have to be linearized in different orders depending
 on how their corresponding later pop operations are ordered in time.
 %% not be determined during their invocation, but only later
 %% when the ordering between the two corresponding pop operations is determined.
-Fortunately, it was recently established that for stacks and
-queues, linearizability can be precisely specified by
-constraints on the ordering of call and return actions for a small number
-of data values. Let us describe how to specify a concurrent stack using
-this technique.
+Fortunately, Bouajjanni etal.\ recently established that for stacks and
+queues, linearizability can be precisely specified without refering to
+linearization points~\cite{BEEH:icalp15}. They showed to linearizability
+of concurrent stack implementations can be precisely described by
+a small number of simple 
+constraints on the ordering of call and return actions.
+Let us describe how to represent and verify these constraints.
 
 Let a call action on an operation $\mname(\data)$ be denoted
 $\calltwo{\mname}{\data}$ and a return operation be denoted
@@ -91,16 +92,19 @@ an accepting state is reached.
 The observer is defined in such a way that it accepts precisely those
 traces that do {\em not} belong to the behavior
 of the data structure.
-% 
-Observers can be used to give {\it exact} specifications of
-the behaviors of data structures such as sets, queues, and stacks.
-%
-%
-Let us illustrate this for the stack data structure.
+As an example, Figure ?? shows an observer which intuitively specifies that 
+a data item must not be popped before it is popped. More precisely, it
+specifies that the pop operation must not return before any push operation
+for the same data value has been called.
 
-Following~\cite{BEEH:icalp15}, a stack is precisely specified by observers
-that specify each of the following intuitive constraints.
-\bjcom{The below to be modified}
+\todo[inline]{Quy: make a picture of this observer, and describe intuitively
+  how it works}
+
+
+In~\cite{BEEH:icalp15}, is it shown that
+a stack can precisely specified by four observers,
+that specify the following intuitive constraints.
+\todo[inline]{Quy: Make sure that you have the right constraints. I just guessed that the below four are the right ones}
 \begin{enumerate}
 \item a data item must not be popped before it is pushed,
 \item pop must not return ``empty'' if a data element was pushed but not
@@ -108,45 +112,44 @@ that specify each of the following intuitive constraints.
 \item A pushed data item must not be popped twice
 \item \bjcom{Here we specify stack order}
 \end{enumerate}
-The exact form of observers for these constraints must take into account
-that overlapping operations may be linearized in either order.
-In Figure XXX, we show an observer for constraint 1.
-In Figure XXX, we show an observer for constraint 4. This observer is
-more complex than the other \bjcom{Insert an explanation}
+The exact form of observers for these constraints must represent them in
+terms of ordering of call an return actions. Observers for constraint
+2 and 3 are similar to that for constraint 1. The observer for constraint
+4 is more complex, and shown in Figure XXX.
+\bjcom{Quy: Insert the observer, and an explanation}
 
-
-\subsection{Verification of Correctness}
-We verify the correctness of a concurrent data structure implementation by
-verifying that any combination of method executions satisfies the
-appropriate correctness criterion, e.g., of linearizability.
-
+\subsection{Verification by Fragment Abstraction}
+To verify that TS-Stack is a correct linearizable implementation of a stack, we
+must show that any concurrent execution of method calls satisfies the
+above four constraints (1) -- (4).
 To this end, define a {\em program} to consist 
-of an arbitrary number of concurrently executing threads
-that access a concurrent data structure.
+of an arbitrary number of concurrently executing threads,
 %(Appendix~\ref{planguage:section} contains
 %the language syntax used in our tool).
 %
-Each thread executes a method that performs an operation
-on the data structure. We assume that the data structure has been initialized
+each of which executes a push or pop method with some data value as parameter.
+We assume that the data structure has been initialized
 by the {\tt init} method prior to the start of program execution.
+We must verify that any execution of such a program satisfies the four
+constraints above. To verify a property, 
+we form, as in the automata-theoretic approach~\cite{VW:modelchecking},
+also adopted in~\cite{AHHR:integrated},
+the cross-product of the program  and the corresponding
+observer, where the observer synchronizes with the program on call and
+return actions that are recognized by the observer. This reduces the
+problem of checking each of the above constraints to the problem of checking
+that the observer cannot reach an accepting state.
 
-To verify these properties, we
-form, as in the automata-theoretic approach~\cite{VW:modelchecking}
-(also adopted in~\cite{AHHR:integrated}),
-the cross-product of the program (including each thread's controller) and
-the observer, synchronizing between threads on observer events, and
-synchronizing with the observer on linearization events.
-Instrumentation to check conditions 
-(i) - (iii) is added automatically, reducing the verification to a
-reachability problem, i.e., to verify that no configuration that violates
-conditions (i) - (iv) can be reached.
+\todo[inline]{We may have to say that we check the trivial conditions that
+  were checked by the monitor in SAS 16}
+%% Instrumentation to check conditions 
+%% (i) - (iii) is added automatically, reducing the verification to a
+%% reachability problem, i.e., to verify that no configuration that violates
+%% conditions (i) - (iv) can be reached.
 
-
-\subsection{Verification by Fragment Abstraction}
-
-The addition of observers reduces the problem of checking linearizability to
-checking control state reachability for the composition of a program and
-an observer.
+%% The addition of observers reduces the problem of checking linearizability to
+%% checking control state reachability for the composition of an arbitrary
+%% program and an observer.
 %% \begin{enumerate}[(i)]
 %% \item each method invocation generates a sequence of linearization events,
 %%   of which only the last one may change the state of the observer,
@@ -163,8 +166,7 @@ an observer.
 %%  and our verification by standard techniques, as well as
 %% the standard way, and verify condition (iv) by checking that the observer cannot
 %% reach an accepting state.
-
-In the  verification itself, we compute a symbolic representation
+In the actual verification, we compute a symbolic representation
 of an invariant that is satisfied by all reachable program configurations (including observer states).
 This invariant is obtained by an abstract-interpretation-based
 fixpoint procedure, which starts
@@ -175,20 +177,23 @@ symbolic representation by the effect of any execution step of the program,
 until convergence.
 This analysis needs to deal with the challenges of an unbounded domain of
 data values, an unbounded number of concurrently executing threads, and an
-unbounded heap. We have therefore developed a carefully designed combination of
+unbounded heap. We have therefore developed a symbolic representation, which
+is a careful combination of
 data abstraction, thread abstraction, and shape abstraction. 
 %% The analysis needs to deal with the challenges of an unbounded domain of
 %% data values, an unbounded number of concurrently executing threads, and an
 %% unbounded heap. We have therefore developed a technique for verification,
 %% which uses a carefully designed combination of
 %% data abstraction, thread abstraction, and shape abstraction.
-We here give an overview of this technique applied to the algorithm in
-Figure XXX.
+Let us illustrate this symbolic representation on the algorithm in Figure XXX.
 
-Our {\em data abstraction} abstracts from concrete values in
-$\intgrs$ by representing only
-{\em relations}  (in the set $\set{\prec,\equiv,\succ}$) between data fields,
-data variables, and registers of the observer.
+Our {\em data abstraction} abstracts from concrete data values in
+$\intgrs$ by representing only {\em relations}
+(in the set $\set{\prec,\equiv,\succ}$) between values of {\tt Data} fields of 
+heap cells, local {\tt Data} variables, and registers of the observer.
+We similarly abstract from concrete values of timestamps by representing
+only relations between values of timestamps in heap cells and in
+local variables.
 In order to cope with an unbounded number of threads,
 we extend the {\em thread-modular approach}~\cite{BLMRS:cav08}, in which
 the symbolic representation characterizes
@@ -200,9 +205,10 @@ the projection of the configuration onto a single thread $t$.
 %% some other thread $t'$ (an interference step).
 %% Local steps can be handled by adapting standard techniques
 %% for computing postconditions.
-In the classical thread-modular approach~\cite{BLMRS:cav08}, the postcondition need
-only consider combinations of at most two threads: one thread which performs an execution step, and
-one thread whose view is affected by the step.
+The corresponding postcondition computation must then take into account that
+the projection onto a particular thread can be changed either by step of that
+thread, or by a step of another thread.
+\bjcom{omit this last sentence?}
 %% interference steps involve to first compute a new abstract configuration
 %% over two thread identifiers
 %% which represents the combined state of both threads $t$ and $t'$,
@@ -210,380 +216,97 @@ one thread whose view is affected by the step.
 %% performing the step of $t'$; thereafter the resulting abstract post-state
 %% is projected back onto $t$.
 
-To cope with an unbounded heap, the thread-modular approach allows us to
-represent only its projection onto a single thread.
-Since this is still an unbounded structure, we introduce a 
-a novel {\em shape abstraction}. In this abstraction, one first defines a
-set of {\em tags}. Intuitively, a tag is a predicate on nodes in a heap,
-which consists of constraints on the values of its fields, and lists
-the set of pointer variables that point directly to the node, or that point
-to a node that can reach or be reached from the node by a sequence of
-{\tt next} pointers. Thus, for each program the set of tags is bounded.
-The heap structure is then represented by a set of {\em fragments}. Each
-fragment is a pair of tags, such that each pair of nodes in the
-projection of the heap onto a particular thread is represented by some
-fragment.
+A main contribution of this work is 
+a novel {\em shape abstraction}, which is designed to cope with an unbounded
+heap (note that the heap visible to a single thread is still unbounded).
+The idea of this abstraction, called {\em fragment abstraction} is
+to represent a heap by a set of (heap) {\em fragments}, where each fragment is
+just a pair of nodes that are connected by a {\tt next} pointer. Thus, the
+representation of a particular heap is obtained as the set of pairs of nodes
+that are connected by a {\tt next pointer}. Conversely,
+a set of (heap) fragments represents the set of heaps that can be formed by
+putting together fragments from this set, where each fragment may be used
+multiple times. In order to obtain a representation which is both expressive
+and bounded, nodes are first abstracted to a finite set of node types, called
+{\em tags}. A tag represents both local information about the values of
+fields of the node
+and about which pointer variables point to the node, as well as global
+information about how the node is positioned in the overall projected heap.
+The global information records from which global and thread-local pointer
+variables the node can be reached by a sequence of pointers
+\todo[inline]{Be careful here in the description: I believe we do not need any
+  {\tt reachto} for TS-Stack. Do we need it for TS-Queue?}
 
-\todo[inline]{Here we need an example}
+Let us illustrate our symbolic representation for the TS-Stack algorithm.
+The heap in the algorithm consists of a set of singly linked lists (SLLs). Each
+SLL is accessed from a particular pointer {\tt top} in an array of such pointers.
+Figure XXX shows an example of a snapshot of the heap state, in a situation when
+it is accessed concurrently by
+\todo[inline]{Quy: Make a picture of a concrete shape with several threads.
+  Say which operations are working there now, and give some
+  explanation of what the figure says}.
 
-\closeparagraph{Symbolic Representation}
-Our symbolic representation characterizes an unbounded set of
-global configurations by a finite set of {\em abstract configurations}. Each
-abstract configuration characterizes the projection onto a fixed number of
-arbitrary threads by a {\em heap expression}, which 
-abstracts  the global heap by a ``skeleton graph'', and a {\em data constraint}
-which constrains the values of variables, registers, and data fields.
-Heap expressions employ {\em path constraints}
-to constrain values of data fields in
-segments of heap cells.
-%% In 
-%% data 
-%% their projections onto a fixed number of arbitrary threads, represented by
-%% thread variables. The representation is formed as the union of set of
-%% {\em abstract configurations}, which can be seen as an abstraction of global
-%% states, in which
-%% \begin{inparaenum}[(i)]
-%% \item
-%%   a {\em heap expression} abstracts
-%%  nodes correspond to ``relevant'' cells, and whose edges correspond
-%% to linked-list-segments between relevant cells; the
-%%   and
-%% \item
-%%   a {\em data constraint} over the values of
-%%   data variables, data fields in ``relevant'' cells, and 
-%%   observer registers
-%% \end{inparaenum}
-We begin by describing path constraints, thereafter heap expressions, and
-finally data constraints. First some preliminaries.
+To obtain our symbolic representation, we first apply data abstraction and
+project the configuration onto a single thread. Figure XXX shows the result
+of projecting onto thread XXX, which performs a pop/push
+\todo[inline]{Quy: make a picture of the corresponding
+  thread view with data abstraction  Complete this description}.
 
-In the following, we let $\globconf$ denote a global program configuration,
-with a set $\threadsof{\globconf}$ of active threads, and a set
-$\cellsof{\globconf}$ of allocated heap cells.
-%% We let $\threadset$ range over subsets of
-%% $\threadsof{\globconf}$, and $\thread$ denote individual threads.
-We assume a set of thread variables, ranged over by $\tvar$, and
-let $\tvarset$ range over finite sets of thread variables.
-We let $\thmap:\tvarset \mapsto \threadsof{\globconf}$ be an injective mapping
-from $\tvarset$ to the threads of $\globconf$.
-For a local variable $x$, let $x[\thread]$ denote thread
-$\thread$'s local copy of $x$.
-
-%% Let us first introduce some terminology for describing segments of the heap.
-%% A {\em heap segment from $\cell_0$ to $\cell_k$} is a non-empty sequence
-A {\em heap segment} is a non-empty sequence
-$\cell_0 \cell_1 \cdots \cell_k$ of heap cells, where $\cell_k$ can also
-be $\nullconst$ or $\bot$, such that
-$\cell_i.\mbox{\tt next}$ is $\cell_{i+1}$ for $i = 0 , \ldots , k-1$.
-We constrain the values of non-pointer fields
-in heap segments by path expressions.
-%% Let $\tvarset$ be a set of thread variables.
-A {\em path expression} $\pathexp$ over $\tvarset$ is of one of the three forms
-$\emptyword$, $\zpathexpr$, or 
-$\tuple{\zpathexpr,\fpathexpr}$,
-where
-\begin{itemize}
-  \item $\zpathexpr$ maps each $\intgrs$-field $\field$ to
-a subset of ${\set{\prec,\equiv,\succ}}$; intuitively
-$\zpathexpr(\field)$ contains the possible relations between adjacent
-$\field$-fields in the heap segment, and
-\item
-  $\fpathexpr$ is a mapping from the set $\fields$ of fields of
-cells to an appropriate
-domain, which depends on the particular field.
+In order to represent the projection in Figure XXX by
+a set of fragments, we define the information conveyed by node tags.
+We define one tag for push operations and one for pop operations, since
+their methods use different sets of local variables.
+For a pop operation, a {\em tag} is defined as a tuple
+$\tuple{\pvars,\data,\reachfrom,\reachto,\private}$, where
 \begin{itemize}
 \item
-  Each $\intgrs$-field $\zfield$ is mapped to a mapping from
-  observer registers to subsets of $\set{0,1,\infty}$;
-  intuitively, $\fpathexpr(\zfield)(\ovar)$ contains the possible numbers of cells
-  in a heap segment, whose value of field $\zfield$ equals that of
-  observer register $\ovar$, where $\infty$ denotes ``at least $2$''.
-\item Each $\fset$-field $\ffield$ is mapped
-  to a subset of $\fset$;
-  intuitively, $\fpathexpr(\ffield)$ contains the values of field $\ffield$ in
-  cells of a heap segment.
+  $\pvars$ is a set of pointer variables (i.e., a subset of
+  {\tt top, youngest, myTop}
+  \bjcom{Quy: Check exactly what this set should be}
 \item
-  Each lock field $\lfield$ is mapped to a subset of
-  $\tvarset \cup \set{\mathit{free},\mathit{other}}$;
-  given a mapping $\thmap: \tvarset \mapsto \threadsof{\globconf}$,
-  the set $\fpathexpr(\lfield)$ contains, after applying the mapping $\thmap$,
-  the set of threads that may
-  hold the lock field $\lfield$  (where $\mathit{other}$ denotes a thread
-  not in $\thmap(\tvarset)$), and contains $\mathit{free}$ if there is a cell
-  with a free lock.
+  $\vals$ maps
+  \begin{inparaenum}[(i)]
+  \item
+    each {\tt mark} field to a boolean value,
+  \item
+    each {\tt d} field to a mapping from observer registers to $\set{=, \neq}$,
+  \item
+    each {\tt time} field to a mapping from \bjinsert{Quy: insert the correct text here}.
+  \end{inparaenum}
+\item
+  $\reachfrom$ and $\reachto$ are sets of global variables and observer registers, \bjcom{Quy: Check what is really needed here: Maybe we need only reachfrom?}
+\item
+  $\private$ is a boolean value.
 \end{itemize}
-\end{itemize}
-\vspace{-2mm}
-The following definition makes the above intuition precise.
-Let $\pathexp$ be a path expression over $\tvarset$, and
-let $\thmap:\tvarset \mapsto \threadsof{\globconf}$ map $\tvarset$ to threads.
-A heap segment $\cell_0 \cdots \cell_k$ %%  from $\cell_0$ to $\cell_k$
-{\em satisfies} $\pathexp$ under $\thmap$, denoted
-$(\cell_0 \cdots \cell_k) \models_{\thmap} \pathexp$ if
-%% denoted $\cell_0 \cell_1 \cdots \cell_k \models \pathexp$,
-\vspace{-2mm}
-\begin{itemize}
-\item $k = 0$, and $\pathexp$ is of form $\emptyword$, or
-\item $k = 1$, and $\pathexp$ is of form $\zpathexpr$, and for
-  each $\intgrs$-field $\zfield$, we have
-  $\cell_0.\zfield \sim \cell_1.\zfield$ for some $\sim \ \in \zpathexpr(\zfield)$ whenever $\cell_1 \not \in \set{\nullconst,\bot}$,
-  or
-\item $k > 1$, and $\pathexp$ is of form $\tuple{\zpathexpr,\fpathexpr}$, and
+A node $\cell$ in the heap of a thread view satisfies a tag $\tagtuple$,
+denoted $\cell \lhd \tagtuple$ if
 \begin{itemize}
 \item
-  for each $i = 1,\ldots,k$ and
-  each $\intgrs$-field $\zfield$,
-  we have $\cell_{i-1}.\zfield \sim \cell_i.\zfield$
-  for some $\sim \ \in \zpathexpr(\zfield)$
-  whenever $\cell_i \not \in \set{\nullconst,\bot}$, and
+  $\pvars$ is the set of pointer variables that point to $\cell$.
+  \bjcom{Quy: Or Should it be contains?}
 \item
-  for each $\intgrs$-field $\zfield$ and each
-  observer register $\ovar$, the number of cells $\cell_j$ among
-  $\cell_1 \cdots \cell_{k-1}$ with $\cell_j.\zfield = \ovar$ conforms to
-  an element in $\fpathexpr(\zfield)$,
-%% \item
-%%   for each data field $\dfield$ ranging over $\fset$, we have
-%%   $\cell_j.\dfield \in \fpathexpr(\dfield)$ for $j = 1,\ldots,k-1$,
-%% \item
-%%   for each lock field $\lfield$ and each $j = 1,\ldots,k-1$,
-%%   we have that $\cell_j.\lfield$ is taken by a thread in
-%%   $\fpathexpr(\lfield)$ (where $\mathit{other}$ denotes any thread not in
-%%   $\tvars$) or that $\cell_j.\lfield$ is free and
-%%   $\mathit{free} \in \fpathexpr(\lfield)$.
-\item 
-  for each $j = 1,\ldots,k-1$, we have
-\begin{itemize}
-\item  for each $\fset$-field $\ffield$, we have
-  $\cell_j.\ffield \in \fpathexpr(\ffield)$, and
-\item
-  for each lock field $\lfield$
-  we have that either $\cell_j.\lfield$ is taken by a thread in
-  $\thmap(\fpathexpr(\lfield))$
-  (where $\mathit{other}$ denotes any thread not in
-  $\thmap(\tvarset)$), or $\cell_j.\lfield$ is free and
-  $\mathit{free} \in \fpathexpr(\lfield)$.
+  \bjcom{Quy: continue to write here}
 \end{itemize}
-\end{itemize}
-\end{itemize}
-\vspace{-2mm}
-We define $\pathexp \subsumed \pathexp'$ if any heap segment that satisfies
-$\pathexp$ also satisfies $\pathexp'$. 
+
+We can now define the concept of fragment.
+An {\em fragment} is a pair $\tuple{\inputtag,\outputtag}$ of tags.
+A {\em symbolic configuration} is a pair consisting of a value of a program
+pointer \bjcom{or: local state}, and
+a set of fragments.
+
+\todo[inline]{Quy: make a picture with all the fragments obtained from the
+  thread projection}
+
+We define
+a satisfaction relation between thread-abstracted and
+symbolic configurations. 
+A {\em symbolic representation} $\symbrep$ is a set of
+symbolic configurations. 
+A  set of thread-abstracted configurations then satisfies a symbolic
+representation $\symbrep$ if each of its thread-abstracted
+configuration satisfies some symbolic configuration in $\symbrep$.
 
 
 
-
-
-mechanization requires an interactive theorem prover
-(e.g.,~\cite{Colvin:Lazy-List,Derrick:fm14,SDW:tcl14,SWD:cav12}).
-Automation has been successful only under simplifying assumptions.
-%% \td{This is not quite true}
-A natural one is that LPs are {\em fixed}, i.e.,
-%% \td{should we here already mention conditional LPs?}
-%% This simplifies the automation of simulation-based proofs, and 
-\cite{AHHR:integrated,BLMRS:cav08,Vafeiadis:vmcai09}. 
-However, for a large class of linearizable implementations, the LPs are not
-fixed in the code of their methods, but depend on
-actions of other threads in each particular execution. This
-happens, e.g.,
-for  algorithms that employ various forms of {\it helping mechanisms},
-in which
-the execution of a particular statement in one thread defines the LP for one or
-several other threads~\cite{Lazyset,HSYstack,Vechev:list,Zhang:unorderedlist}.
-
-
-
-~\cite{HeWi:linearizability} is the
-standard correctness criterion for such concurrent data structure
-implementations. It states that each operation on the data
-structure can be considered as being
-performed atomically at some point, called the {\em linearization point (LP)},
-between its invocation and return.
-This allows client threads to understand
-the data structure in terms of atomic actions, without considering the
-complications of concurrency.
-
-Linearizable concurrent data structures typically employ fine-grained
-synchronization, replacing locks by atomic operations
-such as compare-and-swap, and are therefore notoriously difficult to get
-correct, witnessed, e.g., by a number of bugs  in published
-algorithms~\cite{DDGJLMMSS:dcas,MiSc:correction}.
-It is therefore important to develop efficient techniques for automatically
-verifying their correctness. This requires overcoming several challenges.
-
-One challenge is that the criterion of linearizability is harder
-to establish than standard correctness criteria, such as control state
-reachability; in fact, proving linearizability with respect to
-a given data structure specification is undecidable,
-even in frameworks where verification of
-temporal safety properties is decidable~\cite{BEEH:esop13}.
-
-
-
-In this section, we describe our technique for automatically verifying
-linearizability. We assume that suitable observer and controllers have
-been defined, reducing verification to establishing
-%% structure has been specified by a suitable observer, and that the generation of
-%% linearization events has been described by a suitable controller for each
-%% method. The verification of linearizability is then reduced to verifying
-conditions (i) - (iv) at the end of the previous section.
-%% \begin{enumerate}[(i)]
-%% \item each method invocation generates a sequence of linearization events,
-%%   of which only the last one may change the state of the observer,
-%% \item
-%%   the linearization event which is generated last
-%%   is consistent with the call parameters and return value of the method,
-%%   and
-%% \item  that the sequence of linearization
-%%   events cannot cause the observer to reach an accepting state.
-%% \end{enumerate}
-%% Tasks (i) and (ii) can be verified by standard instrumentations of
-%% methods, which we will not further elaborate on here.
-To verify these properties, we
-form, as in the automata-theoretic approach~\cite{VW:modelchecking}
-(also adopted in~\cite{AHHR:integrated}),
-the cross-product of the program (including each thread's controller) and
-the observer, synchronizing between threads on observer events, and
-synchronizing with the observer on linearization events.
-Instrumentation to check conditions 
-(i) - (iii) is added automatically, reducing the verification to a
-reachability problem, i.e., to verify that no configuration that violates
-conditions (i) - (iv) can be reached.
-%% is added automatically, reducing the verification to a
-%%  and our verification by standard techniques, as well as
-%% the standard way, and verify condition (iv) by checking that the observer cannot
-%% reach an accepting state.
-
-In the  verification itself, we compute a symbolic representation
-of an invariant that is satisfied by all reachable program configurations (including observer states).
-This invariant is obtained by an abstract-interpretation-based
-fixpoint procedure, which starts
-from a representation of the set of initial configurations, and
-thereafter repeatedly performs
-postcondition computations that extend the
-symbolic representation by the effect of any execution step of the program,
-until convergence.
-This analysis needs to deal with the challenges of an unbounded domain of
-data values, an unbounded number of concurrently executing threads, and an
-unbounded heap. We have therefore developed a carefully designed combination of
-data abstraction, thread abstraction, and shape abstraction. 
-%% The analysis needs to deal with the challenges of an unbounded domain of
-%% data values, an unbounded number of concurrently executing threads, and an
-%% unbounded heap. We have therefore developed a technique for verification,
-%% which uses a carefully designed combination of
-%% data abstraction, thread abstraction, and shape abstraction.
-In this
-section, we first give a brief overview of this technique, thereafter
-a detailed description of our symbolic representation, and finally a
-description of our postcondition computation, which extends the thread-modular
-approach.
-
-\bjparagraph{Overview}
-Our {\em data abstraction} abstracts from concrete values in
-$\intgrs$ by representing only
-{\em relations}  (in the set $\set{\prec,\equiv,\succ}$) between data fields,
-data variables, and registers of the observer.
-In order to cope with an unbounded number of threads,
-we extend the {\em thread-modular approach}~\cite{BLMRS:cav08}, in which
-the symbolic representation characterizes
-the projection of the configuration onto a single thread $t$.
-The postcondition computation must consider how this projection can
-be changed by execution steps of the program.
-%% Such a step can be performed
-%% either by the thread $t$ (a local step) or by 
-%% some other thread $t'$ (an interference step).
-%% Local steps can be handled by adapting standard techniques
-%% for computing postconditions.
-In the classical thread-modular approach~\cite{BLMRS:cav08}, the postcondition need
-only consider combinations of at most two threads: one thread which performs an execution step, and
-one thread whose view is affected by the step.
-%% interference steps involve to first compute a new abstract configuration
-%% over two thread identifiers
-%% which represents the combined state of both threads $t$ and $t'$,
-%% and only therafter
-%% performing the step of $t'$; thereafter the resulting abstract post-state
-%% is projected back onto $t$.
-However, this approach is not sound in our setting, since execution steps of the program may synchronize  an unbounded number of threads through
-broadcasting between controllers.
-Such steps may furthermore emit an unbounded sequence of
-linearization events to the observer.
-To cope with the added complexity of synchronizing program steps, we
-show that the number of threads that need to be kept in order
-to guarantee soundness is bounded by $2\cdot(k+1)$ where
-$k$ is the diameter of the observer (i.e., the length
-of the longest noncyclic path in the graph of the observer).
-%
-Furthermore, we introduce a condition based on a notion of {\it stuttering 
-transitions}, which can be checked dynamically during the 
-verification procedure, under which
-we only need to consider $2$ threads.
-%
-The condition holds in all the examples that we have considered,
-making our verification procedure very efficient.
-
-To cope with an unbounded heap, the thread-modular approach allows us to
-represent only its projection onto a single thread.
-Since this is still an unbounded structure, we
-employ a novel {\em shape abstraction}, which represents
-the heap by a ``skeleton graph'', whose nodes
-are ``relevant'' heap cells, and whose edges correspond
-to linked-list-segments between interesting cells, labeled by information
-about the sequence of cells in the segment.
-%% The restriction to consider only a single (representative) thread at a time
-%% makes the symbolic representation of reachable heap configurations significantly
-%% simpler. Even so, the part of the heap that can be accessed by a single thread
-%% can be quite complex and varied, as shown in Section~\ref{sec:concdata}.
-In order to obtain an analysis which is both efficient and sufficiently
-precise, the ``skeleton graph'' captures the internal branching structure
-of the heap only for the part that is accessible via global variables; the
-branching structure is hidden in the part that is only accessible from
-some of the threads.
-%% and otherwise only captures ho
-%% abstracts from branching structure of the heap 
-%% that is accessible only via local variables of some thread. Our representation
-%% faithfully describes the branching structure of the globally accessible part.
-%% The part that is accessible only from local variables is described more
-%% succinctly, hiding its internal branching structure.
-
-
-\closeparagraph{Symbolic Representation}
-Our symbolic representation characterizes an unbounded set of
-global configurations by a finite set of {\em abstract configurations}. Each
-abstract configuration characterizes the projection onto a fixed number of
-arbitrary threads by a {\em heap expression}, which 
-abstracts  the global heap by a ``skeleton graph'', and a {\em data constraint}
-which constrains the values of variables, registers, and data fields.
-Heap expressions employ {\em path constraints}
-to constrain values of data fields in
-segments of heap cells.
-%% In 
-%% data 
-%% their projections onto a fixed number of arbitrary threads, represented by
-%% thread variables. The representation is formed as the union of set of
-%% {\em abstract configurations}, which can be seen as an abstraction of global
-%% states, in which
-%% \begin{inparaenum}[(i)]
-%% \item
-%%   a {\em heap expression} abstracts
-%%  nodes correspond to ``relevant'' cells, and whose edges correspond
-%% to linked-list-segments between relevant cells; the
-%%   and
-%% \item
-%%   a {\em data constraint} over the values of
-%%   data variables, data fields in ``relevant'' cells, and 
-%%   observer registers
-%% \end{inparaenum}
-We begin by describing path constraints, thereafter heap expressions, and
-finally data constraints. First some preliminaries.
-
-In the following, we let $\globconf$ denote a global program configuration,
-with a set $\threadsof{\globconf}$ of active threads, and a set
-$\cellsof{\globconf}$ of allocated heap cells.
-%% We let $\threadset$ range over subsets of
-%% $\threadsof{\globconf}$, and $\thread$ denote individual threads.
-We assume a set of thread variables, ranged over by $\tvar$, and
-let $\tvarset$ range over finite sets of thread variables.
-We let $\thmap:\tvarset \mapsto \threadsof{\globconf}$ be an injective mapping
-from $\tvarset$ to the threads of $\globconf$.
-For a local variable $x$, let $x[\thread]$ denote thread
-$\thread$'s local copy of $x$.
 
 
