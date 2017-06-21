@@ -1,73 +1,180 @@
-\definecolor{mygreen}{rgb}{0,0.6,0}
-\definecolor{mygray}{rgb}{0.5,0.5,0.5}
-\definecolor{mymauve}{rgb}{0.58,0,0.82}
+\begin{figure}[h]
+\begin{tikzpicture}[]
+\node(top){};
+\node(top-head)[linecode] at ($(top.west)+(-60pt,0pt)$) {};
+%%%%%%%%%%% struct %%%%%%%%%%%%%%%%
+\node[linecode,anchor=south west](struct) at ($(top-head.east)+(-30pt,0pt)$) { \scriptsize struct Node \scriptsize \{};
+%{struct Node(bool lock; int val; Node *next; bool mark);};
+\node(struct1)[linecode] at ($(top-head.west)+(10pt,-5pt)$) {\scriptsize int data;\;\;\;\;\;\;};
+\node(struct2)[linecode] at ($(top-head.west)+(10pt,-15pt)$) {\scriptsize Timestamp ts;};
+\node(struct3)[linecode] at ($(top-head.west)+(10pt,-26pt)$) {\scriptsize Node* next;};
+\node(struct4)[linecode] at ($(top-head.west)+(10pt,-37pt)$) {\scriptsize bool mark;};
+\node(struct5)[linecode] at ($(top-head.west)+(0pt,-47pt)$) {\scriptsize \}};
+\node(struct6)[linecode] at ($(top-head.west)+(0pt,-52pt)$) {}; 
+\begin{pgfonlayer}{background}
+ \node[code-bg,fit=(struct) (struct6) (struct1) (struct2)] {};
+\end{pgfonlayer}
 
-\lstset{ %
-  backgroundcolor=\color{white},   % choose the background color
-  basicstyle=\footnotesize,        % size of fonts used for the code
-  breaklines=true,                 % automatic line breaking only at whitespace
-  captionpos=b,                    % sets the caption-position to bottom
-  commentstyle=\color{mygreen},    % comment style
-  escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
-  keywordstyle=\color{blue},       % keyword style
-  stringstyle=\color{mymauve},     % string literal style
-}
 
-\begin{lstlisting}[language=C]
-struct Node{
-  int data;
-  Timestamp ts;
-  Node* next; 
-  boolean mark;
-};
+\node(locate-head)[linecode] at ($(top-head.east)+(140pt,8pt)$) {\scriptsize int pop():};
 
-Node* pools[maxThreads]; 
+\node(locate1)[linenum,anchor=west] at ($(locate-head.west)+(0pt,-10pt)$) {\scriptsize 1};
+\node[linecode] at ($(locate1.east)+(0pt,0pt)$) {\scriptsize boolean success = false;};
 
-void init () {
-  for(int Node* i=0; i<maxThreads; i++)
-    pools[i].next = null;
-}
+\node(locate2)[linenum] at ($(locate1.east)+(0pt,-10pt)$) {\scriptsize 2};
+\node[linecode] at ($(locate2.east)+(0pt,0pt)$) {\scriptsize int maxTS = -1;};
 
-Node* push(int d) {
-   Node* n = new Node(d,-1,null,false); 
-   n.next = pools[myID];
-   pools[myID] = n; 
-   Timestamp t = new Timestamp();
-   n.ts = t;
-   Node* next = n.next; // Unlinking
-   while (next.next != next && !next.mark)
-         next = next.next;
-   n.next = next;
-  return n;
-}
+\node(locate3)[linenum] at ($(locate2.east)+(0pt,-10pt)$) {\scriptsize 3};
+\node(code3)[linecode] at ($(locate3.east)+(0pt,0pt)$) {\scriptsize Node* youngest, myTop = null;};
 
-int pop() {
-  boolean success = false; 
-  int maxTS = -1;
-  Node* youngest = null; 
-  while (!success) {
-    int k;
-    for(int Node* i=0; i<maxThreads; i++){
-     mytop = pools[i];
-     while (n.mark && n.next != n) n.next;
-     if(maxTS < n.ts) {
-         maxTS = n.ts; 
-         youngest = n;
-         k = i;
-     } 
-    }
-    if (youngest != null) 
-    success= CAS(youngest.mark,false,true);
-    CAS(pools[k], myTop, youngest);
-    // Unlink nodes before node in the list.
-    if (myTop != youngest) 
-       myTop.next = youngest;
-     pools[k].next = youngest.next;
-     // Unlink nodes after node in the list.
-     Node* next=youngest.next
-     while (next.next != next && next.mark)
-        next = next.next;
-     youngest.next = next;
-  }
-  return youngest.data;
-\end{lstlisting}
+\node(locate4)[linenum] at ($(locate3.east)+(0pt,-10pt)$) {\scriptsize 4};
+\node(code4)[linecode] at ($(locate4.east)+(0pt,0pt)$) {\scriptsize while (!success)}; 
+
+\node(locate5)[linenum] at ($(locate4.east)+(0pt,-10pt)$) {\scriptsize 5};
+\node[linecode] at ($(locate5.east)+(7pt,0pt)$) {\scriptsize int k; };
+
+\node(locate6)[linenum] at ($(locate5.east)+(0pt,-10pt)$) {\scriptsize 6};
+\node[linecode] at ($(locate6.east)+(7pt,0pt)$) {\scriptsize for(int Node* i=0; i<maxThreads; i++)};
+
+\node(locate7)[linenum] at ($(locate6.east)+(0pt,-10pt)$) {\scriptsize 7};
+\node[linecode] at ($(locate7.east)+(14pt,0pt)$) {\scriptsize myTop = pools[i];};
+
+\node(locate8)[linenum] at ($(locate7.east)+(0pt,-10pt)$) {\scriptsize 8};
+\node(code8)[linecode] at ($(locate8.east)+(14pt,0pt)$) {\scriptsize while (n.mark $\&$ n.next != n) n.next; };
+
+\node(locate9)[linenum] at ($(locate8.east)+(0pt,-10pt)$) {};
+\node[linecode] at ($(locate9.east)+(14pt,0pt)$) {\scriptsize if(maxTS < n.ts)};
+
+\node(locate10)[linenum] at ($(locate9.east)+(0pt,-10pt)$) {};
+\node[linecode] at ($(locate10.east)+(21pt,0pt)$) {\scriptsize maxTS = n.ts;};
+
+\node(locate11)[linenum] at ($(locate10.east)+(0pt,-10pt)$) {\scriptsize 9};
+\node[linecode] at ($(locate11.east)+(21pt,0pt)$) {\scriptsize youngest = n;};
+
+\node(locate12)[linenum] at ($(locate11.east)+(0pt,-10pt)$) {\scriptsize 10};
+\node[linecode] at ($(locate12.east)+(21pt,0pt)$) {\scriptsize k = i;};
+
+\node(locate13)[linenum] at ($(locate12.east)+(0pt,-10pt)$) {\scriptsize 11};
+\node[linecode] at ($(locate13.east)+(7pt,0pt)$) {\scriptsize if (youngest != null)};
+
+\node(locate14)[linenum] at ($(locate13.east)+(0pt,-10pt)$) {\scriptsize 12};
+\node(code14)[linecode] at ($(locate14.east)+(14pt,0pt)$) {\scriptsize success= CAS(youngest.mark,false,true);};
+
+\node(locate15)[linenum] at ($(locate14.east)+(0pt,-10pt)$) {\scriptsize 13};
+\node[linecode] at ($(locate15.east)+(21pt,0pt)$) {\scriptsize if (success)};
+
+\node(locate16)[linenum] at ($(locate15.east)+(0pt,-10pt)$) {\scriptsize 14};
+\node[linecode] at ($(locate16.east)+(28pt,0pt)$) {\scriptsize CAS(pools[k], myTop, youngest);};
+
+\node(locate17)[linenum] at ($(locate16.east)+(0pt,-10pt)$) {\scriptsize 15};
+\node[linecode] at ($(locate17.east)+(28pt,0pt)$) {\scriptsize if (myTop != youngest);};
+
+\node(locate18)[linenum] at ($(locate17.east)+(0pt,-10pt)$) {\scriptsize 16};
+\node[linecode] at ($(locate18.east)+(35pt,0pt)$) {\scriptsize myTop.next = youngest;};
+
+
+\node(locate19)[linenum] at ($(locate18.east)+(0pt,-10pt)$) {\scriptsize 17};
+\node[linecode] at ($(locate19.east)+(28pt,0pt)$) {\scriptsize pools[k].next = youngest.next;};
+
+\node(locate21)[linenum] at ($(locate19.east)+(0pt,-10pt)$) {\scriptsize 18};
+\node[linecode] at ($(locate21.east)+(28pt,0pt)$) {\scriptsize Node* next=youngest.next};
+
+\node(locate22)[linenum] at ($(locate21.east)+(0pt,-10pt)$) {\scriptsize 19};
+\node(code22)[linecode] at ($(locate22.east)+(28pt,0pt)$) {\scriptsize while (next.next != next $\&$ next.mark);};
+
+\node(locate23)[linenum] at ($(locate22.east)+(0pt,-10pt)$) {\scriptsize 20};
+\node[linecode] at ($(locate23.east)+(35pt,0pt)$) {\scriptsize next = next.next;};
+
+\node(locate24)[linenum] at ($(locate23.east)+(0pt,-10pt)$) {\scriptsize 21};
+\node[linecode] at ($(locate24.east)+(28pt,0pt)$) {\scriptsize youngest.next = next;};
+
+\node(locate25)[linenum] at ($(locate24.east)+(0pt,-10pt)$) {\scriptsize 22};
+\node[linecode] at ($(locate25.east)+(0pt,0pt)$) {\scriptsize return youngest.data;};
+
+
+
+
+\node(bot)[linecode] at ($(locate25.east)+(0pt,-10pt)$) {};
+\begin{pgfonlayer}{background}
+ \node[code-bg,fit=(locate-head) (code3) (locate14) (code22) (bot) ]{};
+ \end{pgfonlayer}
+
+%%%%%%%%%% pop %%%%%%%%%%
+
+
+
+%\node[linecode](ctn) at ($(rmv.east)+(105pt,-50pt)$) {};
+\node(pop-head)[font={\small\tt},anchor=west] at 
+($(top-head.east)+(-30pt,-122pt)$) 
+{\scriptsize void push(int x):};
+\node(pop1)[linenum,anchor=west] at ($(pop-head.west)+(0pt,-10pt)$) {\scriptsize 1};
+\node(linecode1)[linecode] at ($(pop1.east)+(0pt,0pt)$) 
+{\scriptsize Node* n := new Node(d,-1,null,false);};
+
+\node(pop2)[linenum] at ($(pop1.east)+(0pt,-10pt)$) {\scriptsize 2};
+\node(linecode2)[linecode] at ($(pop2.east)+(0pt,0pt)$)
+{\scriptsize n.next = pools[myID];};
+
+\node(pop3)[linenum] at ($(pop2.east)+(0pt,-10pt)$) {\scriptsize 3};
+\node(linecode3)[linecode] (code3a) at ($(pop3.east)+(0pt,0pt)$)
+{\scriptsize pools[myID] = n;};
+
+\node(pop4)[linenum] at ($(pop3.east)+(0pt,-10pt)$) {\scriptsize 4};
+\node(linecode4)[linecode] at ($(pop4.east)+(0pt,0pt)$)
+{\scriptsize  Timestamp t = new Timestamp();};
+
+\node(pop5)[linenum] at ($(pop4.east)+(0pt,-10pt)$) {\scriptsize 5};
+\node(linecode5)[linecode] at ($(pop5.east)+(0pt,0pt)$) 
+{\scriptsize n.ts = t;};
+
+\node(pop6)[linenum] at ($(pop5.east)+(0pt,-10pt)$) {\scriptsize 6};
+\node(linecode6)[linecode] at ($(pop6.east)+(0pt,0pt)$) 
+{\scriptsize Node* next = n.next;};
+
+\node(pop7)[linenum] at ($(pop6.east)+(0pt,-10pt)$) {\scriptsize 7};
+\node(linecode7)[linecode] at ($(pop7.east)+(0pt,0pt)$) 
+{\scriptsize while (next.next != next $\&$ !next.mark)};
+
+\node(pop8)[linenum] at ($(pop7.east)+(0pt,-10pt)$) {\scriptsize 8};
+\node(linecode8)[linecode] at ($(pop8.east)+(7pt,0pt)$) 
+{\scriptsize next = next.next;};
+
+\node(pop9)[linenum] at ($(pop8.east)+(0pt,-10pt)$) {\scriptsize 9};
+\node(linecode9)[linecode] at ($(pop9.east)+(0pt,0pt)$) 
+{\scriptsize n.next = next;};
+
+\node(pop10)[linenum] at ($(pop9.east)+(0pt,-10pt)$) {\scriptsize 10};
+\node(linecode10)[linecode] at ($(pop10.east)+(0pt,0pt)$) 
+{\scriptsize return n;};
+
+
+
+
+\node(bot)[linecode] at ($(pop10.east)+(0pt,-6pt)$) {};
+
+\begin{pgfonlayer}{background}
+\node[code-bg,fit=(pop-head) (linecode1) (pop1) (bot)]{};
+\end{pgfonlayer}
+ 
+ 
+ 
+ %%%%%%%%%%% init %%%%%%%%%%%%%%%%
+\node[linecode,anchor=south west](init) at ($(top-head.east)+(-30pt,-75pt)$) {\scriptsize initialize() :};
+%{struct Node(bool lock; int val; Node *next; bool mark);};
+\node(init1)[linecode] at ($(top-head.east)+(-30pt,-80pt)$) {\scriptsize Node* pools[maxThreads];};
+\node(init2)[linecode] at ($(top-head.east)+(-30pt,-90pt)$) {\scriptsize for(int Node* i=0; i<maxThreads; i++)};
+\node(init4)[linecode] at ($(top-head.east)+(-30pt,-100pt)$) {\scriptsize \;\;\;\;pools[i].next = null;};
+
+\node(bot)[linecode] at ($(init4.east)+(0pt,-4pt)$) {};
+
+\begin{pgfonlayer}{background}
+ \node[code-bg,fit=(init) (init4) (init2) (bot)] {};
+\end{pgfonlayer}
+
+
+\end{tikzpicture}
+
+\caption{\tt Timestamp Stack.}
+
+\label{lazy:list:fig}
+\end{figure}
