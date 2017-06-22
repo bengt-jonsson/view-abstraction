@@ -11,60 +11,143 @@ This section describes how we employ fragment abstraction as a symbolic
 representation of an unbounded heap and data domain in
 thread-abstracted configurations. In this section, we describe how this is done
 for singly linked lists, i.e., where each heap cell contains exactly one
-$\intgrs$-field.
+pointer field, named {\tt next}. In following sections XXX and YYY, we describe
+how fragment abstraction is applied to skiplists and to arrays of lingly linked
+lists.
 
-\todo[inline]{The two pictures must be merged}
 
-So, consider a program with global variables $\glvarset$ and thread-local variables $\tvarset$. Consider a cell $\cell$, which is reachable from thread $t$.
+So, consider a program with global variables $\glvarset$ and thread-local variables $\locvarset$. Fix a specific thread $\thread$.
+Fix a global configuration.
+Consider a cell $\cell$, which is reachable from thread $\thread$.
+\bjcom{This notion needs to be defined}
 Define
 \begin{itemize}
 \item
-  $\pvarsof{\cell}$ is the set of (global or local) pointer variables of that
-  point to $\cell$,
+  $\pvarsofth{\cell}{\thread}$ as the set of global pointer variables and
+  local pointer variables of $\thread$ that point to $\cell$,
 \item
-  $\valsof{\cell}$ maps each $\mathbb{F}$-field $\field$ of $\cell$ to its value
-  $\cellval(\cell,\field)$, and maps each $\intgrs$-field $\field$ to
-  a mapping from $\intgrs$-terms to a subset of $\set{<, =, >}$
-  \bjcom{Fix This}
+  $\valsofth{\cell}{\thread}$ is a mapping from non-pointer fields of $\cell$, which
+  \begin{enumerate}[(i)]
+    \item
+    maps each non-lock $\mathbb{F}$-field $\field$ of $\cell$ to its value
+    $\cellval(\cell,\field)$,
+  \item
+    maps each  lock field of $\cell$
+    to $\set{\thread,\mathit{other},\mathit{free}}$,
+  representing whether the lock was last acquired by $\thread$, by
+  another thread, or is free,
+  and
 \item
-  $\reachfromof{\cell}$ is the set of
-  \begin{inparaenum}[(a)]
-\item global variables from which $\cell$ is reachable via a (possibly empty)
+  maps each $\intgrs$-field $\field$ of $\cell$ to mapping in
+  $[\ovarset \mapsto{\set{=,\neq}}]$, representing for
+  each observer register $x  \in \ovarset$, whether or not the value
+  of that equals the value of register $x$.
+  \end{enumerate}
+\item
+  $\reachfromofth{\cell}{\thread}$ is the set of
+  \begin{enumerate}[(1)]
+  \item global pointer variables and local pointer variables of $\thread$
+    from which $\cell$ is reachable via a (possibly empty)
   sequence of {\tt next} pointers, and
 \item observer registers whose value is equal to the value of the $\intgrs$-field of some cell from which $\cell$ is reachable.
-  \end{inparaenum}
+  \bjcom{Question to Quy: must the ``cell from which $\cell$ is reachable''
+    be accessible from $\thread$?}
+  \end{enumerate}
+\bjinsert{Maybe give the intuition behind the second item}
 \item
-  $\reachtoof{\cell}$ is the set of
-  \begin{inparaenum}[(a)]
-\item global variables which are reachable via a (possibly empty)
-  sequence of {\tt next} pointers from $\cell$ is reachable, and 
-\item observer registers whose value is equal to the value of the $\intgrs$-field of some cell which is reachable from $\cell$.
-  \end{inparaenum}
-\item
-  $\privateof{\cell}$ is a boolean value, which is $\true$ if
-  the cell represented by $\tt i$ can be seen only by the current thread.
+  $\reachtoofth{\cell}{\thread}$ is the set of
+  \begin{enumerate}[(i)]
+  \item global pointer variables and local pointer variables of $\thread$
+    that point to a cell which is reachable via a (possibly empty)
+  sequence of {\tt next} pointers from $\cell$, and
+  \item observer registers whose value is equal to the value of the $\intgrs$-field of some cell which is reachable from $\cell$.
+  \end{enumerate}
+%% \item
+%%   $\privateofth{\cell}{\thread}$ is a boolean value, which is $\true$ if
+%%   the cell $\cell$ can be seen only by thread $\thread$.
 \end{itemize}
 A {\em tag} is a tuple
-$\tagtuple$, where
+$\atag = \tagtuple$, where
 \begin{itemize}
 \item
   $\pvars$ is a set of (global or local) pointer variables,
 \item
-  $\vals$ is a mapping from fields, which maps each $\mathbb{F}$-field of cells to its appropriate domain, and each $\intgrs$-field to a mapping from $\intgrs$-terms to a subset of $\set{<, =, >}$,
+  $\vals$ is a mapping from non-pointer fields of nodes, which
+  \begin{enumerate}[(i)]
+  \item
+  maps each non-lock $\mathbb{F}$-field $\field$ of $\cell$ to its domain, 
+  \item
+    maps each  lock field of $\cell$
+    to $\set{\thread,\mathit{other},\mathit{free}}$,
+%% representing whether the lock was last acquired by $\thread$, by another thread, or is free,
+  and
+\item
+  maps each $\intgrs$-field $\field$ of $\cell$ to mapping in
+  $[\ovarset \mapsto{\set{=,\neq}}]$ from observer registers to
+  $\set{=,\neq}$.
+  \end{enumerate}
  \item
    $\reachfrom$ and $\reachto$ are sets of global variables and observer registers, and
   \item $\private$ is a boolean value.
 \end{itemize}
-Let $\cell$  be a cell in a projection onto a thread $t$. Define the {\em tag} of
-$\cell$, denoted $\tagof{\cell}$ as the tuple $\tagtupleof{\cell}$.
+Let $\cell$ be a cell accessible to thread $\thread$. For a tag
+$\atag = \tagtuple$, we write $\cell \lhd \atag$ if
+\begin{itemize}
+\item
+  $\pvarsofth{\cell}{\thread} = \pvars$,
+\item
+  $\valsofth{\cell}{\thread} = \vals$,
+\item
+  $\reachfromofth{\cell}{\thread} = \reachfrom$,
+\item
+  $\reachtoofth{\cell}{\thread} = \reachto$,
+  and
+\item
+  if $\private$ is true then $\cell$ is not accessible from any thread other
+  than $\thread$.
+\end{itemize}
+We can now define the notion of fragment.
+An {\em SLL-fragment} (or just fragment)
+is a triple $\sllviewtuple$, where $\inputtag$ and $\outputtag$ are tags,
+and where $\datarel$ is a subset of $\set{<, =, >}$.
+
+Let $\conf$ be a configuration of a program containing a call $\cell$
+that is accessible by thread $\thread$. For a fragment $\sllviewtuple$,
+let $\cell \lhd \sllviewtuple$ denote that
+$\cell \lhd \inputtag$, that
+$\mathtt{next}(\cell) \lhd \outputtag$,
+\bjcom{What to do with {\tt null} here etc?}
+and that
+$\cell.\vals \sim \mathtt{next}(\cell).\vals$ for some
+$\sim \in \datarel$.
+
+A {\em local symbolic configuration} consists of a mapping from local variables
+(including the program counter) to appropriate domains:
+\begin{itemize}
+\item the program counter is mapped to a value
+\item each local variable with finite domain is mapped to that domain
+\item each variable that assumes values in $\intgrs$ is mapped to
+  a mapping in  $[\ovarset \mapsto{\set{=,\neq}}]$, representing for
+  each observer register $x  \in \ovarset$, whether or not the value
+  of that equals the value of register $x$.
+\end{itemize}
+A {\em symbolic configuration} is a pair consisting of a local symbolic
+configuration, and a set of fragments.
+A {\em symbolic representation} $\symbrep$ is a set of
+symbolic configurations. 
+A  set of thread-abstracted configurations satisfies a symbolic
+representation $\symbrep$ if each of its thread-abstracted
+configuration satisfies some symbolic configuration in $\symbrep$.
+
+
+
+
+
+%% Define the {\em tag} of
+%% $\cell$, denoted $\tagof{\cell}$ as the tuple $\tagtupleof{\cell}$.
 
 \bjcom{The following should be included more smoothly, if really needed}
 Let $\tt gtag(v,i)$ be the tuple $\tt \tuple{\tt gvars(i), gdata(i),{\tt greachfrom}(\tt i), {\tt reachto}(\tt i), private(i )}$ where $\tt gvars(i)$ is the set of global variables in $\tt vars(i)$ and $\tt greachfrom(i)$ is the set of global variables in $\tt reachfrom(i)$.
-
-We can now define the concept of fragment.
-An {\em SLL-fragment} is a triple
-$\sllviewtuple$, where $\inputtag$ and $\outputtag$ are tags, and $\datarel$
-is a subset of $\set{<, =, >}$.
 
 Note that in each fragment $\tt v$, for two indices $\tt i_1$, $\tt i_2$ where $\tt next(i_1) = i_2$, we always have $\tt {\tt reachfrom}(\tt i_1) \subseteq \tt {\tt reachfrom}(\tt i_2)$ and $\tt {\tt reachto}(\tt i_1) = \tt {\tt reachto}(\tt i_2) \cup X$ where $\tt X$ is the set of global variables in ${\tt vars}(\tt i_1)$ and observer registers $\tt z$ which are equal to $\tt i_1.d$ for $\intgrs$-field $\tt d$. 
   

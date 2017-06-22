@@ -289,20 +289,30 @@ denoted $\cell \lhd \tagtuple$ if
 \end{itemize}
 
 We can now define the concept of fragment.
-An {\em fragment} is a pair $\tuple{\inputtag,\outputtag}$ of tags.
+A {\em fragment} is a pair $\tuple{\inputtag,\outputtag}$ of tags.
 A {\em symbolic configuration} is a pair consisting of a value of a program
-pointer \bjcom{or: local state}, and
-a set of fragments.
+pointer \bjcom{or: local state}, and a set of fragments.
+\todo[inline]{Quy: Could you explain exactly what is in a symbolic configuration?
+  Does it contain some information about values of local variables, such as
+  {\tt success} and {\tt maxTS}?}
 
 \todo[inline]{Quy: make a picture with all the fragments obtained from the
   thread projection}
 
-We define
-a satisfaction relation between thread-abstracted and
+A thread-abstracted configuration satisfies a symbolic configuration if
+\begin{itemize}
+\item \bjcom{Say that program counter, and local variables ...}
+\item
+  For each cell $\cell$ in the heap of the configuraion, there is
+  a fragment $\tuple{\inputtag,\outputtag}$ in the set of fragments, such
+  that $\cell \lhd \inputtag$ and ${\tt next}(\cell) \lhd \outputtag$.
+  \bjcom{check the case when $\cell$ points to null etc.}
+\end{itemize}
+
 symbolic configurations. 
 A {\em symbolic representation} $\symbrep$ is a set of
 symbolic configurations. 
-A  set of thread-abstracted configurations then satisfies a symbolic
+A  set of thread-abstracted configurations satisfies a symbolic
 representation $\symbrep$ if each of its thread-abstracted
 configuration satisfies some symbolic configuration in $\symbrep$.
 

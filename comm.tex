@@ -124,6 +124,7 @@
 \newcommand{\tick}{\ding{52}}
 
 \newcommand{\glvarset}{\varset^{\tt gl}}
+\newcommand{\locvarset}{\varset^{\tt loc}}
 \newcommand{\pvarset}{\varset^{\tt p}}
 
 \newcommand{\viewvarset}{\varset^{\tt var}}
@@ -171,14 +172,20 @@
 \newcommand{\reachto}{\mathtt{reachto}}
 \newcommand{\private}{\mathtt{private}}
 \newcommand{\pvarsof}[1]{\pvars\left(#1\right)}
+\newcommand{\pvarsofth}[2]{\pvars\left(#1,#2\right)}
 \newcommand{\dataof}[1]{\data\left(#1\right)}
 \newcommand{\valsof}[1]{\vals\left(#1\right)}
+\newcommand{\valsofth}[2]{\vals\left(#1,#2\right)}
 \newcommand{\reachfromof}[1]{\reachfrom\left(#1\right)}
+\newcommand{\reachfromofth}[2]{\reachfrom\left(#1,#2\right)}
 \newcommand{\reachtoof}[1]{\reachto\left(#1\right)}
+\newcommand{\reachtoofth}[2]{\reachto\left(#1,#2\right)}
 \newcommand{\privateof}[1]{\private\left(#1\right)}
+\newcommand{\privateofth}[2]{\private\left(#1,#2\right)}
 
-\newcommand{\tagtuple}{\tuple{\pvars,\data,\reachfrom,\reachto,\private}}
-\newcommand{\tagtupleof}[1]{\tuple{\pvarsof{#1},\dataof{#1},\reachfromof{#1},\reachtoof{#1},\privateof{#1}}}
+\newcommand{\atag}{\mathtt{tag}}
+\newcommand{\tagtuple}{\tuple{\pvars,\vals,\reachfrom,\reachto,\private}}
+\newcommand{\tagtupleof}[1]{\tuple{\pvarsof{#1},\valsof{#1},\reachfromof{#1},\reachtoof{#1},\privateof{#1}}}
 \newcommand{\tagof}[1]{\mathtt{tag}\left(#1\right)}
 \newcommand{\sllviewtuple}{\tuple{\inputtag,\outputtag,\datarel}}
 \newcommand{\inputtag}{\mathtt{tag}_{in}}

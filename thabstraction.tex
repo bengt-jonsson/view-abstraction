@@ -13,6 +13,9 @@ due to interaction between controllers.
 %% Handling of unbounded heap and data is described in
 %% Section~\ref{sec:annotations}.
 
+\todo[inline]{I believe we do not need to define thread abstraction explicitly:
+  it only complicates the treatment. We can go directly to
+  fragment abstraction, and not burden the reader with the below}
 In this section, we describe how the global program state is projected onto
 a particular thread. Note that this projection is different from the
 projection defined in Section~\ref{semantics:section}.
