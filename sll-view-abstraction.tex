@@ -7,19 +7,75 @@
 \end{center}
 \section{Fragment Abstraction: Singly Linked Lists}
 \label{sec:annotations}
-This section describes how we employ fragment abstraction as a symbolic
-representation of an unbounded heap and data domain in
-thread-abstracted configurations. In this section, we describe how this is done
+By Theorem~\ref{thm:soundness}, linearizability can be verified by
+establishing a 
+reachability property for the product $\system=\augprog\compose\monitor$.
+This verification must handle the challenges of
+an unbounded number of threads, an unbounded heap, and unbounded data domain.
+We have therefore developed a symbolic representation, which
+is a careful combination of
+data abstraction, thread abstraction, and shape abstraction. 
+
+Our {\em data abstraction} abstracts from concrete data values in
+$\intgrs$ by representing only {\em relations}
+(in the set $\set{\prec,\equiv,\succ}$) between values of {\tt Data} fields of 
+heap cells, local {\tt Data} variables, and registers of the observer.
+%% We similarly abstract from concrete values of timestamps by representing
+%% only relations between values of timestamps in heap cells and in
+%% local variables.
+In order to cope with an unbounded number of threads,
+we extend the {\em thread-modular approach}~\cite{BLMRS:cav08}, in which
+the symbolic representation characterizes
+the projection of the configuration onto a single thread $t$.
+%% The postcondition computation must consider how this projection can
+%% be changed by execution steps of the program.
+%% Such a step can be performed
+%% either by the thread $t$ (a local step) or by 
+%% some other thread $t'$ (an interference step).
+%% Local steps can be handled by adapting standard techniques
+%% for computing postconditions.
+The corresponding postcondition computation must then take into account that
+the projection onto a particular thread can be changed either by step of that
+thread, or by a step of another thread.
+%% interference steps involve to first compute a new abstract configuration
+%% over two thread identifiers
+%% which represents the combined state of both threads $t$ and $t'$,
+%% and only therafter
+%% performing the step of $t'$; thereafter the resulting abstract post-state
+%% is projected back onto $t$.
+In order to cope with an unbounded heap, we have developed a novel symbolic
+representation, called {\em fragment abstraction}.
+The idea of this abstraction is
+to represent a heap by a set of (heap) {\em fragments}, where each fragment is
+just a pair of nodes that are connected by a pointer.
+In this section, we describe how this is done
 for singly linked lists, i.e., where each heap cell contains exactly one
 pointer field, named {\tt next}. In following sections XXX and YYY, we describe
 how fragment abstraction is applied to skiplists and to arrays of lingly linked
-lists.
+lists. We begin by describing our symbolic representation.
 
+\todo[inline]{Maybe we include timestamps from the very start?}
 
+%% In the actual verification, we compute a symbolic representation
+%% of an invariant that is satisfied by all reachable program configurations (including observer states).
+%% This invariant is obtained by an abstract-interpretation-based
+%% fixpoint procedure, which starts
+%% from a representation of the set of initial configurations, and
+%% thereafter repeatedly performs
+%% postcondition computations that extend the
+%% symbolic representation by the effect of any execution step of the program,
+%% until convergence.
+%% This analysis needs to deal with the challenges of an unbounded domain of
+%% data values, an unbounded number of concurrently executing threads, and an
+%% unbounded heap. 
+
+\subsection{Symbolic Representation by Fragment Abstraction}
 So, consider a program with global variables $\glvarset$ and thread-local variables $\locvarset$. Fix a specific thread $\thread$.
 Fix a global configuration.
-Consider a cell $\cell$, which is reachable from thread $\thread$.
-\bjcom{This notion needs to be defined}
+Let a heap cell $\cell$ be {\em accessible} from a thread $\thread$ if
+it is reachable (directly or via sequence of
+next-pointers) from a global variable or local variable of $\thread$.
+Consider a cell $\cell$, which is accessible from thread $\thread$.
 Define
 \begin{itemize}
 \item
@@ -33,7 +89,7 @@ Define
     $\cellval(\cell,\field)$,
   \item
     maps each  lock field of $\cell$
-    to $\set{\thread,\mathit{other},\mathit{free}}$,
+    to $\set{\mathit{me},\mathit{other},\mathit{free}}$,
   representing whether the lock was last acquired by $\thread$, by
   another thread, or is free,
   and
@@ -42,10 +98,11 @@ Define
   $[\ovarset \mapsto{\set{=,\neq}}]$, representing for
   each observer register $x  \in \ovarset$, whether or not the value
   of that equals the value of register $x$.
+\bjcom{Should we also do that for local data and timestamp variables?}
   \end{enumerate}
 \item
   $\reachfromofth{\cell}{\thread}$ is the set of
-  \begin{enumerate}[(1)]
+  \begin{enumerate}[(i)]
   \item global pointer variables and local pointer variables of $\thread$
     from which $\cell$ is reachable via a (possibly empty)
   sequence of {\tt next} pointers, and
@@ -87,7 +144,7 @@ $\atag = \tagtuple$, where
   $\set{=,\neq}$.
   \end{enumerate}
  \item
-   $\reachfrom$ and $\reachto$ are sets of global variables and observer registers, and
+   $\reachfrom$ and $\reachto$ are sets of (global and local) pointer variables and observer registers, and
   \item $\private$ is a boolean value.
 \end{itemize}
 Let $\cell$ be a cell accessible to thread $\thread$. For a tag
@@ -107,19 +164,30 @@ $\atag = \tagtuple$, we write $\cell \lhd \atag$ if
   than $\thread$.
 \end{itemize}
 We can now define the notion of fragment.
-An {\em SLL-fragment} (or just fragment)
-is a triple $\sllviewtuple$, where $\inputtag$ and $\outputtag$ are tags,
-and where $\datarel$ is a subset of $\set{<, =, >}$.
 
-Let $\conf$ be a configuration of a program containing a call $\cell$
-that is accessible by thread $\thread$. For a fragment $\sllviewtuple$,
+\begin{definition}[SLL-fragment]
+\label{def:sll-fragment}
+An {\em SLL-fragment} (or just fragment)
+is a triple of one of the forms:
+$\sllviewtuple$,
+$\tuple{\inputtag,\nullconst}$, or
+$\tuple{\inputtag,\dangconst}$,
+where $\inputtag$ and $\outputtag$ are tags,
+    and where $\datarel$ is a subset of $\set{<, =, >}$.
+\end{definition}
+
+Let $\conf$ be a configuration of a program, containing a heap cell $\cell$
+that is accessible from thread $\thread$. For a fragment $\sllviewtuple$,
 let $\cell \lhd \sllviewtuple$ denote that
-$\cell \lhd \inputtag$, that
-$\mathtt{next}(\cell) \lhd \outputtag$,
-\bjcom{What to do with {\tt null} here etc?}
+$\mathtt{next}(\cell) \not\in \set{\nullconst,\dangconst}$, that
+$\cell \lhd \inputtag$, that $\mathtt{next}(\cell) \lhd \outputtag$, 
 and that
 $\cell.\vals \sim \mathtt{next}(\cell).\vals$ for some
 $\sim \in \datarel$.
+For a fragment $\tuple{\inputtag,\nullconst}$, let
+$\cell \lhd \tuple{\inputtag,\nullconst}$ denote that
+$\cell \lhd \inputtag$ and $\mathtt{next}(\cell) = \nullconst$.
+Define $\cell \lhd \tuple{\inputtag,\dangconst}$ analogously.
 
 A {\em local symbolic configuration} consists of a mapping from local variables
 (including the program counter) to appropriate domains:
@@ -130,73 +198,48 @@ A {\em local symbolic configuration} consists of a mapping from local variables
   a mapping in  $[\ovarset \mapsto{\set{=,\neq}}]$, representing for
   each observer register $x  \in \ovarset$, whether or not the value
   of that equals the value of register $x$.
+\item \bjcom{We may need constraints for data and timer variables?}
 \end{itemize}
-A {\em symbolic configuration} is a pair consisting of a local symbolic
-configuration, and a set of fragments.
+A {\em symbolic configuration} is a pair
+$\tuple{\locsymbconf,\fragset}$ consisting of a local symbolic 
+configuration $\locsymbconf$, and a set $\fragset$ of fragments.
+A configuration $\conf$ of a program satisfies a symbolic configuration
+$\tuple{\locsymbconf,\fragset}$ if for each thread $\thread$,
+\begin{itemize}
+\item the local configuration of $\thread$ satisfies $\locsymbconf$, in the
+  natural way, and
+\item for each $\cell$ that is accessible from $\thread$, there is
+  a fragment $\frag$ such that $\cell \lhd_{\thread} \frag$.
+\end{itemize}
+\todo[inline]{It appears that satisfaction must be parameterized on thread?}
+
+
 A {\em symbolic representation} $\symbrep$ is a set of
 symbolic configurations. 
-A  set of thread-abstracted configurations satisfies a symbolic
-representation $\symbrep$ if each of its thread-abstracted
-configuration satisfies some symbolic configuration in $\symbrep$.
+A  set of configurations satisfies a symbolic
+representation $\symbrep$ if each of its
+configurations satisfies some symbolic configuration in $\symbrep$.
 
-
-
-
-
-%% Define the {\em tag} of
-%% $\cell$, denoted $\tagof{\cell}$ as the tuple $\tagtupleof{\cell}$.
-
-\bjcom{The following should be included more smoothly, if really needed}
-Let $\tt gtag(v,i)$ be the tuple $\tt \tuple{\tt gvars(i), gdata(i),{\tt greachfrom}(\tt i), {\tt reachto}(\tt i), private(i )}$ where $\tt gvars(i)$ is the set of global variables in $\tt vars(i)$ and $\tt greachfrom(i)$ is the set of global variables in $\tt reachfrom(i)$.
-
-Note that in each fragment $\tt v$, for two indices $\tt i_1$, $\tt i_2$ where $\tt next(i_1) = i_2$, we always have $\tt {\tt reachfrom}(\tt i_1) \subseteq \tt {\tt reachfrom}(\tt i_2)$ and $\tt {\tt reachto}(\tt i_1) = \tt {\tt reachto}(\tt i_2) \cup X$ where $\tt X$ is the set of global variables in ${\tt vars}(\tt i_1)$ and observer registers $\tt z$ which are equal to $\tt i_1.d$ for $\intgrs$-field $\tt d$. 
-  
-$\tt \tuple{\tt vars(i), data(i),{\tt reachfrom}(\tt i), {\tt reachto}(\tt i), private(i )}$. Let $\tt gtag(v,i)$ be the tuple $\tt \tuple{\tt gvars(i), gdata(i),{\tt greachfrom}(\tt i), {\tt reachto}(\tt i), private(i )}$ where $\tt gvars(i)$ is the set of global variables in $\tt vars(i)$ and $\tt greachfrom(i)$ is the set of global variables in $\tt reachfrom(i)$. 
-
-We first introduce the abstraction at the heart of the method. The abstraction takes its input as a set of pre-defined fragments, and any heap is ``broken down into pre-defined fragments''. A fragment retains the information about a particular part of a heap. This choice of fragments defines the level of abstraction that transforms heap into fragments. The abstract function $\alpha_k$ maps a heap into a set of fragments. Whereas, the concretization function $\gamma_k$ inputs a set of fragments, and returns the set of heaps that can be reconstructed from these fragments. 
 \paragraph{Example:} Let us show an example of how a singly linked list (SLL) is split into a set of fragments. Fig.~\ref{lazylist}(a) shows an example of a concrete shape of a singly linked list. Each cell contains the values of $\tt val$, $\tt mark$, and $\tt lock$ from top to bottom, where \tick \; denotes $\tt true$, and \cross \; denotes $\tt false$ (or $\tt free$ for $\tt lock$) and the value of $\tt val$ is denoted by a pair of the observer register $\tt z$ and a subset of $\set{<, =, >}$. There are two threads $1$ and $2$ with two local variables $\tt c_1$ and $\tt c_2$. There are two global variables $\tt H$ and $\tt T$ pointing to the head and tail of the list. The observer register $\tt z$ has value 8. Fig.~\ref{lazylist}(b) shows the result of splitting the list in Fig.~\ref{lazylist}(a) into fragments where each heap fragment is a small list of two nodes. Fig.~\ref{lazylist}(c) shows the abstraction of fragments in Fig.~\ref{lazylist}(b) where for each cell $\cell$, the value of $val$ is abstracted to a subset in $\tt \{<z, =z, >z\}$, the reachability relation between $\cell$ and global variables and observer registers is abstracted to the predicate $\tt X \mapsto \tt Y$ where $\tt X$, $\tt Y$ are sets of global variables and observer registers, $\tt i$ or $\tt o$ states that $\cell$ is an input or output cell.
 
-\paragraph{Fragment Definition:} A heap fragment of size $\tt k$ is represented as \begin{center}
-	${\tt v} = \viewconf$ where 
-\end{center} 
+\subsection{Computing Postconditions}
+
+%% \bjcom{The following should be included more smoothly, if really needed}
+%% Let $\tt gtag(v,i)$ be the tuple $\tt \tuple{\tt gvars(i), gdata(i),{\tt greachfrom}(\tt i), {\tt reachto}(\tt i), private(i )}$ where $\tt gvars(i)$ is the set of global variables in $\tt vars(i)$ and $\tt greachfrom(i)$ is the set of global variables in $\tt reachfrom(i)$.
+
+%% Note that in each fragment $\tt v$, for two indices $\tt i_1$, $\tt i_2$ where $\tt next(i_1) = i_2$, we always have $\tt {\tt reachfrom}(\tt i_1) \subseteq \tt {\tt reachfrom}(\tt i_2)$ and $\tt {\tt reachto}(\tt i_1) = \tt {\tt reachto}(\tt i_2) \cup X$ where $\tt X$ is the set of global variables in ${\tt vars}(\tt i_1)$ and observer registers $\tt z$ which are equal to $\tt i_1.d$ for $\intgrs$-field $\tt d$. 
+  
+%% $\tt \tuple{\tt vars(i), data(i),{\tt reachfrom}(\tt i), {\tt reachto}(\tt i), private(i )}$. Let $\tt gtag(v,i)$ be the tuple $\tt \tuple{\tt gvars(i), gdata(i),{\tt greachfrom}(\tt i), {\tt reachto}(\tt i), private(i )}$ where $\tt gvars(i)$ is the set of global variables in $\tt vars(i)$ and $\tt greachfrom(i)$ is the set of global variables in $\tt reachfrom(i)$. 
+
+%% We first introduce the abstraction at the heart of the method. The abstraction takes its input as a set of pre-defined fragments, and any heap is ``broken down into pre-defined fragments''. A fragment retains the information about a particular part of a heap. This choice of fragments defines the level of abstraction that transforms heap into fragments. The abstract function $\alpha_k$ maps a heap into a set of fragments. Whereas, the concretization function $\gamma_k$ inputs a set of fragments, and returns the set of heaps that can be reconstructed from these fragments. 
+
+%% \paragraph{Fragment Definition:} A heap fragment of size $\tt k$ is represented as \begin{center}
+%% 	${\tt v} = \viewconf$ where 
+%% \end{center} 
 
 %We first introduce the abstraction at the heart of the method. The abstraction takes its input as a set of pre-defined fragments parameterized by a constant $\tt k$, and any heap is “broken down into pieces” of size (at most) k, called fragments. A fragment retains the information about $\tt k$ connected cells from a heap and abstracts away the other cells. This choice defines the level of abstraction that transforms heap into fragments.There is a certain freedom in what information to retain and what to abstract away. The abstract function $\alpha_k$ maps a heap into a set of heap fragments of sizes $\tt k$. The concretization function $\gamma_k$ inputs a set of heap fragments, and returns the set of heaps that can be reconstructed from the these fragments. Let us represent symbolic representations of heap fragments. A heap fragment of size $\tt k$ is represented as ${\tt \Omega} = \viewconf$ where 
-\begin{itemize}
-% \item $\tt key$ maps each pair of pointer variables to a subset of $\set{<, =, >}$,
-% \item $\mathbb{I}$ is a tuple  $\tuple{\tt I, i, o}$ where $\tt I$ is a finite set of $\tt k$ {\em indices}, representing cells. The two sets $\tt i \subseteq I $ and $\tt o \subseteq I$ with $\tt i \cap o = \emptyset$ are sets of {\em input} and {\em output} indices representing {\em input} and {\em output cells}.
- \item $\tt I$ is the partitioning of $\tt I_{inp}$, $\tt I_{out}$ and $\tt I_{int}$ where $\tt I_{inp}$ and $\tt I_{out}$ are sets of {\em input} and {\em output} indices representing {\em input} and {\em output} cells, $\tt I_{int}$ is the set of indices representing {\em internal} cells.
 
- \item $\tt next$ maps each index in $\tt I_{inp} \; \cup \; \tt I_{int}$ to a value in $\indices \; \cup \; \{\tt null, \bot\}$. Intuitively, $\tt next(i)$ represents the successor of the cell represented by $\tt i$.
-%\item $\tt next: \tt I_{inp} \cup \tt I_{int} \mapsto \tt I_{inp} \cup \tt I_{int} \cup \{\tt null, \bot\}$ maps each index in $\indices / \indices_{\tt o}$ to a value in $\indices \cup \{\tt null, \bot\}$. Intuitively, $\tt next(i)$ represents the successor of the cell represented by $\tt i$.
-
-
-\item
-  ${\tt vars}$ maps each index to a set of (global or local) pointer variables.
-\item
-  ${\tt data}$ maps each $\mathbb{F}$-field value of cells to their appropriate domains, and each $\intgrs$-field to a mapping from $\intgrs$-terms to a subset of $\set{<, =, >}$.
-%\item
-  %${\tt Val}^{\tt g}$ maps an index in $\indices \setminus \{\tt i_\bot, \tt i_{null}\}$ to an set of global variables. Intuitively, ${\tt Val}^{\tt g}(\tt i) = \{\tt v_1,v_2,..,v_n\}$ if $\cell_{\tt i}$ is reachable from the cells pointed by $\tt v_1$, $\tt v_2$,..,$\tt v_n$. 
-
-%\item
-%  ${\tt reachfrom}$ maps each index $\tt i$ in $\indices$ to a predicate, formed as a pair $\tt (X,Y)$ where, letting $\cell_{\tt i}$ be the cell represented by $\tt i$,
-%   \begin{itemize}
-% \item $\tt X$ is the set of (i) global variables from which $\cell_{\tt i}$ is reachable by at least one step, and
-%  (ii) observer registers whose values are equal to $\intgrs$-field values of cells from which $\cell_{\tt i}$ is reachable by at least one step.
-%  \item $\tt Y$ is the set of
-%  (i) global variables which are reachable from $\cell_{\tt i}$ by at least one step, and
-%  (ii) observer registers whose values are equal to $\intgrs$-field values of cells which are reachable from $\cell_{\tt i}$ by at least one step.
-%\end{itemize}
- 
- \item
-  ${\tt reachfrom}$ maps each index $\tt i \in \indices$ to a set of (a) global variables from which $\tt i$ is reachable, and
-  (b) observer registers whose values are equal to $\intgrs$-field values of cells from which $\tt i$ is reachable.
-\item  ${\tt reachto}$ maps each index $\tt i \in \indices$ to a set of
-  (a) global variables which are reachable from $\tt i$, and
-  (b) observer registers whose values are equal to $\intgrs$-field values of cells which are reachable from $\tt i$.
- \item $\tt \phi$ maps each pair of indices to a subset of $\set{<, =, >}$. Intuitively, $\tt \phi(i_1, i_2)$ presents the ordering between $\tt i_1.d$ and $\tt i_2.d$ for  $\intgrs$-field $\tt d$.
-  \item $\tt private$ maps each index $\tt i \in \indices$ to a boolean value. Intuitively, if $\tt private(i) = true$ then the cell represented by $\tt i$ can be seen only by the concurrent thread.
- 
-  \end{itemize}
+\bjcom{This paragraph needs revision}
 For a fragment $\tt v$ and index $\tt i$, let $\tt tag(v,i)$ be the tuple $\tt \tuple{\tt vars(i), data(i),{\tt reachfrom}(\tt i), {\tt reachto}(\tt i), private(i )}$. Let $\tt gtag(v,i)$ be the tuple $\tt \tuple{\tt gvars(i), gdata(i),{\tt greachfrom}(\tt i), {\tt reachto}(\tt i), private(i )}$ where $\tt gvars(i)$ is the set of global variables in $\tt vars(i)$ and $\tt greachfrom(i)$ is the set of global variables in $\tt reachfrom(i)$. Note that in each fragment $\tt v$, for two indices $\tt i_1$, $\tt i_2$ where $\tt next(i_1) = i_2$, we always have $\tt {\tt reachfrom}(\tt i_1) \subseteq \tt {\tt reachfrom}(\tt i_2)$ and $\tt {\tt reachto}(\tt i_1) = \tt {\tt reachto}(\tt i_2) \cup X$ where $\tt X$ is the set of global variables in ${\tt vars}(\tt i_1)$ and observer registers $\tt z$ which are equal to $\tt i_1.d$ for $\intgrs$-field $\tt d$. 
 %\paragraph{Abstract Configuration}:
 %A abstract {\it configuration} of a program $\prog$ in the fragment of a single thread $\thread$
@@ -211,13 +254,18 @@ For a fragment $\tt v$ and index $\tt i$, let $\tt tag(v,i)$ be the tuple $\tt \
 %
 %% We use $\confsetof\prog$ to denote the set of configurations
 
-\section{Abstract transformers for singly linked lists}
-%For each operation $\tt op$ in the intermediate representation of the analysed program corresponding to the function $\tt f_{\tt op}$ on concrete configurations $\tt F =\tuple{\athreads,\lstatemapping,\heap}$ , we define an abstract transformer ${\tt \Gamma}_{\tt op}$ on a set of fragments $\tt A$ such that the result of ${\tt \Gamma}_{\tt op}(A)$ denotes the set $\tt f_{\tt op}(F)$. Let us present the abstract transformers corresponding to some operations on the set $\mathbb A$. Two fragments $\tt \Omega_1$ and $\tt \Omega_2$ are relevant if (I) they have the same program counter and observer register and (II) their global relationship are consistent. The abstract transformer is performed by several following steps:
-%\begin{enumerate}
-%\item Combine all relevant fragments $\tt \Omega_1$,..,$\tt \Omega_n \in \mathbb A$ which contains variables appearing in the operation. Let $\tt \Omega^c_1$,..,$\tt \Omega^c_m$ be the result of the combination.
- %\item For each fragment $\tt \Omega^c_i$ where $0 \leq \tt i \leq m$, compute the abstract transformer $\tt \Omega_p = {\Gamma}_{\tt op}(\tt \Omega^c_i)$, then split $\tt \Omega_p$ into set of new fragments 
-%\end{enumerate}
-Let us show how to perform the abstract transformer for singly linked list programs on the set of fragments $\tt S$ depending on the particular statement. In this case, we consider fragments of size $2$ where $\tt I_{inp} = \{i\}$, $\tt I_{out} = \{o\}$,$\tt I_{int} = \emptyset$ and $\tt next(i) = o$, and fragments of size $1$ where $\tt I_{inp} = \{i\}$, $\tt I_{out} = \emptyset$, $\tt I_{int} = \emptyset$ and $\tt next(i) = null$ or $\tt next(i) = \bot$. Before describing in detail to compute abstract transformers, let us define several important concepts.
+In this section, we describer how to perform the abstract postcondition computation on our symbolic representation for singly linked lists. We consider
+sets of fragments as defined in Definition~\ref{def:sll-fragment}.
+Let $\fragset$ be a set of fragments.
+
+As is standard in the thread-modular approach, we must consider two different
+cases:
+\begin{itemize}
+\item local
+\item interference
+\end{itemize}
+\todo[inline]{Bengt is working here}
+
 
 %\paragraph{Index Consistency:} Let $\tt i_1 \equiv i_2$ denotes that $\tt i_1$ and $\tt i_2$ are equivalent. Intuitively, $\tt i_1 \equiv i_2$ iff  ${\tt Val}^{\tt v}(\tt i_1) = {\tt Val}^{\tt v}(\tt i_2)$, ${\tt Val}^{\tt d}(\tt i_1) = {\tt Val}^{\tt d}(\tt i_2)$, $\tt private(i_1) = private(i_2)$ and $\tt \Phi(i_1.d, z) = \Phi(i_2.d, z)$ for every $\intgrs$-field $\tt d$ and $\intgrs$-term $\tt z$.  The indices $\tt i_1$ and $\tt i_2$ are consistent if they satisfy one of those conditions below
 %\begin{itemize}
