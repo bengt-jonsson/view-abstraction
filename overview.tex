@@ -8,8 +8,19 @@ a concurrent data structure implementation.
 
 \input tscode
 
-\todo[inline]{Provide a description of the algorithm}
-
+%\todo[inline]{Provide a description of the algorithm}
+Fig 1 show a simplified version of the Times-Stamped
+Stack. This data structure includes an array of singly-linked lists, one for each thread, where each node contains a data value, a time, the next pointer, and a boolean flag indicating the status of the node whether it is removed from the stack or not). Initially, each list contains only a null pointer.
+Push method of the stack is performed by several
+steps as follows: a node with maximal timestamp
+in the list which is owned by the current executing thread. After that, a new timestamp (given by
+the variable {\tt t}) is created, and then {\tt t} is assigned to the {\tt time} field of the added node. Finally, the method unlinks all nodes whose {\tt mark} field are equal to {\tt true} and reachable from the added node. Popping a value from
+the stack consists in traversing all the lists, finding
+the first element whose {\tt mark} field is {\tt false} in each
+list, and selecting the youngest node with the maximal
+timestamp. A compare-and-swap (CAS) is used
+to set the {\tt mark} field of this youngest node to true to logically remove it.
+The procedure will restart if the CAS fails. After the youngest node has been removed, the method will unlink all nodes whose {\tt mark} field are equal to {\tt true} appear before or after removed  node
 \todo[inline]{We may need to assume that programs are data-independent}
 
 \subsection{Specifying Correctness}
