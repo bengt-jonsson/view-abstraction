@@ -92,31 +92,128 @@ an accepting state is reached.
 The observer is defined in such a way that it accepts precisely those
 traces that do {\em not} belong to the behavior
 of the data structure.
-As an example, Figure ?? shows an observer which intuitively specifies that 
+As an example, Figure ~\ref{fig:nonpopobserver:fig} shows an observer which intuitively specifies that 
 a data item must not be popped before it is popped. More precisely, it
 specifies that the pop operation must not return before any push operation
 for the same data value has been called.
 
-\todo[inline]{Quy: make a picture of this observer, and describe intuitively
-  how it works}
+\begin{figure}
+\center 
+
+\begin{tikzpicture}[]
+
+\node(s0)[draw,line width=0.5pt,circle,text=black]
+{$s_0$};
+
+\node(s1)[draw,line width=0.5pt,circle,text=black,anchor=center]
+at ($(s0.center)+(80pt,0pt)$) {$s_1$};
+
+
+\node[draw,line width=0.5pt,circle,text=black,anchor=center,minimum size=5mm]
+at ($(s0.center)+(80pt,0pt)$) {};
+
+
+\draw[->,>=stealth,line width=0.5pt,] (s0) to 
+node[above=-1pt,pos=0.5] {\footnotesize${\tt ret \; pop}(x)$} 
+(s1);
+
+\draw[->,>=stealth,line width=0.5pt, in=-50,out=-130,loop] (s0) to 
+node[above=-15pt,pos=0.5] {\footnotesize${\tt call \; pop}(x)$} 
+(s0);
+
+
+
+\end{tikzpicture}
+\caption{Non pop without push observer.}
+\label{fig:nonpopobserver:fig}
+\end{figure}
+
+%\todo[inline]{Quy: make a picture of this observer, and describe intuitively
+%  how it works}
 
 
 In~\cite{BEEH:icalp15}, is it shown that
 a stack can precisely specified by four observers,
 that specify the following intuitive constraints.
-\todo[inline]{Quy: Make sure that you have the right constraints. I just guessed that the below four are the right ones}
+%\todo[inline]{Quy: Make sure that you have the right constraints. I just guessed that the below four are the right ones}
 \begin{enumerate}
 \item a data item must not be popped before it is pushed,
 \item pop must not return ``empty'' if a data element was pushed but not
   popped
-\item A pushed data item must not be popped twice
-\item \bjcom{Here we specify stack order}
+\item a pushed data item must not be popped twice
+\item a data item must be popped with respect to last in first out stack order% \bjcom{Here we specify stack order}
 \end{enumerate}
 The exact form of observers for these constraints must represent them in
 terms of ordering of call an return actions. Observers for constraint
 2 and 3 are similar to that for constraint 1. The observer for constraint
-4 is more complex, and shown in Figure XXX.
-\bjcom{Quy: Insert the observer, and an explanation}
+4 is more complex, and shown in Figure ~\ref{fig:lifostack:fig}.
+%\bjcom{Quy: Insert the observer, and an explanation}
+\begin{figure}
+\center 
+
+\begin{tikzpicture}[]
+
+\node(s0)[draw,line width=0.5pt,circle,text=black]
+{$s_0$};
+
+
+\node(s1)[draw,line width=0.5pt,circle,text=black,anchor=center]
+at ($(s0.center)+(60pt,0pt)$) {$s_1$};
+
+\node(s2)[draw,line width=0.5pt,circle,text=black,anchor=center]
+at ($(s0.center)+(120pt,0pt)$) {$s_2$};
+
+\node(s3)[draw,line width=0.5pt,circle,text=black,anchor=center]
+at ($(s0.center)+(180pt,0pt)$) {$s_3$};
+
+\node(s4)[draw,line width=0.5pt,circle,text=black,anchor=center]
+at ($(s0.center)+(240pt,0pt)$) {$s_4$};
+
+\node(s6)[draw,line width=0.5pt,circle,text=black,anchor=center]
+at ($(s0.center)+(300pt,0pt)$) {$s_6$};
+
+\node(s5)[draw,line width=0.5pt,circle,text=black,anchor=center]
+at ($(s0.center)+(240pt,-50pt)$) {$s_5$};
+
+\node[draw,line width=0.5pt,circle,text=black,anchor=center,minimum size=5mm]
+at ($(s0.center)+(300pt,0pt)$) {};
+
+
+\draw[->,>=stealth,line width=0.5pt,] (s0) to 
+node[above=-1pt,pos=0.5] {\tiny${\tt call \; push}(x_1)$} 
+(s1);
+\draw[->,>=stealth,line width=0.5pt,] (s1) to 
+node[above=-1pt,pos=0.5] {\tiny${\tt ret \; push}(x_1)$} 
+(s2);
+
+\draw[->,>=stealth,line width=0.5pt,] (s2) to 
+node[above=-1pt,pos=0.5] {\tiny${\tt ret \; push}(x_2)$} 
+(s3);
+
+\draw[->,>=stealth,line width=0.5pt,] (s3) to 
+node[above=-1pt,pos=0.5] {\tiny${\tt call \; pop}(x_1)$} 
+(s4);
+
+\draw[->,>=stealth,line width=0.5pt,] (s4) to 
+node[above=-1pt,pos=0.5] {\tiny${\tt ret \; pop}(x_1)$} 
+(s6);
+
+\draw[->,>=stealth,line width=0.5pt, in=-50,out=-130,loop] (s2) to 
+node[above=-15pt,pos=0.5] {\tiny${\tt call \; push}(x_2)$} 
+(s2);
+
+\draw[->,>=stealth,line width=0.5pt,out=-35,in=35] (s4) to 
+node[right=2pt,pos=0.5] {\tiny${\tt ret \; push}(x_2)$} 
+(s5);
+
+\draw[->,>=stealth,line width=0.5pt,out=145,in=-145] (s5) to 
+node[left=2pt,pos=0.5] {\tiny${\tt call \; pop}(x_2)$} 
+(s4);
+
+\end{tikzpicture}
+\caption{LIFO stack order observer.}
+\label{fig:lifostack:fig}
+\end{figure}
 
 \subsection{Verification by Fragment Abstraction}
 To verify that TS-Stack is a correct linearizable implementation of a stack, we
@@ -240,19 +337,36 @@ variables the node can be reached by a sequence of pointers
 Let us illustrate our symbolic representation for the TS-Stack algorithm.
 The heap in the algorithm consists of a set of singly linked lists (SLLs). Each
 SLL is accessed from a particular pointer {\tt top} in an array of such pointers.
-Figure XXX shows an example of a snapshot of the heap state, in a situation when
-it is accessed concurrently by
-\todo[inline]{Quy: Make a picture of a concrete shape with several threads.
-  Say which operations are working there now, and give some
-  explanation of what the figure says}.
+Fig. ~\ref{fig:tsshape} shows an example of a snapshot of the heap state, in a situation when
+% Quy write from here
+it is accessed concurrently by three threads $\tt T_1$, $\tt T_2$, and $\tt T_3$. The thread $\tt T_1$ is trying to push a new node pointed by its local variable $\tt new1$ while $\tt T_3$ has just called its push method and $\tt T_2$ is doing its pop method. The thread $\tt T_2$ find the youngest node in the list owned by $\tt T_3$ which is determined by its local variable $\tt youngest2$.
+%\todo[inline]{Quy: Make a picture of a concrete shape with several threads.
+%  Say which operations are working there now, and give some
+%  explanation of what the figure says}.
+\begin{figure}
+	\input tsshape
+\caption{A concrete shape of timestamp stack with three threads}
+\label{fig:tsshape}
+\end{figure} 
 
 To obtain our symbolic representation, we first apply data abstraction and
-project the configuration onto a single thread. Figure XXX shows the result
-of projecting onto thread XXX, which performs a pop/push
-\todo[inline]{Quy: make a picture of the corresponding
-  thread view with data abstraction  Complete this description}.
+project the configuration onto a single thread. Fig. ~\ref{fig:tsdabsshape} shows the result
+of projecting onto thread 2, which performs a pop with data abstraction. As can be seen the the figure, the node pointed by $\tt new1$ is not visible with $\tt T_2$ because it is still the private variable of $\tt T_1$. We use three observer registers $\tt d_1$, $\tt d_2$, and $\tt d_3$. The data value $\tt 9$ is equal to $\tt d_1$, $\tt 8$ is equal to $\tt d_2$ and all other data values are equal to $\tt d_3$. To abstract timestamp of a node, we keep the ordering between its timestamp and nodes whose data values are equal to $\tt d_1$ or $\tt d_2$ which are described by $\tt to_1$,...,$\tt to_6$ in the figure.
+% Quy write here
+%\todo[inline]{Quy: make a picture of the corresponding
+%  thread view with data abstraction  Complete this description}.
+\begin{figure}
+	\input tsshapeb
+\caption{The projection on thread 2 after data abstraction}
+\label{fig:tsdabsshape}
+\end{figure} 
 
-In order to represent the projection in Figure XXX by
+\begin{figure}
+	\input tsabsshape
+\caption{Fragment abstraction}
+\label{fig:tsviewshape}
+\end{figure} 
+In order to represent the projection in Fig. ~\ref{fig:tsdabsshape} by
 a set of fragments, we define the information conveyed by node tags.
 We define one tag for push operations and one for pop operations, since
 their methods use different sets of local variables.
@@ -261,8 +375,8 @@ $\tuple{\pvars,\data,\reachfrom,\reachto,\private}$, where
 \begin{itemize}
 \item
   $\pvars$ is a set of pointer variables (i.e., a subset of
-  {\tt top, youngest, myTop}
-  \bjcom{Quy: Check exactly what this set should be}
+  {\tt top, youngest, n, myTop}
+  %\bjcom{Quy: Check exactly what this set should be}
 \item
   $\vals$ maps
   \begin{inparaenum}[(i)]
@@ -271,10 +385,10 @@ $\tuple{\pvars,\data,\reachfrom,\reachto,\private}$, where
   \item
     each {\tt d} field to a mapping from observer registers to $\set{=, \neq}$,
   \item
-    each {\tt time} field to a mapping from \bjinsert{Quy: insert the correct text here}.
+    each {\tt time} field to a mapping from each observer register to a subset of $\set{<,=,>}$ %\bjinsert{Quy: insert the correct text here}.
   \end{inparaenum}
 \item
-  $\reachfrom$ and $\reachto$ are sets of global variables and observer registers, \bjcom{Quy: Check what is really needed here: Maybe we need only reachfrom?}
+  $\reachfrom$ and $\reachto$ are sets of global variables and observer registers, %\bjcom{Quy: Check what is really needed here: Maybe we need only reachfrom?}
 \item
   $\private$ is a boolean value.
 \end{itemize}
@@ -283,25 +397,28 @@ denoted $\cell \lhd \tagtuple$ if
 \begin{itemize}
 \item
   $\pvars$ is the set of pointer variables that point to $\cell$.
-  \bjcom{Quy: Or Should it be contains?}
+  %\bjcom{Quy: Or Should it be contains?}
 \item
-  \bjcom{Quy: continue to write here}
+The value of {\tt mark} field of $\cell$ is equal to the value of $\vals\tt {.(mark)}$. For each observer register $\tt d_i$, the relation of {\tt d} field  and $\tt d_i$ is a subset of $\vals\tt {.(d).(d_i)}$, and the relation between value of {\tt time} field and cells whose $\tt d$ field is equal to $\tt d_i$ is a subset of $\vals\tt {.(time).(d_i)}$. 
+  %\bjcom{Quy: continue to write here}
+\item $\reachfrom$ and $\reachto$ are sets of global variables and observer registers in which the cell is reachable and reach to.
+\item $\private$ is the private information of the cell.
 \end{itemize}
 
 We can now define the concept of fragment.
 A {\em fragment} is a pair $\tuple{\inputtag,\outputtag}$ of tags.
-A {\em symbolic configuration} is a pair consisting of a value of a program
-pointer \bjcom{or: local state}, and a set of fragments.
-\todo[inline]{Quy: Could you explain exactly what is in a symbolic configuration?
-  Does it contain some information about values of local variables, such as
-  {\tt success} and {\tt maxTS}?}
+A {\em symbolic configuration} is a pair consisting of a set a value of a program
+pointer, observer state, and value of local variables \bjcom{or: local state}, and a set of fragments.
+%\todo[inline]{Quy: Could you explain exactly what is in a symbolic configuration?
+%  Does it contain some information about values of local variables, such as
+%  {\tt success} and {\tt maxTS}?}
 
-\todo[inline]{Quy: make a picture with all the fragments obtained from the
-  thread projection}
-
+%\todo[inline]{Quy: make a picture with all the fragments obtained from the
+ % thread projection}
+Figure ~\ref{fig:tsviewshape} shows all the fragments obtained from the thread projection from ~\ref{fig:tsdabsshape}. The $\reachfrom$ of each node is shown in the first row under each node, whereas the $\reachto$ is shown in the second row.  
 A thread-abstracted configuration satisfies a symbolic configuration if
 \begin{itemize}
-\item \bjcom{Say that program counter, and local variables ...}
+\item it satisfies program counter, observer state, and local variables %\bjcom{Say that program counter, and local variables ...}
 \item
   For each cell $\cell$ in the heap of the configuraion, there is
   a fragment $\tuple{\inputtag,\outputtag}$ in the set of fragments, such
