@@ -20,7 +20,7 @@ A Push method for inserting an element {\tt x} into the TS-stack is performed as
 at the beginning of the list which is owned by the calling thread.
 After that, a new timestamp is created and assigned (via
 the variable {\tt t}) to the {\tt time} field of the added node.
-\bjcom{Quesion to Quy: What happens when pop methods sees uninitialized timestamps?}
+\bjcom{Quesion to Quy: What happens when pop methods sees uninitialized timestamps?} \quycom{uninitialized time is -1, its smaller than any other time.}
 Finally, the method unlinks all nodes whose {\tt mark} field are equal to {\tt true} and reachable from the added node.
 
 Popping an element from the stack consists in traversing all the lists, finding
@@ -31,7 +31,7 @@ to set the {\tt mark} field of this youngest node to $\true$,
 thereby logically removing it.
 The procedure will restart if the CAS fails. After the youngest node has been removed, the method will unlink all nodes whose {\tt mark} field are equal to {\tt true} appear before or after removed  node.
 \todo[inline]{Comments by Bengt: How can you return empty? Also, I think you
-  need to explain the extra removal of marked nodes better}
+  need to explain the extra removal of marked nodes better} \quycom{this code is a simplified version without emptiness checking. If we add emptiness part, the code will be longer and more complicated}
 
 \subsection{Specifying Correctness}
 In this subsection, we describe how we specify that the algorithm in Figure~\ref{ts-stack:fig}
@@ -126,9 +126,19 @@ for the same data value has been called.
 \node(s0)[draw,line width=0.5pt,circle,text=black]
 {$s_0$};
 
+\node(s2)[draw,line width=0.5pt,circle,text=black,anchor=center]
+at ($(s0.center)+(40pt,50pt)$) {$s_2$};
+
+
+
 \node(s1)[draw,line width=0.5pt,circle,text=black,anchor=center]
 at ($(s0.center)+(80pt,0pt)$) {$s_1$};
 
+\node(init)[line width=0.5pt,circle,text=black,anchor=center]
+at ($(s0.center)+(-30pt,0pt)$) {};
+\draw[->,>=stealth,line width=0.5pt] (init) to 
+node[left=5pt,pos=0.5] {} 
+(s0);
 
 \node[draw,line width=0.5pt,circle,text=black,anchor=center,minimum size=5mm]
 at ($(s0.center)+(80pt,0pt)$) {};
@@ -138,14 +148,27 @@ at ($(s0.center)+(80pt,0pt)$) {};
 node[above=-1pt,pos=0.5] {\footnotesize${\tt ret \; pop}(x)$} 
 (s1);
 
+\draw[->,>=stealth,line width=0.5pt] (s0) to 
+node[left=5pt,pos=0.5] {\footnotesize${\tt call \; push}(x)$} 
+(s2);
+
 \draw[->,>=stealth,line width=0.5pt, in=-50,out=-130,loop] (s0) to 
 node[above=-15pt,pos=0.5] {\footnotesize${\tt call \; pop}(x)$} 
 (s0);
 
+\draw[->,>=stealth,line width=0.5pt, in=50,out=-30,loop] (s2) to 
+node[right=2pt,pos=0.5] {\footnotesize${\tt act}$} 
+(s2);
 
+
+%\node[]
+%at ($(s2.center)+(60pt,20pt)$) {\footnotesize${\tt call \; push}(x)+$};
+%\node[] at ($(s2.center)+(60pt,10pt)$) {\footnotesize${\tt ret \; push}(x)+$};
+%\node[] at ($(s2.center)+(60pt,0pt)$) {\footnotesize${\tt call \; pop}(x)+$};
+%\node[] at ($(s2.center)+(60pt,-10pt)$) {\footnotesize${\tt ret \; pop}(x)$};
 
 \end{tikzpicture}
-\caption{Non pop without push observer.}
+\caption{An observer recognizing differentiated traces which have a Pop with no corresponding Push. The variable $\tt x$ is an observer register, The action $\tt act$ ranges over all actions associated with $\tt x$ }
 \label{fig:nonpopobserver:fig}
 \end{figure}
 
@@ -172,7 +195,7 @@ that specify the following intuitive constraints.
 The exact form of observers for these constraints represent them in
 terms of ordering of call an return actions. Observers for constraint
 2 and 3 are similar to that for constraint 1. The observer for constraint
-4 is more complex, and shown in Figure ~\ref{fig:lifostack:fig}.
+4 is more complex, and shown in Figure ~\ref{fig:lifostack:fig}. The observer intuitively specifies that a data cannot be popped from the Stack if there is always at least an different data above it in the Stack (regardless of how linearize the execution).
 \todo[inline]{Please make a good explanation of Figure 3}
 \begin{figure}
 \center 
@@ -224,8 +247,8 @@ node[above=-1pt,pos=0.5] {\tiny${\tt call \; pop}(x_1)$}
 node[above=-1pt,pos=0.5] {\tiny${\tt ret \; pop}(x_1)$} 
 (s6);
 
-\draw[->,>=stealth,line width=0.5pt, in=-50,out=-130,loop] (s2) to 
-node[above=-15pt,pos=0.5] {\tiny${\tt call \; push}(x_2)$} 
+\draw[->,>=stealth,line width=0.5pt, in=50,out=130,loop] (s2) to 
+node[above=2pt,pos=0.5] {\tiny${\tt call \; push}(x_2)$} 
 (s2);
 
 \draw[->,>=stealth,line width=0.5pt,out=-35,in=35] (s4) to 
@@ -236,8 +259,37 @@ node[right=2pt,pos=0.5] {\tiny${\tt ret \; push}(x_2)$}
 node[left=2pt,pos=0.5] {\tiny${\tt call \; pop}(x_2)$} 
 (s4);
 
+\node(init)[line width=0.5pt,circle,text=black,anchor=center]
+at ($(s0.center)+(-30pt,0pt)$) {};
+\draw[->,>=stealth,line width=0.5pt] (init) to 
+node[left=5pt,pos=0.5] {} 
+(s0);
+
+\node(s7)[draw,line width=0.5pt,circle,text=black,anchor=center]
+at ($(s5.center)+(-180pt,-2pt)$) {$s_7$};
+
+\draw[->,>=stealth,line width=0.5pt] (s0) to 
+node[above = 0pt,pos=0.5, sloped] {\tiny${\tt act_1}$} 
+(s7);
+\draw[->,>=stealth,line width=0.5pt] (s1) to 
+node[above=0pt,pos=0.5,  sloped] {\tiny${\tt act_2}$} 
+(s7);
+\draw[->,>=stealth,line width=0.5pt] (s2) to 
+node[above=0pt,pos=0.5,  sloped] {\tiny${\tt act_3}$} 
+(s7);
+\draw[->,>=stealth,line width=0.5pt] (s3) to 
+node[above=0pt,pos=0.5,  sloped] {\tiny${\tt act_4}$}  
+(s7);
+\draw[->,>=stealth,line width=0.5pt] (s4) to 
+node[above=0pt,pos=0.5,  sloped] {\tiny${\tt act_5}$}  
+(s7);
+\draw[->,>=stealth,line width=0.5pt] (s5) to 
+node[above=0pt,pos=0.5,  sloped] {\tiny${\tt act_6}$}  
+(s7);
+
 \end{tikzpicture}
-\caption{LIFO stack order observer.}
+\caption{An observer recognizing LIFO violations. The variables $\tt x_1$ and $\tt x_2$ are observer registers. Let $\tt acts$ be the set of all actions associated with $\tt x_1$ or $\tt x_2$, $\tt act_1$ ranges over $\tt acts \setminus call \;push(x_1)$, $\tt act_2$ ranges over $\tt acts \setminus ret \;push(x_1)$, $\tt act_3$ ranges over $\tt acts \setminus \{call \;push(x_2), ret\;push(x_2)\}$, $\tt act_4$ ranges over $\tt acts \setminus ret \;pop(x_1)$, $\tt act_5$ ranges over $\tt acts \setminus ret \;pop(x_1)$, $\tt act_6$ ranges over $\tt acts \setminus call \;pop(x_2)$,  
+}
 \label{fig:lifostack:fig}
 \end{figure}
 
@@ -371,7 +423,7 @@ it is accessed concurrently by three threads $\thread_1$, $\thread_2$, and $\thr
   we used {\tt var[2]}, for variable {\tt var} of thread 2. Maybe use it also here?}
 \todo[inline]{You must start by explaining the notation better. E.g., what means
   a pointer variable that labels a node?}
-The thread $\thread_1$ is trying to push a new node pointed by its local variable $\tt new1$ while $\thread_3$ has just called its push method and $\thread_2$ is doing its pop method. The thread $\thread_2$ find the youngest node in the list owned by $\thread_3$ which is determined by its local variable $\tt youngest2$.
+The thread $\tt T_1$ is trying to push a new node pointed by its local variable $\tt new[1]$ while $\tt T_3$ has just called its push method and $\tt T_2$ is doing its pop method. The thread $\tt T_2$ find the youngest node in the list owned by $\tt T_3$ which is determined by its local variable $\tt youngest[2]$.
 %\todo[inline]{Quy: Make a picture of a concrete shape with several threads.
 %  Say which operations are working there now, and give some
 %  explanation of what the figure says}.
@@ -380,13 +432,13 @@ The thread $\thread_1$ is trying to push a new node pointed by its local variabl
 \caption{A concrete shape of timestamp stack with three threads}
 \label{fig:tsshape}
 \end{figure} 
-
+\quycom{I am trying to improve text from here}
 To obtain our symbolic representation, we first apply data abstraction and
 project the configuration onto a single thread. Fig. ~\ref{fig:tsdabsshape} shows the result
 of projecting onto thread 2, which performs a pop with data abstraction.
 \todo[inline]{I do not quite understand that this is the result: Thread 2 is doing a pop from list 3: so it sees ${\tt top}_3$. But why does it see the
   list 2? and why does it need to see the list 1? Does thread 2 really see all the nodes and variables in Figure 5?}
-As can be seen the the figure, the node pointed by $\tt new1$ is not visible with $\thread_2$ because it is still the private variable of $\thread_1$. We use three observer registers $\tt d_1$, $\tt d_2$, and $\tt d_3$. The data value $\tt 9$ is equal to $\tt d_1$, $\tt 8$ is equal to $\tt d_2$ and all other data values are equal to $\tt d_3$. To abstract timestamp of a node, we keep the ordering between its timestamp and nodes whose data values are equal to $\tt d_1$ or $\tt d_2$ which are described by $\tt to_1$,...,$\tt to_6$ in the figure.
+As can be seen the the figure, the node pointed by $\tt new[1]$ is not visible with $\tt T_2$ because it is still the private variable of $\tt T_1$. We use three observer registers $\tt d_1$, $\tt d_2$, and $\tt d_3$. The data value $\tt 9$ is equal to $\tt d_1$, $\tt 8$ is equal to $\tt d_2$ and all other data values are equal to $\tt d_3$. To abstract timestamp of a node, we keep the ordering between its timestamp and nodes whose data values are equal to $\tt d_1$ or $\tt d_2$ which are described by $\tt to_1$,...,$\tt to_6$ in the figure.
 % Quy write here
 %\todo[inline]{Quy: make a picture of the correspondingq
 %  thread view with data abstraction  Complete this description}.
@@ -402,7 +454,7 @@ As can be seen the the figure, the node pointed by $\tt new1$ is not visible wit
 \label{fig:tsviewshape}
 \end{figure} 
 In order to represent the projection in Fig. ~\ref{fig:tsdabsshape} by
-a set of fragments, we define the information conveyed by node tags.
+a set of fragments. Firstly, we identify the current working list and abstract the other lists. Secondly, we define the information conveyed by node tags.
 We define one tag for push operations and one for pop operations, since
 their methods use different sets of local variables.
 For a pop operation, a {\em tag} is defined as a tuple
@@ -410,7 +462,7 @@ $\tuple{\pvars,\data,\reachfrom,\reachto,\private}$, where
 \begin{itemize}
 \item
   $\pvars$ is a set of pointer variables (i.e., a subset of
-  {\tt top, youngest, n, myTop}
+  {\tt $\tt top_3$, youngest[2], n[2], myTop[2]}
   %\bjcom{Quy: Check exactly what this set should be}
 \item
   $\vals$ maps
