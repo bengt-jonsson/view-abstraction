@@ -94,7 +94,7 @@ Define
   another thread, or is free,
   and
 \item
-  maps each $\intgrs$-field $\field$ of $\cell$ to mapping in
+  maps each $\intgrs$-field $\field$ of $\cell$ to a mapping in
   $[\ovarset \mapsto{\set{=,\neq}}]$, representing for
   each observer register $x  \in \ovarset$, whether or not the value
   of that equals the value of register $x$.
@@ -200,25 +200,29 @@ A {\em local symbolic configuration} consists of a mapping from local variables
   of that equals the value of register $x$.
 \item \bjcom{We may need constraints for data and timer variables?}
 \end{itemize}
-A {\em symbolic configuration} is a pair
-$\tuple{\locsymbconf,\fragset}$ consisting of a local symbolic 
-configuration $\locsymbconf$, and a set $\fragset$ of fragments.
-A configuration $\conf$ of a program satisfies a symbolic configuration
-$\tuple{\locsymbconf,\fragset}$ if for each thread $\thread$,
+%% A {\em symbolic configuration} is a pair
+%% $\tuple{\locsymbconf,\fragset}$ consisting of a local symbolic 
+%% configuration $\locsymbconf$, and a set $\fragset$ of fragments.
+%% A configuration $\conf$ of a program satisfies a symbolic configuration
+%% $\tuple{\locsymbconf,\fragset}$ if for each thread $\thread$,
+%% \begin{itemize}
+%% \item the local configuration of $\thread$ satisfies $\locsymbconf$, in the
+%%   natural way, and
+%% \item for each $\cell$ that is accessible from $\thread$, there is
+%%   a fragment $\frag$ such that $\cell \lhd_{\thread} \frag$.
+%% \end{itemize}
+A {\em symbolic representation} $\symbrep$ is a mapping from
+local symbolic  configurations to sets of fragments.
+A configuration $\conf$ of a program satisfies a symbolic representation
+if for each thread $\thread$, 
 \begin{itemize}
-\item the local configuration of $\thread$ satisfies $\locsymbconf$, in the
+\item the domain of $\symbrep$ contains a local symbolic configuration
+  $\locsymbconf$, which is sastified by $\thread$, in the
   natural way, and
 \item for each $\cell$ that is accessible from $\thread$, there is
-  a fragment $\frag$ such that $\cell \lhd_{\thread} \frag$.
+  a fragment $\frag$ in $\symbrep(\locsymbconf)$ such that
+  $\cell \lhd_{\thread} \frag$.
 \end{itemize}
-\todo[inline]{It appears that satisfaction must be parameterized on thread?}
-
-
-A {\em symbolic representation} $\symbrep$ is a set of
-symbolic configurations. 
-A  set of configurations satisfies a symbolic
-representation $\symbrep$ if each of its
-configurations satisfies some symbolic configuration in $\symbrep$.
 
 \paragraph{Example:} Let us show an example of how a singly linked list (SLL) is split into a set of fragments. Fig.~\ref{lazylist}(a) shows an example of a concrete shape of a singly linked list. Each cell contains the values of $\tt val$, $\tt mark$, and $\tt lock$ from top to bottom, where \tick \; denotes $\tt true$, and \cross \; denotes $\tt false$ (or $\tt free$ for $\tt lock$) and the value of $\tt val$ is denoted by a pair of the observer register $\tt z$ and a subset of $\set{<, =, >}$. There are two threads $1$ and $2$ with two local variables $\tt c_1$ and $\tt c_2$. There are two global variables $\tt H$ and $\tt T$ pointing to the head and tail of the list. The observer register $\tt z$ has value 8. Fig.~\ref{lazylist}(b) shows the result of splitting the list in Fig.~\ref{lazylist}(a) into fragments where each heap fragment is a small list of two nodes. Fig.~\ref{lazylist}(c) shows the abstraction of fragments in Fig.~\ref{lazylist}(b) where for each cell $\cell$, the value of $val$ is abstracted to a subset in $\tt \{<z, =z, >z\}$, the reachability relation between $\cell$ and global variables and observer registers is abstracted to the predicate $\tt X \mapsto \tt Y$ where $\tt X$, $\tt Y$ are sets of global variables and observer registers, $\tt i$ or $\tt o$ states that $\cell$ is an input or output cell.
 
@@ -254,17 +258,111 @@ For a fragment $\tt v$ and index $\tt i$, let $\tt tag(v,i)$ be the tuple $\tt \
 %
 %% We use $\confsetof\prog$ to denote the set of configurations
 
-In this section, we describer how to perform the abstract postcondition computation on our symbolic representation for singly linked lists. We consider
-sets of fragments as defined in Definition~\ref{def:sll-fragment}.
-Let $\fragset$ be a set of fragments.
-
-As is standard in the thread-modular approach, we must consider two different
-cases:
+In this subsection, we describe how to perform the abstract postcondition computation on our symbolic representation for singly linked lists. The
+abstract postcondition computation must ensure that the symbolic representation
+of the reachable configurations of a program is closed under computation
+steps \bjcom{Check terminology}.
+More precisely, assume that a global configuration $\conf$ satisfies
+a symbolic representation $\symbrep$, and that the local configuration
+of thread $\thread$ satisfies a local symbolic configuration $\locsymbconf$
+in $\domof{\symbrep}$, i.e., 
+for each $\cell$ that is accessible from $\thread$, there is
+  a fragment $\frag$ in $\symbrep(\locsymbconf)$ such that
+  $\cell \lhd_{\thread} \frag$. To compute the effect of program steps, we
+  must consider two cases:
 \begin{itemize}
-\item local
-\item interference
+\item The thread $\thread$ performs a computation step, which changes the
+  local configuration of $\thread$, and the heap
+\item Another thread performs a computation step, which potentially affects the
+  local configuration of $\thread$, and the heap.
 \end{itemize}
-\todo[inline]{Bengt is working here}
+We first consider the case of local steps by $\thread$. We must then generate
+a local symbolic configuration $\locsymbconf'$
+which is satisfied by $\thread$ after its
+computation step; this is standard. The step potentially affects the heap,
+and we must compute a set $\fragset'$ of fragments such that
+the local configuration of $\thread$ satisfies $\fragset'$, and thereafter
+make sure that $\fragset' \subseteq \symbrep(\locsymbconf')$.
+\bjcom{Go over the last paragraph again}
+
+Let us introduce notation for describing the different attributes of
+fragments. For a fragment $\frag = \fragtupleof{\frag}$,
+let the input tag be denoted $\tagtupleat{\inat{\frag}}$ and the output tag
+be denoted $\tagtupleat{\outat{\frag}}$.
+
+
+We now describe how to compute a set $\fragset'$ of fragments resulting
+from a local step of $\thread$. The computation has do be done differently for
+each statement that may affect the heap of the program, including the
+pointer variables that point to heap cells. The main difficulty in the
+postcondition computation is to update the reachability information in each
+fragment. To illustrate this difficulty, assume that a program has
+two global variables $g_1$ and $g_2$ and that thread $\thread$ performs
+the assignment $g_1 := g_2$. The postcondition computation is not difficult
+for fragments $\frag$ where, e.g., $g_2 \in \pvarsat{\inat{\frag}}$: in this
+case, one adds $g_1$ to $\pvarsat{\inat{\frag}}$. It may be more difficult
+to update attributes like $\reachfromat{\inat{\frag}}$.
+\bjcom{This past text can be improved}
+In general, updating
+such fragments requires to know how cells that satisfy different fragments
+can be reached from each other in a heap. Given a set $\fragset$ of
+fragments, we will therefore define a number of reachability relations on
+$\fragset$.
+
+Let $\frag_1$ and $\frag_2$ be two fragments in a set $\fragset$ of fragments.
+Let
+\begin{itemize}
+\item  $\frag_1 \hookrightarrow_S frag_2$ denote that $\tagat{\outat{\frag_1}} = \tagat{\inat{\frag_2}}$;
+  \todo[inline]{Quy: Is it not enough that
+    $\tagat{\outat{\frag_1}}$ and $\tagat{\inat{\frag_2}}$ are consistent?}
+  intuitively, this means that if
+  $\cell_1 \lhd \frag_1$ and  $\cell_2 \lhd \frag_2$ then it is possible that
+  $\mathtt{next}(\cell_1) = \cell_2$.
+\item  $\frag_1 \leftrightarrow_S frag_2$ denote that $\tagat{\outat{\frag_1}} = \tagat{\outat{\frag_2}}$ and that 
+  \todo[inline]{Quy: Is it not enough that
+    $\tagat{\outat{\frag_1}}$ and $\tagat{\outat{\frag_2}}$ are consistent?}
+  $\reachfromat{\inat{\frag_1}} \cap \reachfromat{\inat{\frag_2}} = \emptyset$
+  \todo[inline]{Quy: Could you check this, and compare with your definition:
+    I could not see that your definition was the right one. It may depend on
+    whether $\frag_1$ and $\frag_2$ are from the same or different threads}  
+  intuitively, this means that if
+  $\cell_1 \lhd \frag_1$ and  $\cell_2 \lhd \frag_2$ then it is possible that
+  $\cell_1$ and $\cell_2$ are different cells with
+  $\mathtt{next}(\cell_1) = \mathtt{next}(\cell_2)$.
+\end{itemize}
+\bjcom{Here is the case with size 1: I did not yet have time to get here}
+For two fragments $\frag_1$ and $\frag_2$ with sizes of 1, let $\tt i$ be the {\em input} index of $\frag_1$, let $\tt j_i$ be the {\em input} index of $\frag_2$.
+ \begin{itemize}
+ \item $\frag_1$ and $\frag_2$ is branch consistent, denoted as $\frag_1 \leftrightarrow_S \frag_2$ if $\frag_1.next(i) = \frag_2.next(i)$ and $\tt G_1 \cap G_2 = \emptyset$ where $\tt G_1$ is the set of global variables in $\frag_1.{\tt reachfrom}(\tt i)$,  $\tt G_2$ is the set of global variables in $\frag_2.{\tt reachfrom}(\tt j_i)$.
+ \end{itemize}
+
+We use the above relations to define several derived relations:
+\begin{itemize}
+\item Define $\overset{+}\hookrightarrow_S$ as the transitive closure of
+  $\hookrightarrow_S$, and define
+   $\overset{*}\hookrightarrow_S$ as the reflexive transitive closure of
+$\hookrightarrow_S$.
+\item Let $\frag_1  \overset{**}\leftrightarrow_S  \frag_2$ denote that there are
+  $\frag_1',\frag_2' \in \fragset$ with $\frag_1' \leftrightarrow_S \frag_2'$ such that
+  $\frag_1  \overset{*}\hookrightarrow_S \frag_1'$ and $\frag_2  \overset{*}\hookrightarrow_S \frag_2'$.
+\item Let $\frag_1  \overset{*+}\leftrightarrow_S  \frag_2$ denote that there are
+  $\frag_1', \frag_2' \in \fragset$ with $\frag_1' \leftrightarrow_S \frag_2'$ such that
+  $\frag_1  \overset{*}\hookrightarrow_S \frag_1'$ and $\frag_2  \overset{+}\hookrightarrow_S \frag_2'$.
+\item Let $\frag_1  \overset{*\circ}\leftrightarrow_S  \frag_2$ denote that is a
+  $\frag_1' \in \fragset$ with $\frag_1' \leftrightarrow_S \frag_2$ such that
+  $\frag_1  \overset{*}\hookrightarrow_S \frag_1'$.
+\item Let $\frag_1  \overset{++}\leftrightarrow_S  \frag_2$ denote that there are
+  $\frag_1',\frag_2' \in \fragset$ with $\frag_1' \leftrightarrow_S \frag_2'$ such that
+  $\frag_1  \overset{+}\hookrightarrow_S \frag_1'$ and $\frag_2  \overset{+}\hookrightarrow_S \frag_2'$.
+\item Let $\frag_1  \overset{+*}\leftrightarrow_S  \frag_2$ denote that there are
+  $\frag_1', \frag_2' \in \fragset$ with $\frag_1' \leftrightarrow_S \frag_2'$ such that
+  $\frag_1  \overset{+}\hookrightarrow_S \frag_1'$ and $\frag_2  \overset{*}\hookrightarrow_S \frag_2'$.
+\item Let $\frag_1  \overset{+\circ}\leftrightarrow_S  \frag_2$ denote that is a
+  $\frag_1' \in \fragset$ with $\frag_1' \leftrightarrow_S \frag_2$ such that
+  $\frag_1  \overset{+}\hookrightarrow_S \frag_1'$.
+\end{itemize}
+
+
 
 
 %\paragraph{Index Consistency:} Let $\tt i_1 \equiv i_2$ denotes that $\tt i_1$ and $\tt i_2$ are equivalent. Intuitively, $\tt i_1 \equiv i_2$ iff  ${\tt Val}^{\tt v}(\tt i_1) = {\tt Val}^{\tt v}(\tt i_2)$, ${\tt Val}^{\tt d}(\tt i_1) = {\tt Val}^{\tt d}(\tt i_2)$, $\tt private(i_1) = private(i_2)$ and $\tt \Phi(i_1.d, z) = \Phi(i_2.d, z)$ for every $\intgrs$-field $\tt d$ and $\intgrs$-term $\tt z$.  The indices $\tt i_1$ and $\tt i_2$ are consistent if they satisfy one of those conditions below

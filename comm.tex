@@ -28,6 +28,8 @@
 \newcommand{\aelem}{a}
 \newcommand{\belem}{b}
 \newcommand\subword\preceq
+\newcommand{\domof}[1]{Dom(#1)}
+
 
 \newcommand{\fset}{\mathbb{F}}
 \newcommand{\emptyword}{\varepsilon}
@@ -175,27 +177,42 @@
 \newcommand{\reachto}{\mathtt{reachto}}
 \newcommand{\private}{\mathtt{private}}
 \newcommand{\pvarsof}[1]{\pvars\left(#1\right)}
+\newcommand{\pvarsat}[1]{#1.\pvars}
 \newcommand{\pvarsofth}[2]{\pvars\left(#1,#2\right)}
 \newcommand{\dataof}[1]{\data\left(#1\right)}
 \newcommand{\valsof}[1]{\vals\left(#1\right)}
+\newcommand{\valsat}[1]{#1.\vals}
 \newcommand{\valsofth}[2]{\vals\left(#1,#2\right)}
 \newcommand{\reachfromof}[1]{\reachfrom\left(#1\right)}
+\newcommand{\reachfromat}[1]{#1.\reachfrom}
 \newcommand{\reachfromofth}[2]{\reachfrom\left(#1,#2\right)}
 \newcommand{\reachtoof}[1]{\reachto\left(#1\right)}
+\newcommand{\reachtoat}[1]{#1.\reachto}
 \newcommand{\reachtoofth}[2]{\reachto\left(#1,#2\right)}
 \newcommand{\privateof}[1]{\private\left(#1\right)}
+\newcommand{\privateat}[1]{#1.\private}
 \newcommand{\privateofth}[2]{\private\left(#1,#2\right)}
 
+\newcommand{\frag}{\mathtt{v}}
+\newcommand{\fragset}{F}
+
+
 \newcommand{\atag}{\mathtt{tag}}
+\newcommand{\tagat}[1]{#1.\atag}
 \newcommand{\tagtuple}{\tuple{\pvars,\vals,\reachfrom,\reachto,\private}}
 \newcommand{\tagtupleof}[1]{\tuple{\pvarsof{#1},\valsof{#1},\reachfromof{#1},\reachtoof{#1},\privateof{#1}}}
+\newcommand{\tagtupleat}[1]{\tuple{\pvarsat{#1},\valsat{#1},\reachfromat{#1},\reachtoat{#1},\privateat{#1}}}
 \newcommand{\tagof}[1]{\mathtt{tag}\left(#1\right)}
 \newcommand{\sllviewtuple}{\tuple{\inputtag,\outputtag,\datarel}}
 \newcommand{\inputtag}{\mathtt{tag}_{in}}
 \newcommand{\outputtag}{\mathtt{tag}_{out}}
 \newcommand{\datarel}{\phi}
-\newcommand{\frag}{\mathtt{frag}}
-\newcommand{\fragset}{F}
+\newcommand{\fragtupleof}[1]{\tuple{\inat{#1},\outat{#1},\datarelat{#1}}}
+\newcommand{\inat}[1]{#1.\mathtt{in}}
+\newcommand{\outat}[1]{#1.\mathtt{out}}
+\newcommand{\datarelat}[1]{#1.\datarel}
+
+
 
 \newcommand{\cellmap}{\mu}
 \newcommand{\cellterm}{c}
