@@ -6,7 +6,7 @@
 \node[linecode,anchor=south west](struct) at ($(top-head.east)+(-30pt,0pt)$) { \scriptsize struct Node \scriptsize \{};
 %{struct Node(bool lock; int val; Node *next; bool mark);};
 \node(struct1)[linecode] at ($(top-head.west)+(10pt,-5pt)$) {\scriptsize int data;\;\;\;\;\;\;};
-\node(struct2)[linecode] at ($(top-head.west)+(10pt,-15pt)$) {\scriptsize Timestamp ts;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;};
+\node(struct2)[linecode] at ($(top-head.west)+(10pt,-15pt)$) {\scriptsize Timestamp ts;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;};
 \node(struct3)[linecode] at ($(top-head.west)+(10pt,-26pt)$) {\scriptsize Node* next;};
 \node(struct4)[linecode] at ($(top-head.west)+(10pt,-37pt)$) {\scriptsize bool mark;};
 \node(struct5)[linecode] at ($(top-head.west)+(0pt,-47pt)$) {\scriptsize \}};
@@ -16,7 +16,7 @@
 \end{pgfonlayer}
 
 
-\node(locate-head)[linecode] at ($(top-head.east)+(140pt,8pt)$) {\scriptsize int pop():};
+\node(locate-head)[linecode] at ($(top-head.east)+(143pt,8pt)$) {\scriptsize int pop():};
 
 \node(locate1)[linenum,anchor=west] at ($(locate-head.west)+(0pt,-10pt)$) {\scriptsize 1};
 \node[linecode] at ($(locate1.east)+(0pt,0pt)$) {\scriptsize boolean success = false;};
@@ -37,10 +37,10 @@
 \node[linecode] at ($(locate6.east)+(7pt,0pt)$) {\scriptsize for(int Node* i=0; i<maxThreads; i++)};
 
 \node(locate7)[linenum] at ($(locate6.east)+(0pt,-10pt)$) {\scriptsize 7};
-\node[linecode] at ($(locate7.east)+(14pt,0pt)$) {\scriptsize myTop = pools[i];};
+\node[linecode] at ($(locate7.east)+(14pt,0pt)$) {\scriptsize myTop = pools[i]; n = myTop;};
 
 \node(locate8)[linenum] at ($(locate7.east)+(0pt,-10pt)$) {\scriptsize 8};
-\node(code8)[linecode] at ($(locate8.east)+(14pt,0pt)$) {\scriptsize while (n.mark $\&$ n.next != n) n.next; };
+\node(code8)[linecode] at ($(locate8.east)+(14pt,0pt)$) {\scriptsize while (n.mark $\&$ n.next != n) n = n.next; };
 
 \node(locate9)[linenum] at ($(locate8.east)+(0pt,-10pt)$) {};
 \node[linecode] at ($(locate9.east)+(14pt,0pt)$) {\scriptsize if(maxTS < n.ts)};
@@ -109,15 +109,15 @@
 {\scriptsize void push(int x):};
 \node(pop1)[linenum,anchor=west] at ($(pop-head.west)+(0pt,-10pt)$) {\scriptsize 1};
 \node(linecode1)[linecode] at ($(pop1.east)+(0pt,0pt)$) 
-{\scriptsize Node* n := new Node(d,-1,null,false);};
+{\scriptsize Node* new := new Node(d,-1,null,false);};
 
 \node(pop2)[linenum] at ($(pop1.east)+(0pt,-10pt)$) {\scriptsize 2};
 \node(linecode2)[linecode] at ($(pop2.east)+(0pt,0pt)$)
-{\scriptsize n.next = pools[myID];};
+{\scriptsize new.next = pools[myID];};
 
 \node(pop3)[linenum] at ($(pop2.east)+(0pt,-10pt)$) {\scriptsize 3};
 \node(linecode3)[linecode] (code3a) at ($(pop3.east)+(0pt,0pt)$)
-{\scriptsize pools[myID] = n;};
+{\scriptsize pools[myID] = new;};
 
 \node(pop4)[linenum] at ($(pop3.east)+(0pt,-10pt)$) {\scriptsize 4};
 \node(linecode4)[linecode] at ($(pop4.east)+(0pt,0pt)$)
@@ -129,7 +129,7 @@
 
 \node(pop6)[linenum] at ($(pop5.east)+(0pt,-10pt)$) {\scriptsize 6};
 \node(linecode6)[linecode] at ($(pop6.east)+(0pt,0pt)$) 
-{\scriptsize Node* next = n.next;};
+{\scriptsize Node* next = new.next;};
 
 \node(pop7)[linenum] at ($(pop6.east)+(0pt,-10pt)$) {\scriptsize 7};
 \node(linecode7)[linecode] at ($(pop7.east)+(0pt,0pt)$) 
@@ -141,11 +141,11 @@
 
 \node(pop9)[linenum] at ($(pop8.east)+(0pt,-10pt)$) {\scriptsize 9};
 \node(linecode9)[linecode] at ($(pop9.east)+(0pt,0pt)$) 
-{\scriptsize n.next = next;};
+{\scriptsize new.next = next;};
 
 \node(pop10)[linenum] at ($(pop9.east)+(0pt,-10pt)$) {\scriptsize 10};
 \node(linecode10)[linecode] at ($(pop10.east)+(0pt,0pt)$) 
-{\scriptsize return n;};
+{\scriptsize return new;};
 
 
 
@@ -162,7 +162,7 @@
 \node[linecode,anchor=south west](init) at ($(top-head.east)+(-30pt,-75pt)$) {\scriptsize initialize() :};
 %{struct Node(bool lock; int val; Node *next; bool mark);};
 \node(init1)[linecode] at ($(top-head.east)+(-30pt,-80pt)$) {\scriptsize Node* pools[maxThreads];};
-\node(init2)[linecode] at ($(top-head.east)+(-30pt,-90pt)$) {\scriptsize for(int Node* i=0; i<maxThreads; i++)\;\;\;\;\;\;\;};
+\node(init2)[linecode] at ($(top-head.east)+(-30pt,-90pt)$) {\scriptsize for(int Node* i=0; i<maxThreads; i++)\;\;\;\;\;\;\;\;\;\;\;};
 \node(init4)[linecode] at ($(top-head.east)+(-30pt,-100pt)$) {\scriptsize \;\;\;\;pools[i].next = null;};
 
 \node(bot)[linecode] at ($(init4.east)+(0pt,-4pt)$) {};

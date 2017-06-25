@@ -10,26 +10,19 @@ of~\cite{ts-stack}.
 \input tscode
 
 %\todo[inline]{Provide a description of the algorithm}
-Figure~\ref{ts-stack:fig} shows a simplified version of the Timestamped Stack (TS stack).
-The algorithm uses an array of singly-linked lists, one for each thread, which are accessed via
-an array {\tt pools[maxThreads]} of pointers to the first node of each list, each
-of which is initially $\nullconst$.
-Each node of a list contains a data value, a time, the next pointer, and a boolean flag indicating whether it is logically removed from the stack or not.
+Figure~\ref{ts-stack:fig} shows a simplified version of the Timestamped Stack (TS stack). The algorithm uses an array of singly-linked lists, one for each thread, which are accessed via an array {\tt pools[maxThreads]} of pointers to the first node of each list, each of which is initially $\nullconst$. Each node of a list contains a data value, a time, the next pointer, and a boolean flag indicating whether it is logically removed from the stack or not.
 
-A Push method for inserting an element {\tt x} into the TS-stack is performed as follows: First, a new node with element {\tt x} and minimal timestamp is inserted
-at the beginning of the list which is owned by the calling thread.
-After that, a new timestamp is created and assigned (via
-the variable {\tt t}) to the {\tt time} field of the added node.
+A Push method for inserting an element {\tt x} into the TS-stack is performed as follows: First, a new node with element {\tt x} and minimal timestamp is inserted at the beginning of the list which is owned by the calling thread (line 1-3). After that, a new timestamp is created and assigned (via the variable {\tt t}) to the {\tt time} field of the added node (line 4-5).
 \bjcom{Quesion to Quy: What happens when pop methods sees uninitialized timestamps?} \quycom{uninitialized time is -1, its smaller than any other time.}
-Finally, the method unlinks all nodes whose {\tt mark} field are equal to {\tt true} and reachable from the added node.
+Finally, the method unlinks all nodes whose {\tt mark} field are equal to {\tt true} and reachable from the added node. The unlink is performed by redirecting the $\tt next$ pointer from the new node to the first node whose $\tt mark$ field is $\tt false$ and previously connected by a sequence of marked nodes (line 7-9).
 
 Popping an element from the stack consists in traversing all the lists, finding
 the first element whose {\tt mark} field is {\tt false} in each
-list, and selecting the youngest such node (i.e., with the maximal timestamp).
+list, and selecting the youngest such node (i.e., with the maximal timestamp) (line 1-11).
 A compare-and-swap (CAS) is used
 to set the {\tt mark} field of this youngest node to $\true$,
 thereby logically removing it.
-The procedure will restart if the CAS fails. After the youngest node has been removed, the method will unlink all nodes whose {\tt mark} field are equal to {\tt true} appear before or after removed  node.
+The procedure will restart if the CAS fails. After the youngest node has been removed, the method will unlink all nodes whose {\tt mark} field are equal to {\tt true} appear before (line 15-16) or after removed  node (line 18-21).
 \todo[inline]{Comments by Bengt: How can you return empty? Also, I think you
   need to explain the extra removal of marked nodes better} \quycom{this code is a simplified version without emptiness checking. If we add emptiness part, the code will be longer and more complicated}
 
