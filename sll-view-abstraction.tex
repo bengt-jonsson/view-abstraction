@@ -314,17 +314,17 @@ Let
 \begin{itemize}
 \item  $\frag_1 \hookrightarrow_S frag_2$ denote that $\tagat{\outat{\frag_1}} = \tagat{\inat{\frag_2}}$;
   \todo[inline]{Quy: Is it not enough that
-    $\tagat{\outat{\frag_1}}$ and $\tagat{\inat{\frag_2}}$ are consistent?}
+    $\tagat{\outat{\frag_1}}$ and $\tagat{\inat{\frag_2}}$ are consistent?} \quycom{Yes, its enough}
   intuitively, this means that if
   $\cell_1 \lhd \frag_1$ and  $\cell_2 \lhd \frag_2$ then it is possible that
   $\mathtt{next}(\cell_1) = \cell_2$.
 \item  $\frag_1 \leftrightarrow_S frag_2$ denote that $\tagat{\outat{\frag_1}} = \tagat{\outat{\frag_2}}$ and that 
   \todo[inline]{Quy: Is it not enough that
     $\tagat{\outat{\frag_1}}$ and $\tagat{\outat{\frag_2}}$ are consistent?}
-  $\reachfromat{\inat{\frag_1}} \cap \reachfromat{\inat{\frag_2}} = \emptyset$
+  $\reachfromat{\inat{\frag_1}} \cap \reachfromat{\inat{\frag_2}} = \emptyset$ \quycom{$\reachfromat{\inat{\frag_1}} \cap \reachfromat{\inat{\frag_2}} = \emptyset$ here is not correct, we only need the global variables of reachfrom and reachto in this case}
   \todo[inline]{Quy: Could you check this, and compare with your definition:
     I could not see that your definition was the right one. It may depend on
-    whether $\frag_1$ and $\frag_2$ are from the same or different threads}  
+    whether $\frag_1$ and $\frag_2$ are from the same or different threads}  \quycom{In my definition, the consistent here is defined for two views in the same threads. With the view from other thread, I use the notion of intersection.}
   intuitively, this means that if
   $\cell_1 \lhd \frag_1$ and  $\cell_2 \lhd \frag_2$ then it is possible that
   $\cell_1$ and $\cell_2$ are different cells with

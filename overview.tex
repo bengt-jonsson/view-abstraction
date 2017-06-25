@@ -415,15 +415,15 @@ which global variables can be reached from the node.
 
 Let us illustrate our symbolic representation for the TS-Stack algorithm.
 The heap in the algorithm consists of a set of singly linked lists (SLLs). Each
-SLL is accessed from a particular pointer ${\tt pools[\thread_i]}$ in an array of such pointers.
+SLL is accessed from a particular pointer in an array of such pointers. 
 Fig. ~\ref{fig:tsshape} shows an example of a snapshot of the heap state, in a situation when
 % Quy write from here
-it is accessed concurrently by three threads $\thread_1$, $\thread_2$, and $\thread_3$.
+it is accessed concurrently by three threads $\thread_1$, $\thread_2$, and $\thread_3$. The heap consists of three SLLs accessed from three pointer variables $\tt top_1$, $\tt top_2$, and $\tt top_3$ respectively. A variable that labels a node is the pointer variable which point to the node.
 \todo[inline]{Quy: Use a better scheme for indexing local variables. Previously,
   we used {\tt var[2]}, for variable {\tt var} of thread 2. Maybe use it also here?}
 \todo[inline]{You must start by explaining the notation better. E.g., what means
   a pointer variable that labels a node?}
-The thread $\tt T_1$ is trying to push a new node pointed by its local variable $\tt new[1]$ while $\tt T_3$ has just called its push method and $\tt T_2$ is doing its pop method. The thread $\tt T_2$ find the youngest node in the list owned by $\tt T_3$ which is determined by its local variable $\tt youngest[2]$.
+The thread $\thread_1$ is trying to push a new node pointed by its local variable $\tt new[1]$ while $\thread_3$ has just called its push method and $\thread_2$ is doing its pop method. The thread $\thread_2$ find the youngest node in the list owned by $\thread_3$ which is determined by its local variable $\tt youngest[2]$.
 %\todo[inline]{Quy: Make a picture of a concrete shape with several threads.
 %  Say which operations are working there now, and give some
 %  explanation of what the figure says}.
@@ -438,7 +438,7 @@ project the configuration onto a single thread. Fig. ~\ref{fig:tsdabsshape} show
 of projecting onto thread 2, which performs a pop with data abstraction.
 \todo[inline]{I do not quite understand that this is the result: Thread 2 is doing a pop from list 3: so it sees ${\tt top}_3$. But why does it see the
   list 2? and why does it need to see the list 1? Does thread 2 really see all the nodes and variables in Figure 5?}
-As can be seen the the figure, the node pointed by $\tt new[1]$ is not visible with $\tt T_2$ because it is still the private variable of $\tt T_1$. We use three observer registers $\tt d_1$, $\tt d_2$, and $\tt d_3$. The data value $\tt 9$ is equal to $\tt d_1$, $\tt 8$ is equal to $\tt d_2$ and all other data values are equal to $\tt d_3$. To abstract timestamp of a node, we keep the ordering between its timestamp and nodes whose data values are equal to $\tt d_1$ or $\tt d_2$ which are described by $\tt to_1$,...,$\tt to_6$ in the figure.
+As can be seen the the figure, the node pointed by $\tt new[1]$ is not visible with $\thread_3$ because it is still the private variable of $\thread_2$. We use three observer registers $\tt d_1$, $\tt d_2$, and $\tt d_3$. The data value $\tt 9$ is equal to $\tt d_1$, $\tt 8$ is equal to $\tt d_2$ and all other data values are equal to $\tt d_3$. To abstract timestamp of a node, we keep the ordering between its timestamp and nodes whose data values are equal to $\tt d_1$ or $\tt d_2$ which are described by $\tt to_1$,...,$\tt to_6$ in the figure.
 % Quy write here
 %\todo[inline]{Quy: make a picture of the correspondingq
 %  thread view with data abstraction  Complete this description}.
@@ -462,7 +462,7 @@ $\tuple{\pvars,\data,\reachfrom,\reachto,\private}$, where
 \begin{itemize}
 \item
   $\pvars$ is a set of pointer variables (i.e., a subset of
-  {\tt $\tt top_3$, youngest[2], n[2], myTop[2]}
+  {\tt top$_3$, youngest[2], n[2], myTop[2]}
   %\bjcom{Quy: Check exactly what this set should be}
 \item
   $\vals$ maps
@@ -502,7 +502,7 @@ pointer, observer state, and value of local variables \bjcom{or: local state}, a
 
 %\todo[inline]{Quy: make a picture with all the fragments obtained from the
  % thread projection}
-Figure ~\ref{fig:tsviewshape} shows all the fragments obtained from the thread projection from ~\ref{fig:tsdabsshape}. The $\reachfrom$ of each node is shown in the first row under each node, whereas the $\reachto$ is shown in the second row.  
+Figure ~\ref{fig:tsviewshape} shows all the fragments obtained from the thread projection from ~\ref{fig:tsdabsshape}. The $\reachfrom$ of each node is shown in the first row under each node, whereas the $\reachto$ is shown in the second row. The other SLLs accessed from $\top_1$ and $\tt top_2$  
 A thread-abstracted configuration satisfies a symbolic configuration if
 \begin{itemize}
 \item it satisfies program counter, observer state, and local variables %\bjcom{Say that program counter, and local variables ...}
