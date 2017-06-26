@@ -271,26 +271,36 @@ for each $\cell$ that is accessible from $\thread$, there is
   $\cell \lhd_{\thread} \frag$. To compute the effect of program steps, we
   must consider two cases:
 \begin{itemize}
-\item The thread $\thread$ performs a computation step, which changes the
-  local configuration of $\thread$, and the heap
-\item Another thread performs a computation step, which potentially affects the
-  local configuration of $\thread$, and the heap.
-\end{itemize}
-We first consider the case of local steps by $\thread$. We must then generate
-a local symbolic configuration $\locsymbconf'$
+\item The thread $\thread$ performs a computation step, which may change the
+  local configuration of $\thread$ and the heap that is accessible to
+    $\thread$. In this case, the abstract transformer generates
+  a local symbolic configuration $\locsymbconf'$
 which is satisfied by $\thread$ after its
-computation step; this is standard. The step potentially affects the heap,
-and we must compute a set $\fragset'$ of fragments such that
-the local configuration of $\thread$ satisfies $\fragset'$, and thereafter
+computation step; this can be done by standard techniques. We must also
+must compute a set $\fragset'$ of views that characterize the heap accessible to
+$\thread$ after the step, and
 make sure that $\fragset' \subseteq \symbrep(\locsymbconf')$.
-\bjcom{Go over the last paragraph again}
-
+\item Another thread $\thread'$ performs a computation step, which potentially affects the
+  local configuration of $\thread$ and the heap accessible to $\thread$.
+  For this case, we first define a representation of the heap which is
+  accessible to either $\thread$ or $\thread'$. This is done by performing an
+  operation, called {\em intersection}, of two projections:
+  We take a local symbolic configuration of thread $\thread_1$, represented by
+  $\locsymbconf_1$, and a
+ local symbolic configuration of thread $\thread_2$, represented by
+ $\locsymbconf_2$, and form a joint local symbolic configuration
+ $\locsymbconf_{12}$. We then form a representation of all joint heap
+ projections such that their projection onto $\thread_i$ satisfies
+ $\symbrep(\locsymbconf_i)$ for $i = 1,2$, thereafter perform a local
+ step of $\thread_2$ as in the previous case, and finally project back onto
+ $\thread_1$ to obtain the final result.
+\end{itemize}
 Let us introduce notation for describing the different attributes of
 fragments. For a fragment $\frag = \fragtupleof{\frag}$,
 let the input tag be denoted $\tagtupleat{\inat{\frag}}$ and the output tag
 be denoted $\tagtupleat{\outat{\frag}}$.
 
-
+\paragraph{Local Steps}
 We now describe how to compute a set $\fragset'$ of fragments resulting
 from a local step of $\thread$. The computation has do be done differently for
 each statement that may affect the heap of the program, including the
@@ -313,20 +323,16 @@ Let $\frag_1$ and $\frag_2$ be two fragments in a set $\fragset$ of fragments.
 Let
 \begin{itemize}
 \item  $\frag_1 \hookrightarrow_S \frag_2$ denote that $\tagat{\outat{\frag_1}} = \tagat{\inat{\frag_2}}$;
-  \todo[inline]{Quy: Is it not enough that
+  \todo[inline]{Quy: Could you provide the precise definition of when
     $\tagat{\outat{\frag_1}}$ and $\tagat{\inat{\frag_2}}$ are consistent?} \quycom{Yes, its enough}
-  intuitively, this means that if
+  this means that if
   $\cell_1 \lhd \frag_1$ and  $\cell_2 \lhd \frag_2$ then it is possible that
   $\mathtt{next}(\cell_1) = \cell_2$.
 \item  $\frag_1 \leftrightarrow_S \frag_2$ denote that $\tagat{\outat{\frag_1}} = \tagat{\outat{\frag_2}}$ and that 
-  \todo[inline]{Quy: Is it not enough that
-    $\tagat{\outat{\frag_1}}$ and $\tagat{\outat{\frag_2}}$ are consistent?}
   the global variables in  $\reachfromat{\inat{\frag_1}}$ are disjoint from
   those in $\reachfromat{\inat{\frag_2}}$.
   $\reachfromat{\inat{\frag_1}} \cap \reachfromat{\inat{\frag_2}} = \emptyset$ \quycom{$\reachfromat{\inat{\frag_1}} \cap \reachfromat{\inat{\frag_2}} = \emptyset$ here is not correct, we only need the global variables of reachfrom and reachto in this case}
-  \todo[inline]{Quy: Could you check this, and compare with your definition:
-    I could not see that your definition was the right one. It may depend on
-    whether $\frag_1$ and $\frag_2$ are from the same or different threads}  \quycom{In my definition, the consistent here is defined for two views in the same threads. With the view from other thread, I use the notion of intersection.}
+\quycom{In my definition, the consistent here is defined for two views in the same threads. With the view from other thread, I use the notion of intersection.}
   intuitively, this means that if
   $\cell_1 \lhd \frag_1$ and  $\cell_2 \lhd \frag_2$ then it is possible that
   $\cell_1$ and $\cell_2$ are different cells with
@@ -365,81 +371,240 @@ $\hookrightarrow_S$.
   $\frag_1  \overset{+}\hookrightarrow_S \frag_1'$.
 \end{itemize}
 
+\todo[inline]{Quy: I think you should make a picture with
+  a shape with several views that illustrate the relations above}
+
 \paragraph{Abstract Transformers for Local Steps} We first consider
 the abstract transformer for the case that the thread performs a local
 step.
-Let $\tt kill(x,v)$ be the procedure to remove $\tt x$ if it exists from $\tt v.{\tt reachfrom}(\tt i)$, $\tt v.{\tt reachfrom}(\tt o)$, $\tt v.{\tt reachto}(\tt i)$, $\tt v.{\tt reachto}(\tt o)$, $\tt v.{\tt vars}(\tt i)$, and $\tt v.{\tt vars}(\tt o)$. For each program statement, let $\tt S_{post}$ be the set of fragments after executing the statement. Let $\tt S_{post}$ be initialized as the empty set.
+Let $\tt kill(x,v)$ be the procedure to remove $\tt x$ if it exists from
+$\reachfromat{\inat{\frag}}$,
+$\reachfromat{\outat{\frag}}$,
+$\reachtoat{\inat{\frag}}$,
+$\reachtoat{\outat{\frag}}$,
+$\pvarsat{\inat{\frag}}$, and
+$\pvarsat{\outat{\frag}}$.
+For each program statement, let $\fragset_{post}$ be the set of fragments after executing the statement. Let $\fragset_{post}$ be initialized as the empty set.
 \begin{description}
 \item[${\tt x := y}$] where $\mathtt{x}$ and $\mathtt{y}$ are global or local
   (to thread $\thread$) pointer variables.
-  The transformer is comptued as follows: For each fragment $\frag_y \in S$ such that $\mathtt{y} \in \pvarsat{\inat{\frag_y}}$ perform the following:
+  The transformer is computed as follows: For each fragment $\frag_y \in S$ such that $\mathtt{y} \in \pvarsat{\inat{\frag_y}}$ perform the following:
 \begin{enumerate}
-\item  for each fragment $\frag$ where $\frag \hookrightarrow_S v_y$, create $\frag'$ which is same as $\frag$ except that
+\item create $\frag'$ which is the same as $\frag_y$, except that
 \begin{itemize}
-\item $\frag'.i.vars = v.i.vars \setminus \{x\}$,
-\item $\frag'.o.vars = v.o.vars \cup \{x\}$,
-\item $\frag'.i.reachfrom = v.i.reachfrom \setminus \{x\}$ if $\tt x$ is a global variable,
-\item $\frag'.i.reachto = v.i.reachto \cup \{x\}$ if $\tt x$ is a global variable,
- \item $\frag'.o.reachfrom = v.o.reachfrom \cup \{x\}$ if $\tt x$ is a global variable,
-\item $\frag'.o.reachto = v.o.reachto \cup \{x\}$ if $\tt x$ is a global variable,
+\item $\pvarsat{\inat{\frag'}} = \pvarsat{\inat{\frag_y}} \cup \set{x}$ and
+  $\pvarsat{\outat{\frag'}} = \pvarsat{\outat{\frag}} \setminus \set{x}$
+\end{itemize}
+and furthermore, if $\gvarof{x}$ is a global variable, then
+\begin{itemize}
+\item $\reachtoat{\inat{\frag'}} = \reachtoat{\inat{\frag}} \cup \set{x}$ and
+$\reachfromat{\inat{\frag'}} = \reachfromat{\inat{\frag}} \cup \set{x}$,
+\item $\reachfromat{\outat{\frag'}} = \reachfromat{\outat{\frag}} \cup \set{x}$ and
+$\reachtoat{\outat{\frag'}} = \reachtoat{\outat{\frag}} \setminus \set{x}$.
 \end{itemize}
 and add $\frag'$ to $\tt S_{post}$,
-\item for each fragment $\frag$ where $\frag \overset{+}\hookrightarrow_S v_y$, create $\frag'$ which is same as $\frag$ except that
+\item  for each fragment $\frag$ where $\frag \hookrightarrow_S \frag_y$, create $\frag'$ which is same as $\frag$ except that
 \begin{itemize}
-\item $\frag'.i.vars = v.i.vars \setminus \{x\}$,
-\item $\frag'.o.vars = v.o.vars \setminus \{x\}$,
-\item $\frag'.i.reachfrom = v.i.reachfrom \setminus \{x\}$ if $\tt x$ is a global variable,
-\item $\frag'.i.reachto = v.i.reachto \cup \{x\}$ if $\tt x$ is a global variable,
-\item $\frag'.o.reachfrom = v.o.reachfrom \setminus \{x\}$ if $\tt x$ is a global variable,
-\item $\frag'.o.reachto = v.o.reachto \cup \{x\}$ if $\tt x$ is a global variable,
+\item $\pvarsat{\inat{\frag'}} = \pvarsat{\inat{\frag}} \setminus \set{x}$,
+\item $\pvarsat{\outat{\frag'}} = \pvarsat{\outat{\frag}} \cup \set{x}$,
+\item $\reachfromat{\inat{\frag'}} = \reachfromat{\inat{\frag}} \setminus \set{x}$ if $\tt x$ is a global variable,
+\item $\reachtoat{\inat{\frag'}} = \reachtoat{\inat{\frag}} \cup \set{x}$ if $\tt x$ is a global variable,
+ \item $\reachfromat{\outat{\frag'}} = \reachfromat{\outat{\frag}} \cup \set{x}$ if $\tt x$ is a global variable,
+\item $\reachtoat{\outat{\frag'}} = \reachtoat{\outat{\frag}} \cup \set{x}$ if $\tt x$ is a global variable,
 \end{itemize}
 and add $\frag'$ to $\tt S_{post}$,
-\item for each fragment $\frag_3$ where $\frag_y \overset{*}\hookrightarrow_S v$, create $\frag'$ which is same as $\frag$ except that
+\item for each fragment $\frag$ where $\frag \overset{+}\hookrightarrow_S \frag_y$, create $\frag'$ which is same as $\frag$ except that
 \begin{itemize}
-\item $\frag'.i.vars = v.i.vars \setminus \{x\}$,
-\item $\frag'.o.vars = v.o.vars \setminus \{x\}$,
-\item $\frag'.i.reachfrom = v.i.reachfrom \cup \{x\}$ if $\tt x$ is a global variable,
-\item $\frag'.i.reachto = v.i.reachto \setminus \{x\}$ if $\tt x$ is a global variable,
+\item $\pvarsat{\inat{\frag'}} = \pvarsat{\inat{\frag}} \setminus \set{x}$,
+\item $\pvarsat{\outat{\frag'}} = \pvarsat{\outat{\frag}} \setminus \set{x}$,
+\item $\reachfromat{\inat{\frag'}} = \reachfromat{\inat{\frag}} \setminus \set{x}$ if $\tt x$ is a global variable,
+\item $\reachtoat{\inat{\frag'}} = \reachtoat{\inat{\frag}} \cup \set{x}$ if $\tt x$ is a global variable,
+\item $\reachfromat{\outat{\frag'}} = \reachfromat{\outat{\frag}} \setminus \set{x}$ if $\tt x$ is a global variable,
+\item $\reachtoat{\outat{\frag'}} = \reachtoat{\outat{\frag}} \cup \set{x}$ if $\tt x$ is a global variable,
+\end{itemize}
+and add $\frag'$ to $\tt S_{post}$,
+\item for each fragment $\frag$ where $\frag_y \overset{*}\hookrightarrow_S \frag$, create $\frag'$ which is same as $\frag$ except that
+\begin{itemize}
+\item $\pvarsat{\inat{\frag'}} = \pvarsat{\inat{\frag}} \setminus \set{x}$,
+\item $\pvarsat{\outat{\frag'}} = \pvarsat{\outat{\frag}} \setminus \set{x}$,
+\item $\reachfromat{\inat{\frag'}} = \reachfromat{\inat{\frag}} \cup \set{x}$ if $\tt x$ is a global variable,
+\item $\reachtoat{\inat{\frag'}} = \reachtoat{\inat{\frag}} \setminus \set{x}$ if $\tt x$ is a global variable,
 
- \item $\frag'.o.reachfrom = v.o.reachfrom \cup \{x\}$ if $\tt x$ is a global variable,
- \item $\frag'.o.reachto = v.o.reachto \setminus \{x\}$ if $\tt x$ is a global variable,
-
-\end{itemize}
-and add $\frag'$ to $\tt S_{post}$,
-\item for each fragment $\frag$ where $\frag_y \overset{*+}\leftrightarrow_S v$, create $\frag'$ which is same as $\frag$ except that
-\begin{itemize}
-\item $\frag'.i.vars = v.i.vars \setminus \{x\}$,
-\item $\frag'.o.vars = v.o.vars \setminus \{x\}$,
-\item $\frag'.i.reachfrom = v.i.reachfrom \setminus \{x\}$ if $\tt x$ is a global variable,
-\item $\frag'.i.reachto = v.i.reachto \setminus \{x\}$ if $\tt x$ is a global variable,
-\item $\frag'.o.reachfrom = v.o.reachfrom \setminus \{x\}$ if $\tt x$ is a global variable,
-\item $\frag'.o.reachto = v.o.reachto \setminus \{x\}$ if $\tt x$ is a global variable,
-\end{itemize}
-and add $\frag'$ to $\tt S_{post}$,
-\item for each fragment $\frag$ where $\frag_y \overset{*o}\leftrightarrow_S v$, create $\frag'$ which is same as $\frag$ except that
-\begin{itemize}
-\item $\frag'.i.vars = v.i.vars \setminus \{x\}$,
-\item $\frag'.o.vars = v.o.vars \setminus \{x\}$,
-\item $\frag'.i.reachfrom = v.i.reachfrom \setminus \{x\}$ if $\tt x$ is a global variable,
-\item $\frag'.i.reachto = v.i.reachto \setminus \{x\}$ if $\tt x$ is a global variable,
-\item $\frag'.o.reachfrom = v.o.reachfrom \cup \{x\}$ if $\tt x$ is a global variable,
-\item $\frag'.o.reachto = v.o.reachto \setminus \{x\}$ if $\tt x$ is a global variable,
+ \item $\reachfromat{\outat{\frag'}} = \reachfromat{\outat{\frag}} \cup \set{x}$ if $\tt x$ is a global variable,
+ \item $\reachtoat{\outat{\frag'}} = \reachtoat{\outat{\frag}} \setminus \set{x}$ if $\tt x$ is a global variable,
 
 \end{itemize}
 and add $\frag'$ to $\tt S_{post}$,
+\item for each fragment $\frag$ where $\frag_y \overset{*+}\leftrightarrow_S \frag$, create $\frag'$ which is same as $\frag$ except that
+\begin{itemize}
+\item $\pvarsat{\inat{\frag'}} = \pvarsat{\inat{\frag}} \setminus \set{x}$,
+\item $\pvarsat{\outat{\frag'}} = \pvarsat{\outat{\frag}} \setminus \set{x}$,
+\item $\reachfromat{\inat{\frag'}} = \reachfromat{\inat{\frag}} \setminus \set{x}$ if $\tt x$ is a global variable,
+\item $\reachtoat{\inat{\frag'}} = \reachtoat{\inat{\frag}} \setminus \set{x}$ if $\tt x$ is a global variable,
+\item $\reachfromat{\outat{\frag'}} = \reachfromat{\outat{\frag}} \setminus \set{x}$ if $\tt x$ is a global variable,
+\item $\reachtoat{\outat{\frag'}} = \reachtoat{\outat{\frag}} \setminus \set{x}$ if $\tt x$ is a global variable,
+\end{itemize}
+and add $\frag'$ to $\tt S_{post}$,
+\item for each fragment $\frag$ where $\frag_y \overset{*o}\leftrightarrow_S \frag$, create $\frag'$ which is same as $\frag$ except that
+\begin{itemize}
+\item $\pvarsat{\inat{\frag'}} = \pvarsat{\inat{\frag}} \setminus \set{x}$,
+\item $\pvarsat{\outat{\frag'}} = \pvarsat{\outat{\frag}} \setminus \set{x}$,
+\item $\reachfromat{\inat{\frag'}} = \reachfromat{\inat{\frag}} \setminus \set{x}$ if $\tt x$ is a global variable,
+\item $\reachtoat{\inat{\frag'}} = \reachtoat{\inat{\frag}} \setminus \set{x}$ if $\tt x$ is a global variable,
+\item $\reachfromat{\inat{\frag'}} = \reachfromat{\outat{\frag}} \cup \set{x}$ if $\tt x$ is a global variable,
+\item $\reachtoat{\inat{\frag'}} = \reachtoat{\outat{\frag}} \setminus \set{x}$ if $\tt x$ is a global variable,
+\end{itemize}
+and add $\frag'$ to $\tt S_{post}$,
+\end{enumerate}
+\item[${\tt x := y.next}$]: The local abstract transformer is quite similar to the previous case with some slight differences. For each fragment $\frag_y \in S$ where $\gvarof{y} \in \pvarsat{\inat{\frag_y}}$,
+\begin{enumerate}
 \item create $\frag'$ which is same as $\frag_y$ except that
 \begin{itemize}
-\item $\frag'.i.vars = v.i.vars \cup \{x\}$,
-\item $\frag'.o.vars = v.o.vars \setminus \{x\}$,
-\item $\frag'.i.reachto = v.i.reachto \cup \{x\}$ if $\tt x$ is a global variable,
- \item $\frag'.i.reachfrom = v.i.reachfrom \cup \{x\}$ if $\tt x$ is a global variable,
-\item $\frag'.o.reachfrom = v.o.reachfrom \cup \{x\}$ if $\tt x$ is a global variable,
-\item $\frag'.o.reachto = v.o.reachto \setminus \{x\}$ if $\tt x$ is a global variable,
+\item $\pvarsat{\inat{\frag'}} = \pvarsat{\inat{\frag}} \setminus \set{x}$,
+\item $\pvarsat{\outat{\frag'}} = \pvarsat{\outat{\frag}} \cup \set{x}$,
+\item $\reachfromat{\inat{\frag'}} = \reachfromat{\inat{\frag}} \setminus \set{x}$ if $\tt x$ is a global variable,
+\item $\reachtoat{\inat{\frag'}} = \reachtoat{\inat{\frag}} \cup \set{x}$ if $\tt x$ is a global variable,
+ \item $\reachfromat{\outat{\frag'}} = \reachfromat{\outat{\frag}} \cup \set{x}$ if $\tt x$ is a global variable,
+ \item $\reachtoat{\outat{\frag'}} = \reachtoat{\outat{\frag}} \cup \set{x}$ if $\tt x$ is a global variable,
+\end{itemize}
+and add $\frag'$ to $\tt S_{post}$,
+\item  for each fragment $\frag$ where $\frag \overset{*}\hookrightarrow_S \frag_y$, create $\frag'$ which is same as $\frag$ except that
+\begin{itemize}
+\item $\pvarsat{\inat{\frag'}} = \pvarsat{\inat{\frag}} \setminus \set{x}$,
+\item $\pvarsat{\outat{\frag'}} = \pvarsat{\outat{\frag}} \setminus \set{x}$,
+\item $\reachfromat{\inat{\frag'}} = \reachfromat{\inat{\frag}} \setminus \set{x}$ if $\tt x$ is a global variable,
+
+\item $\reachtoat{\inat{\frag'}} = \reachtoat{\inat{\frag}} \cup \set{x}$ if $\tt x$ is a global variable,
+\item $\reachfromat{\outat{\frag'}} = \reachfromat{\outat{\frag}} \setminus \set{x}$ if $\tt x$ is a global variable,
+
+ \item $\reachtoat{\outat{\frag'}} = \reachtoat{\outat{\frag}} \cup \set{x}$ if $\tt x$ is a global variable,
+\end{itemize}
+and add $\frag'$ to $\tt S_{post}$,
+\item for each fragment $\frag$ where $\frag_y \hookrightarrow_S \frag$, create $\frag'$ which is same as $\frag$ then
+\begin{itemize}
+\item $\pvarsat{\inat{\frag'}} = \pvarsat{\inat{\frag}} \cup \set{x}$,
+\item $\pvarsat{\outat{\frag'}} = \pvarsat{\outat{\frag}} \setminus \set{x}$,
+\item $\reachfromat{\inat{\frag'}} = \reachfromat{\inat{\frag}} \cup \set{x}$ if $\tt x$ is a global variable,
+ \item $\reachtoat{\outat{\frag'}} = \reachtoat{\outat{\frag}} \cup \set{x}$ if $\tt x$ is a global variable,
+ \item $\reachfromat{\outat{\frag'}} = \reachfromat{\outat{\frag}} \cup \set{x}$ if $\tt x$ is a global variable,
+ \item $\reachtoat{\outat{\frag'}} = \reachtoat{\outat{\frag}} \setminus \set{x}$ if $\tt x$ is a global variable,
 
 \end{itemize}
 and add $\frag'$ to $\tt S_{post}$,
-%\item for each fragment $\frag'$ in $\tt S_{post}$, assign $\frag'.data.(i).(y.d)$ to $\frag'.data.(i).(x.d)$ for $\tt i \in \{i, o\}$.
+\item for each fragment $\frag$ where $\frag_y \leftrightarrow_S \frag$, create $\frag'$ which is same as $\frag$ except that
+\begin{itemize} 
+\item $\pvarsat{\inat{\frag'}} = \pvarsat{\inat{\frag}} \setminus \set{x}$,
+\item $\pvarsat{\outat{\frag'}} = \pvarsat{\outat{\frag}} \cup \set{x}$,
+\item $\reachfromat{\inat{\frag'}} = \reachfromat{\inat{\frag}} \setminus \set{x}$ if $\tt x$ is a global variable,
+\item $\reachtoat{\inat{\frag'}} = \reachtoat{\inat{\frag}} \cup \set{x}$ if $\tt x$ is a global variable,
+ \item $\reachfromat{\outat{\frag'}} = \reachfromat{\outat{\frag}} \cup \set{x}$ if $\tt x$ is a global variable,
+ \item $\reachtoat{\outat{\frag'}} = \reachtoat{\outat{\frag}} \cup \set{x}$ if $\tt x$ is a global variable,
+\end{itemize}
+and add $\frag'$ to $\tt S_{post}$,
+
+\item for each fragment $\frag$ where $\frag_y \overset{+}\hookrightarrow_S \frag$, create $\frag'$ which is same as $\frag$ except that
+\begin{itemize}
+\item $\pvarsat{\inat{\frag'}} = \pvarsat{\inat{\frag}} \setminus \set{x}$,
+\item $\pvarsat{\outat{\frag'}} = \pvarsat{\outat{\frag}} \setminus \set{x}$,
+\item $\reachfromat{\inat{\frag'}} = \reachfromat{\inat{\frag}} \cup \set{x}$ if $\tt x$ is a global variable,
+\item $\reachtoat{\inat{\frag'}} = \reachtoat{\inat{\frag}} \setminus \set{x}$ if $\tt x$ is a global variable,
+ \item $\reachfromat{\outat{\frag'}} = \reachfromat{\outat{\frag}} \cup \set{x}$ if $\tt x$ is a global variable,
+ \item $\reachtoat{\outat{\frag'}} = \reachtoat{\outat{\frag}} \setminus \set{x}$ if $\tt x$ is a global variable,
+
+\end{itemize}
+and add $\frag'$ to $\tt S_{post}$,
+\item for each fragment $\frag$ where $\frag_y \overset{*o}\leftrightarrow_S \frag$, create $\frag'$ which is same as $\frag$ except that
+\begin{itemize}
+\item $\pvarsat{\inat{\frag'}} = \pvarsat{\inat{\frag}} \setminus \set{x}$,
+\item $\pvarsat{\outat{\frag'}} = \pvarsat{\outat{\frag}} \setminus \set{x}$,
+\item $\reachfromat{\inat{\frag'}} = \reachfromat{\inat{\frag}} \setminus \set{x}$ if $\tt x$ is a global variable,
+\item $\reachtoat{\inat{\frag'}} = \reachtoat{\inat{\frag}} \setminus \set{x}$ if $\tt x$ is a global variable,
+\item $\reachfromat{\outat{\frag'}} = \reachfromat{\outat{\frag}} \cup \set{x}$ if $\tt x$ is a global variable,
+\item $\reachtoat{\outat{\frag'}} = \reachtoat{\outat{\frag}} \setminus \set{x}$ if $\tt x$ is a global variable,
+
+\end{itemize}
+and add $\frag'$ to $\tt S_{post}$,
+\item for each fragment $\frag$ where $\frag_y \overset{*+}\leftrightarrow_S \frag$, create $\frag'$ which is same as $\frag$ except that 
+\begin{itemize}
+\item $\pvarsat{\inat{\frag'}} = \pvarsat{\inat{\frag}} \setminus \{x\{$,
+\item $\pvarsat{\outat{\frag'}} = \pvarsat{\outat{\frag}} \setminus \set{x}$,
+\item $\reachfromat{\inat{\frag'}} = \reachfromat{\inat{\frag}} \setminus \set{x}$ if $\tt x$ is a global variable,
+\item $\reachtoat{\inat{\frag'}} = \reachtoat{\inat{\frag}} \setminus \set{x}$ if $\tt x$ is a global variable,
+\item $\reachfromat{\outat{\frag'}} = \reachfromat{\outat{\frag}} \setminus \set{x}$ if $\tt x$ is a global variable,
+\item $\reachtoat{\outat{\frag'}} = \reachtoat{\outat{\frag}} \setminus \set{x}$ if $\tt x$ is a global variable,
+\end{itemize}
+and add $\frag'$ to $\tt S_{post}$,
+\item for each fragment $\frag$ where $\frag \overset{+o}\leftrightarrow_S \frag_y$, create $\frag'$ which is same as $\frag$ except that 
+\begin{itemize}
+\item $\pvarsat{\inat{\frag'}} = \pvarsat{\inat{\frag}} \setminus \set{x}$,
+\item $\pvarsat{\outat{\frag'}} = \pvarsat{\outat{\frag}} \setminus \set{x}$,
+\item $\reachfromat{\inat{\frag'}} = \reachfromat{\inat{\frag}} \setminus \set{x}$ if $\tt x$ is a global variable,
+\item $\reachtoat{\inat{\frag'}} = \reachtoat{\inat{\frag}} \cup \set{x}$ if $\tt x$ is a global variable,
+ \item $\reachfromat{\outat{\frag'}} = \reachfromat{\outat{\frag}} \setminus \set{x}$ if $\tt x$ is a global variable,
+ \item $\reachtoat{\outat{\frag'}} = \reachtoat{\outat{\frag}} \cup \set{x}$ if $\tt x$ is a global variable,
+\end{itemize}
+and add $\frag'$ to $\tt S_{post}$,
+\end{enumerate}	
+\item[${\tt x.next:= y}$]:
+  The local abstract transformer is performed by several steps as follows: For each pair of fragments $\tt v_x$, $\frag_y$ in $\tt S$ where $\tt x \in v_x.{\tt vars}(\tt i)$, $\tt y \in \frag_y.{\tt vars}(\tt i)$, and $\tt v_x \overset{*}\hookrightarrow \frag_y$ or $\frag_y \overset{*}\hookrightarrow v_x$ or $\tt v_x \overset{**}\leftrightarrow \frag_y$
+\begin{enumerate}
+\item let $\tt v_{new}$ be the fragment of size 2 where $\tt tag(v_{new},i) = tag(v_x, i)$ and $\tt tag(v_{new},o) = tag(\frag_y,i)$ except that $\tt v_{new}.o.reachfrom = \frag_y.i.reachfrom \cup v_x.i.reachfrom$,
+\item  for each fragment $\tt v \in S$ where $\tt v \overset{*}\hookrightarrow_S v_x$, we do as follows: For each subset $\tt regs$ of observer registers in $\tt v.reachto(\tt i) \cap \tt v_x.i.reachfrom$
+\begin{itemize}
+\item create $\tt v'$ which is same as $\tt v$, except that
+\begin{itemize}
+\item $\tt v'.reachto(\tt i) = (\tt v.reachto(\tt i) \cap v_x.i.reachfrom) \cup \frag_y.reachto(\tt i) \cup regs$.
+\item $\tt v'.reachto(\tt o) = (\tt v.reachto(\tt o) \cap v_x.i.reachfrom) \cup \frag_y.reachto(\tt i) \cup regs$.
+\end{itemize}
+\item add $\tt v'$ to $\tt S_{post}$
+\end{itemize}
+
+\item for each fragment $\tt v$ where $\frag_y \overset{*}\hookrightarrow_S v$ or $\frag_y = v$,
+  \bjcom{Question to Quy: Isn't $\frag_y = v$ included in $\frag_y \overset{*}\hookrightarrow_S v$?}
+\begin{itemize}
+	\item create  $\tt v'$ which is same as $\tt v$ except that
+\begin{itemize}
+ \item $\tt \reachfromat{\inat{\frag'}} = v_x.i.reachfrom \cup \tt \reachfromat{\inat{\frag}}$, 
+\item $\tt \reachfromat{\outat{\frag'}} = v_x.i.reachfrom \cup \tt \reachfromat{\outat{\frag}}$, 
+\end{itemize}
+\item add $\tt v'$ to $\tt S_{post}$
+\end{itemize}
+\item for each fragment $\tt v$ where $\tt v_x \overset{**}\leftrightarrow_S v$ and either $\tt v \hookrightarrow_S \frag_y$ or $\frag_y \overset{*o}\leftrightarrow_S v$, 
+\begin{itemize}
+\item  create $\tt v'$ which is same as $\tt v$ except that $\tt \reachfromat{\outat{\frag'}} = v_x.i.reachfrom \cup \tt \reachfromat{\outat{\frag}}$, 
+ \item add $\tt v'$ to $\tt S_{post}$ 
+\end{itemize}
+
+
+\item for each fragment $\tt v$ where $\tt v_x \overset{*}\hookrightarrow_S v$ and either $\tt v \hookrightarrow_S \frag_y$ or $\frag_y \overset{*o}\leftrightarrow_S v$,  
+\begin{itemize}
+\item create $\tt v'$ which is same as $\tt v$ then except that $\tt \reachfromat{\outat{\frag'}} = v_x.i.reachfrom \cup \tt \reachfromat{\outat{\frag}}$, 
+\item for each subset $\tt regs$ of observer registers in $\reachfromat{\inat{\frag'}} \cap \tt v_x.i.reachfrom$
+\begin{itemize}
+\item create $\tt v''$ which is same as $\tt v'$, except that $\tt v''.i.reachfrom = (\reachfromat{\inat{\frag'}} \setminus v_x.i.reachfrom) \cup regs$.
+\item add $\tt v''$ to $\tt S_{post}$
+\end{itemize}
+\end{itemize}
+
+\item for each fragment $\tt v$ where $\tt v_x \overset{**}\leftrightarrow_S v$ and either $\tt v \overset{+}\hookrightarrow_S \frag_y$ or $\tt v \overset{*+}\leftrightarrow_S \frag_y$, 
+\begin{itemize}
+\item create $\tt v'$ which is same as $\tt v$
+\item  add $\tt v'$ to $\tt S_{post}$
+\end{itemize}
+
+
+\item for each fragment $\tt v$ where $\tt v_x \overset{*}\hookrightarrow_S v$ and either $\tt v \overset{+}\hookrightarrow_S \frag_y$ or $\frag_y \overset{*+}\leftrightarrow v$, then for each subset $\tt regs$ of observer registers in $\tt \reachfromat{\inat{\frag}} \cap \tt v_x.i.reachfrom$, 
+\begin{itemize}
+\item create $\tt v'$ which is same as $\tt v$, except that $\reachfromat{\inat{\frag'}} = (\tt \reachfromat{\inat{\frag}} \setminus v_x.i.reachfrom) \cup regs$. 
+ \item for each set $\tt regs'$ of observer registers in $\reachfromat{\outat{\frag'}} \cap \tt v_x.i.reachfrom$,  
+\begin{itemize}
+\item create $\tt v''$ which is same as $\tt v'$, except that $\tt v''.o.reachfrom = (\reachfromat{\outat{\frag'}} \setminus v_x.i.reachfrom) \cup regs'$. 
+\item add $\tt v''$ to $\tt S_{post}$
+\end{itemize}
+\end{itemize}
+\item add $\tt v_{new}$ to $\tt S_{post}$
 \end{enumerate}
+
 \end{description}
 
 \todo[inline]{After here is old text}
@@ -568,70 +733,69 @@ For two fragments $\tt v_1$ and $\tt v_2$, let we define several more relations 
 \paragraph{Local Abstract Transformers:} Firstly, let us show the abstract transformer on the set of fragment $\tt S$ in the fragment of the concurrent thread. Let $\tt kill(x,v)$ be the procedure to remove $\tt x$ if it exists from $\tt v.{\tt reachfrom}(\tt i)$, $\tt v.{\tt reachfrom}(\tt o)$, $\tt v.{\tt reachto}(\tt i)$, $\tt v.{\tt reachto}(\tt o)$, $\tt v.{\tt vars}(\tt i)$, and $\tt v.{\tt vars}(\tt o)$. For each program statement, let $\tt S_{post}$ be the set of fragments after executing the statement. Let $\tt S_{post}$ be initialized as the empty set.
 \begin{itemize}
 
-\item ${\tt x := y}$: The transformer is performed as following: For each fragment $\tt v_y \in S$ where $\tt y \in v_y.{\tt vars}(\tt i)$,
+\item ${\tt x := y}$: The transformer is performed as following: For each fragment $\frag_y \in S$ where $\tt y \in \frag_y.{\tt vars}(\tt i)$,
 \begin{enumerate}
-\item  for each fragment $\tt v$ where $\tt v \hookrightarrow_S v_y$, create $\tt v'$ which is same as $\tt v$ except that
+\item  for each fragment $\tt v$ where $\tt v \hookrightarrow_S \frag_y$, create $\tt v'$ which is same as $\tt v$ except that
 \begin{itemize}
-\item $\tt v'.i.vars = v.i.vars \setminus \{x\}$,
-\item $\tt v'.o.vars = v.o.vars \cup \{x\}$,
-\item $\tt v'.i.reachfrom = v.i.reachfrom \setminus \{x\}$ if $\tt x$ is a global variable,
-\item $\tt v'.i.reachto = v.i.reachto \cup \{x\}$ if $\tt x$ is a global variable,
- \item $\tt v'.o.reachfrom = v.o.reachfrom \cup \{x\}$ if $\tt x$ is a global variable,
-\item $\tt v'.o.reachto = v.o.reachto \cup \{x\}$ if $\tt x$ is a global variable,
+\item $\pvarsat{\inat{\frag'}} = \pvarsat{\inat{\frag}} \setminus \set{x}$,
+\item $\pvarsat{\outat{\frag'}} = \pvarsat{\outat{\frag}} \cup \set{x}$,
+\item $\reachfromat{\inat{\frag'}} = \reachfromat{\inat{\frag}} \setminus \set{x}$ if $\tt x$ is a global variable,
+\item $\reachtoat{\inat{\frag'}} = \reachtoat{\inat{\frag}} \cup \set{x}$ if $\tt x$ is a global variable,
+ \item $\reachfromat{\outat{\frag'}} = \reachfromat{\outat{\frag}} \cup \set{x}$ if $\tt x$ is a global variable,
+\item $\reachtoat{\outat{\frag'}} = \reachtoat{\outat{\frag}} \cup \set{x}$ if $\tt x$ is a global variable,
 \end{itemize}
 and add $\tt v'$ to $\tt S_{post}$,
-\item for each fragment $\tt v$ where $\tt v \overset{+}\hookrightarrow_S v_y$, create $\tt v'$ which is same as $\tt v$ except that
+\item for each fragment $\tt v$ where $\tt v \overset{+}\hookrightarrow_S \frag_y$, create $\tt v'$ which is same as $\tt v$ except that
 \begin{itemize}
-\item $\tt v'.i.vars = v.i.vars \setminus \{x\}$,
-\item $\tt v'.o.vars = v.o.vars \setminus \{x\}$,
-\item $\tt v'.i.reachfrom = v.i.reachfrom \setminus \{x\}$ if $\tt x$ is a global variable,
-\item $\tt v'.i.reachto = v.i.reachto \cup \{x\}$ if $\tt x$ is a global variable,
-\item $\tt v'.o.reachfrom = v.o.reachfrom \setminus \{x\}$ if $\tt x$ is a global variable,
-\item $\tt v'.o.reachto = v.o.reachto \cup \{x\}$ if $\tt x$ is a global variable,
+\item $\pvarsat{\inat{\frag'}} = \pvarsat{\inat{\frag}} \setminus \set{x}$,
+\item $\pvarsat{\outat{\frag'}} = \pvarsat{\outat{\frag}} \setminus \set{x}$,
+\item $\reachfromat{\inat{\frag'}} = \reachfromat{\inat{\frag}} \setminus \set{x}$ if $\tt x$ is a global variable,
+\item $\reachtoat{\inat{\frag'}} = \reachtoat{\inat{\frag}} \cup \set{x}$ if $\tt x$ is a global variable,
+\item $\reachfromat{\outat{\frag'}} = \reachfromat{\outat{\frag}} \setminus \set{x}$ if $\tt x$ is a global variable,
+\item $\reachtoat{\outat{\frag'}} = \reachtoat{\outat{\frag}} \cup \set{x}$ if $\tt x$ is a global variable,
 \end{itemize}
 and add $\tt v'$ to $\tt S_{post}$,
-\item for each fragment $\tt v_3$ where $\tt v_y \overset{*}\hookrightarrow_S v$, create $\tt v'$ which is same as $\tt v$ except that
+\item for each fragment $\tt v_3$ where $\frag_y \overset{*}\hookrightarrow_S v$, create $\tt v'$ which is same as $\tt v$ except that
 \begin{itemize}
-\item $\tt v'.i.vars = v.i.vars \setminus \{x\}$,
-\item $\tt v'.o.vars = v.o.vars \setminus \{x\}$,
-\item $\tt v'.i.reachfrom = v.i.reachfrom \cup \{x\}$ if $\tt x$ is a global variable,
-\item $\tt v'.i.reachto = v.i.reachto \setminus \{x\}$ if $\tt x$ is a global variable,
+\item $\pvarsat{\inat{\frag'}} = \pvarsat{\inat{\frag}} \setminus \set{x}$,
+\item $\pvarsat{\outat{\frag'}} = \pvarsat{\outat{\frag}} \setminus \set{x}$,
+\item $\reachfromat{\inat{\frag'}} = \reachfromat{\inat{\frag}} \cup \set{x}$ if $\tt x$ is a global variable,
+\item $\reachtoat{\inat{\frag'}} = \reachtoat{\inat{\frag}} \setminus \set{x}$ if $\tt x$ is a global variable,
 
- \item $\tt v'.o.reachfrom = v.o.reachfrom \cup \{x\}$ if $\tt x$ is a global variable,
- \item $\tt v'.o.reachto = v.o.reachto \setminus \{x\}$ if $\tt x$ is a global variable,
-
-\end{itemize}
-and add $\tt v'$ to $\tt S_{post}$,
-\item for each fragment $\tt v$ where $\tt v_y \overset{*+}\leftrightarrow_S v$, create $\tt v'$ which is same as $\tt v$ except that
-\begin{itemize}
-\item $\tt v'.i.vars = v.i.vars \setminus \{x\}$,
-\item $\tt v'.o.vars = v.o.vars \setminus \{x\}$,
-\item $\tt v'.i.reachfrom = v.i.reachfrom \setminus \{x\}$ if $\tt x$ is a global variable,
-\item $\tt v'.i.reachto = v.i.reachto \setminus \{x\}$ if $\tt x$ is a global variable,
-\item $\tt v'.o.reachfrom = v.o.reachfrom \setminus \{x\}$ if $\tt x$ is a global variable,
-\item $\tt v'.o.reachto = v.o.reachto \setminus \{x\}$ if $\tt x$ is a global variable,
-\end{itemize}
-and add $\tt v'$ to $\tt S_{post}$,
-\item for each fragment $\tt v$ where $\tt v_y \overset{*o}\leftrightarrow_S v$, create $\tt v'$ which is same as $\tt v$ except that
-\begin{itemize}
-\item $\tt v'.i.vars = v.i.vars \setminus \{x\}$,
-\item $\tt v'.o.vars = v.o.vars \setminus \{x\}$,
-\item $\tt v'.i.reachfrom = v.i.reachfrom \setminus \{x\}$ if $\tt x$ is a global variable,
-\item $\tt v'.i.reachto = v.i.reachto \setminus \{x\}$ if $\tt x$ is a global variable,
-\item $\tt v'.o.reachfrom = v.o.reachfrom \cup \{x\}$ if $\tt x$ is a global variable,
-\item $\tt v'.o.reachto = v.o.reachto \setminus \{x\}$ if $\tt x$ is a global variable,
+ \item $\reachfromat{\outat{\frag'}} = \reachfromat{\outat{\frag}} \cup \set{x}$ if $\tt x$ is a global variable,
+ \item $\reachtoat{\outat{\frag'}} = \reachtoat{\outat{\frag}} \setminus \set{x}$ if $\tt x$ is a global variable,
 
 \end{itemize}
 and add $\tt v'$ to $\tt S_{post}$,
-\item create $\tt v'$ which is same as $\tt v_y$ except that
+\item for each fragment $\tt v$ where $\frag_y \overset{*+}\leftrightarrow_S v$, create $\tt v'$ which is same as $\tt v$ except that
 \begin{itemize}
-\item $\tt v'.i.vars = v.i.vars \cup \{x\}$,
-\item $\tt v'.o.vars = v.o.vars \setminus \{x\}$,
-\item $\tt v'.i.reachto = v.i.reachto \cup \{x\}$ if $\tt x$ is a global variable,
- \item $\tt v'.i.reachfrom = v.i.reachfrom \cup \{x\}$ if $\tt x$ is a global variable,
-\item $\tt v'.o.reachfrom = v.o.reachfrom \cup \{x\}$ if $\tt x$ is a global variable,
-\item $\tt v'.o.reachto = v.o.reachto \setminus \{x\}$ if $\tt x$ is a global variable,
+\item $\pvarsat{\inat{\frag'}} = \pvarsat{\inat{\frag}} \setminus \set{x}$,
+\item $\pvarsat{\outat{\frag'}} = \pvarsat{\outat{\frag}} \setminus \set{x}$,
+\item $\reachfromat{\inat{\frag'}} = \reachfromat{\inat{\frag}} \setminus \set{x}$ if $\tt x$ is a global variable,
+\item $\reachtoat{\inat{\frag'}} = \reachtoat{\inat{\frag}} \setminus \set{x}$ if $\tt x$ is a global variable,
+\item $\reachfromat{\outat{\frag'}} = \reachfromat{\outat{\frag}} \setminus \set{x}$ if $\tt x$ is a global variable,
+\item $\reachtoat{\outat{\frag'}} = \reachtoat{\outat{\frag}} \setminus \set{x}$ if $\tt x$ is a global variable,
+\end{itemize}
+and add $\tt v'$ to $\tt S_{post}$,
+\item for each fragment $\tt v$ where $\frag_y \overset{*o}\leftrightarrow_S v$, create $\tt v'$ which is same as $\tt v$ except that
+\begin{itemize}
+\item $\pvarsat{\inat{\frag'}} = \pvarsat{\inat{\frag}} \setminus \set{x}$,
+\item $\pvarsat{\outat{\frag'}} = \pvarsat{\outat{\frag}} \setminus \set{x}$,
+\item $\reachfromat{\inat{\frag'}} = \reachfromat{\inat{\frag}} \setminus \set{x}$ if $\tt x$ is a global variable,
+\item $\reachtoat{\inat{\frag'}} = \reachtoat{\inat{\frag}} \setminus \set{x}$ if $\tt x$ is a global variable,
+\item $\reachfromat{\outat{\frag'}} = \reachfromat{\outat{\frag}} \cup \set{x}$ if $\tt x$ is a global variable,
+\item $\reachtoat{\outat{\frag'}} = \reachtoat{\outat{\frag}} \setminus \set{x}$ if $\tt x$ is a global variable,
 
+\end{itemize}
+and add $\tt v'$ to $\tt S_{post}$,
+\item create $\tt v'$ which is same as $\frag_y$ except that
+\begin{itemize}
+\item $\pvarsat{\inat{\frag'}} = \pvarsat{\inat{\frag}} \cup \set{x}$,
+\item $\pvarsat{\outat{\frag'}} = \pvarsat{\outat{\frag}} \setminus \set{x}$,
+\item $\reachtoat{\inat{\frag'}} = \reachtoat{\inat{\frag}} \cup \set{x}$ if $\tt x$ is a global variable,
+ \item $\reachfromat{\inat{\frag'}} = \reachfromat{\inat{\frag}} \cup \set{x}$ if $\tt x$ is a global variable,
+\item $\reachfromat{\outat{\frag'}} = \reachfromat{\outat{\frag}} \cup \set{x}$ if $\tt x$ is a global variable,
+\item $\reachtoat{\outat{\frag'}} = \reachtoat{\outat{\frag}} \setminus \set{x}$ if $\tt x$ is a global variable,
 \end{itemize}
 and add $\tt v'$ to $\tt S_{post}$,
 %\item for each fragment $\tt v'$ in $\tt S_{post}$, assign $\tt v'.data.(i).(y.d)$ to $\tt v'.data.(i).(x.d)$ for $\tt i \in \{i, o\}$.
@@ -648,159 +812,7 @@ and add $\tt v'$ to $\tt S_{post}$,
 	
 	
 	
-\item ${\tt x := y.next}$: The local abstract transformer is quite similar to the previous case with slightly differences. For each fragment $\tt v_y \in S$ where $\tt y \in {\tt vars}(\tt i)$,
-\begin{enumerate}
-\item  for each fragment $\tt v$ where $\tt v \overset{*}\hookrightarrow_S v_y$, create $\tt v'$ which is same as $\tt v$ except that
-\begin{itemize}
-\item $\tt v'.i.vars = v.i.vars \setminus \{x\}$,
-\item $\tt v'.o.vars = v.o.vars \setminus \{x\}$,
-\item $\tt v'.i.reachfrom = v.i.reachfrom \setminus \{x\}$ if $\tt x$ is a global variable,
 
-\item $\tt v'.i.reachto = v.i.reachto \cup \{x\}$ if $\tt x$ is a global variable,
-\item $\tt v'.o.reachfrom = v.o.reachfrom \setminus \{x\}$ if $\tt x$ is a global variable,
-
- \item $\tt v'.o.reachto = v.o.reachto \cup \{x\}$ if $\tt x$ is a global variable,
-\end{itemize}
-and add $\tt v'$ to $\tt S_{post}$,
-\item for each fragment $\tt v$ where $\tt v_y \hookrightarrow_S v$, create $\tt v'$ which is same as $\tt v$ then
-\begin{itemize}
-\item $\tt v'.i.vars = v.i.vars \cup \{x\}$,
-\item $\tt v'.o.vars = v.o.vars \setminus \{x\}$,
-\item $\tt v'.i.reachfrom = v.i.reachfrom \cup \{x\}$ if $\tt x$ is a global variable,
- \item $\tt v'.o.reachto = v.o.reachto \cup \{x\}$ if $\tt x$ is a global variable,
- \item $\tt v'.o.reachfrom = v.o.reachfrom \cup \{x\}$ if $\tt x$ is a global variable,
- \item $\tt v'.o.reachto = v.o.reachto \setminus \{x\}$ if $\tt x$ is a global variable,
-
-\end{itemize}
-and add $\tt v'$ to $\tt S_{post}$,
-\item for each fragment $\tt v$ where $\tt v_y \leftrightarrow_S v$, create $\tt v'$ which is same as $\tt v$ except that
-\begin{itemize} 
-\item $\tt v'.i.vars = v.i.vars \setminus \{x\}$,
-\item $\tt v'.o.vars = v.o.vars \cup \{x\}$,
-\item $\tt v'.i.reachfrom = v.i.reachfrom \setminus \{x\}$ if $\tt x$ is a global variable,
-\item $\tt v'.i.reachto = v.i.reachto \cup \{x\}$ if $\tt x$ is a global variable,
- \item $\tt v'.o.reachfrom = v.o.reachfrom \cup \{x\}$ if $\tt x$ is a global variable,
- \item $\tt v'.o.reachto = v.o.reachto \cup \{x\}$ if $\tt x$ is a global variable,
-\end{itemize}
-and add $\tt v'$ to $\tt S_{post}$,
-
-\item for each fragment $\tt v$ where $\tt v_y \overset{+}\hookrightarrow_S v$, create $\tt v'$ which is same as $\tt v$ except that
-\begin{itemize}
-\item $\tt v'.i.vars = v.i.vars \setminus \{x\}$,
-\item $\tt v'.o.vars = v.o.vars \setminus \{x\}$,
-\item $\tt v'.i.reachfrom = v.i.reachfrom \cup \{x\}$ if $\tt x$ is a global variable,
-\item $\tt v'.i.reachto = v.i.reachto \setminus \{x\}$ if $\tt x$ is a global variable,
- \item $\tt v'.o.reachfrom = v.o.reachfrom \cup \{x\}$ if $\tt x$ is a global variable,
- \item $\tt v'.o.reachto = v.o.reachto \setminus \{x\}$ if $\tt x$ is a global variable,
-
-\end{itemize}
-and add $\tt v'$ to $\tt S_{post}$,
-\item for each fragment $\tt v$ where $\tt v_y \overset{*o}\leftrightarrow_S v$, create $\tt v'$ which is same as $\tt v$ except that
-\begin{itemize}
-\item $\tt v'.i.vars = v.i.vars \setminus \{x\}$,
-\item $\tt v'.o.vars = v.o.vars \setminus \{x\}$,
-\item $\tt v'.i.reachfrom = v.i.reachfrom \setminus \{x\}$ if $\tt x$ is a global variable,
-\item $\tt v'.i.reachto = v.i.reachto \setminus \{x\}$ if $\tt x$ is a global variable,
-\item $\tt v'.o.reachfrom = v.o.reachfrom \cup \{x\}$ if $\tt x$ is a global variable,
-\item $\tt v'.o.reachto = v.o.reachto \setminus \{x\}$ if $\tt x$ is a global variable,
-
-\end{itemize}
-and add $\tt v'$ to $\tt S_{post}$,
-\item for each fragment $\tt v$ where $\tt v_y \overset{*+}\leftrightarrow_S v$, create $\tt v'$ which is same as $\tt v$ except that 
-\begin{itemize}
-\item $\tt v'.i.vars = v.i.vars \setminus \{x\{$,
-\item $\tt v'.o.vars = v.o.vars \setminus \{x\}$,
-\item $\tt v'.i.reachfrom = v.i.reachfrom \setminus \{x\}$ if $\tt x$ is a global variable,
-\item $\tt v'.i.reachto = v.i.reachto \setminus \{x\}$ if $\tt x$ is a global variable,
-\item $\tt v'.o.reachfrom = v.o.reachfrom \setminus \{x\}$ if $\tt x$ is a global variable,
-\item $\tt v'.o.reachto = v.o.reachto \setminus \{x\}$ if $\tt x$ is a global variable,
-\end{itemize}
-and add $\tt v'$ to $\tt S_{post}$,
-\item for each fragment $\tt v$ where $\tt v \overset{+o}\leftrightarrow_S v_y$, create $\tt v'$ which is same as $\tt v$ except that 
-\begin{itemize}
-\item $\tt v'.i.vars = v.i.vars \setminus \{x\}$,
-\item $\tt v'.o.vars = v.o.vars \setminus \{x\}$,
-\item $\tt v'.i.reachfrom = v.i.reachfrom \setminus \{x\}$ if $\tt x$ is a global variable,
-\item $\tt v'.i.reachto = v.i.reachto \cup \{x\}$ if $\tt x$ is a global variable,
- \item $\tt v'.o.reachfrom = v.o.reachfrom \setminus \{x\}$ if $\tt x$ is a global variable,
- \item $\tt v'.o.reachto = v.o.reachto \cup \{x\}$ if $\tt x$ is a global variable,
-\end{itemize}
-and add $\tt v'$ to $\tt S_{post}$,
-
-\item create $\tt v'$ which is same as $\tt v_y$ except that
-\begin{itemize}
-\item $\tt v'.i.vars = v.i.vars \setminus \{x\}$,
-\item $\tt v'.o.vars = v.o.vars \cup \{x\}$,
-\item $\tt v'.i.reachfrom = v.i.reachfrom \setminus \{x\}$ if $\tt x$ is a global variable,
-\item $\tt v'.i.reachto = v.i.reachto \cup \{x\}$ if $\tt x$ is a global variable,
- \item $\tt v'.o.reachfrom = v.o.reachfrom \cup \{x\}$ if $\tt x$ is a global variable,
- \item $\tt v'.o.reachto = v.o.reachto \cup \{x\}$ if $\tt x$ is a global variable,
-\end{itemize}
-and add $\tt v'$ to $\tt S_{post}$,
-%\item for each fragment $\tt v'$ in $\tt S_o$, assign $\tt v'.data.(i).(y.d)$ to $\tt v'.data.(i).(x.d)$ for $\tt i \in \{i, o\}$.
-%
-\end{enumerate}	
-
-
-
-
-\item  ${\tt x.next:= y}$: The local abstract transformer is performed by several steps as follows: For each pair of fragments $\tt v_x$, $\tt v_y$ in $\tt S$ where $\tt x \in v_x.{\tt vars}(\tt i)$, $\tt y \in v_y.{\tt vars}(\tt i)$, and $\tt v_x \overset{*}\hookrightarrow v_y$ or $\tt v_y \overset{*}\hookrightarrow v_x$ or $\tt v_x \overset{**}\leftrightarrow v_y$
-\begin{enumerate}
-\item let $\tt v_{new}$ be the fragment of size 2 where $\tt tag(v_{new},i) = tag(v_x, i)$ and $\tt tag(v_{new},o) = tag(v_y,i)$ except that $\tt v_{new}.o.reachfrom = v_y.i.reachfrom \cup v_x.i.reachfrom$,
-\item  for each fragment $\tt v \in S$ where $\tt v \overset{*}\hookrightarrow_S v_x$, we do as follows: For each subset $\tt regs$ of observer registers in $\tt v.reachto(\tt i) \cap \tt v_x.i.reachfrom$
-\begin{itemize}
-\item create $\tt v'$ which is same as $\tt v$, except that
-\begin{itemize}
-\item $\tt v'.reachto(\tt i) = (\tt v.reachto(\tt i) \cap v_x.i.reachfrom) \cup v_y.reachto(\tt i) \cup regs$.
-\item $\tt v'.reachto(\tt o) = (\tt v.reachto(\tt o) \cap v_x.i.reachfrom) \cup v_y.reachto(\tt i) \cup regs$.
-\end{itemize}
-\item add $\tt v'$ to $\tt S_{post}$
-\end{itemize}
-
-\item for each fragment $\tt v$ where $\tt v_y \overset{*}\hookrightarrow_S v$ or $\tt v_y = v$, 
-\begin{itemize}
-	\item create  $\tt v'$ which is same as $\tt v$ except that
-\begin{itemize}
- \item $\tt \tt v'.i.reachfrom = v_x.i.reachfrom \cup \tt v.i.reachfrom$, 
-\item $\tt \tt v'.o.reachfrom = v_x.i.reachfrom \cup \tt v.o.reachfrom$, 
-\end{itemize}
-\item add $\tt v'$ to $\tt S_{post}$
-\end{itemize}
-\item for each fragment $\tt v$ where $\tt v_x \overset{**}\leftrightarrow_S v$ and either $\tt v \hookrightarrow_S v_y$ or $\tt v_y \overset{*o}\leftrightarrow_S v$, 
-\begin{itemize}
-\item  create $\tt v'$ which is same as $\tt v$ except that $\tt \tt v'.o.reachfrom = v_x.i.reachfrom \cup \tt v.o.reachfrom$, 
- \item add $\tt v'$ to $\tt S_{post}$ 
-\end{itemize}
-
-
-\item for each fragment $\tt v$ where $\tt v_x \overset{*}\hookrightarrow_S v$ and either $\tt v \hookrightarrow_S v_y$ or $\tt v_y \overset{*o}\leftrightarrow_S v$,  
-\begin{itemize}
-\item create $\tt v'$ which is same as $\tt v$ then except that $\tt \tt v'.o.reachfrom = v_x.i.reachfrom \cup \tt v.o.reachfrom$, 
-\item for each subset $\tt regs$ of observer registers in $\tt v'.i.reachfrom \cap \tt v_x.i.reachfrom$
-\begin{itemize}
-\item create $\tt v''$ which is same as $\tt v'$, except that $\tt v''.i.reachfrom = (\tt v'.i.reachfrom \setminus v_x.i.reachfrom) \cup regs$.
-\item add $\tt v''$ to $\tt S_{post}$
-\end{itemize}
-\end{itemize}
-
-\item for each fragment $\tt v$ where $\tt v_x \overset{**}\leftrightarrow_S v$ and either $\tt v \overset{+}\hookrightarrow_S v_y$ or $\tt v \overset{*+}\leftrightarrow_S v_y$, 
-\begin{itemize}
-\item create $\tt v'$ which is same as $\tt v$
-\item  add $\tt v'$ to $\tt S_{post}$
-\end{itemize}
-
-
-\item for each fragment $\tt v$ where $\tt v_x \overset{*}\hookrightarrow_S v$ and either $\tt v \overset{+}\hookrightarrow_S v_y$ or $\tt v_y \overset{*+}\leftrightarrow v$, then for each subset $\tt regs$ of observer registers in $\tt v.i.reachfrom \cap \tt v_x.i.reachfrom$, 
-\begin{itemize}
-\item create $\tt v'$ which is same as $\tt v$, except that $\tt v'.i.reachfrom = (\tt v.i.reachfrom \setminus v_x.i.reachfrom) \cup regs$. 
- \item for each set $\tt regs'$ of observer registers in $\tt v'.o.reachfrom \cap \tt v_x.i.reachfrom$,  
-\begin{itemize}
-\item create $\tt v''$ which is same as $\tt v'$, except that $\tt v''.o.reachfrom = (\tt v'.o.reachfrom \setminus v_x.i.reachfrom) \cup regs'$. 
-\item add $\tt v''$ to $\tt S_{post}$
-\end{itemize}
-\end{itemize}
-\item add $\tt v_{new}$ to $\tt S_{post}$
-\end{enumerate}
 
 \newpage
 
@@ -815,92 +827,92 @@ Let us show how to perform the abstract transformer for skip-list programs on th
 \begin{enumerate}
 \item  for each fragment $\tt v \in S_1$ where $\tt v \hookrightarrow_S v_y$, create $\tt v'$ which is same as $\tt v$ except that
 \begin{itemize}
-\item $\tt v'.i.vars = v.i.vars \setminus \{x\}$,
-\item $\tt v'.o.vars = v.o.vars \cup \{x\}$,
+\item $\pvarsat{\inat{\frag'}} = \pvarsat{\inat{\frag}} \setminus \set{x}$,
+\item $\pvarsat{\outat{\frag'}} = \pvarsat{\outat{\frag}} \cup \set{x}$,
 \item if $\tt x$ is a global variable
 \begin{itemize}
-\item $\tt v'.i.reachfrom = v.i.reachfrom \setminus \{x\}$,
-\item $\tt v'.i.reachto = v.i.reachto \cup \{x\}$,
- \item $\tt v'.o.reachfrom = v.o.reachfrom \cup \{x\}$,
-\item $\tt v'.o.reachto = v.o.reachto \cup \{x\}$,
+\item $\reachfromat{\inat{\frag'}} = \reachfromat{\inat{\frag}} \setminus \set{x}$,
+\item $\reachtoat{\inat{\frag'}} = \reachtoat{\inat{\frag}} \cup \set{x}$,
+ \item $\reachfromat{\outat{\frag'}} = \reachfromat{\outat{\frag}} \cup \set{x}$,
+\item $\reachtoat{\outat{\frag'}} = \reachtoat{\outat{\frag}} \cup \set{x}$,
 \end{itemize}
 \end{itemize}
 then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt R$
 \item for each fragment $\tt v \in S_1$ where $\tt v \overset{+}\hookrightarrow_S v_y$, create $\tt v'$ which is same as $\tt v$ except that
 \begin{itemize}
-\item $\tt v'.i.vars = v.i.vars \setminus \{x\}$,
-\item $\tt v'.o.vars = v.o.vars \setminus \{x\}$,
+\item $\pvarsat{\inat{\frag'}} = \pvarsat{\inat{\frag}} \setminus \set{x}$,
+\item $\pvarsat{\outat{\frag'}} = \pvarsat{\outat{\frag}} \setminus \set{x}$,
 \item if $\tt x$ is a global variable
 \begin{itemize}
-\item $\tt v'.i.reachfrom = v.i.reachfrom \setminus \{x\}$,
-\item $\tt v'.i.reachto = v.i.reachto \cup \{x\}$,
-\item $\tt v'.o.reachfrom = v.o.reachfrom \setminus \{x\}$,
-\item $\tt v'.o.reachto = v.o.reachto \cup \{x\}$,
+\item $\reachfromat{\inat{\frag'}} = \reachfromat{\inat{\frag}} \setminus \set{x}$,
+\item $\reachtoat{\inat{\frag'}} = \reachtoat{\inat{\frag}} \cup \set{x}$,
+\item $\reachfromat{\outat{\frag'}} = \reachfromat{\outat{\frag}} \setminus \set{x}$,
+\item $\reachtoat{\outat{\frag'}} = \reachtoat{\outat{\frag}} \cup \set{x}$,
 \end{itemize}
 \end{itemize}
 then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt R$
 \item for each fragment $\tt v \in S_1$ where $\tt v_y \overset{*}\hookrightarrow_S v$, create $\tt v'$ which is same as $\tt v$ except that
 \begin{itemize}
-\item $\tt v'.i.vars = v.i.vars \setminus \{x\}$,
-\item $\tt v'.o.vars = v.o.vars \setminus \{x\}$,
+\item $\pvarsat{\inat{\frag'}} = \pvarsat{\inat{\frag}} \setminus \set{x}$,
+\item $\pvarsat{\outat{\frag'}} = \pvarsat{\outat{\frag}} \setminus \set{x}$,
 \item if $\tt x$ is a global variable
 \begin{itemize}
-\item $\tt v'.i.reachfrom = v.i.reachfrom \cup \{x\}$,
-\item $\tt v'.i.reachto = v.i.reachto \setminus \{x\}$,
- \item $\tt v'.o.reachfrom = v.o.reachfrom \cup \{x\}$,
- \item $\tt v'.o.reachto = v.o.reachto \setminus \{x\}$,
+\item $\reachfromat{\inat{\frag'}} = \reachfromat{\inat{\frag}} \cup \set{x}$,
+\item $\reachtoat{\inat{\frag'}} = \reachtoat{\inat{\frag}} \setminus \set{x}$,
+ \item $\reachfromat{\outat{\frag'}} = \reachfromat{\outat{\frag}} \cup \set{x}$,
+ \item $\reachtoat{\outat{\frag'}} = \reachtoat{\outat{\frag}} \setminus \set{x}$,
 \end{itemize}
 \end{itemize}
 then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt S'$
 \item for each fragment $\tt v$ where $\tt v_y \overset{*+}\leftrightarrow_S v$, create $\tt v'$ which is same as $\tt v$ except that
 \begin{itemize}
-\item $\tt v'.i.vars = v.i.vars \setminus \{x\}$,
-\item $\tt v'.o.vars = v.o.vars \setminus \{x\}$,
+\item $\pvarsat{\inat{\frag'}} = \pvarsat{\inat{\frag}} \setminus \set{x}$,
+\item $\pvarsat{\outat{\frag'}} = \pvarsat{\outat{\frag}} \setminus \set{x}$,
 \item if $\tt x$ is a global variable
 \begin{itemize}
-\item $\tt v'.i.reachfrom = v.i.reachfrom \setminus \{x\}$,
-\item $\tt v'.i.reachto = v.i.reachto \setminus \{x\}$,
-\item $\tt v'.o.reachfrom = v.o.reachfrom \setminus \{x\}$,
-\item $\tt v'.o.reachto = v.o.reachto \setminus \{x\}$,
+\item $\reachfromat{\inat{\frag'}} = \reachfromat{\inat{\frag}} \setminus \set{x}$,
+\item $\reachtoat{\inat{\frag'}} = \reachtoat{\inat{\frag}} \setminus \set{x}$,
+\item $\reachfromat{\outat{\frag'}} = \reachfromat{\outat{\frag}} \setminus \set{x}$,
+\item $\reachtoat{\outat{\frag'}} = \reachtoat{\outat{\frag}} \setminus \set{x}$,
 \end{itemize}
 \end{itemize}
 then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt S'$
 \item for each fragment $\tt v \in S_1$ where $\tt v_y \overset{*o}\leftrightarrow_S v$, create $\tt v'$ which is same as $\tt v$ except that
 \begin{itemize}
-\item $\tt v'.i.vars = v.i.vars \setminus \{x\}$,
-\item $\tt v'.o.vars = v.o.vars \setminus \{x\}$,
+\item $\pvarsat{\inat{\frag'}} = \pvarsat{\inat{\frag}} \setminus \set{x}$,
+\item $\pvarsat{\outat{\frag'}} = \pvarsat{\outat{\frag}} \setminus \set{x}$,
 \item if $\tt x$ is a global variable
 \begin{itemize}
-\item $\tt v'.i.reachfrom = v.i.reachfrom \setminus \{x\}$,
-\item $\tt v'.i.reachto = v.i.reachto \setminus \{x\}$,
-\item $\tt v'.o.reachfrom = v.o.reachfrom \cup \{x\}$,
-\item $\tt v'.o.reachto = v.o.reachto \setminus \{x\}$,
+\item $\reachfromat{\inat{\frag'}} = \reachfromat{\inat{\frag}} \setminus \set{x}$,
+\item $\reachtoat{\inat{\frag'}} = \reachtoat{\inat{\frag}} \setminus \set{x}$,
+\item $\reachfromat{\outat{\frag'}} = \reachfromat{\outat{\frag}} \cup \set{x}$,
+\item $\reachtoat{\outat{\frag'}} = \reachtoat{\outat{\frag}} \setminus \set{x}$,
 \end{itemize}
 \end{itemize}
 then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt S'$
 \item create $\tt v'$ which is same as $\tt v_y$ except that
 \begin{itemize}
-\item $\tt v'.i.vars = v.i.vars \cup \{x\}$,
-\item $\tt v'.o.vars = v.o.vars \setminus \{x\}$,
+\item $\pvarsat{\inat{\frag'}} = \pvarsat{\inat{\frag}} \cup \set{x}$,
+\item $\pvarsat{\outat{\frag'}} = \pvarsat{\outat{\frag}} \setminus \set{x}$,
 \item if $\tt x$ is a global variable
 \begin{itemize}
-\item $\tt v'.i.reachto = v.i.reachto \cup \{x\}$,
- \item $\tt v'.i.reachfrom = v.i.reachfrom \cup \{x\}$,
-\item $\tt v'.o.reachfrom = v.o.reachfrom \cup \{x\}$,
-\item $\tt v'.o.reachto = v.o.reachto \setminus \{x\}$,
+\item $\reachtoat{\inat{\frag'}} = \reachtoat{\inat{\frag}} \cup \set{x}$,
+ \item $\reachfromat{\inat{\frag'}} = \reachfromat{\inat{\frag}} \cup \set{x}$,
+\item $\reachfromat{\outat{\frag'}} = \reachfromat{\outat{\frag}} \cup \set{x}$,
+\item $\reachtoat{\outat{\frag'}} = \reachtoat{\outat{\frag}} \setminus \set{x}$,
 \end{itemize}
 \end{itemize}
 then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt S'$
 %\item for each fragment $\tt v'$ in $\tt S_{post}$, assign $\tt v'.data.(i).(y.d)$ to $\tt v'.data.(i).(x.d)$ for $\tt i \in \{i, o\}$.
 \item for each fragment $\tt v \in S_2$ we do as follows. For each $\tt (v_1,v_1')$, $\tt (v_2,v_2') \in R$, for each pair of indices $\tt i_1$, $\tt i_2$ such that $\tt i_1 \in \{v_1.i, v_1.o\}$, $\tt i_2 \in \{v_2.i, v_2.o\}$, $\tt tag(v,i) = tag(v_1, i_1)$, and $\tt tag(v,o) = tag(v_2, i_2)$. Create $\tt v'$ which is same as $\tt v$ except that 
 \begin{itemize}
-\item $\tt v'.i.vars = v_1'.i_1.vars$,
-\item $\tt v'.o.vars = v_2'.i_2.vars$,
+\item $\pvarsat{\inat{\frag'}} = v_1'.i_1.vars$,
+\item $\pvarsat{\outat{\frag'}} = v_2'.i_2.vars$,
 
-\item $\tt v'.i.reachfrom = v_1'.i_1.reachfrom$,
-\item $\tt v'.o.reachfrom = v_2'.i_2.reachfrom$,
-\item $\tt v'.i.reachto = v_1'.i_1.reachto$,
-\item $\tt v'.o.reachto = v_2'.i_2.reachto$,
+\item $\reachfromat{\inat{\frag'}} = v_1'.i_1.reachfrom$,
+\item $\reachfromat{\outat{\frag'}} = v_2'.i_2.reachfrom$,
+\item $\reachtoat{\inat{\frag'}} = v_1'.i_1.reachto$,
+\item $\reachtoat{\outat{\frag'}} = v_2'.i_2.reachto$,
 \end{itemize} then add $\tt v'$ to $\tt S_{post}$. 
 \end{enumerate}
 %\item If there does not exist such $\tt v_y$ in $\tt S_1$
@@ -914,14 +926,14 @@ then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt S'$
 %\end{itemize}
 %
 %%\begin{itemize}
-%%\item $\tt v'.i.vars = v.i.vars \setminus \{x\}$,
-%%\item $\tt v'.o.vars = v.o.vars \cup \{x\}$,
+%%\item $\pvarsat{\inat{\frag'}} = \pvarsat{\inat{\frag}} \setminus \set{x}$,
+%%\item $\pvarsat{\outat{\frag'}} = \pvarsat{\outat{\frag}} \cup \set{x}$,
 %%\item if $\tt x$ is a global variable
 %%\begin{itemize}
-%%\item $\tt v'.i.reachfrom = v.i.reachfrom \setminus \{x\}$,
-%%\item $\tt v'.i.reachto = v.i.reachto \cup \{x\}$,
-%% \item $\tt v'.o.reachfrom = v.o.reachfrom \cup \{x\}$,
-%%\item $\tt v'.o.reachto = v.o.reachto \cup \{x\}$,
+%%\item $\reachfromat{\inat{\frag'}} = \reachfromat{\inat{\frag}} \setminus \set{x}$,
+%%\item $\reachtoat{\inat{\frag'}} = \reachtoat{\inat{\frag}} \cup \set{x}$,
+%% \item $\reachfromat{\outat{\frag'}} = \reachfromat{\outat{\frag}} \cup \set{x}$,
+%%\item $\reachtoat{\outat{\frag'}} = \reachtoat{\outat{\frag}} \cup \set{x}$,
 %%\end{itemize}
 %%\end{itemize}
 %%and add $\tt v'$ to $\tt S_{post}$,
@@ -932,14 +944,14 @@ then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt S'$
 %	\item $\tt tag(v,i) = tag(v_1,i)$ where $\tt v_y \overset{*+}\leftrightarrow_S v_1$ or $\tt v_1 \overset{*o}\leftrightarrow_S v_y$
 %\end{itemize}
 %%\begin{itemize}
-%%\item $\tt v'.i.vars = v.i.vars \setminus \{x\}$,
-%%\item $\tt v'.o.vars = v.o.vars \cup \{x\}$,
+%%\item $\pvarsat{\inat{\frag'}} = \pvarsat{\inat{\frag}} \setminus \set{x}$,
+%%\item $\pvarsat{\outat{\frag'}} = \pvarsat{\outat{\frag}} \cup \set{x}$,
 %%\item if $\tt x$ is a global variable
 %%\begin{itemize}
-%%\item $\tt v'.i.reachfrom = v.i.reachfrom \setminus \{x\}$,
-%%\item $\tt v'.i.reachto = v.i.reachto \setminus \{x\}$,
-%% \item $\tt v'.o.reachfrom = v.o.reachfrom \cup \{x\}$,
-%%\item $\tt v'.o.reachto = v.o.reachto \cup \{x\}$,
+%%\item $\reachfromat{\inat{\frag'}} = \reachfromat{\inat{\frag}} \setminus \set{x}$,
+%%\item $\reachtoat{\inat{\frag'}} = \reachtoat{\inat{\frag}} \setminus \set{x}$,
+%% \item $\reachfromat{\outat{\frag'}} = \reachfromat{\outat{\frag}} \cup \set{x}$,
+%%\item $\reachtoat{\outat{\frag'}} = \reachtoat{\outat{\frag}} \cup \set{x}$,
 %%\end{itemize}
 %%\end{itemize}
 %%and add $\tt v'$ to $\tt S_{post}$,
@@ -1136,107 +1148,107 @@ then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt S'$
 \begin{enumerate}
 \item  for each fragment $\tt v \in S_1$ where $\tt v \overset{*}\hookrightarrow_S v_y$, create $\tt v'$ which is same as $\tt v$ except that
 \begin{itemize}
-\item $\tt v'.i.vars = v.i.vars \setminus \{x\}$,
-\item $\tt v'.o.vars = v.o.vars \setminus \{x\}$,
+\item $\pvarsat{\inat{\frag'}} = \pvarsat{\inat{\frag}} \setminus \set{x}$,
+\item $\pvarsat{\outat{\frag'}} = \pvarsat{\outat{\frag}} \setminus \set{x}$,
 \item if $\tt x$ is a global variable
 \begin{itemize}
-\item $\tt v'.i.reachfrom = v.i.reachfrom \setminus \{x\}$,
-\item $\tt v'.i.reachto = v.i.reachto \cup \{x\}$,
-\item $\tt v'.o.reachfrom = v.o.reachfrom \setminus \{x\}$,
-\item $\tt v'.o.reachto = v.o.reachto \cup \{x\}$,
+\item $\reachfromat{\inat{\frag'}} = \reachfromat{\inat{\frag}} \setminus \set{x}$,
+\item $\reachtoat{\inat{\frag'}} = \reachtoat{\inat{\frag}} \cup \set{x}$,
+\item $\reachfromat{\outat{\frag'}} = \reachfromat{\outat{\frag}} \setminus \set{x}$,
+\item $\reachtoat{\outat{\frag'}} = \reachtoat{\outat{\frag}} \cup \set{x}$,
 \end{itemize}
 \end{itemize}
 then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt R$
 \item for each fragment $\tt v \in S_1$ where $\tt v_y \hookrightarrow_S v$, create $\tt v'$ which is same as $\tt v$ then
 \begin{itemize}
-\item $\tt v'.i.vars = v.i.vars \cup \{x\}$,
-\item $\tt v'.o.vars = v.o.vars \setminus \{x\}$,
+\item $\pvarsat{\inat{\frag'}} = \pvarsat{\inat{\frag}} \cup \set{x}$,
+\item $\pvarsat{\outat{\frag'}} = \pvarsat{\outat{\frag}} \setminus \set{x}$,
 \item if $\tt x$ is a global variable
 \begin{itemize}
-\item $\tt v'.i.reachfrom = v.i.reachfrom \cup \{x\}$,
- \item $\tt v'.o.reachto = v.o.reachto \cup \{x\}$,
- \item $\tt v'.o.reachfrom = v.o.reachfrom \cup \{x\}$,
- \item $\tt v'.o.reachto = v.o.reachto \setminus \{x\}$,
+\item $\reachfromat{\inat{\frag'}} = \reachfromat{\inat{\frag}} \cup \set{x}$,
+ \item $\reachtoat{\outat{\frag'}} = \reachtoat{\outat{\frag}} \cup \set{x}$,
+ \item $\reachfromat{\outat{\frag'}} = \reachfromat{\outat{\frag}} \cup \set{x}$,
+ \item $\reachtoat{\outat{\frag'}} = \reachtoat{\outat{\frag}} \setminus \set{x}$,
 \end{itemize}
 \end{itemize}
 then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt R$
 \item for each fragment $\tt v \in S_1$ where $\tt v_y \leftrightarrow_S v$, create $\tt v'$ which is same as $\tt v$ except that
 \begin{itemize} 
-\item $\tt v'.i.vars = v.i.vars \setminus \{x\}$,
-\item $\tt v'.o.vars = v.o.vars \cup \{x\}$,
+\item $\pvarsat{\inat{\frag'}} = \pvarsat{\inat{\frag}} \setminus \set{x}$,
+\item $\pvarsat{\outat{\frag'}} = \pvarsat{\outat{\frag}} \cup \set{x}$,
 \item if $\tt x$ is a global variable
 \begin{itemize}
-\item $\tt v'.i.reachfrom = v.i.reachfrom \setminus \{x\}$,
-\item $\tt v'.i.reachto = v.i.reachto \cup \{x\}$,
- \item $\tt v'.o.reachfrom = v.o.reachfrom \cup \{x\}$,
- \item $\tt v'.o.reachto = v.o.reachto \cup \{x\}$,
+\item $\reachfromat{\inat{\frag'}} = \reachfromat{\inat{\frag}} \setminus \set{x}$,
+\item $\reachtoat{\inat{\frag'}} = \reachtoat{\inat{\frag}} \cup \set{x}$,
+ \item $\reachfromat{\outat{\frag'}} = \reachfromat{\outat{\frag}} \cup \set{x}$,
+ \item $\reachtoat{\outat{\frag'}} = \reachtoat{\outat{\frag}} \cup \set{x}$,
 \end{itemize}
 \end{itemize}
 then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt R$
 
 \item for each fragment $\tt v \in S_1$ where $\tt v_y \overset{+}\hookrightarrow_S v$, create $\tt v'$ which is same as $\tt v$ except that
 \begin{itemize}
-\item $\tt v'.i.vars = v.i.vars \setminus \{x\}$,
-\item $\tt v'.o.vars = v.o.vars \setminus \{x\}$,
+\item $\pvarsat{\inat{\frag'}} = \pvarsat{\inat{\frag}} \setminus \set{x}$,
+\item $\pvarsat{\outat{\frag'}} = \pvarsat{\outat{\frag}} \setminus \set{x}$,
 \item if $\tt x$ is a global variable
 \begin{itemize}
-\item $\tt v'.i.reachfrom = v.i.reachfrom \cup \{x\}$,
-\item $\tt v'.i.reachto = v.i.reachto \setminus \{x\}$,
- \item $\tt v'.o.reachfrom = v.o.reachfrom \cup \{x\}$,
- \item $\tt v'.o.reachto = v.o.reachto \setminus \{x\}$,
+\item $\reachfromat{\inat{\frag'}} = \reachfromat{\inat{\frag}} \cup \set{x}$,
+\item $\reachtoat{\inat{\frag'}} = \reachtoat{\inat{\frag}} \setminus \set{x}$,
+ \item $\reachfromat{\outat{\frag'}} = \reachfromat{\outat{\frag}} \cup \set{x}$,
+ \item $\reachtoat{\outat{\frag'}} = \reachtoat{\outat{\frag}} \setminus \set{x}$,
 \end{itemize}
 \end{itemize}
 then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt R$
 \item for each fragment $\tt v \in S_1$ where $\tt v_y \overset{*o}\leftrightarrow_S v$, create $\tt v'$ which is same as $\tt v$ except that
 \begin{itemize}
-\item $\tt v'.i.vars = v.i.vars \setminus \{x\}$,
-\item $\tt v'.o.vars = v.o.vars \setminus \{x\}$,
+\item $\pvarsat{\inat{\frag'}} = \pvarsat{\inat{\frag}} \setminus \set{x}$,
+\item $\pvarsat{\outat{\frag'}} = \pvarsat{\outat{\frag}} \setminus \set{x}$,
 \item if $\tt x$ is a global variable
 \begin{itemize}
-\item $\tt v'.i.reachfrom = v.i.reachfrom \setminus \{x\}$,
-\item $\tt v'.i.reachto = v.i.reachto \setminus \{x\}$,
-\item $\tt v'.o.reachfrom = v.o.reachfrom \cup \{x\}$,
-\item $\tt v'.o.reachto = v.o.reachto \setminus \{x\}$,
+\item $\reachfromat{\inat{\frag'}} = \reachfromat{\inat{\frag}} \setminus \set{x}$,
+\item $\reachtoat{\inat{\frag'}} = \reachtoat{\inat{\frag}} \setminus \set{x}$,
+\item $\reachfromat{\outat{\frag'}} = \reachfromat{\outat{\frag}} \cup \set{x}$,
+\item $\reachtoat{\outat{\frag'}} = \reachtoat{\outat{\frag}} \setminus \set{x}$,
 \end{itemize}
 \end{itemize}
 then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt R$
 \item for each fragment $\tt v \in S_1$ where $\tt v_y \overset{*+}\leftrightarrow_S v$, create $\tt v'$ which is same as $\tt v$ except that 
 \begin{itemize}
-\item $\tt v'.i.vars = v.i.vars \setminus \{x\{$,
-\item $\tt v'.o.vars = v.o.vars \setminus \{x\}$,
+\item $\pvarsat{\inat{\frag'}} = \pvarsat{\inat{\frag}} \setminus \{x\{$,
+\item $\pvarsat{\outat{\frag'}} = \pvarsat{\outat{\frag}} \setminus \set{x}$,
 \item if $\tt x$ is a global variable
 \begin{itemize}
-\item $\tt v'.i.reachfrom = v.i.reachfrom \setminus \{x\}$ ,
-\item $\tt v'.i.reachto = v.i.reachto \setminus \{x\}$,
-\item $\tt v'.o.reachfrom = v.o.reachfrom \setminus \{x\}$,
-\item $\tt v'.o.reachto = v.o.reachto \setminus \{x\}$,
+\item $\reachfromat{\inat{\frag'}} = \reachfromat{\inat{\frag}} \setminus \set{x}$ ,
+\item $\reachtoat{\inat{\frag'}} = \reachtoat{\inat{\frag}} \setminus \set{x}$,
+\item $\reachfromat{\outat{\frag'}} = \reachfromat{\outat{\frag}} \setminus \set{x}$,
+\item $\reachtoat{\outat{\frag'}} = \reachtoat{\outat{\frag}} \setminus \set{x}$,
 \end{itemize}
 \end{itemize}
 then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt R$
 \item for each fragment $\tt v \in S_1$ where $\tt v \overset{+o}\leftrightarrow_S v_y$, create $\tt v'$ which is same as $\tt v$ except that 
 \begin{itemize}
-\item $\tt v'.i.vars = v.i.vars \setminus \{x\}$,
-\item $\tt v'.o.vars = v.o.vars \setminus \{x\}$,
+\item $\pvarsat{\inat{\frag'}} = \pvarsat{\inat{\frag}} \setminus \set{x}$,
+\item $\pvarsat{\outat{\frag'}} = \pvarsat{\outat{\frag}} \setminus \set{x}$,
 \item if $\tt x$ is a global variable
 \begin{itemize}
-\item $\tt v'.i.reachfrom = v.i.reachfrom \setminus \{x\}$,
-\item $\tt v'.i.reachto = v.i.reachto \cup \{x\}$,
- \item $\tt v'.o.reachfrom = v.o.reachfrom \setminus \{x\}$,
- \item $\tt v'.o.reachto = v.o.reachto \cup \{x\}$,
+\item $\reachfromat{\inat{\frag'}} = \reachfromat{\inat{\frag}} \setminus \set{x}$,
+\item $\reachtoat{\inat{\frag'}} = \reachtoat{\inat{\frag}} \cup \set{x}$,
+ \item $\reachfromat{\outat{\frag'}} = \reachfromat{\outat{\frag}} \setminus \set{x}$,
+ \item $\reachtoat{\outat{\frag'}} = \reachtoat{\outat{\frag}} \cup \set{x}$,
 \end{itemize}
 \end{itemize}
 then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt R$
 
 \item create $\tt v'$ which is same as $\tt v_y$ except that
 \begin{itemize}
-\item $\tt v'.i.vars = v.i.vars \setminus \{x\}$,
-\item $\tt v'.o.vars = v.o.vars \cup \{x\}$,
+\item $\pvarsat{\inat{\frag'}} = \pvarsat{\inat{\frag}} \setminus \set{x}$,
+\item $\pvarsat{\outat{\frag'}} = \pvarsat{\outat{\frag}} \cup \set{x}$,
 \item if $\tt x$ is a global variable
 \begin{itemize}
-\item $\tt v'.i.reachfrom = v.i.reachfrom \setminus \{x\}$,
-\item $\tt v'.i.reachto = v.i.reachto \cup \{x\}$,
- \item $\tt v'.o.reachfrom = v.o.reachfrom \cup \{x\}$,
- \item $\tt v'.o.reachto = v.o.reachto \cup \{x\}$,
+\item $\reachfromat{\inat{\frag'}} = \reachfromat{\inat{\frag}} \setminus \set{x}$,
+\item $\reachtoat{\inat{\frag'}} = \reachtoat{\inat{\frag}} \cup \set{x}$,
+ \item $\reachfromat{\outat{\frag'}} = \reachfromat{\outat{\frag}} \cup \set{x}$,
+ \item $\reachtoat{\outat{\frag'}} = \reachtoat{\outat{\frag}} \cup \set{x}$,
 \end{itemize}
 \end{itemize}
 then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt R$
@@ -1245,13 +1257,13 @@ then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt R$
 
 \item for each fragment $\tt v \in S_2$ we do as follows. For each $\tt (v_1,v_1')$, $\tt (v_2,v_2') \in R$, for each pair of indices $\tt i_1$, $\tt i_2$ such that $\tt i_1 \in \{v_1.i, v_1.o\}$, $\tt i_2 \in \{v_2.i, v_2.o\}$, $\tt tag(v,i) = tag(v_1, i_1)$, and $\tt tag(v,o) = tag(v_2, i_2)$. Create $\tt v'$ which is same as $\tt v$ except that 
 \begin{itemize}
-\item $\tt v'.i.vars = v_1'.i_1.vars$,
-\item $\tt v'.o.vars = v_2'.i_2.vars$,
+\item $\pvarsat{\inat{\frag'}} = v_1'.i_1.vars$,
+\item $\pvarsat{\outat{\frag'}} = v_2'.i_2.vars$,
 
-\item $\tt v'.i.reachfrom = v_1'.i_1.reachfrom$,
-\item $\tt v'.o.reachfrom = v_2'.i_2.reachfrom$,
-\item $\tt v'.i.reachto = v_1'.i_1.reachto$,
-\item $\tt v'.o.reachto = v_2'.i_2.reachto$,
+\item $\reachfromat{\inat{\frag'}} = v_1'.i_1.reachfrom$,
+\item $\reachfromat{\outat{\frag'}} = v_2'.i_2.reachfrom$,
+\item $\reachtoat{\inat{\frag'}} = v_1'.i_1.reachto$,
+\item $\reachtoat{\outat{\frag'}} = v_2'.i_2.reachto$,
 \end{itemize} then add $\tt v'$ to $\tt S_{post}$. 
 \end{enumerate}	
 
@@ -1269,8 +1281,8 @@ then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt R$
 \begin{itemize}
 \item create $\tt v'$ which is same as $\tt v$, except that
 \begin{itemize}
-\item $\tt v'.i.reachto = (\tt v.i.reachto \cap v_x.i.reachfrom) \cup v_y.i.reachto \cup regs$.
-\item $\tt v'.o.reachto = (\tt v.o.reachto \cap v_x.i.reachfrom) \cup v_y.i.reachto \cup regs$.
+\item $\reachtoat{\inat{\frag'}} = (\tt \reachtoat{\inat{\frag}} \cap v_x.i.reachfrom) \cup v_y.i.reachto \cup regs$.
+\item $\reachtoat{\outat{\frag'}} = (\tt \reachtoat{\outat{\frag}} \cap v_x.i.reachfrom) \cup v_y.i.reachto \cup regs$.
 \end{itemize}
 \item add $\tt v'$ to $\tt S_{post}$ 
 \item add $\tt (v,v')$ to $\tt R_1$
@@ -1280,15 +1292,15 @@ then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt R$
 \begin{itemize}
 	\item create  $\tt v'$ which is same as $\tt v$ except that
 \begin{itemize}
- \item $\tt \tt v'.i.reachfrom = v_x.i.reachfrom \cup \tt v.i.reachfrom$, 
-\item $\tt \tt v'.o.reachfrom = v_x.i.reachfrom \cup \tt v.o.reachfrom$, 
+ \item $\tt \reachfromat{\inat{\frag'}} = v_x.i.reachfrom \cup \tt \reachfromat{\inat{\frag}}$, 
+\item $\tt \reachfromat{\outat{\frag'}} = v_x.i.reachfrom \cup \tt \reachfromat{\outat{\frag}}$, 
 \end{itemize}
 \item add $\tt v'$ to $\tt S_{post}$,
 \item add $\tt (v,v')$ to $\tt R_2$
 \end{itemize}
 \item for each fragment $\tt v \in S_1$ where $\tt v_x \overset{**}\leftrightarrow_S v$ and either $\tt v \hookrightarrow_S v_y$ or $\tt v_y \overset{*o}\leftrightarrow_S v$, 
 \begin{itemize}
-\item  create $\tt v'$ which is same as $\tt v$ except that $\tt \tt v'.o.reachfrom = v_x.i.reachfrom \cup \tt v.o.reachfrom$, 
+\item  create $\tt v'$ which is same as $\tt v$ except that $\tt \reachfromat{\outat{\frag'}} = v_x.i.reachfrom \cup \tt \reachfromat{\outat{\frag}}$, 
  \item add $\tt v'$ to $\tt S_{post}$, 
  \item add $\tt (v,v')$ to $\tt R_3$
 
@@ -1297,10 +1309,10 @@ then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt R$
 
 \item for each fragment $\tt v \in S_1$ where $\tt v_x \overset{*}\hookrightarrow_S v$ and either $\tt v \hookrightarrow_S v_y$ or $\tt v_y \overset{*o}\leftrightarrow_S v$,  
 \begin{itemize}
-\item create $\tt v'$ which is same as $\tt v$ then except that $\tt \tt v'.o.reachfrom = v_x.i.reachfrom \cup \tt v.o.reachfrom$, 
-\item for each subset $\tt regs$ of observer registers in $\tt v'.i.reachfrom \cap \tt v_x.i.reachfrom$
+\item create $\tt v'$ which is same as $\tt v$ then except that $\tt \reachfromat{\outat{\frag'}} = v_x.i.reachfrom \cup \tt \reachfromat{\outat{\frag}}$, 
+\item for each subset $\tt regs$ of observer registers in $\reachfromat{\inat{\frag'}} \cap \tt v_x.i.reachfrom$
 \begin{itemize}
-\item create $\tt v''$ which is same as $\tt v'$, except that $\tt v''.i.reachfrom = (\tt v'.i.reachfrom \setminus v_x.i.reachfrom) \cup regs$.
+\item create $\tt v''$ which is same as $\tt v'$, except that $\tt v''.i.reachfrom = (\reachfromat{\inat{\frag'}} \setminus v_x.i.reachfrom) \cup regs$.
 \item add $\tt v''$ to $\tt S_{post}$,
 \item add $\tt (v,v'')$ to $\tt R_4$
 \end{itemize}
@@ -1315,12 +1327,12 @@ then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt R$
 \end{itemize}
 
 
-\item for each fragment $\tt v \in S_1$ where $\tt v_x \overset{*}\hookrightarrow_S v$ and either $\tt v \overset{+}\hookrightarrow_S v_y$ or $\tt v_y \overset{*+}\leftrightarrow v$, then for each subset $\tt regs$ of observer registers in $\tt v.i.reachfrom \cap \tt v_x.i.reachfrom$, 
+\item for each fragment $\tt v \in S_1$ where $\tt v_x \overset{*}\hookrightarrow_S v$ and either $\tt v \overset{+}\hookrightarrow_S v_y$ or $\tt v_y \overset{*+}\leftrightarrow v$, then for each subset $\tt regs$ of observer registers in $\tt \reachfromat{\inat{\frag}} \cap \tt v_x.i.reachfrom$, 
 \begin{itemize}
-\item create $\tt v'$ which is same as $\tt v$, except that $\tt v'.i.reachfrom = (\tt v.i.reachfrom \setminus v_x.i.reachfrom) \cup regs$. 
- \item for each set $\tt regs'$ of observer registers in $\tt v'.o.reachfrom \cap \tt v_x.i.reachfrom$,  
+\item create $\tt v'$ which is same as $\tt v$, except that $\reachfromat{\inat{\frag'}} = (\tt \reachfromat{\inat{\frag}} \setminus v_x.i.reachfrom) \cup regs$. 
+ \item for each set $\tt regs'$ of observer registers in $\reachfromat{\outat{\frag'}} \cap \tt v_x.i.reachfrom$,  
 \begin{itemize}
-\item create $\tt v''$ which is same as $\tt v'$, except that $\tt v''.o.reachfrom = (\tt v'.o.reachfrom \setminus v_x.i.reachfrom) \cup regs'$. 
+\item create $\tt v''$ which is same as $\tt v'$, except that $\tt v''.o.reachfrom = (\reachfromat{\outat{\frag'}} \setminus v_x.i.reachfrom) \cup regs'$. 
 \item add $\tt v''$ to $\tt S_{post}$
 \item add $\tt (v,v'')$ to $\tt R_6$
 \end{itemize}
@@ -1330,13 +1342,13 @@ then add $\tt v'$ to $\tt S_{post}$, and $\tt (v,v')$ to $\tt R$
 
 \item for each fragment $\tt v \in S_2$ then we do as follows. for each $\tt (v_1,v_1') \in R_i$, $\tt (v_2,v_2') \in R_j$ where $\tt i \neq j$ and $\tt 1 \leq i,j \leq 6$. For each pair of indices $\tt i_1$, $\tt i_2$ such that $\tt i_1 \in \{v_1.i, v_1.o\}$, $\tt i_2 \in \{v_2.i, v_2.o\}$, $\tt tag(v,i) = tag(v_1, i_1)$, $\tt tag(v,o) = tag(v_2, i_2)$. Create $\tt v'$ which is same as $\tt v$ except that 
 \begin{itemize}
-\item $\tt v'.i.vars = v_1'.i_1.vars$,
-\item $\tt v'.o.vars = v_2'.i_2.vars$,
+\item $\pvarsat{\inat{\frag'}} = v_1'.i_1.vars$,
+\item $\pvarsat{\outat{\frag'}} = v_2'.i_2.vars$,
 
-\item $\tt v'.i.reachfrom = v_1'.i_1.reachfrom$,
-\item $\tt v'.o.reachfrom = v_2'.i_2.reachfrom$,
-\item $\tt v'.i.reachto = v_1'.i_1.reachto$,
-\item $\tt v'.o.reachto = v_2'.i_2.reachto$,
+\item $\reachfromat{\inat{\frag'}} = v_1'.i_1.reachfrom$,
+\item $\reachfromat{\outat{\frag'}} = v_2'.i_2.reachfrom$,
+\item $\reachtoat{\inat{\frag'}} = v_1'.i_1.reachto$,
+\item $\reachtoat{\outat{\frag'}} = v_2'.i_2.reachto$,
 \end{itemize} then add $\tt v'$ to $\tt S_{post}$. 
 
 
