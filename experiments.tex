@@ -1,0 +1,227 @@
+%--------------------------------------------------------
+\section{Experimental Results}
+\label{section:experiments}
+%--------------------------------------------------------
+\newcommand{\emm}{(emm)}
+%\begin{wrapfigure}{r}[0pt]{0.5\textwidth}
+%\vspace{5mm}
+\begin{figure}[]
+%% \vspace*{-1cm}
+\center
+
+
+
+\begin{tabular}{|c | c | }
+  \hline
+   \textsf{\textbf{{Timestamp Algorithms}}} &  \textsf{\textbf{{Time (s)}}} \\
+\hline
+\hline
+\textsf{Timestamp stack  ~\cite{MS:QueueAlgorithms}}\;\;\;\;\;\;  & \textsf{76.02} \\
+\hline
+\textsf{Timestamp queue  ~\cite{MS:QueueAlgorithms}}& \textsf{11.07} \\
+\hline
+\end{tabular}
+
+\vspace*{0.1cm}
+
+(a)
+\\
+\vspace*{0.5cm}
+
+\begin{tabular}{|c | c | }
+  \hline
+   \textsf{\textbf{{Skip-list Algorithms}}} &  \textsf{\textbf{{Time (s)}}} \\
+\hline
+\hline
+\;\;\;\;\textsf{Lock-free skiplist   ~\cite{ArtOfMpP}}\;\;\;\;\;\;  & \textsf{0.32} \\
+\hline
+\textsf{Optimistic skip-list  ~\cite{MS:QueueAlgorithms}}& \textsf{21.07} \\
+\hline 
+\textsf{Priority queue based on skip-list  ~\cite{Shavit:ElimQueue}}  &  \textsf{105.56} \\
+\hline
+\textsf{Priority queue based on skip-list  ~\cite{Shavit:ElimQueue}}  &  \textsf{105.56} \\
+\hline
+\end{tabular}
+
+\vspace*{0.1cm}
+
+(b)
+\\
+\vspace*{0.5cm}
+
+
+\begin{tabular}{|c | c | }
+  \hline
+   \textsf{\textbf{{Singly-linked lists Algorithms}}} &  \textsf{\textbf{{Time (s)}}} \\
+\hline
+\textsf{Treiber stack  ~\cite{Treiber:stack}}\;\;\;\;\;\; & \textsf {0.18} \\
+\hline
+\textsf{MS two-lock queue  ~\cite{MS:QueueAlgorithms}}\;\;\;\;\;\;  & \textsf{0.32} \\
+\hline
+\textsf{MS lock-free queue  ~\cite{MS:QueueAlgorithms}}& \textsf{21.07} \\
+\hline
+\textsf{DGLM queue  ~\cite{Doherty:lockfree}}&  \textsf {16.99} \\
+\hline
+\textsf{Vechev-CAS set  ~\cite{Vechev:list}}  & \textsf{24.01} \\
+\hline
+\textsf{Vechev-DCAS set  ~\cite{Vechev:list}}   & \textsf{16.02}  \\
+\hline
+\textsf{Michael lock-free set ~\cite{Michael:list}}  & \textsf{110}  \\
+\hline
+\textsf{Pessimistic set  ~\cite{ArtOfMpP}}&\textsf{1.51} \\
+\hline
+\textsf{Optimistic set ~\cite{ArtOfMpP}}& \textsf{60.43} \\
+\hline
+\textsf{Lazy set ~\cite{Lazyset}  }  & \textsf {289} \\
+\hline
+\textsf {O$\textquotesingle $Hearn set  ~\cite{OHearnlist}}     & \textsf{12.01} \\
+\hline
+\textsf{HM lock-free set  ~\cite{ArtOfMpP} } & \textsf{462.01} \\
+\hline
+\end{tabular}
+
+
+\vspace*{0.1cm}
+
+(c)
+\\
+%\vspace{10mm}
+%\vspace*{-0.3cm}
+\caption{Experimental Results for verifying concurrent programs}
+%\vspace*{-0.7cm}
+\label{Experiments:fig}
+\end{figure}
+%\vspace{-0.2cm}
+Based on our framework, we have implemented a tool in OCaml, and used
+it for
+verifying 19 concurrent algorithms (both lock-based and lock-free)
+including two stacks, 
+five queues, nine ordered sets, one unordered set and two CAS algorithms. 
+%
+The user needs to provide the program code and the 
+set of controllers.
+%
+The experiments were performed on a desktop 2.8 GHz processor with 8GB memory.
+%checkmark
+The results are presented in Fig.~\ref{Experiments:fig},
+where running times are given in seconds. 
+Fig.~\ref{Experiments:fig}(a) provides the verification
+results for all algorithms except for HW queue with provided 
+linearization policies, using the technique of controllers introduced in 
+the paper. Fig.~\ref{Experiments:fig}(b) provides the verification
+results for queues and stack without LP placement, using the technique 
+adapted from \cite{BEEH:icalp15,HSV:concur13}.
+%
+All experiments start from the initial heap,  
+and end either when the analysis 
+reaches the fixed point or when a violation of linearizability is detected. 
+
+%
+%\paragraph{Helping.}
+%The algorithms marked by  \checkmark \; use helping.
+%%
+%We run  some of the algorithms with two different helping patterns
+%(such as the ones described in Sec.~\ref{programs:section}),
+%and report the execution time for each.
+
+
+
+
+%\expcloseparagraph{Consistency.}
+%In the case of algorithms where the controller
+%performs multiple linearizations for the same thread (e.g.,
+%the {\tt Lazy Set} algorithm), our prototype checks
+%{\it automatically} that
+%(i) 
+%each thread linearizes at least once during
+%its execution, and 
+%(ii) the
+%last value communicated to the observer is identical to the value $r$
+%actually returned by the thread.
+%%
+%To do that, the prototype adds two extra variables per thread, namely
+%a Boolean variable $b$ which records that at least one
+% linearization has taken place, and a variable $v$ of type 
+%$\intgrs\cup\set{\star}$, for some $\star\not\in\intgrs$,
+%where $v$ is initialized to $\star$.
+%%
+%The variable $v$ records the value that has been communicated to
+%the observer by the thread.
+%%
+%%
+%Furthermore, we have to take into account the fact 
+%that ``false'' linearization points
+%may change the state of the observer.
+%%
+%Each time the controller performs a linearization,
+%it will check if the value of $v$ of is different from $\star$.
+%%
+%If {\it yes} then the thread has already linearized once and the run 
+%of the program is stopped.
+%%
+%Otherwise, it updates the value of $b$ to {\tt true},
+%and then decides either
+%to perform a linearization or not.
+%%
+%In the former case, it updates the value of $v$ 
+%to the value communicated to the observer.
+%%
+%In the latter case, it will not update the value of $v$.
+%%
+%This will continue, until we reach the {\tt return} statement of the thread.
+%%
+%We report an error if
+%(i) the observer has reached a bad state.
+%(ii) $b={\tt false}$ holds, since this means the existence of
+%a run long of which the thread never linearizes, or
+%(iii) $(b={\tt true})\wedge(v\neq\star)\wedge(v\neq r)$
+%holds since this means that we have linearized with the wrong value.
+%
+%\paragraph{Arrays.}
+%Our tool does not currently support arrays, and hence
+%we have transformed arrays to singly-linked lists
+%in the algorithms that use the former.
+%
+%\paragraph{Safety Properties.}
+%Our tool is also capable of verifying 
+% memory related safety properties such as the absence of
+%null pointer dereferencing, 
+%dangling pointers,  double-freeing, cycles, and
+%dereferencing of freed nodes, as well as sortedness.
+%%
+%%We check these properties for all the algorithms we consider.
+%%
+%In fact,  for each algorithm,
+%the time reported in Fig.~\ref{Experiments:fig} is the sum of the 
+%times taken to show linearizability and all the properties mentioned above.
+%
+\paragraph{Running Times.}
+As can be seen from the table, the running times
+vary in the different examples.
+%
+This is due to the types of shapes that are produced during the analysis.
+%
+For instance, the {\tt CCAS}, {\tt RDCSS}, stack and queue algorithms 
+without an elimination produce simple shape patterns and hence they
+have shorter running times.
+%
+Several features may make shapes more complex, such as
+%
+insertion/removal of elements in the middle of a list
+in the ordered set algorithms, and
+having two linked lists (instead of one)
+ in the  elimination queue and stack algorithms.
+%
+Also, the
+unordered set algorithm generates 
+complex shapes since it allows 
+physically removed elements to re-appear  in the set.
+
+\paragraph{Error Detection}
+ In addition to establishing correctness of the original versions of the
+benchmark algorithms, we tested our tool with intentionally inserted bugs. For example, we emitted broadcast messages in the controllers or inserted bugs into the codes of algorithms. In all cases, the tool, as expected, successfully detected and reported the bug. In the {\tt Lazy Set} algorithm, when we emitted rule $\rulename_7$ in Fig. ~\ref{rrules:lazy:list:fig}, the tool reported an error. As another example, when we removed the statement in line 4 of 
+the add method in the {\tt Lazy Set} algorithm, the tool also reported an error.
+ 
+
+
+
