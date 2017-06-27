@@ -19,91 +19,159 @@
 
 
 
-\node[rounded corners,draw,name=cellnew,minimum width=16pt, minimum height=30pt] at ($(cell0.east)+(8pt,80pt)$){};
-\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt,scale=0.8] at ($(cellnew.north west)+(0.5pt,0pt)$){{$4$}};
-\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt]at ($(cellnew.north west)+(0pt,-10pt)$){\tt -1};
-\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt]at ($(cellnew.north west)+(0pt,-20pt)$){\cross};
-\node[name=succnew,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=0pt] at ($(cellnew.east)+(-3pt,0pt)$) {};
-\draw ($(cellnew.north west)+(0pt,-10pt)$) -- ($(cellnew.north west)+(10pt,-10pt)$);
-\draw ($(cellnew.north west)+(0pt,-20pt)$) -- ($(cellnew.north west)+(10pt,-20pt)$);
-\draw ($(cellnew.north west)+(10pt,0pt)$) -- ($(cellnew.south west)+(10pt,0pt)$);
-\node[anchor=south,font=\tiny,align=center] at ($(cellnew.north)+(0pt,-2pt)$) {{\tt new[1]}};
+%\node[rounded corners,draw,name=cellnew,minimum width=16pt, minimum height=30pt] at ($(cell0.east)+(8pt,80pt)$){};
+%\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt,scale=0.8] at ($(cellnew.north west)+(0.5pt,0pt)$){{$4$}};
+%\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt]at ($(cellnew.north west)+(0pt,-10pt)$){\tt -1};
+%\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt]at ($(cellnew.north west)+(0pt,-20pt)$){\cross};
+%\node[name=succnew,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=0pt] at ($(cellnew.east)+(-3pt,0pt)$) {};
+%\draw ($(cellnew.north west)+(0pt,-10pt)$) -- ($(cellnew.north west)+(10pt,-10pt)$);
+%\draw ($(cellnew.north west)+(0pt,-20pt)$) -- ($(cellnew.north west)+(10pt,-20pt)$);
+%\draw ($(cellnew.north west)+(10pt,0pt)$) -- ($(cellnew.south west)+(10pt,0pt)$);
+%\node[anchor=south,font=\tiny,align=center] at ($(cellnew.north)+(0pt,-2pt)$) {{\tt new[1]}};
+
+
+\node[rounded corners,draw,name=cellnew,minimum width=24pt, minimum height=20pt] at ($(cell0.east)+(8pt,80pt)$){};
+\node[minimum width=8pt, minimum height=10pt,anchor=west,font=\tiny,inner sep=0pt,name=d1] at (cellnew.west)
+{$4$};
+\node[draw,minimum width=8pt, minimum height=10pt,anchor=north,font=\tiny,inner sep=0pt]at (cellnew.north){\tt -1};
+\node[draw,minimum width=8pt, minimum height=10pt,anchor=south,font=\tiny,inner sep=0pt]at (cellnew.south){\cross};
+\node[name=succnew,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=0pt] at ($(cellnew.east)+(-4pt,0pt)$) {};
+\node[anchor=south,font=\tiny,align=center,name=head] at ($(cellnew.north)+(0pt,-2pt)$) {{\tt new[1]}};
 
 
 
 
-\node[rounded corners,draw,name=cell1,minimum width=16pt, minimum height=30pt] at ($(cell0.east)+(37pt,40pt)$){};
-\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt,scale=0.8] at ($(cell1.north west)+(0.5pt,0pt)$){{$4$}};
-\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt]at ($(cell1.north west)+(0pt,-10pt)$){\tt 9};
-\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt]at ($(cell1.north west)+(0pt,-20pt)$){\cross};
-\node[name=succ1,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=0pt] at ($(cell1.east)+(-3pt,0pt)$) {};
-\draw ($(cell1.north west)+(0pt,-10pt)$) -- ($(cell1.north west)+(10pt,-10pt)$);
-\draw ($(cell1.north west)+(0pt,-20pt)$) -- ($(cell1.north west)+(10pt,-20pt)$);
-\draw ($(cell1.north west)+(10pt,0pt)$) -- ($(cell1.south west)+(10pt,0pt)$);
+%\node[rounded corners,draw,name=cell1,minimum width=16pt, minimum height=30pt] at ($(cell0.east)+(37pt,40pt)$){};
+%\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt,scale=0.8] at ($(cell1.north west)+(0.5pt,0pt)$){{$4$}};
+%\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt]at ($(cell1.north west)+(0pt,-10pt)$){\tt 9};
+%\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt]at ($(cell1.north west)+(0pt,-20pt)$){\cross};
+%\node[name=succ1,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=0pt] at ($(cell1.east)+(-3pt,0pt)$) {};
+%\draw ($(cell1.north west)+(0pt,-10pt)$) -- ($(cell1.north west)+(10pt,-10pt)$);
+%\draw ($(cell1.north west)+(0pt,-20pt)$) -- ($(cell1.north west)+(10pt,-20pt)$);
+%\draw ($(cell1.north west)+(10pt,0pt)$) -- ($(cell1.south west)+(10pt,0pt)$);
+%
+
+
+\node[rounded corners,draw,name=cell1,minimum width=24pt, minimum height=20pt] at ($(cell0.east)+(37pt,40pt)$){};
+\node[minimum width=8pt, minimum height=10pt,anchor=west,font=\tiny,inner sep=0pt,name=d1] at (cell1.west)
+{$4$};
+\node[draw,minimum width=8pt, minimum height=10pt,anchor=north,font=\tiny,inner sep=0pt]at (cell1.north){\tt 9};
+\node[draw,minimum width=8pt, minimum height=10pt,anchor=south,font=\tiny,inner sep=0pt]at (cell1.south){\cross};
+\node[name=succ1,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=0pt] at ($(cell1.east)+(-4pt,0pt)$) {};
+
+
 
 \draw[->] (succ0) -- (cell1);
 \draw[->,out=0,in=270] (succnew) -- (cell1);
 
 
-\node[rounded corners,draw,name=cell2,minimum width=16pt, minimum height=30pt,anchor=west]
-at ($(cell1.east)+(10pt,0pt)$){};
-\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt] at ($(cell2.north west)+(0pt,0pt)$){{$8$}};
-\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt]at ($(cell2.north west)+(0pt,-10pt)$){\tt 8};
-\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt]at ($(cell2.north west)+(0pt,-20pt)$){\cross};
-\node[name=succ2,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=0pt] at ($(cell2.east)+(-3pt,0pt)$) {};
-\draw ($(cell2.north west)+(0pt,-10pt)$) -- ($(cell2.north west)+(10pt,-10pt)$);
-\draw ($(cell2.north west)+(0pt,-20pt)$) -- ($(cell2.north west)+(10pt,-20pt)$);
-\draw ($(cell2.north west)+(10pt,0pt)$) -- ($(cell2.south west)+(10pt,0pt)$);
+%\node[rounded corners,draw,name=cell2,minimum width=16pt, minimum height=30pt,anchor=west]
+%at ($(cell1.east)+(10pt,0pt)$){};
+%\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt] at ($(cell2.north west)+(0pt,0pt)$){{$8$}};
+%\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt]at ($(cell2.north west)+(0pt,-10pt)$){\tt 8};
+%\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt]at ($(cell2.north west)+(0pt,-20pt)$){\cross};
+%\node[name=succ2,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=0pt] at ($(cell2.east)+(-3pt,0pt)$) {};
+%\draw ($(cell2.north west)+(0pt,-10pt)$) -- ($(cell2.north west)+(10pt,-10pt)$);
+%\draw ($(cell2.north west)+(0pt,-20pt)$) -- ($(cell2.north west)+(10pt,-20pt)$);
+%\draw ($(cell2.north west)+(10pt,0pt)$) -- ($(cell2.south west)+(10pt,0pt)$);
+
+\node[rounded corners,draw,name=cell2,minimum width=24pt, minimum height=20pt] at ($(cell1.east)+(30pt,0pt)$){};
+\node[minimum width=8pt, minimum height=10pt,anchor=west,font=\tiny,inner sep=0pt,name=d1] at (cell2.west)
+{$8$};
+\node[draw,minimum width=8pt, minimum height=10pt,anchor=north,font=\tiny,inner sep=0pt]at (cell2.north){\tt 8};
+\node[draw,minimum width=8pt, minimum height=10pt,anchor=south,font=\tiny,inner sep=0pt]at (cell2.south){\cross};
+\node[name=succ2,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=0pt] at ($(cell2.east)+(-4pt,0pt)$) {};
+
 
 \draw[->] (succ1) -- (cell2);
 
 
-\node[rounded corners,draw,name=cell3,minimum width=16pt, minimum height=30pt,anchor=west]
-at ($(cell2.east)+(10pt,0pt)$){};
-\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt] at ($(cell3.north west)+(0pt,0pt)$){{$9$}};
-\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt]at ($(cell3.north west)+(0pt,-10pt)$){\tt 6};
-\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt]at ($(cell3.north west)+(0pt,-20pt)$){\cross};
-\node[name=succ3,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=0pt] at ($(cell3.east)+(-3pt,0pt)$) {};
-\draw ($(cell3.north west)+(0pt,-10pt)$) -- ($(cell3.north west)+(10pt,-10pt)$);
-\draw ($(cell3.north west)+(0pt,-20pt)$) -- ($(cell3.north west)+(10pt,-20pt)$);
-\draw ($(cell3.north west)+(10pt,0pt)$) -- ($(cell3.south west)+(10pt,0pt)$);
+\node[rounded corners,draw,name=cell3,minimum width=24pt, minimum height=20pt]
+at ($(cell2.east)+(30pt,0pt)$){};
+%\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt] at ($(cell3.north west)+(0pt,0pt)$){{$9$}};
+%\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt]at ($(cell3.north west)+(0pt,-10pt)$){\tt 6};
+%\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt]at ($(cell3.north west)+(0pt,-20pt)$){\cross};
+%\node[name=succ3,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=0pt] at ($(cell3.east)+(-3pt,0pt)$) {};
+%\draw ($(cell3.north west)+(0pt,-10pt)$) -- ($(cell3.north west)+(10pt,-10pt)$);
+%\draw ($(cell3.north west)+(0pt,-20pt)$) -- ($(cell3.north west)+(10pt,-20pt)$);
+%\draw ($(cell3.north west)+(10pt,0pt)$) -- ($(cell3.south west)+(10pt,0pt)$);
+\node[minimum width=8pt, minimum height=10pt,anchor=west,font=\tiny,inner sep=0pt,name=d1] at (cell3.west)
+{$9$};
+\node[draw,minimum width=8pt, minimum height=10pt,anchor=north,font=\tiny,inner sep=0pt]at (cell3.north){\tt 6};
+\node[draw,minimum width=8pt, minimum height=10pt,anchor=south,font=\tiny,inner sep=0pt]at (cell3.south){\cross};
+\node[name=succ3,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=0pt] at ($(cell3.east)+(-4pt,0pt)$) {};
 
-\node[rounded corners,draw,name=cell4,minimum width=16pt, minimum height=30pt,anchor=west]
-at ($(cell3.east)+(10pt,0pt)$){};
-\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt] at ($(cell4.north west)+(0pt,0pt)$){{$2$}};
-\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt] at ($(cell4.north west)+(0pt,-10pt)$){\tt 5};
-\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt] at ($(cell4.north west)+(0pt,-20pt)$){\cross};
-\draw ($(cell4.north west)+(0pt,-10pt)$) -- ($(cell4.north west)+(10pt,-10pt)$);
-\draw ($(cell4.north west)+(0pt,-20pt)$) -- ($(cell4.north west)+(10pt,-20pt)$);
-\draw ($(cell4.north west)+(10pt,0pt)$) -- ($(cell4.south west)+(10pt,0pt)$);
+
+
+
+%\node[rounded corners,draw,name=cell4,minimum width=16pt, minimum height=30pt,anchor=west]
+%at ($(cell3.east)+(10pt,0pt)$){};
+%\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt] at ($(cell4.north west)+(0pt,0pt)$){{$2$}};
+%\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt] at ($(cell4.north west)+(0pt,-10pt)$){\tt 5};
+%\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt] at ($(cell4.north west)+(0pt,-20pt)$){\cross};
+%\draw ($(cell4.north west)+(0pt,-10pt)$) -- ($(cell4.north west)+(10pt,-10pt)$);
+%\draw ($(cell4.north west)+(0pt,-20pt)$) -- ($(cell4.north west)+(10pt,-20pt)$);
+%\draw ($(cell4.north west)+(10pt,0pt)$) -- ($(cell4.south west)+(10pt,0pt)$);
+%\draw[->] (succ2) -- (cell3);
+%\draw[->] (succ3) -- (cell4);
+%\node[name=succ4,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=0pt] at ($(cell4.east)+(-3pt,0pt)$) {};
+
+\node[rounded corners,draw,name=cell4,minimum width=24pt, minimum height=20pt] at ($(cell3.east)+(30pt,0pt)$){};
+\node[minimum width=8pt, minimum height=10pt,anchor=west,font=\tiny,inner sep=0pt,name=d1] at (cell4.west)
+{$2$};
+\node[draw,minimum width=8pt, minimum height=10pt,anchor=north,font=\tiny,inner sep=0pt]at (cell4.north){\tt 5};
+\node[draw,minimum width=8pt, minimum height=10pt,anchor=south,font=\tiny,inner sep=0pt]at (cell4.south){\cross};
+\node[name=succ4,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=0pt] at ($(cell4.east)+(-4pt,0pt)$) {};
 \draw[->] (succ2) -- (cell3);
 \draw[->] (succ3) -- (cell4);
-\node[name=succ4,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=0pt] at ($(cell4.east)+(-3pt,0pt)$) {};
+
+
 \node[name=cell5] at ($(cell4.east)+(20pt,0pt)$){$\bot$};
+
+
+
 \draw[->] (succ4) -- (cell5);
 
 
 
 %%NEXT LIST
 
-\node[rounded corners,draw,name=cell6,minimum width=16pt, minimum height=30pt] at ($(cell0.east)+(37pt,-0pt)$){};
-\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt,scale=0.8] at ($(cell6.north west)+(0.5pt,0pt)$){{$4$}};
-\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt]at ($(cell6.north west)+(0pt,-10pt)$){\tt 4};
-\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt]at ($(cell6.north west)+(0pt,-20pt)$){\cross};
-\node[name=succ6,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=0pt] at ($(cell6.east)+(-3pt,0pt)$) {};
-\draw ($(cell6.north west)+(0pt,-10pt)$) -- ($(cell6.north west)+(10pt,-10pt)$);
-\draw ($(cell6.north west)+(0pt,-20pt)$) -- ($(cell6.north west)+(10pt,-20pt)$);
-\draw ($(cell6.north west)+(10pt,0pt)$) -- ($(cell6.south west)+(10pt,0pt)$);
+%\node[rounded corners,draw,name=cell6,minimum width=16pt, minimum height=30pt] at ($(cell0.east)+(37pt,-0pt)$){};
+%\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt,scale=0.8] at ($(cell6.north west)+(0.5pt,0pt)$){{$4$}};
+%\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt]at ($(cell6.north west)+(0pt,-10pt)$){\tt 4};
+%\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt]at ($(cell6.north west)+(0pt,-20pt)$){\cross};
+%\node[name=succ6,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=0pt] at ($(cell6.east)+(-3pt,0pt)$) {};
+%\draw ($(cell6.north west)+(0pt,-10pt)$) -- ($(cell6.north west)+(10pt,-10pt)$);
+%\draw ($(cell6.north west)+(0pt,-20pt)$) -- ($(cell6.north west)+(10pt,-20pt)$);
+%\draw ($(cell6.north west)+(10pt,0pt)$) -- ($(cell6.south west)+(10pt,0pt)$);
+
+\node[rounded corners,draw,name=cell6,minimum width=24pt, minimum height=20pt] at ($(cell0.east)+(37pt,0pt)$){};
+\node[minimum width=8pt, minimum height=10pt,anchor=west,font=\tiny,inner sep=0pt,name=d1] at (cell6.west)
+{$4$};
+\node[draw,minimum width=8pt, minimum height=10pt,anchor=north,font=\tiny,inner sep=0pt]at (cell6.north){\tt 4};
+\node[draw,minimum width=8pt, minimum height=10pt,anchor=south,font=\tiny,inner sep=0pt]at (cell6.south){\cross};
+\node[name=succ6,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=0pt] at ($(cell6.east)+(-4pt,0pt)$) {};
+
+
 \draw[->] (succ01) -- (cell6);
 
-\node[rounded corners,draw,name=cell7,minimum width=16pt, minimum height=30pt] at ($(cell6.east)+(20pt,-0pt)$){};
-\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt,scale=0.8] at ($(cell7.north west)+(0.5pt,0pt)$){{$4$}};
-\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt]at ($(cell7.north west)+(0pt,-10pt)$){\tt 2};
-\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt]at ($(cell7.north west)+(0pt,-20pt)$){\cross};
-\node[name=succ7,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=0pt] at ($(cell7.east)+(-3pt,0pt)$) {};
-\draw ($(cell7.north west)+(0pt,-10pt)$) -- ($(cell7.north west)+(10pt,-10pt)$);
-\draw ($(cell7.north west)+(0pt,-20pt)$) -- ($(cell7.north west)+(10pt,-20pt)$);
-\draw ($(cell7.north west)+(10pt,0pt)$) -- ($(cell7.south west)+(10pt,0pt)$);
+%\node[rounded corners,draw,name=cell7,minimum width=16pt, minimum height=30pt] at ($(cell6.east)+(20pt,-0pt)$){};
+%\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt,scale=0.8] at ($(cell7.north west)+(0.5pt,0pt)$){{$4$}};
+%\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt]at ($(cell7.north west)+(0pt,-10pt)$){\tt 2};
+%\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt]at ($(cell7.north west)+(0pt,-20pt)$){\cross};
+%\node[name=succ7,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=0pt] at ($(cell7.east)+(-3pt,0pt)$) {};
+%\draw ($(cell7.north west)+(0pt,-10pt)$) -- ($(cell7.north west)+(10pt,-10pt)$);
+%\draw ($(cell7.north west)+(0pt,-20pt)$) -- ($(cell7.north west)+(10pt,-20pt)$);
+%\draw ($(cell7.north west)+(10pt,0pt)$) -- ($(cell7.south west)+(10pt,0pt)$);
+
+\node[rounded corners,draw,name=cell7,minimum width=24pt, minimum height=20pt] at ($(cell6.east)+(30pt,0pt)$){};
+\node[minimum width=8pt, minimum height=10pt,anchor=west,font=\tiny,inner sep=0pt,name=d1] at (cell7.west)
+{$4$};
+\node[draw,minimum width=8pt, minimum height=10pt,anchor=north,font=\tiny,inner sep=0pt]at (cell7.north){\tt 2};
+\node[draw,minimum width=8pt, minimum height=10pt,anchor=south,font=\tiny,inner sep=0pt]at (cell7.south){\cross};
+\node[name=succ7,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=0pt] at ($(cell7.east)+(-4pt,0pt)$) {};
+
+
 \draw[->] (succ6) -- (cell7);
 
 \node[name=cell8] at ($(cell7.east)+(20pt,0pt)$){$\bot$};
@@ -111,98 +179,155 @@ at ($(cell3.east)+(10pt,0pt)$){};
 
 %% LAST LIST
 
-\node[rounded corners,draw,name=cell13,minimum width=16pt, minimum height=30pt] at ($(cell0.east)+(37pt,-40pt)$){};
-\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt,scale=0.8] at ($(cell13.north west)+(0.5pt,0pt)$){{$4$}};
-\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt]at ($(cell13.north west)+(0pt,-10pt)$){\tt 20};
-\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt]at ($(cell13.north west)+(0pt,-20pt)$){\tick};
-\node[name=succ13,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=0pt] at ($(cell13.east)+(-3pt,0pt)$) {};
-\draw ($(cell13.north west)+(0pt,-10pt)$) -- ($(cell13.north west)+(10pt,-10pt)$);
-\draw ($(cell13.north west)+(0pt,-20pt)$) -- ($(cell13.north west)+(10pt,-20pt)$);
-\draw ($(cell13.north west)+(10pt,0pt)$) -- ($(cell13.south west)+(10pt,0pt)$);
+%\node[rounded corners,draw,name=cell13,minimum width=16pt, minimum height=30pt] at ($(cell0.east)+(37pt,-40pt)$){};
+%\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt,scale=0.8] at ($(cell13.north west)+(0.5pt,0pt)$){{$4$}};
+%\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt]at ($(cell13.north west)+(0pt,-10pt)$){\tt 20};
+%\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt]at ($(cell13.north west)+(0pt,-20pt)$){\tick};
+%\node[name=succ13,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=0pt] at ($(cell13.east)+(-3pt,0pt)$) {};
+%\draw ($(cell13.north west)+(0pt,-10pt)$) -- ($(cell13.north west)+(10pt,-10pt)$);
+%\draw ($(cell13.north west)+(0pt,-20pt)$) -- ($(cell13.north west)+(10pt,-20pt)$);
+%\draw ($(cell13.north west)+(10pt,0pt)$) -- ($(cell13.south west)+(10pt,0pt)$);
+
+\node[rounded corners,draw,name=cell13,minimum width=24pt, minimum height=20pt] at ($(cell0.east)+(37pt,-40pt)$){};
+\node[minimum width=8pt, minimum height=10pt,anchor=west,font=\tiny,inner sep=0pt,name=d1] at (cell13.west)
+{$4$};
+\node[draw,minimum width=8pt, minimum height=10pt,anchor=north,font=\tiny,inner sep=0pt]at (cell13.north){\tt 20};
+\node[draw,minimum width=8pt, minimum height=10pt,anchor=south,font=\tiny,inner sep=0pt]at (cell13.south){\cross};
+\node[name=succ13,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=0pt] at ($(cell13.east)+(-4pt,0pt)$) {};
+
+
 \node[anchor=south,font=\tiny,align=center] at ($(cell13.north)+(0pt,-2pt)$) {{\tt myTop[2]}};
 
 \draw[->] (succ02) -- (cell13);
 
 
-\node[rounded corners,draw,name=cell23,minimum width=16pt, minimum height=30pt,anchor=west]
-at ($(cell13.east)+(10pt,0pt)$){};
-\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt] at ($(cell23.north west)+(0pt,0pt)$){{$8$}};
-\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt]at ($(cell23.north west)+(0pt,-10pt)$){\tt 18};
-\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt]at ($(cell23.north west)+(0pt,-20pt)$){\tick};
-\node[name=succ23,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=0pt] at ($(cell23.east)+(-3pt,0pt)$) {};
-\draw ($(cell23.north west)+(0pt,-10pt)$) -- ($(cell23.north west)+(10pt,-10pt)$);
-\draw ($(cell23.north west)+(0pt,-20pt)$) -- ($(cell23.north west)+(10pt,-20pt)$);
-\draw ($(cell23.north west)+(10pt,0pt)$) -- ($(cell23.south west)+(10pt,0pt)$);
+%\node[rounded corners,draw,name=cell23,minimum width=16pt, minimum height=30pt,anchor=west]
+%at ($(cell13.east)+(10pt,0pt)$){};
+%\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt] at ($(cell23.north west)+(0pt,0pt)$){{$8$}};
+%\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt]at ($(cell23.north west)+(0pt,-10pt)$){\tt 18};
+%\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt]at ($(cell23.north west)+(0pt,-20pt)$){\tick};
+%\node[name=succ23,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=0pt] at ($(cell23.east)+(-3pt,0pt)$) {};
+%\draw ($(cell23.north west)+(0pt,-10pt)$) -- ($(cell23.north west)+(10pt,-10pt)$);
+%\draw ($(cell23.north west)+(0pt,-20pt)$) -- ($(cell23.north west)+(10pt,-20pt)$);
+%\draw ($(cell23.north west)+(10pt,0pt)$) -- ($(cell23.south west)+(10pt,0pt)$);
+
+\node[rounded corners,draw,name=cell23,minimum width=24pt, minimum height=20pt] at ($(cell13.east)+(30pt,0pt)$){};
+\node[minimum width=8pt, minimum height=10pt,anchor=west,font=\tiny,inner sep=0pt,name=d1] at (cell23.west)
+{$8$};
+\node[draw,minimum width=8pt, minimum height=10pt,anchor=north,font=\tiny,inner sep=0pt]at (cell23.north){\tt 18};
+\node[draw,minimum width=8pt, minimum height=10pt,anchor=south,font=\tiny,inner sep=0pt]at (cell23.south){\cross};
+\node[name=succ23,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=0pt] at ($(cell23.east)+(-4pt,0pt)$) {};
+
 
 \draw[->] (succ13) -- (cell23);
 
 
-\node[rounded corners,draw,name=cell33,minimum width=16pt, minimum height=30pt,anchor=west]
-at ($(cell23.east)+(10pt,0pt)$){};
-\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt] at ($(cell33.north west)+(0pt,0pt)$){{$7$}};
-\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt]at ($(cell33.north west)+(0pt,-10pt)$){\tt 16};
-\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt]at ($(cell33.north west)+(0pt,-20pt)$){\tick};
-\node[name=succ33,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=0pt] at ($(cell33.east)+(-3pt,0pt)$) {};
-\draw ($(cell33.north west)+(0pt,-10pt)$) -- ($(cell33.north west)+(10pt,-10pt)$);
-\draw ($(cell33.north west)+(0pt,-20pt)$) -- ($(cell33.north west)+(10pt,-20pt)$);
-\draw ($(cell33.north west)+(10pt,0pt)$) -- ($(cell33.south west)+(10pt,0pt)$);
+%\node[rounded corners,draw,name=cell33,minimum width=16pt, minimum height=30pt,anchor=west]
+%at ($(cell23.east)+(10pt,0pt)$){};
+%\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt] at ($(cell33.north west)+(0pt,0pt)$){{$7$}};
+%\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt]at ($(cell33.north west)+(0pt,-10pt)$){\tt 16};
+%\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt]at ($(cell33.north west)+(0pt,-20pt)$){\tick};
+%\node[name=succ33,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=0pt] at ($(cell33.east)+(-3pt,0pt)$) {};
+%\draw ($(cell33.north west)+(0pt,-10pt)$) -- ($(cell33.north west)+(10pt,-10pt)$);
+%\draw ($(cell33.north west)+(0pt,-20pt)$) -- ($(cell33.north west)+(10pt,-20pt)$);
+%\draw ($(cell33.north west)+(10pt,0pt)$) -- ($(cell33.south west)+(10pt,0pt)$);
 
-\node[rounded corners,draw,name=cell43,minimum width=16pt, minimum height=30pt,anchor=west]
-at ($(cell33.east)+(10pt,0pt)$){};
-\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt] at ($(cell43.north west)+(0pt,0pt)$){{$2$}};
-\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt] at ($(cell43.north west)+(0pt,-10pt)$){\tt 15};
-\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt] at ($(cell43.north west)+(0pt,-20pt)$){\cross};
-\draw ($(cell43.north west)+(0pt,-10pt)$) -- ($(cell43.north west)+(10pt,-10pt)$);
-\draw ($(cell43.north west)+(0pt,-20pt)$) -- ($(cell43.north west)+(10pt,-20pt)$);
-\draw ($(cell43.north west)+(10pt,0pt)$) -- ($(cell43.south west)+(10pt,0pt)$);
+\node[rounded corners,draw,name=cell33,minimum width=24pt, minimum height=20pt] at ($(cell23.east)+(30pt,0pt)$){};
+\node[minimum width=8pt, minimum height=10pt,anchor=west,font=\tiny,inner sep=0pt,name=d1] at (cell33.west)
+{$7$};
+\node[draw,minimum width=8pt, minimum height=10pt,anchor=north,font=\tiny,inner sep=0pt]at (cell33.north){\tt 16};
+\node[draw,minimum width=8pt, minimum height=10pt,anchor=south,font=\tiny,inner sep=0pt]at (cell33.south){\cross};
+\node[name=succ33,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=0pt] at ($(cell33.east)+(-4pt,0pt)$) {};
+
+
+
+%\node[rounded corners,draw,name=cell43,minimum width=16pt, minimum height=30pt,anchor=west]
+%at ($(cell33.east)+(10pt,0pt)$){};
+%\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt] at ($(cell43.north west)+(0pt,0pt)$){{$2$}};
+%\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt] at ($(cell43.north west)+(0pt,-10pt)$){\tt 15};
+%\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt] at ($(cell43.north west)+(0pt,-20pt)$){\cross};
+%\draw ($(cell43.north west)+(0pt,-10pt)$) -- ($(cell43.north west)+(10pt,-10pt)$);
+%\draw ($(cell43.north west)+(0pt,-20pt)$) -- ($(cell43.north west)+(10pt,-20pt)$);
+%\draw ($(cell43.north west)+(10pt,0pt)$) -- ($(cell43.south west)+(10pt,0pt)$);
+
+\node[rounded corners,draw,name=cell43,minimum width=24pt, minimum height=20pt] at ($(cell33.east)+(30pt,0pt)$){};
+\node[minimum width=8pt, minimum height=10pt,anchor=west,font=\tiny,inner sep=0pt,name=d1] at (cell43.west)
+{$2$};
+\node[draw,minimum width=8pt, minimum height=10pt,anchor=north,font=\tiny,inner sep=0pt]at (cell43.north){\tt 15};
+\node[draw,minimum width=8pt, minimum height=10pt,anchor=south,font=\tiny,inner sep=0pt]at (cell43.south){\cross};
+\node[name=succ43,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=0pt] at ($(cell43.east)+(-4pt,0pt)$) {};
+
+
 \node[anchor=south,font=\tiny,align=center] at ($(cell43.north)+(0pt,-2pt)$) {{${\tt youngest[2], n[2]}$}};
 \draw[->] (succ23) -- (cell33);
 \draw[->] (succ33) -- (cell43);
-\node[name=succ43,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=0pt] at ($(cell43.east)+(-3pt,0pt)$) {};
 
 
 
-\node[rounded corners,draw,name=cell53,minimum width=16pt, minimum height=30pt,anchor=west]
-at ($(cell43.east)+(10pt,0pt)$){};
-\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt] at ($(cell53.north west)+(0pt,0pt)$){{$2$}};
-\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt] at ($(cell53.north west)+(0pt,-10pt)$){\tt 10};
-\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt] at ($(cell53.north west)+(0pt,-20pt)$){\cross};
-\draw ($(cell53.north west)+(0pt,-10pt)$) -- ($(cell53.north west)+(10pt,-10pt)$);
-\draw ($(cell53.north west)+(0pt,-20pt)$) -- ($(cell53.north west)+(10pt,-20pt)$);
-\draw ($(cell53.north west)+(10pt,0pt)$) -- ($(cell53.south west)+(10pt,0pt)$);
+%\node[rounded corners,draw,name=cell53,minimum width=16pt, minimum height=30pt,anchor=west]
+%at ($(cell43.east)+(10pt,0pt)$){};
+%\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt] at ($(cell53.north west)+(0pt,0pt)$){{$2$}};
+%\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt] at ($(cell53.north west)+(0pt,-10pt)$){\tt 10};
+%\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt] at ($(cell53.north west)+(0pt,-20pt)$){\cross};
+%\draw ($(cell53.north west)+(0pt,-10pt)$) -- ($(cell53.north west)+(10pt,-10pt)$);
+%\draw ($(cell53.north west)+(0pt,-20pt)$) -- ($(cell53.north west)+(10pt,-20pt)$);
+%\draw ($(cell53.north west)+(10pt,0pt)$) -- ($(cell53.south west)+(10pt,0pt)$);
+
+\node[rounded corners,draw,name=cell53,minimum width=24pt, minimum height=20pt] at ($(cell43.east)+(30pt,0pt)$){};
+\node[minimum width=8pt, minimum height=10pt,anchor=west,font=\tiny,inner sep=0pt,name=d1] at (cell53.west)
+{$2$};
+\node[draw,minimum width=8pt, minimum height=10pt,anchor=north,font=\tiny,inner sep=0pt]at (cell53.north){\tt 10};
+\node[draw,minimum width=8pt, minimum height=10pt,anchor=south,font=\tiny,inner sep=0pt]at (cell53.south){\cross};
+\node[name=succ53,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=0pt] at ($(cell53.east)+(-4pt,0pt)$) {};
+
+
 \draw[->] (succ43) -- (cell53);
 \draw[->] (succ33) -- (cell43);
-\node[name=succ53,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=0pt] at ($(cell53.east)+(-3pt,0pt)$) {};
 
 
 
 \node[name=cell63] at ($(cell53.east)+(20pt,0pt)$){$\bot$};
 \draw[->] (succ53) -- (cell63);
 
+
+
+
+
+
+
+
+
 %%%% INIT NODE
 
 
-\node[rounded corners,draw,name=cell6,minimum width=16pt, minimum height=30pt,anchor=west]
-at ($(cell4.east)+(70pt,-40pt)$){};
-\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt] at ($(cell6.north west)+(0pt,0pt)$){{}};
-\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt] at ($(cell6.north west)+(0pt,-10pt)$){};
-\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt] at ($(cell6.north west)+(0pt,-20pt)$){};
-\draw ($(cell6.north west)+(0pt,-10pt)$) -- ($(cell6.north west)+(10pt,-10pt)$);
-\draw ($(cell6.north west)+(0pt,-20pt)$) -- ($(cell6.north west)+(10pt,-20pt)$);
-\draw ($(cell6.north west)+(10pt,0pt)$) -- ($(cell6.south west)+(10pt,0pt)$);
+%\node[rounded corners,draw,name=cell6,minimum width=16pt, minimum height=30pt,anchor=west]
+%at ($(cell4.east)+(70pt,-40pt)$){};
+%\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt] at ($(cell6.north west)+(0pt,0pt)$){{}};
+%\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt] at ($(cell6.north west)+(0pt,-10pt)$){};
+%\node[minimum width=10pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt] at ($(cell6.north west)+(0pt,-20pt)$){};
+%\draw ($(cell6.north west)+(0pt,-10pt)$) -- ($(cell6.north west)+(10pt,-10pt)$);
+%\draw ($(cell6.north west)+(0pt,-20pt)$) -- ($(cell6.north west)+(10pt,-20pt)$);
+%\draw ($(cell6.north west)+(10pt,0pt)$) -- ($(cell6.south west)+(10pt,0pt)$);
+%
 
+\node[rounded corners,draw,name=cell6,minimum width=24pt, minimum height=20pt] at ($(cell4.east)+(70pt,-40pt)$){};
+\node[minimum width=8pt, minimum height=10pt,anchor=west,font=\tiny,inner sep=0pt,name=d1] at (cell6.west)
+{};
+\node[draw,minimum width=8pt, minimum height=10pt,anchor=north,font=\tiny,inner sep=0pt]at (cell6.north){};
+\node[draw,minimum width=8pt, minimum height=10pt,anchor=south,font=\tiny,inner sep=0pt]at (cell6.south){};
+\node[name=succ6,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=0pt] at ($(cell6.east)+(-4pt,0pt)$) {};
 
 
 \node[ellipse callout, fill=yellow!20,anchor=east,inner sep=2pt, 
 callout absolute pointer={($(cell6.north)+(0pt,-5pt)$)},draw,,font=\tiny,align=center]  
-at ($(cell6.north)+(0pt,10pt)$){data};
+at ($(cell6.north)+(0pt,10pt)$){time};
 
 \node[ellipse callout, fill=yellow!20,anchor=east,inner sep=2pt, 
 callout absolute pointer={($(cell6.north west)+(4pt,-15pt)$)},draw,,font=\tiny,align=center]  
-at ($(cell6.north west)+(-4pt,-12pt)$){time};
+at ($(cell6.north west)+(-4pt,-12pt)$){data};
 
 \node[ellipse callout, fill=yellow!20,inner sep=2pt, 
-callout absolute pointer={($(cell6.south)+(-4pt,5pt)$)},draw,,font=\tiny,align=center]  
+callout absolute pointer={($(cell6.south)+(0pt,5pt)$)},draw,,font=\tiny,align=center]  
 at ($(cell6.south)+(2pt,-7pt)$){{\tt mark}};
 
 \node[ellipse callout, fill=yellow!20,inner sep=2pt, 
