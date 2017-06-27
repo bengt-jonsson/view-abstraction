@@ -1,0 +1,197 @@
+\section{Textbank}
+
+\subsection{Old text on Skiplists}
+
+%\paragraph{Index Consistency:} Let $\tt i_1 \equiv i_2$ denotes that $\tt i_1$ and $\tt i_2$ are equivalent. Intuitively, $\tt i_1 \equiv i_2$ iff  ${\tt Val}^{\tt v}(\tt i_1) = {\tt Val}^{\tt v}(\tt i_2)$, ${\tt Val}^{\tt d}(\tt i_1) = {\tt Val}^{\tt d}(\tt i_2)$, $\tt private(i_1) = private(i_2)$ and $\tt \Phi(i_1.d, z) = \Phi(i_2.d, z)$ for every $\intgrs$-field $\tt d$ and $\intgrs$-term $\tt z$.  The indices $\tt i_1$ and $\tt i_2$ are consistent if they satisfy one of those conditions below
+%\begin{itemize}
+%	\item $\tt i_1$ is an {\em input} index, $\tt i_2$ is an {\em output} index, $\tt i_1 \equiv i_2$ and ${\tt Val}^{\tt r}(\tt i_1) = {\tt Val}^{\tt r}(\tt i_2)$, or
+%	\item $\tt i_1$ is an {\em output} index, $\tt i_2$ is an {\em input} index, $\tt i_1 \equiv i_2$ and ${\tt Val}^{\tt r}(\tt i_1) = {\tt Val}^{\tt r}(\tt i_2)$, or
+%	\item both $\tt i_1$ and $\tt i_2$ are output indices, $\tt i_1 \equiv i_2$, $\tt X_1 \cap X_2 = \emptyset$ and $\tt Y_1 = Y_2$ where $\tt {\tt Val}^{\tt r}(\tt i_1) = X1 \mapsto Y1$,  $\tt {\tt Val}^{\tt r}(\tt i_2) = X2 \mapsto Y2$
+%\end{itemize}
+\paragraph{Fragment Consistency:} For two fragments $\tt v_1$ and $\tt v_2$ with sizes of 2, let $\tt i$ and $\tt o$ be the {\em input} and {\em output} indices of $\tt v_1$, let $\tt j_i$ and $\tt j_o$ be the {\em input} and {\em output} indices of $\tt v_2$.
+ \begin{itemize}
+ \item   $\tt v_1$ and $\tt v_2$ are forward consistent, denoted as $\tt v_1 \hookrightarrow_S v_2$ if $\tt tag( v_1,\tt o) = tag(v_2,\tt j_i)$.   
+ \item $\tt v_1$ and $\tt v_2$ is branch consistent, denoted as $\tt v_1 \leftrightarrow_S v_2$ if $\tt tag( v_1,\tt o) = tag(v_2,\tt j_o)$, $\tt G_1 \cap G_2 = \emptyset$ and $\tt v_1.{\tt reachto}(\tt i) = v_2.{\tt reachto}(\tt j_i)$ where $\tt G_1$ is the set of global variables in $\tt v_1.{\tt reachfrom}(\tt o)$,  $\tt G_2$ is the set of global variables in $\tt v_2.{\tt reachfrom}(\tt j_o)$. 
+ 
+    \end{itemize}
+For two fragments $\tt v_1$ and $\tt v_2$ with sizes of 1, let $\tt i$ be the {\em input} index of $\tt v_1$, let $\tt j_i$ be the {\em input} index of $\tt v_2$.
+ \begin{itemize}
+
+ \item $\tt v_1$ and $\tt v_2$ is branch consistent, denoted as $\tt v_1 \leftrightarrow_S v_2$ if $\tt v_1.next(i) = v_2.next(i)$ and $\tt G_1 \cap G_2 = \emptyset$ where $\tt G_1$ is the set of global variables in $\tt v_1.{\tt reachfrom}(\tt i)$,  $\tt G_2$ is the set of global variables in $\tt v_2.{\tt reachfrom}(\tt j_i)$.
+ \end{itemize}
+For two fragments $\tt v_1$ and $\tt v_2$, let we define several more relations between them as following:
+\begin{itemize}
+\item  $\tt v_1 \overset{+}\hookrightarrow_S v_2$ if there exists $\tt v$ such that $\tt v_1 \overset{*}\hookrightarrow_S v$ and $\tt v \hookrightarrow_S v_2$  where  $\tt \overset{*}\hookrightarrow_S$ is the transitive closure of $\tt \hookrightarrow_S$. 
+\item $\tt v_1  \overset{**}\leftrightarrow_S  v_2$ if there exist $\tt v_1'$, $\tt v_2'$ such that ($\tt v_1  \overset{*}\hookrightarrow_S v_1'$ or $\tt v_1 = v_1'$), and ($\tt v_2  \overset{*}\hookrightarrow_S v_2'$ or $\tt v_2 = v_2'$) as well as $\tt v_1' \leftrightarrow_S v_2'$. 
+\item $\tt v_1  \overset{*+}\leftrightarrow_S v_2$ if there exist $\tt v_1'$, $\tt v_2'$ such that ($\tt v_1  \overset{*}\hookrightarrow_S v_1'$ or $\tt v_1 = v_1'$), and $\tt v_2  \overset{*}\hookrightarrow_S v_2'$ as well as $\tt v_1' \leftrightarrow_S v_2'$. 
+\item $\tt v_1  \overset{*\circ}\leftrightarrow_S v_2$ if there exist $\tt v_1'$ such that ($\tt v_1  \overset{*}\hookrightarrow_S v_1'$ or  $\tt v_1 = v_1'$) and  $\tt v_2 \leftrightarrow_S v_1'$.
+\item $\tt v_1 \overset{++}\leftrightarrow_S v_2$ if there exist $\tt v_1'$, $\tt v_2'$ such that $\tt v_1  \overset{*}\hookrightarrow_S v_1'$, and $\tt v_2  \overset{*}\hookrightarrow_S v_2'$ as well as $\tt v_1' \leftrightarrow_S v_2'$.
+
+\item $\tt v_1 \overset{+*}\leftrightarrow_S v_2$ if there exist $\tt v_1'$, $\tt v_2'$ such that $\tt v_1  \overset{*}\hookrightarrow_S v_1'$, and ($\tt v_2  \overset{*}\hookrightarrow_S v_2'$ or $\tt v_2 = v_2'$) as well as $\tt v_1' \leftrightarrow_S v_2'$.
+
+\item $\tt v_1 \overset{+\circ}\leftrightarrow_S v_2$ if there exist $\tt v_1'$ such that $\tt v_1  \overset{*}\hookrightarrow_S v_1'$, and $\tt v_1' \leftrightarrow_S v_2'$.
+\end{itemize}
+ 
+\paragraph{Fragment Intersection:} Let us describe the intersection of two fragments $\tt v_1 \in S_1$ and $\tt v_2 \in S_2$ denoted as $\tt v_1 \sqcap v_2$. Firstly, we consider the case where both $\tt v_1$ and $\tt v_2$ have size 2.
+ \begin{itemize}
+ \item if $\tt v_1.greachfrom(i) \neq \emptyset$ and $\tt v_2.greachfrom(i) \neq \emptyset$ then 
+  \begin{itemize}
+  \item if $\tt gtag(v_1, i) = gtag(v_2, i)$ and $\tt gtag(v_1, o) = gtag(v_2, o)$ then $\tt v_1 \sqcap v_2 = \{v_{12}\}$ where $\tt v_{12}$ is same as $\tt v_1$ except that 
+  \begin{itemize}
+  \item $\tt v_{12}.vars(i) = v_1.vars(i) \cup v_2.vars(i)$ 
+  \item  $\tt v_{12}.vars(o) = v_1.vars(o) \cup v_2.vars(o)$
+  \item $\tt v_{12}.i.reachfrom = v_{1}.i.reachfrom \cup v_{2}.i.reachfrom$
+   \item $\tt v_{12}.o.reachfrom = v_{1}.o.reachfrom \cup v_{2}.o.reachfrom$
+    \end{itemize}
+ \end{itemize}
+
+ \item if $\tt v_1.greachfrom(i) = \emptyset$, $\tt v_2.greachfrom(i) = \emptyset$, $\tt v_1.greachfrom(o) \neq \emptyset$ and $\tt v_2.greachfrom(o) \neq \emptyset$ then 
+  \begin{itemize}
+  \item if $\tt gtag(v_1, o) = gtag(v_2, o)$, $\tt v_1.private.(i) = false$ and $\tt v_2.private.(i) = false$ then $\tt v_1 \sqcap v_2 = \{v_1', v_2', v_{12}\}$ where %$\tt v_{12}$ is same as $\tt v_1$ except that 
+%    \begin{itemize}
+%  \item $\tt v_{12}.vars(i) = v_1.vars(i) \cup v_2.vars(i)$ 
+%  \item  $\tt v_{12}.vars(o) = v_1.vars(o) \cup v_2.vars(o)$
+%  \item $\tt v_{12}.i.reachfrom = v_{1}.i.reachfrom \cup v_{2}.i.reachfrom$
+%   \item $\tt v_{12}.o.reachfrom = v_{1}.o.reachfrom \cup v_{2}.o.reachfrom$
+%    \end{itemize} and
+    
+     $\tt v_1'$ is same as $\tt v_1$ except that 
+    \begin{itemize}
+  \item  $\tt v_1'.vars(o) = v_1.vars(o) \cup v_2.vars(o)$
+  \item $\tt v_1'.o.reachfrom = v_{1}.o.reachfrom \cup v_{2}.o.reachfrom$
+    \end{itemize}
+   and $\tt v_2'$ is same as $\tt v_2$ except that 
+    \begin{itemize}
+  \item  $\tt v_2'.vars(o) = v_1.vars(o) \cup v_2.vars(o)$
+  \item $\tt v_2'.o.reachfrom = v_{1}.o.reachfrom \cup v_{2}.o.reachfrom$
+    \end{itemize}
+     \item if $\tt gtag(v_1, o) = gtag(v_2, o)$ and ($\tt v_1.private.(i) = true$ or $\tt v_2.private.(i) = true$) then $\tt v_1 \sqcap v_2 = \{v_1', v_2'\}$ 
+ \end{itemize}
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ \item if $\tt v_1.greachfrom(i) = \emptyset$, $\tt v_2.greachfrom(i) = \emptyset$, $\tt v_1.greachfrom(o) = \emptyset$ and $\tt v_2.greachfrom(o) = \emptyset$ then 
+ \begin{itemize}
+ \item if $\tt gtag(v_1, o) = gtag(v_2, o)$, $\tt v_1.private.(i) = false$, $\tt v_1.private.(o) = false$, $\tt v_1.private.(o) = false$ and $\tt v_2.private.(o) = false$ then  $\tt v_1 \sqcap v_2 = \{v_1,v_2,v_1',v_2',v_{12}\}$ %where $\tt v_{12}$ is same as $\tt v_1$ except that 
+   % \begin{itemize}
+ % \item $\tt v_{12}.vars(i) = v_1.vars(i) \cup v_2.vars(i)$ 
+ % \item  $\tt v_{12}.vars(o) = v_1.vars(o) \cup v_2.vars(o)$
+ % \item $\tt v_{12}.i.reachfrom = v_{1}.i.reachfrom \cup v_{2}.i.reachfrom$
+ %  \item $\tt v_{12}.o.reachfrom = v_{1}.o.reachfrom \cup v_{2}.o.reachfrom$
+ %   \end{itemize} and 
+ %   $\tt v_{1'}$ is same as $\tt v_1$ except that 
+ %   \begin{itemize}
+ % \item  $\tt v_1'.vars(o) = v_1.vars(o) \cup v_2.vars(j_o)$
+ % \item $\tt v_1'.o.reachfrom = v_{1}.o.reachfrom \cup v_{2}.o.reachfrom$
+ %   \end{itemize}
+ %  and $\tt v_2'$ is same as $\tt v_2$ except that 
+ %   \begin{itemize}
+ % \item  $\tt v_2'.vars(o) = v_1.vars(o) \cup v_2.vars(j_o)$
+ % \item $\tt v_2'.o.reachfrom = v_{1}.o.reachfrom \cup v_{2}.o.reachfrom$
+ %   \end{itemize}
+    
+    
+   \item if $\tt gtag(v_1, o) = gtag(v_2, o)$, ($\tt v_1.private.(i) = true$ or $\tt v_2.private.(i) = true$) and $\tt v_1.private.(o) = false$ and $\tt v_2.private.(o) = false$ then  $\tt v_1 \sqcap v_2 = \{v_1,v_2,v_1',v_2'\}$  
+
+  \item if $\tt gtag(v_1, o) = gtag(v_2, o)$ and ($\tt v_1.private.(o) = true$ or $\tt v_1.private.(o) = true$) then  $\tt v_1 \sqcap v_2 = \{v_1,v_2\}$ 
+
+    \item if $\tt gtag(v_1, o) \neq gtag(v_2, o)$ then $\tt v_1 \sqcap v_2 = \{v_1,v_2\}$
+ \end{itemize}
+ 
+ \end{itemize}
+
+
+%For the case when $\tt v_1$ and $\tt v_2$ have size 1, let $\tt i$ be the {\em input} index of $\tt v_1$, let $\tt j_i$ be the {\em input} index of $\tt v_2$.
+% \begin{itemize}
+%
+% \item if $\tt reachfrom(i) \neq \emptyset$ and $\tt reachfrom(j_i) \neq \emptyset$ then 
+%  \begin{itemize}
+%  \item if $\tt gtag(v_1, i) = gtag(v_2, j_i)$ then $\tt v_1 \cap v_2 = v_{12}$ where $\tt v_{12}$ is same as $\tt v_1$ except that $\tt v_{12}.vars(i) = v_1.vars(i) \cup v_2.vars(j_i)$.
+%  \item if $\tt gtag(v_1, i) \neq gtag(v_2, j_i)$ then $\tt v_1 \cap v_2 = \emptyset$
+% \end{itemize}
+% 
+%  \item if $\tt v1.greachfrom(i) = \emptyset$ and $\tt greachfrom(j_i) = \emptyset$ then 
+%  \begin{itemize}
+%  \item if $\tt gtag(v_1, i) = gtag(v_2, j_i)$ then $\tt v_1 \cap v_2 = v_{12}$ where $\tt v_{12}$ is same as $\tt v_1$ except that $\tt v_{12}.vars(i) = v_1.vars(i) \cup v_2.vars(j_i)$.
+%  \item if $\tt gtag(v_1, i) \neq gtag(v_2, j_i)$ then $\tt v_1 \cap v_2 = \{v_1,v_2\}$
+% \end{itemize}
+% 
+% \end{itemize}
+\paragraph{Local Abstract Transformers:} Firstly, let us show the abstract transformer on the set of fragment $\tt S$ in the fragment of the concurrent thread. Let $\tt kill(x,v)$ be the procedure to remove $\tt x$ if it exists from $\tt v.{\tt reachfrom}(\tt i)$, $\tt v.{\tt reachfrom}(\tt o)$, $\tt v.{\tt reachto}(\tt i)$, $\tt v.{\tt reachto}(\tt o)$, $\tt v.{\tt vars}(\tt i)$, and $\tt v.{\tt vars}(\tt o)$. For each program statement, let $\tt S_{post}$ be the set of fragments after executing the statement. Let $\tt S_{post}$ be initialized as the empty set.
+\begin{itemize}
+
+\item ${\tt x := y}$: The transformer is performed as following: For each fragment $\frag_y \in S$ where $\tt y \in \frag_y.{\tt vars}(\tt i)$,
+\begin{enumerate}
+\item  for each fragment $\tt v$ where $\tt v \hookrightarrow_S \frag_y$, create $\tt v'$ which is same as $\tt v$ except that
+\begin{itemize}
+\item $\pvarsat{\inat{\frag'}} = \pvarsat{\inat{\frag}} \setminus \set{x}$,
+\item $\pvarsat{\outat{\frag'}} = \pvarsat{\outat{\frag}} \cup \set{x}$,
+\item $\reachfromat{\inat{\frag'}} = \reachfromat{\inat{\frag}} \setminus \set{x}$ if $\tt x$ is a global variable,
+\item $\reachtoat{\inat{\frag'}} = \reachtoat{\inat{\frag}} \cup \set{x}$ if $\tt x$ is a global variable,
+ \item $\reachfromat{\outat{\frag'}} = \reachfromat{\outat{\frag}} \cup \set{x}$ if $\tt x$ is a global variable,
+\item $\reachtoat{\outat{\frag'}} = \reachtoat{\outat{\frag}} \cup \set{x}$ if $\tt x$ is a global variable,
+\end{itemize}
+and add $\tt v'$ to $\tt S_{post}$,
+\item for each fragment $\tt v$ where $\tt v \overset{+}\hookrightarrow_S \frag_y$, create $\tt v'$ which is same as $\tt v$ except that
+\begin{itemize}
+\item $\pvarsat{\inat{\frag'}} = \pvarsat{\inat{\frag}} \setminus \set{x}$,
+\item $\pvarsat{\outat{\frag'}} = \pvarsat{\outat{\frag}} \setminus \set{x}$,
+\item $\reachfromat{\inat{\frag'}} = \reachfromat{\inat{\frag}} \setminus \set{x}$ if $\tt x$ is a global variable,
+\item $\reachtoat{\inat{\frag'}} = \reachtoat{\inat{\frag}} \cup \set{x}$ if $\tt x$ is a global variable,
+\item $\reachfromat{\outat{\frag'}} = \reachfromat{\outat{\frag}} \setminus \set{x}$ if $\tt x$ is a global variable,
+\item $\reachtoat{\outat{\frag'}} = \reachtoat{\outat{\frag}} \cup \set{x}$ if $\tt x$ is a global variable,
+\end{itemize}
+and add $\tt v'$ to $\tt S_{post}$,
+\item for each fragment $\tt v_3$ where $\frag_y \overset{*}\hookrightarrow_S v$, create $\tt v'$ which is same as $\tt v$ except that
+\begin{itemize}
+\item $\pvarsat{\inat{\frag'}} = \pvarsat{\inat{\frag}} \setminus \set{x}$,
+\item $\pvarsat{\outat{\frag'}} = \pvarsat{\outat{\frag}} \setminus \set{x}$,
+\item $\reachfromat{\inat{\frag'}} = \reachfromat{\inat{\frag}} \cup \set{x}$ if $\tt x$ is a global variable,
+\item $\reachtoat{\inat{\frag'}} = \reachtoat{\inat{\frag}} \setminus \set{x}$ if $\tt x$ is a global variable,
+
+ \item $\reachfromat{\outat{\frag'}} = \reachfromat{\outat{\frag}} \cup \set{x}$ if $\tt x$ is a global variable,
+ \item $\reachtoat{\outat{\frag'}} = \reachtoat{\outat{\frag}} \setminus \set{x}$ if $\tt x$ is a global variable,
+
+\end{itemize}
+and add $\tt v'$ to $\tt S_{post}$,
+\item for each fragment $\tt v$ where $\frag_y \overset{*+}\leftrightarrow_S v$, create $\tt v'$ which is same as $\tt v$ except that
+\begin{itemize}
+\item $\pvarsat{\inat{\frag'}} = \pvarsat{\inat{\frag}} \setminus \set{x}$,
+\item $\pvarsat{\outat{\frag'}} = \pvarsat{\outat{\frag}} \setminus \set{x}$,
+\item $\reachfromat{\inat{\frag'}} = \reachfromat{\inat{\frag}} \setminus \set{x}$ if $\tt x$ is a global variable,
+\item $\reachtoat{\inat{\frag'}} = \reachtoat{\inat{\frag}} \setminus \set{x}$ if $\tt x$ is a global variable,
+\item $\reachfromat{\outat{\frag'}} = \reachfromat{\outat{\frag}} \setminus \set{x}$ if $\tt x$ is a global variable,
+\item $\reachtoat{\outat{\frag'}} = \reachtoat{\outat{\frag}} \setminus \set{x}$ if $\tt x$ is a global variable,
+\end{itemize}
+and add $\tt v'$ to $\tt S_{post}$,
+\item for each fragment $\tt v$ where $\frag_y \overset{*\circ}\leftrightarrow_S v$, create $\tt v'$ which is same as $\tt v$ except that
+\begin{itemize}
+\item $\pvarsat{\inat{\frag'}} = \pvarsat{\inat{\frag}} \setminus \set{x}$,
+\item $\pvarsat{\outat{\frag'}} = \pvarsat{\outat{\frag}} \setminus \set{x}$,
+\item $\reachfromat{\inat{\frag'}} = \reachfromat{\inat{\frag}} \setminus \set{x}$ if $\tt x$ is a global variable,
+\item $\reachtoat{\inat{\frag'}} = \reachtoat{\inat{\frag}} \setminus \set{x}$ if $\tt x$ is a global variable,
+\item $\reachfromat{\outat{\frag'}} = \reachfromat{\outat{\frag}} \cup \set{x}$ if $\tt x$ is a global variable,
+\item $\reachtoat{\outat{\frag'}} = \reachtoat{\outat{\frag}} \setminus \set{x}$ if $\tt x$ is a global variable,
+
+\end{itemize}
+and add $\tt v'$ to $\tt S_{post}$,
+\item create $\tt v'$ which is same as $\frag_y$ except that
+\begin{itemize}
+\item $\pvarsat{\inat{\frag'}} = \pvarsat{\inat{\frag}} \cup \set{x}$,
+\item $\pvarsat{\outat{\frag'}} = \pvarsat{\outat{\frag}} \setminus \set{x}$,
+\item $\reachtoat{\inat{\frag'}} = \reachtoat{\inat{\frag}} \cup \set{x}$ if $\tt x$ is a global variable,
+ \item $\reachfromat{\inat{\frag'}} = \reachfromat{\inat{\frag}} \cup \set{x}$ if $\tt x$ is a global variable,
+\item $\reachfromat{\outat{\frag'}} = \reachfromat{\outat{\frag}} \cup \set{x}$ if $\tt x$ is a global variable,
+\item $\reachtoat{\outat{\frag'}} = \reachtoat{\outat{\frag}} \setminus \set{x}$ if $\tt x$ is a global variable,
+\end{itemize}
+and add $\tt v'$ to $\tt S_{post}$,
+%\item for each fragment $\tt v'$ in $\tt S_{post}$, assign $\tt v'.data.(i).(y.d)$ to $\tt v'.data.(i).(x.d)$ for $\tt i \in \{i, o\}$.
+\end{enumerate}
+
+	
+ \end{itemize}
