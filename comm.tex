@@ -107,6 +107,7 @@
 \newcommand{\projection}[2]{#1\rhd#2}
 \newcommand{\symbproj}{{\tt proj}}
 \newcommand{\symbintersect}{{\tt merge}}
+\newcommand{\regset}{\mathtt{regset}}
 
 \newcommand\true{{\tt true}}
 \newcommand\false{{\tt false}}
@@ -196,6 +197,19 @@
 \newcommand{\privateof}[1]{\private\left(#1\right)}
 \newcommand{\privateat}[1]{#1.\private}
 \newcommand{\privateofth}[2]{\private\left(#1,#2\right)}
+\newcommand{\gpvars}{\mathtt{gpvars}}
+\newcommand{\gvals}{\mathtt{gdata}}
+\newcommand{\gpvarsat}[1]{#1.\gpvars}
+\newcommand{\gvalsat}[1]{#1.\gvals}
+\newcommand{\greachfrom}{\mathtt{greachfrom}}
+\newcommand{\greachto}{\mathtt{greachto}}
+\newcommand{\greachfromat}[1]{#1.\greachfrom}
+\newcommand{\greachtoat}[1]{#1.\greachto}
+\newcommand{\gtag}{\mathtt{gtag}}
+\newcommand{\gtagat}[1]{#1.\gtag}
+\newcommand{\gtagtuple}{\tuple{\gpvars,\vals,\greachfrom,\greachto,\private}}
+\newcommand{\gtagtupleof}[1]{\tuple{\gpvarsof{#1},\valsof{#1},\greachfromof{#1},\greachtoof{#1},\privateof{#1}}}
+\newcommand{\gtagtupleat}[1]{\tuple{\gpvarsat{#1},\valsat{#1},\greachfromat{#1},\greachtoat{#1},\privateat{#1}}}
 
 \newcommand{\frag}{\mathtt{v}}
 \newcommand{\fragset}{F}
