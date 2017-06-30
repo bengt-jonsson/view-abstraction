@@ -106,7 +106,7 @@
 %\node[linecode](ctn) at ($(rmv.east)+(105pt,-50pt)$) {};
 \node(pop-head)[font={\small\tt},anchor=west] at 
 ($(top-head.east)+(-30pt,-122pt)$) 
-{\scriptsize void push(int x):};
+{\scriptsize void push(int d):};
 \node(pop1)[linenum,anchor=west] at ($(pop-head.west)+(0pt,-10pt)$) {\scriptsize 1};
 \node(linecode1)[linecode] at ($(pop1.east)+(0pt,0pt)$) 
 {\scriptsize Node* new := new Node(d,-1,null,false);};
@@ -125,7 +125,7 @@
 
 \node(pop5)[linenum] at ($(pop4.east)+(0pt,-10pt)$) {\scriptsize 5};
 \node(linecode5)[linecode] at ($(pop5.east)+(0pt,0pt)$) 
-{\scriptsize n.ts = t;};
+{\scriptsize new.ts = t;};
 
 \node(pop6)[linenum] at ($(pop5.east)+(0pt,-10pt)$) {\scriptsize 6};
 \node(linecode6)[linecode] at ($(pop6.east)+(0pt,0pt)$) 
@@ -161,9 +161,9 @@
  %%%%%%%%%%% init %%%%%%%%%%%%%%%%
 \node[linecode,anchor=south west](init) at ($(top-head.east)+(-30pt,-75pt)$) {\scriptsize initialize() :};
 %{struct Node(bool lock; int val; Node *next; bool mark);};
-\node(init1)[linecode] at ($(top-head.east)+(-30pt,-80pt)$) {\scriptsize Node* pools[maxThreads];};
-\node(init2)[linecode] at ($(top-head.east)+(-30pt,-90pt)$) {\scriptsize for(int Node* i=0; i<maxThreads; i++)\;\;\;\;\;\;\;\;\;\;\;};
-\node(init4)[linecode] at ($(top-head.east)+(-30pt,-100pt)$) {\scriptsize \;\;\;\;pools[i].next = null;};
+\node(init1)[linecode] at ($(top-head.east)+(-30pt,-80pt)$) {\scriptsize \;\;\;Node* pools[maxThreads];};
+\node(init2)[linecode] at ($(top-head.east)+(-30pt,-90pt)$) {\scriptsize \;\;\;for(int Node* i=0; i<maxThreads; i++)\;\;\;\;\;\;};
+\node(init4)[linecode] at ($(top-head.east)+(-30pt,-100pt)$) {\scriptsize \;\;\;\;\;\;\;pools[i].next = null;};
 
 \node(bot)[linecode] at ($(init4.east)+(0pt,-4pt)$) {};
 
