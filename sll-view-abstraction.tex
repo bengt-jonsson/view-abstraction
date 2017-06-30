@@ -54,7 +54,7 @@ pointer field, named {\tt next}. In the following sections XXX and YYY, we descr
 how fragment abstraction is applied to skiplists and to arrays of singly linked
 lists.
 
-\todo[inline]{Maybe we include timestamps from the very start?}
+\todo[inline]{Maybe we include timestamps from the very start?} 
 
 %% In the actual verification, we compute a symbolic representation
 %% of an invariant that is satisfied by all reachable program configurations (including observer states).
@@ -83,7 +83,7 @@ variables (including the program counter) to appropriate domains:
   a mapping in  $[\ovarset \mapsto{\set{=,\neq}}]$, representing for
   each observer register $x  \in \ovarset$, whether or not the value
   of that equals the value of register $x$.
-\item \bjcom{Quy: Do we need constraints for data and timer variables?}
+\item \bjcom{Quy: Do we need constraints for data and timer variables?} \quycom{We only need constraints between $\intgrs$ data variables and $\intgrs$ data fields}
 \end{itemize}
 \todo[inline]{for Quy: correct the definition of local symbolic conf., so
   that it is exactly what you use}
@@ -116,6 +116,7 @@ $\atag = \tagtuple$, where
  \item
    $\reachfrom$ and $\reachto$ are sets of global pointer variables and observer registers, and
   \item $\private$ is a boolean value.
+ \quycom{We need one more for data constraints between $\intgrs$ data fields and observer registers and between $\intgrs$ data fields and $\intgrs$ data variables.}
 \end{itemize}
 
 \begin{definition}[SLL-fragment]
@@ -386,6 +387,7 @@ Let
   and $\tagat{\inat{\frag_2}}$ are consistent;
   \todo[inline]{Quy: PLEASE  you provide the precise definition of when
     $\tagat{\outat{\frag_1}}$ and $\tagat{\inat{\frag_2}}$ are consistent?}
+  \quycom{They are consistent if they have same $\reachfrom$, $\reachto$, $\pvars$, $\private$, $\data$. This is for local thread. When we check for consistent between two tags when doing intersection, we have to define differently.}  
   this means that if
   $\cell_1 \lhd \frag_1$ and  $\cell_2 \lhd \frag_2$ then it is possible that
   $\mathtt{next}(\cell_1) = \cell_2$.
@@ -395,7 +397,7 @@ Let
   $\reachfromat{\inat{\frag_1}} \cap \reachfromat{\inat{\frag_2}} = \emptyset$
 \todo[inline]{Question: shouldn't also include
   $\pvarsat{\inat{\frag_1}} \cap \pvarsat{\inat{\frag_2}} = \emptyset$?.
-More generally, please provide the precise definition.}
+More generally, please provide the precise definition.} \quycom{we fixed this in the disscussion}
   $\reachfromat{\inat{\frag_1}} \cap \reachfromat{\inat{\frag_2}} = \emptyset$
   \quycom{$\reachfromat{\inat{\frag_1}} \cap \reachfromat{\inat{\frag_2}} = \emptyset$ here is not correct, we only need the global variables of reachfrom and reachto in this case}
 \quycom{In my definition, the consistent here is defined for two views in the same threads. With the view from other thread, I use the notion of intersection.}
@@ -439,7 +441,7 @@ $\hookrightarrow_S$.
 We say that $\frag_1$ and $\frag_2$ are {\em consistent} if $\frag_x \overset{*}\hookrightarrow \frag_y$ or $\frag_y \overset{*}\hookrightarrow \frag_x$ or $\frag_x \overset{**}\leftrightarrow \frag_y$. Intuitively, this means that $\frag_1$ and
 $\frag_2$ can be satisfied by two cells in the same shape.
 \todo[inline]{Quy: I think you should make a picture with
-  a shape with several views that illustrate the relations above}
+  a shape with several views that illustrate the relations above} \quycom{I have picture now}
 
 \paragraph{Abstract Transformers for Local Steps} We first consider
 the abstract transformer for the case that the thread performs a local
@@ -627,7 +629,7 @@ and add $\frag'$ to $\tt S_{post}$,
   $\frag_x$ and $\frag_y$ are consistent,
 let $\frag_{new}$ be a new fragment of size 2 where $\tagat{\inat{\frag_{new}}} = \tagat{\inat{\frag_x}}$ and $\tagat{\outat{\frag_{new}}} = \tagat{\inat{\frag_y}}$ except that $\reachfromat{\outat{\frag_{new}}} = \reachfromat{\inat{\frag_y}} \cup \reachfromat{\inat{\frag_x}}$,
 and add $\frag_{new}$ to $\fragset_{post}$.
-\todo[inline]{Question to Quy: How is $\datarelat{\frag_{new}}$ defined?}
+\todo[inline]{Question to Quy: How is $\datarelat{\frag_{new}}$ defined?}\quycom{we fixed this in the disscussion}
 Thereafter, we add all possible fragments that can result from a transformation
 of some fragment $\frag$ which is in $\frag$. This is done by an exhaustive
 case analysis on the relationship between $\frag$, $\frag_x$ and $\frag_y$:
@@ -727,7 +729,7 @@ Define $\gtagat{\outat{\frag}}$ as the tuple
 $\tuple{\gpvarsat{\outat{\frag}},\valsat{\outat{\frag}},\greachfromat{\outat{\frag}},\greachtoat{\outat{\frag}},\privateat{\outat{\frag}}}$.
 
 \todo[inline]{Question to Quy: You have also used the notation
-  $\gvalsat{\inat{\frag}}$. Will you need it, and if so what does it mean?}
+  $\gvalsat{\inat{\frag}}$. Will you need it, and if so what does it mean?} \quycom{Because in the data, I add data constraint between data fields and local data variable. When we do intersection, we do not need to care about this constraint because its local constraint}
 
 Let us now describe how to compute  $\frag_1 \sqcap \frag_2$ for
 two views $\frag_1 \in \fragset_1$ and $\frag_2 \in \fragset_2$.
@@ -745,10 +747,10 @@ the information about global variables in $\frag_1$ and $\frag_2$ must coincide.
   \item  $\pvarsat{\outat{\frag_{12}}} = \pvarsat{\outat{\frag_1}} \cup \pvarsat{\outat{\frag_2}}$
   \item $\reachfromat{\inat{\frag_{12}}} = \reachfromat{\inat{\frag_{1}}} \cup \reachfromat{\inat{\frag_{2}}}$
    \item $\reachfromat{\outat{\frag_{12}}} = \reachfromat{\outat{\frag_{1}}} \cup \reachfromat{\outat{\frag_{2}}}$
-     \todo[inline]{Question to Quy: Why do this union only for $\pvars$ and $\reachfrom$, and not for $\reachto$ and $\vals$?}
+     \todo[inline]{Question to Quy: Why do this union only for $\pvars$ and $\reachfrom$, and not for $\reachto$ and $\vals$?}\quycom{we fixed this in the disscussion}
     \end{itemize}
   \todo[inline]{Question to Quy: Should we not have an ``else'' here, with
-    $\frag_1 \sqcap \frag_2 = \emptyset$?}
+    $\frag_1 \sqcap \frag_2 = \emptyset$?}\quycom{we fixed this in the disscussion}
  \end{itemize}
 
  \item if $\greachfromat{\inat{\frag_1}} = \emptyset$, $\greachfromat{\inat{\frag_2}} = \emptyset$, $\greachfromat{\outat{\frag_1}} \neq \emptyset$ and $\greachfromat{\outat{\frag_2}} \neq \emptyset$ then 
