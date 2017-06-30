@@ -13,83 +13,57 @@
 
 \begin{tabular}{|c | c | }
   \hline
-   \textsf{\textbf{{Timestamp Algorithms}}} &  \textsf{\textbf{{Time (s)}}} \\
+   \textsf{{\textbf{Algorithms}}} &  \textsf{{\textbf{Time (s)}}} \\
 \hline
+\textsf{{\textit{Timestamps}}} & \\
 \hline
-\textsf{Timestamp stack  ~\cite{MS:QueueAlgorithms}}\;\;\;\;\;\;  & \textsf{76.02} \\
+\textsf{TS stack  ~\cite{MS:QueueAlgorithms}}\;\;\;\;\;\;  & \textsf{76.02} \\
+\textsf{TS queue  ~\cite{MS:QueueAlgorithms}}& \textsf{11.07} \\
 \hline
-\textsf{Timestamp queue  ~\cite{MS:QueueAlgorithms}}& \textsf{11.07} \\
+ \textsf{{\textit{Skip-lists}}} &   \\
 \hline
-\end{tabular}
+\;\;\;\;\textsf{Lock-free skip-list   ~\cite{ArtOfMpP}}\;\;\;\;\;\;  & \textsf{1992.32} \\
 
-\vspace*{0.1cm}
+\textsf{Optimistic skip-list ~\cite{MS:QueueAlgorithms}}& \textsf{500.07} \\
+ 
+\textsf{Priority queue skip-list 1 ~\cite{Shavit:ElimQueue}}  &  \textsf{1320.56} \\
 
-(a)
-\\
-\vspace*{0.5cm}
-
-\begin{tabular}{|c | c | }
-  \hline
-   \textsf{\textbf{{Skip-list Algorithms}}} &  \textsf{\textbf{{Time (s)}}} \\
+\textsf{Priority queue skip-list 2~\cite{Shavit:ElimQueue}}  &  \textsf{599.56} \\
 \hline
-\hline
-\;\;\;\;\textsf{Lock-free skiplist   ~\cite{ArtOfMpP}}\;\;\;\;\;\;  & \textsf{1992.32} \\
-\hline
-\textsf{Optimistic skip-list  ~\cite{MS:QueueAlgorithms}}& \textsf{500.07} \\
-\hline 
-\textsf{Priority queue based on skip-list  ~\cite{Shavit:ElimQueue}}  &  \textsf{1320.56} \\
-\hline
-\textsf{Priority queue based on skip-list  ~\cite{Shavit:ElimQueue}}  &  \textsf{599.56} \\
-\hline
-\end{tabular}
-
-\vspace*{0.1cm}
-
-(b)
-\\
-\vspace*{0.5cm}
-
-
-\begin{tabular}{|c | c | }
-  \hline
-   \textsf{\textbf{{Singly-linked lists Algorithms}}} &  \textsf{\textbf{{Time (s)}}} \\
+   \textsf{{\textit{Singly-linked lists}}} &   \\
 \hline
 \textsf{Treiber stack  ~\cite{Treiber:stack}}\;\;\;\;\;\; & \textsf {0.18} \\
-\hline
+
 \textsf{MS lock-free queue  ~\cite{MS:QueueAlgorithms}}& \textsf{21.07} \\
-\hline
+
 \textsf{DGLM queue  ~\cite{Doherty:lockfree}}&  \textsf {16.99} \\
-\hline
+
 \textsf{Vechev-CAS set  ~\cite{Vechev:list}}  & \textsf{86.01} \\
-\hline
+
 \textsf{Vechev-DCAS set  ~\cite{Vechev:list}}   & \textsf{16.02}  \\
-\hline
+
 \textsf{Michael lock-free set ~\cite{Michael:list}}  & \textsf{178.01}  \\
-\hline
+
 \textsf{Pessimistic set  ~\cite{ArtOfMpP}}&\textsf{30.51} \\
-\hline
+
 \textsf{Optimistic set ~\cite{ArtOfMpP}}& \textsf{25.43} \\
-\hline
+
 \textsf{Lazy set ~\cite{Lazyset}  }  & \textsf {34} \\
-\hline
+
 \textsf {O$\textquotesingle $Hearn set  ~\cite{OHearnlist}}     & \textsf{88.01} \\
-\hline
+
 \textsf{HM lock-free set  ~\cite{ArtOfMpP} } & \textsf{120.01} \\
 \hline
 \end{tabular}
 
-
-\vspace*{0.1cm}
-
-(c)
-\\
 %\vspace{10mm}
 %\vspace*{-0.3cm}
-\caption{Experimental Results for verifying concurrent programs}
+\caption{Experimental results for verifying concurrent programs}
 %\vspace*{-0.7cm}
 \label{Experiments:fig}
 \end{figure}
 %\vspace{-0.2cm}
+\todo{I am working here}
 Based on our framework, we have implemented a tool in OCaml, and used
 it for
 verifying 19 concurrent algorithms (both lock-based and lock-free)
