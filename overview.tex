@@ -288,7 +288,6 @@ node[above=-2pt,pos=0.5,  sloped] {\tiny${\tt \neg{call \; ret(x_2)}}$}
 \label{fig:lifostack:fig}
 \end{figure}
 
-\subsection{Verification by Fragment Abstraction}
 To verify that TS Stack is a correct linearizable implementation of a stack, we
 must show that any concurrent execution of method calls satisfies the
 above four constraints (1) -- (4).
@@ -308,7 +307,7 @@ the cross-product of the program  and the corresponding
 observer, where the observer synchronizes with the program on call and
 return actions that are recognized by the observer. This reduces the
 problem of checking each of the above constraints to the problem of checking
-that the observer cannot reach an accepting state.
+that the corresponding observer cannot reach an accepting state.
 
 \todo[inline]{We may have to say that we check the trivial conditions that
   were checked by the monitor in SAS 16}
@@ -336,6 +335,9 @@ that the observer cannot reach an accepting state.
 %%  and our verification by standard techniques, as well as
 %% the standard way, and verify condition (iv) by checking that the observer cannot
 %% reach an accepting state.
+
+\subsection{Verification by Fragment Abstraction}
+
 In the actual verification, we compute a symbolic representation
 of an invariant that is satisfied by all reachable program configurations (including observer states).
 This invariant is obtained by an abstract-interpretation-based
