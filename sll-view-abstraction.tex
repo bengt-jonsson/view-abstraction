@@ -442,7 +442,7 @@ We say that $\frag_1$ and $\frag_2$ are {\em consistent} if $\frag_x \overset{*}
 $\frag_2$ can be satisfied by two cells in the same shape.
 \todo[inline]{Quy: I think you should make a picture with
   a shape with several views that illustrate the relations above} \quycom{I have picture now}
-
+\input viewrelations
 \paragraph{Abstract Transformers for Local Steps} We first consider
 the abstract transformer for the case that the thread performs a local
 step.
@@ -819,6 +819,19 @@ $\frag_1'$ and $\frag_2'$ are as above.
 
  \todo[inline]{Here goes a description of the fragment abstraction for
    skip lists}
+   \begin{itemize}
+  \item In the fragment abstraction, $\tt tag$ is define exactly same as $\tt tag$ in SLL abstraction where $\reachfrom$ and $\reachto$ is defined based on the main level of skip-list. It means that we do not keep the reachability information in higher levels.
+  \item Same as timestamp stacks and queues, in skip-list we keep the main level and abstract all the higher levels. It means that we do not distinguish the differences between high levels. Hence, we have two types of fragments including main level fragments and higher level fragments which are defined same as SLL fragments. 
+   \end{itemize}
+ \begin{figure}  
+ \input skiplistshape  
+ \caption{A concrete shape of 3-level skipl-list with two threads}
+\end{figure}
+
+ \begin{figure}  
+ \input skiplistabs 
+ \caption{skipl-list fragments \quycom{i am working with this figure}}
+\end{figure}
 \subsection{Abstract transformers for skip-lists}
 Let us show how to perform the abstract transformer for skip-list programs on the set of fragments $\fragset$ depending on the particular statement.  We consider fragments of size $2$ where $\tt I_{inp} = \{i\}$, $\tt I_{out} = \{{o}\}$, and $\tt next(i) = {o}$ and fragments of size $1$ where $\tt I_{inp} = \{i\}$, $\tt I_{out} = \emptyset$, and $\tt next(i) = null$ or $\tt next(i) = \bot$. For each fragment $\tt v$, let $\tt v.level \in \{1,2\}$ be the level of $\tt v$.
 

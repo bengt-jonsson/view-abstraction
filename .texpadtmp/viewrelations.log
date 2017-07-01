@@ -1,0 +1,3033 @@
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdftex 2015.3.13)  1 JUL 2017 12:04
+entering extended mode
+ restricted \write18 enabled.
+ file:line:error style messages enabled.
+ %&-line parsing enabled.
+**/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex
+(/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:2: Undefined control sequence.
+l.2 \begin
+          {figure*}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:3: Undefined control sequence.
+l.3 \begin
+          {tikzpicture}[]%show background rectangle]
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:5: Undefined control sequence.
+l.5 \node
+         [name=cell0,minimum width=16pt, minimum height=120pt]{};
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:8: Undefined control sequence.
+l.8 \node
+         [rounded corners,draw,name=cell1,minimum width=24pt, minimum height...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:9: Undefined control sequence.
+l.9 \node
+         [minimum width=8pt, minimum height=10pt,anchor=west,font=\tiny,inne...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:9: Undefined control sequence.
+l.9 ... minimum height=10pt,anchor=west,font=\tiny
+                                                  ,inner sep=0pt,name=d1] at...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:11: Undefined control sequence.
+l.11 \node
+          [draw,minimum width=8pt, minimum height=10pt,anchor=north,font=\ti...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:11: Undefined control sequence.
+l.11 ...inimum height=10pt,anchor=north,font=\tiny
+                                                  ,inner sep=0pt]at (cell1.n...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:11: Undefined control sequence.
+l.11 ...tiny,inner sep=0pt]at (cell1.north){\cross
+                                                  };
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:12: Undefined control sequence.
+l.12 \node
+          [draw,minimum width=8pt, minimum height=10pt,anchor=south,font=\ti...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:12: Undefined control sequence.
+l.12 ...inimum height=10pt,anchor=south,font=\tiny
+                                                  ,inner sep=0pt]at (cell1.s...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:12: Undefined control sequence.
+l.12 ...tiny,inner sep=0pt]at (cell1.south){\cross
+                                                  };
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:13: Undefined control sequence.
+l.13 \node
+          [name=succ1,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=0...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+Overfull \hbox (38.31099pt too wide) in paragraph at lines 8--14
+\tenrm (cell1.west) $\tensy ^^N$\tenrm ; [draw,minimum width=8pt, min-i-mum height=10pt,anchor=north,font=,inner sep=0pt]at (cell1.north);|
+
+\hbox(7.5+2.5)x469.75499, glue set - 1.0
+.\tenrm (
+.\tenrm c
+.\tenrm e
+.\tenrm l
+.\tenrm l
+.etc.
+
+
+Overfull \hbox (120.0612pt too wide) in paragraph at lines 8--14
+\tenrm [draw,minimum width=8pt, min-i-mum height=10pt,anchor=south,font=,inner sep=0pt]at (cell1.south); [name=succ1,circle,fill,minimum|
+
+\hbox(7.5+2.5)x469.75499, glue set - 1.0
+.\tenrm [
+.\tenrm d
+.\tenrm r
+.\tenrm a
+.\kern-0.27779
+.etc.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:18: Undefined control sequence.
+l.18 \node
+          [anchor=south,font=\tiny,align=center] at ($(cell1.north)+(0pt,-2p...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:18: Undefined control sequence.
+l.18 \node[anchor=south,font=\tiny
+                                  ,align=center] at ($(cell1.north)+(0pt,-2p...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:20: Undefined control sequence.
+l.20 \node
+          [anchor=south,font=\tiny,align=center] at ($(cell1.south)+(0pt,-13...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:20: Undefined control sequence.
+l.20 \node[anchor=south,font=\tiny
+                                  ,align=center] at ($(cell1.south)+(0pt,-13...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:21: Undefined control sequence.
+l.21 \node
+          [anchor=south,font=\tiny,align=center] at ($(cell1.south)+(0pt,-20...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:21: Undefined control sequence.
+l.21 \node[anchor=south,font=\tiny
+                                  ,align=center] at ($(cell1.south)+(0pt,-20...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:21: \scriptfont 7 is undefined (character 1).
+l.21 ...$(cell1.south)+(0pt,-20pt)$) {{$\tt T,x_1$
+                                                  }};
+Somewhere in the math formula just ended, you used the
+stated character from an undefined font family. For example,
+plain TeX doesn't allow \it or \sl in subscripts. Proceed,
+and I'll try to forget that I needed that character.
+
+
+Overfull \hbox (4.46126pt too wide) in paragraph at lines 20--22
+[]\tenrm [anchor=south,font=,align=center] at ($(\teni cell\tenrm 1\teni :south\tenrm ) + (0\teni pt; \tensy ^^@\tenrm 13\teni pt\tenrm )$) $\tentt H$\tenrm ; [an-chor=south,font=,align=center]|
+
+\hbox(7.5+2.5)x469.75499, glue set - 1.0
+.\hbox(0.0+0.0)x20.0
+.\tenrm [
+.\tenrm a
+.\tenrm n
+.\tenrm c
+.etc.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:23: Undefined control sequence.
+l.23 \node
+          [circle,draw,font=\tiny,inner sep=1pt,fill=red!5] at ($(cell1.nort...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:23: Undefined control sequence.
+l.23 \node[circle,draw,font=\tiny
+                                 ,inner sep=1pt,fill=red!5] at ($(cell1.nort...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:23: \scriptfont 7 is undefined (character 1).
+l.23 ...($(cell1.north)+(24.5pt,11pt)$) {$\tt v_1$
+                                                  };
+Somewhere in the math formula just ended, you used the
+stated character from an undefined font family. For example,
+plain TeX doesn't allow \it or \sl in subscripts. Proceed,
+and I'll try to forget that I needed that character.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:25: Undefined control sequence.
+l.25 \node
+          [rounded corners,draw,name=cell21,minimum width=24pt, minimum heig...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:26: Undefined control sequence.
+l.26 \node
+          [minimum width=8pt, minimum height=10pt,anchor=west,font=\tiny,inn...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:26: Undefined control sequence.
+l.26 ...minimum height=10pt,anchor=west,font=\tiny
+                                                  ,inner sep=0pt,name=d1] at...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:28: Undefined control sequence.
+l.28 \node
+          [draw,minimum width=8pt, minimum height=10pt,anchor=north,font=\ti...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:28: Undefined control sequence.
+l.28 ...inimum height=10pt,anchor=north,font=\tiny
+                                                  ,inner sep=0pt]at (cell21....
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:28: Undefined control sequence.
+l.28 ...iny,inner sep=0pt]at (cell21.north){\cross
+                                                  };
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:29: Undefined control sequence.
+l.29 \node
+          [draw,minimum width=8pt, minimum height=10pt,anchor=south,font=\ti...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:29: Undefined control sequence.
+l.29 ...inimum height=10pt,anchor=south,font=\tiny
+                                                  ,inner sep=0pt]at (cell21....
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:29: Undefined control sequence.
+l.29 ...iny,inner sep=0pt]at (cell21.south){\cross
+                                                  };
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:30: Undefined control sequence.
+l.30 \node
+          [name=succ21,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:31: Undefined control sequence.
+l.31 \node
+          [anchor=south,font=\tiny,align=center] at ($(cell21.south)+(0pt,-1...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:31: Undefined control sequence.
+l.31 \node[anchor=south,font=\tiny
+                                  ,align=center] at ($(cell21.south)+(0pt,-1...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:32: Undefined control sequence.
+l.32 \node
+          [anchor=south,font=\tiny,align=center] at ($(cell21.south)+(0pt,-2...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:32: Undefined control sequence.
+l.32 \node[anchor=south,font=\tiny
+                                  ,align=center] at ($(cell21.south)+(0pt,-2...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:32: \scriptfont 7 is undefined (character 1).
+l.32 ...(cell21.south)+(0pt,-20pt)$) {{$\tt T,x_1$
+                                                  }};
+Somewhere in the math formula just ended, you used the
+stated character from an undefined font family. For example,
+plain TeX doesn't allow \it or \sl in subscripts. Proceed,
+and I'll try to forget that I needed that character.
+
+
+Overfull \hbox (45.83884pt too wide) in paragraph at lines 25--33
+\tenrm (cell21.north); [draw,minimum width=8pt, min-i-mum height=10pt,anchor=south,font=,inner sep=0pt]at (cell21.south);|
+
+\hbox(7.5+2.5)x469.75499, glue set - 1.0
+.\tenrm (
+.\tenrm c
+.\tenrm e
+.\tenrm l
+.\tenrm l
+.etc.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:34: Undefined control sequence.
+l.34 \draw
+          [->] (succ1) -- (cell21);
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:38: Undefined control sequence.
+l.38 \node
+          [rounded corners,draw,name=cell22,minimum width=24pt, minimum heig...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:39: Undefined control sequence.
+l.39 \node
+          [minimum width=8pt, minimum height=10pt,anchor=west,font=\tiny,inn...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:39: Undefined control sequence.
+l.39 ...minimum height=10pt,anchor=west,font=\tiny
+                                                  ,inner sep=0pt,name=d1] at...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:41: Undefined control sequence.
+l.41 \node
+          [draw,minimum width=8pt, minimum height=10pt,anchor=north,font=\ti...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:41: Undefined control sequence.
+l.41 ...inimum height=10pt,anchor=north,font=\tiny
+                                                  ,inner sep=0pt]at (cell22....
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:41: Undefined control sequence.
+l.41 ...iny,inner sep=0pt]at (cell22.north){\cross
+                                                  };
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:42: Undefined control sequence.
+l.42 \node
+          [draw,minimum width=8pt, minimum height=10pt,anchor=south,font=\ti...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:42: Undefined control sequence.
+l.42 ...inimum height=10pt,anchor=south,font=\tiny
+                                                  ,inner sep=0pt]at (cell22....
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:42: Undefined control sequence.
+l.42 ...iny,inner sep=0pt]at (cell22.south){\cross
+                                                  };
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:43: Undefined control sequence.
+l.43 \node
+          [name=succ22,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+Overfull \hbox (45.83884pt too wide) in paragraph at lines 38--44
+\tenrm (cell22.north); [draw,minimum width=8pt, min-i-mum height=10pt,anchor=south,font=,inner sep=0pt]at (cell22.south);|
+
+\hbox(7.5+2.5)x469.75499, glue set - 1.0
+.\tenrm (
+.\tenrm c
+.\tenrm e
+.\tenrm l
+.\tenrm l
+.etc.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:45: Undefined control sequence.
+l.45 \node
+          [anchor=south,font=\tiny,align=center] at ($(cell22.south)+(0pt,-1...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:45: Undefined control sequence.
+l.45 \node[anchor=south,font=\tiny
+                                  ,align=center] at ($(cell22.south)+(0pt,-1...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:46: Undefined control sequence.
+l.46 \node
+          [anchor=south,font=\tiny,align=center] at ($(cell22.south)+(0pt,-2...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:46: Undefined control sequence.
+l.46 \node[anchor=south,font=\tiny
+                                  ,align=center] at ($(cell22.south)+(0pt,-2...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:46: \scriptfont 7 is undefined (character 1).
+l.46 ...($(cell22.south)+(0pt,-20pt)$) {{$\tt x_1$
+                                                  }};
+Somewhere in the math formula just ended, you used the
+stated character from an undefined font family. For example,
+plain TeX doesn't allow \it or \sl in subscripts. Proceed,
+and I'll try to forget that I needed that character.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:47: Undefined control sequence.
+l.47 \node
+          [circle,draw,font=\tiny,inner sep=1pt,fill=red!5] at ($(cell22.nor...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:47: Undefined control sequence.
+l.47 \node[circle,draw,font=\tiny
+                                 ,inner sep=1pt,fill=red!5] at ($(cell22.nor...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:47: \scriptfont 7 is undefined (character 2).
+l.47 ...$(cell22.north)+(24.5pt,11pt)$) {$\tt v_2$
+                                                  };
+Somewhere in the math formula just ended, you used the
+stated character from an undefined font family. For example,
+plain TeX doesn't allow \it or \sl in subscripts. Proceed,
+and I'll try to forget that I needed that character.
+
+
+Overfull \hbox (9.46127pt too wide) in paragraph at lines 45--48
+[]\tenrm [anchor=south,font=,align=center] at ($(\teni cell\tenrm 22\teni :south\tenrm ) + (0\teni pt; \tensy ^^@\tenrm 13\teni pt\tenrm )$) $\tentt H$\tenrm ; [an-chor=south,font=,align=center]|
+
+\hbox(7.5+2.5)x469.75499, glue set - 1.0
+.\hbox(0.0+0.0)x20.0
+.\tenrm [
+.\tenrm a
+.\tenrm n
+.\tenrm c
+.etc.
+
+
+Overfull \hbox (17.26917pt too wide) in paragraph at lines 45--48
+\tenrm at ($(\teni cell\tenrm 22\teni :south\tenrm ) + (0\teni pt; \tensy ^^@\tenrm 20\teni pt\tenrm )$) $\tentt x[]$\tenrm ; [cir-cle,draw,font=,inner sep=1pt,fill=red!5] at ($(\teni cell\tenrm 22\teni :north\tenrm ) + (24\teni :\tenrm 5\teni pt; \tenrm 11\teni pt\tenrm )$)|
+
+\hbox(7.5+2.5)x469.75499, glue set - 1.0
+.\tenrm a
+.\tenrm t
+.\glue 3.33333 plus 1.66666 minus 1.11111
+.\tenrm (
+.\mathon
+.etc.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:50: Undefined control sequence.
+l.50 \node
+          [rounded corners,draw,name=cell31,minimum width=24pt, minimum heig...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:52: Undefined control sequence.
+l.52 \node
+          [minimum width=8pt, minimum height=10pt,anchor=west,font=\tiny,inn...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:52: Undefined control sequence.
+l.52 ...minimum height=10pt,anchor=west,font=\tiny
+                                                  ,inner sep=0pt,name=d1] at...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:53: \scriptfont 7 is undefined (character 1).
+l.53 {$\tt x_1$
+               };
+Somewhere in the math formula just ended, you used the
+stated character from an undefined font family. For example,
+plain TeX doesn't allow \it or \sl in subscripts. Proceed,
+and I'll try to forget that I needed that character.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:54: Undefined control sequence.
+l.54 \node
+          [draw,minimum width=8pt, minimum height=10pt,anchor=north,font=\ti...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:54: Undefined control sequence.
+l.54 ...inimum height=10pt,anchor=north,font=\tiny
+                                                  ,inner sep=0pt]at (cell31....
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:54: Undefined control sequence.
+l.54 ...iny,inner sep=0pt]at (cell31.north){\cross
+                                                  };
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:55: Undefined control sequence.
+l.55 \node
+          [draw,minimum width=8pt, minimum height=10pt,anchor=south,font=\ti...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:55: Undefined control sequence.
+l.55 ...inimum height=10pt,anchor=south,font=\tiny
+                                                  ,inner sep=0pt]at (cell31....
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:55: Undefined control sequence.
+l.55 ...iny,inner sep=0pt]at (cell31.south){\cross
+                                                  };
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:56: Undefined control sequence.
+l.56 \node
+          [name=succ31,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+Overfull \hbox (45.83884pt too wide) in paragraph at lines 50--57
+\tenrm (cell31.north); [draw,minimum width=8pt, min-i-mum height=10pt,anchor=south,font=,inner sep=0pt]at (cell31.south);|
+
+\hbox(7.5+2.5)x469.75499, glue set - 1.0
+.\tenrm (
+.\tenrm c
+.\tenrm e
+.\tenrm l
+.\tenrm l
+.etc.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:58: Undefined control sequence.
+l.58 \node
+          [anchor=south,font=\tiny,align=center] at ($(cell31.south)+(0pt,-1...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:58: Undefined control sequence.
+l.58 \node[anchor=south,font=\tiny
+                                  ,align=center] at ($(cell31.south)+(0pt,-1...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:58: \scriptfont 7 is undefined (character 1).
+l.58 ...(cell31.south)+(0pt,-13pt)$) {{$\tt H,x_1$
+                                                  }};
+Somewhere in the math formula just ended, you used the
+stated character from an undefined font family. For example,
+plain TeX doesn't allow \it or \sl in subscripts. Proceed,
+and I'll try to forget that I needed that character.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:59: Undefined control sequence.
+l.59 \node
+          [anchor=south,font=\tiny,align=center] at ($(cell31.south)+(0pt,-2...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:59: Undefined control sequence.
+l.59 \node[anchor=south,font=\tiny
+                                  ,align=center] at ($(cell31.south)+(0pt,-2...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:59: \scriptfont 7 is undefined (character 1).
+l.59 ...(cell31.south)+(0pt,-20pt)$) {{$\tt T,x_1$
+                                                  }};
+Somewhere in the math formula just ended, you used the
+stated character from an undefined font family. For example,
+plain TeX doesn't allow \it or \sl in subscripts. Proceed,
+and I'll try to forget that I needed that character.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:60: Undefined control sequence.
+l.60 \node
+          [anchor=south,font=\tiny,align=center] at ($(cell31.north)+(0pt,-2...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:60: Undefined control sequence.
+l.60 \node[anchor=south,font=\tiny
+                                  ,align=center] at ($(cell31.north)+(0pt,-2...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+Overfull \hbox (19.65564pt too wide) in paragraph at lines 58--61
+[]\tenrm [anchor=south,font=,align=center] at ($(\teni cell\tenrm 31\teni :south\tenrm ) + (0\teni pt; \tensy ^^@\tenrm 13\teni pt\tenrm )$) $\tentt H\teni ; \tentt x[]$\tenrm ; [an-chor=south,font=,align=center]|
+
+\hbox(7.5+2.5)x469.75499, glue set - 1.0
+.\hbox(0.0+0.0)x20.0
+.\tenrm [
+.\tenrm a
+.\tenrm n
+.\tenrm c
+.etc.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:64: Undefined control sequence.
+l.64 \node
+          [rounded corners,draw,name=cell32,minimum width=24pt, minimum heig...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:66: Undefined control sequence.
+l.66 \node
+          [minimum width=8pt, minimum height=10pt,anchor=west,font=\tiny,inn...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:66: Undefined control sequence.
+l.66 ...minimum height=10pt,anchor=west,font=\tiny
+                                                  ,inner sep=0pt,name=d1] at...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:67: \scriptfont 7 is undefined (character 1).
+l.67 {$\tt x_1$
+               };
+Somewhere in the math formula just ended, you used the
+stated character from an undefined font family. For example,
+plain TeX doesn't allow \it or \sl in subscripts. Proceed,
+and I'll try to forget that I needed that character.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:68: Undefined control sequence.
+l.68 \node
+          [draw,minimum width=8pt, minimum height=10pt,anchor=north,font=\ti...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:68: Undefined control sequence.
+l.68 ...inimum height=10pt,anchor=north,font=\tiny
+                                                  ,inner sep=0pt]at (cell32....
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:68: Undefined control sequence.
+l.68 ...iny,inner sep=0pt]at (cell32.north){\cross
+                                                  };
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:69: Undefined control sequence.
+l.69 \node
+          [draw,minimum width=8pt, minimum height=10pt,anchor=south,font=\ti...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:69: Undefined control sequence.
+l.69 ...inimum height=10pt,anchor=south,font=\tiny
+                                                  ,inner sep=0pt]at (cell32....
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:69: Undefined control sequence.
+l.69 ...iny,inner sep=0pt]at (cell32.south){\cross
+                                                  };
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:70: Undefined control sequence.
+l.70 \node
+          [name=succ32,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+Overfull \hbox (45.83884pt too wide) in paragraph at lines 64--71
+\tenrm (cell32.north); [draw,minimum width=8pt, min-i-mum height=10pt,anchor=south,font=,inner sep=0pt]at (cell32.south);|
+
+\hbox(7.5+2.5)x469.75499, glue set - 1.0
+.\tenrm (
+.\tenrm c
+.\tenrm e
+.\tenrm l
+.\tenrm l
+.etc.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:72: Undefined control sequence.
+l.72 \node
+          [anchor=south,font=\tiny,align=center] at ($(cell32.south)+(0pt,-1...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:72: Undefined control sequence.
+l.72 \node[anchor=south,font=\tiny
+                                  ,align=center] at ($(cell32.south)+(0pt,-1...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:72: \scriptfont 7 is undefined (character 1).
+l.72 ...(cell32.south)+(0pt,-13pt)$) {{$\tt H,x_1$
+                                                  }};
+Somewhere in the math formula just ended, you used the
+stated character from an undefined font family. For example,
+plain TeX doesn't allow \it or \sl in subscripts. Proceed,
+and I'll try to forget that I needed that character.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:73: Undefined control sequence.
+l.73 \node
+          [anchor=south,font=\tiny,align=center] at ($(cell32.south)+(0pt,-2...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:73: Undefined control sequence.
+l.73 \node[anchor=south,font=\tiny
+                                  ,align=center] at ($(cell32.south)+(0pt,-2...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:73: \scriptfont 7 is undefined (character 1).
+l.73 ...(cell32.south)+(0pt,-20pt)$) {{$\tt T,x_1$
+                                                  }};
+Somewhere in the math formula just ended, you used the
+stated character from an undefined font family. For example,
+plain TeX doesn't allow \it or \sl in subscripts. Proceed,
+and I'll try to forget that I needed that character.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:74: Undefined control sequence.
+l.74 \node
+          [anchor=south,font=\tiny,align=center] at ($(cell32.north)+(0pt,-2...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:74: Undefined control sequence.
+l.74 \node[anchor=south,font=\tiny
+                                  ,align=center] at ($(cell32.north)+(0pt,-2...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+Overfull \hbox (19.65564pt too wide) in paragraph at lines 72--75
+[]\tenrm [anchor=south,font=,align=center] at ($(\teni cell\tenrm 32\teni :south\tenrm ) + (0\teni pt; \tensy ^^@\tenrm 13\teni pt\tenrm )$) $\tentt H\teni ; \tentt x[]$\tenrm ; [an-chor=south,font=,align=center]|
+
+\hbox(7.5+2.5)x469.75499, glue set - 1.0
+.\hbox(0.0+0.0)x20.0
+.\tenrm [
+.\tenrm a
+.\tenrm n
+.\tenrm c
+.etc.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:76: Undefined control sequence.
+l.76 \node
+          [circle,draw,font=\tiny,inner sep=1pt,fill=red!5] at ($(cell32.nor...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:76: Undefined control sequence.
+l.76 \node[circle,draw,font=\tiny
+                                 ,inner sep=1pt,fill=red!5] at ($(cell32.nor...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:76: \scriptfont 7 is undefined (character 3).
+l.76 ...$(cell32.north)+(24.5pt,11pt)$) {$\tt v_3$
+                                                  };
+Somewhere in the math formula just ended, you used the
+stated character from an undefined font family. For example,
+plain TeX doesn't allow \it or \sl in subscripts. Proceed,
+and I'll try to forget that I needed that character.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:79: Undefined control sequence.
+l.79 \node
+          [rounded corners,draw,name=cell41,minimum width=24pt, minimum heig...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:80: Undefined control sequence.
+l.80 \node
+          [minimum width=8pt, minimum height=10pt,anchor=west,font=\tiny,inn...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:80: Undefined control sequence.
+l.80 ...minimum height=10pt,anchor=west,font=\tiny
+                                                  ,inner sep=0pt,name=d1] at...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:82: Undefined control sequence.
+l.82 \node
+          [draw,minimum width=8pt, minimum height=10pt,anchor=north,font=\ti...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:82: Undefined control sequence.
+l.82 ...inimum height=10pt,anchor=north,font=\tiny
+                                                  ,inner sep=0pt]at (cell41....
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:82: Undefined control sequence.
+l.82 ...iny,inner sep=0pt]at (cell41.north){\cross
+                                                  };
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:83: Undefined control sequence.
+l.83 \node
+          [draw,minimum width=8pt, minimum height=10pt,anchor=south,font=\ti...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:83: Undefined control sequence.
+l.83 ...inimum height=10pt,anchor=south,font=\tiny
+                                                  ,inner sep=0pt]at (cell41....
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:83: Undefined control sequence.
+l.83 ...iny,inner sep=0pt]at (cell41.south){\cross
+                                                  };
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:84: Undefined control sequence.
+l.84 \node
+          [name=succ41,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+Overfull \hbox (45.83884pt too wide) in paragraph at lines 79--85
+\tenrm (cell41.north); [draw,minimum width=8pt, min-i-mum height=10pt,anchor=south,font=,inner sep=0pt]at (cell41.south);|
+
+\hbox(7.5+2.5)x469.75499, glue set - 1.0
+.\tenrm (
+.\tenrm c
+.\tenrm e
+.\tenrm l
+.\tenrm l
+.etc.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:86: Undefined control sequence.
+l.86 \node
+          [anchor=south,font=\tiny,align=center] at ($(cell41.south)+(0pt,-1...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:86: Undefined control sequence.
+l.86 \node[anchor=south,font=\tiny
+                                  ,align=center] at ($(cell41.south)+(0pt,-1...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:86: \scriptfont 7 is undefined (character 1).
+l.86 ...(cell41.south)+(0pt,-13pt)$) {{$\tt H,x_1$
+                                                  }};
+Somewhere in the math formula just ended, you used the
+stated character from an undefined font family. For example,
+plain TeX doesn't allow \it or \sl in subscripts. Proceed,
+and I'll try to forget that I needed that character.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:87: Undefined control sequence.
+l.87 \node
+          [anchor=south,font=\tiny,align=center] at ($(cell41.south)+(0pt,-2...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:87: Undefined control sequence.
+l.87 \node[anchor=south,font=\tiny
+                                  ,align=center] at ($(cell41.south)+(0pt,-2...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+Overfull \hbox (19.65564pt too wide) in paragraph at lines 86--88
+[]\tenrm [anchor=south,font=,align=center] at ($(\teni cell\tenrm 41\teni :south\tenrm ) + (0\teni pt; \tensy ^^@\tenrm 13\teni pt\tenrm )$) $\tentt H\teni ; \tentt x[]$\tenrm ; [an-chor=south,font=,align=center]|
+
+\hbox(7.5+2.5)x469.75499, glue set - 1.0
+.\hbox(0.0+0.0)x20.0
+.\tenrm [
+.\tenrm a
+.\tenrm n
+.\tenrm c
+.etc.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:89: Undefined control sequence.
+l.89 \draw
+          [->] (succ22) -- (cell31);
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:90: Undefined control sequence.
+l.90 \draw
+          [->] (succ32) -- (cell41);
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:117: Undefined control sequence.
+l.117 \node
+           [rounded corners,draw,name=cell72,minimum width=24pt, minimum hei...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:118: Undefined control sequence.
+l.118 \node
+           [minimum width=8pt, minimum height=10pt,anchor=west,font=\tiny,in...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:118: Undefined control sequence.
+l.118 ...inimum height=10pt,anchor=west,font=\tiny
+                                                  ,inner sep=0pt,name=d1] at...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:120: Undefined control sequence.
+l.120 \node
+           [draw,minimum width=8pt, minimum height=10pt,anchor=north,font=\t...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:120: Undefined control sequence.
+l.120 ...nimum height=10pt,anchor=north,font=\tiny
+                                                  ,inner sep=0pt]at (cell72....
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:120: Undefined control sequence.
+l.120 ...ny,inner sep=0pt]at (cell72.north){\cross
+                                                  };
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:121: Undefined control sequence.
+l.121 \node
+           [draw,minimum width=8pt, minimum height=10pt,anchor=south,font=\t...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:121: Undefined control sequence.
+l.121 ...nimum height=10pt,anchor=south,font=\tiny
+                                                  ,inner sep=0pt]at (cell72....
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:121: Undefined control sequence.
+l.121 ...ny,inner sep=0pt]at (cell72.south){\cross
+                                                  };
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:122: Undefined control sequence.
+l.122 \node
+           [name=succ72,circle,fill,minimum size=3pt,inner sep=0pt,outer sep...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:123: Undefined control sequence.
+l.123 \node
+           [anchor=south,font=\tiny,align=center] at ($(cell72.south)+(0pt,-...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:123: Undefined control sequence.
+l.123 \node[anchor=south,font=\tiny
+                                   ,align=center] at ($(cell72.south)+(0pt,-...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:123: \scriptfont 7 is undefined (character 1).
+l.123 ...72.south)+(0pt,-13pt)$) {{$\tt H, T, x_1$
+                                                  }};
+Somewhere in the math formula just ended, you used the
+stated character from an undefined font family. For example,
+plain TeX doesn't allow \it or \sl in subscripts. Proceed,
+and I'll try to forget that I needed that character.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:124: Undefined control sequence.
+l.124 \node
+           [anchor=south,font=\tiny,align=center] at ($(cell72.south)+(0pt,-...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:124: Undefined control sequence.
+l.124 \node[anchor=south,font=\tiny
+                                   ,align=center] at ($(cell72.south)+(0pt,-...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:125: Undefined control sequence.
+l.125 \node
+           [circle,draw,font=\tiny,inner sep=1pt,fill=red!5] at ($(cell72.no...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:125: Undefined control sequence.
+l.125 \node[circle,draw,font=\tiny
+                                  ,inner sep=1pt,fill=red!5] at ($(cell72.no...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:125: \scriptfont 7 is undefined (character 4).
+l.125 ...(cell72.north)+(24.5pt,11pt)$) {$\tt v_4$
+                                                  };
+Somewhere in the math formula just ended, you used the
+stated character from an undefined font family. For example,
+plain TeX doesn't allow \it or \sl in subscripts. Proceed,
+and I'll try to forget that I needed that character.
+
+
+Overfull \hbox (45.83884pt too wide) in paragraph at lines 117--126
+\tenrm (cell72.north); [draw,minimum width=8pt, min-i-mum height=10pt,anchor=south,font=,inner sep=0pt]at (cell72.south);|
+
+\hbox(7.5+2.5)x469.75499, glue set - 1.0
+.\tenrm (
+.\tenrm c
+.\tenrm e
+.\tenrm l
+.\tenrm l
+.etc.
+
+
+Overfull \hbox (9.35pt too wide) in paragraph at lines 117--126
+\tenrm [an-chor=south,font=,align=center] at ($(\teni cell\tenrm 72\teni :south\tenrm ) + (0\teni pt; \tensy ^^@\tenrm 13\teni pt\tenrm )$) $\tentt H\teni ; \tentt T\teni ; \tentt x[]$\tenrm ; [an-chor=south,font=,align=center]|
+
+\hbox(7.5+2.5)x469.75499, glue set - 1.0
+.\tenrm [
+.\tenrm a
+.\tenrm n
+.\discretionary
+..\tenrm -
+.\tenrm c
+.etc.
+
+
+Overfull \hbox (16.76917pt too wide) in paragraph at lines 117--126
+\tenrm at ($(\teni cell\tenrm 72\teni :south\tenrm ) + (0\teni pt; \tensy ^^@\tenrm 20\teni pt\tenrm )$) $\tentt T$\tenrm ; [cir-cle,draw,font=,inner sep=1pt,fill=red!5] at ($(\teni cell\tenrm 72\teni :north\tenrm ) + (24\teni :\tenrm 5\teni pt; \tenrm 11\teni pt\tenrm )$)|
+
+\hbox(7.5+2.5)x469.75499, glue set - 1.0
+.\tenrm a
+.\tenrm t
+.\glue 3.33333 plus 1.66666 minus 1.11111
+.\tenrm (
+.\mathon
+.etc.
+
+[1{/usr/local/texlive/2014/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:129: Undefined control sequence.
+l.129 \node
+           [name=cell8] at ($(cell72.east)+(20pt,0pt)$){$\bot$};
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:130: Undefined control sequence.
+l.130 \draw
+           [->] (succ72) -- (cell8);
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:134: Undefined control sequence.
+l.134 \node
+           [rounded corners,draw,name=cell13,minimum width=24pt, minimum hei...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:135: Undefined control sequence.
+l.135 \node
+           [minimum width=8pt, minimum height=10pt,anchor=west,font=\tiny,in...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:135: Undefined control sequence.
+l.135 ...inimum height=10pt,anchor=west,font=\tiny
+                                                  ,inner sep=0pt,name=d1] at...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:137: Undefined control sequence.
+l.137 \node
+           [draw,minimum width=8pt, minimum height=10pt,anchor=north,font=\t...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:137: Undefined control sequence.
+l.137 ...nimum height=10pt,anchor=north,font=\tiny
+                                                  ,inner sep=0pt]at (cell13....
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:137: Undefined control sequence.
+l.137 ...ny,inner sep=0pt]at (cell13.north){\cross
+                                                  };
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:138: Undefined control sequence.
+l.138 \node
+           [draw,minimum width=8pt, minimum height=10pt,anchor=south,font=\t...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:138: Undefined control sequence.
+l.138 ...nimum height=10pt,anchor=south,font=\tiny
+                                                  ,inner sep=0pt]at (cell13....
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:138: Undefined control sequence.
+l.138 ...iny,inner sep=0pt]at (cell13.south){\tick
+                                                  };
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:139: Undefined control sequence.
+l.139 \node
+           [name=succ13,circle,fill,minimum size=3pt,inner sep=0pt,outer sep...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+Overfull \hbox (45.83884pt too wide) in paragraph at lines 134--140
+\tenrm (cell13.north); [draw,minimum width=8pt, min-i-mum height=10pt,anchor=south,font=,inner sep=0pt]at (cell13.south);|
+
+\hbox(7.5+2.5)x469.75499, glue set - 1.0
+.\tenrm (
+.\tenrm c
+.\tenrm e
+.\tenrm l
+.\tenrm l
+.etc.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:142: Undefined control sequence.
+l.142 \node
+           [anchor=south,font=\tiny,align=center] at ($(cell13.south)+(0pt,-...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:142: Undefined control sequence.
+l.142 \node[anchor=south,font=\tiny
+                                   ,align=center] at ($(cell13.south)+(0pt,-...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:143: Undefined control sequence.
+l.143 \node
+           [anchor=south,font=\tiny,align=center] at ($(cell13.south)+(0pt,-...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:143: Undefined control sequence.
+l.143 \node[anchor=south,font=\tiny
+                                   ,align=center] at ($(cell13.south)+(0pt,-...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:143: \scriptfont 7 is undefined (character 1).
+l.143 ...cell13.south)+(0pt,-20pt)$) {{$\tt T,x_1$
+                                                  }};
+Somewhere in the math formula just ended, you used the
+stated character from an undefined font family. For example,
+plain TeX doesn't allow \it or \sl in subscripts. Proceed,
+and I'll try to forget that I needed that character.
+
+
+Overfull \hbox (9.21133pt too wide) in paragraph at lines 142--144
+[]\tenrm [anchor=south,font=,align=center] at ($(\teni cell\tenrm 13\teni :south\tenrm ) + (0\teni pt; \tensy ^^@\tenrm 13\teni pt\tenrm )$) $\tensy ;$\tenrm ; [an-chor=south,font=,align=center]|
+
+\hbox(7.5+2.5)x469.75499, glue set - 1.0
+.\hbox(0.0+0.0)x20.0
+.\tenrm [
+.\tenrm a
+.\tenrm n
+.\tenrm c
+.etc.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:145: Undefined control sequence.
+l.145 \node
+           [anchor=south,font=\tiny,align=center] at ($(cell13.north)+(0pt,-...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:145: Undefined control sequence.
+l.145 \node[anchor=south,font=\tiny
+                                   ,align=center] at ($(cell13.north)+(0pt,-...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:146: Undefined control sequence.
+l.146 \node
+           [circle,draw,font=\tiny,inner sep=1pt,fill=red!5] at ($(cell13.no...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:146: Undefined control sequence.
+l.146 \node[circle,draw,font=\tiny
+                                  ,inner sep=1pt,fill=red!5] at ($(cell13.no...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:146: \scriptfont 7 is undefined (character 5).
+l.146 ...(cell13.north)+(24.5pt,11pt)$) {$\tt v_5$
+                                                  };
+Somewhere in the math formula just ended, you used the
+stated character from an undefined font family. For example,
+plain TeX doesn't allow \it or \sl in subscripts. Proceed,
+and I'll try to forget that I needed that character.
+
+
+Overfull \hbox (55.36858pt too wide) in paragraph at lines 145--147
+[]\tenrm [anchor=south,font=,align=center] at ($(\teni cell\tenrm 13\teni :north\tenrm ) + (0\teni pt; \tensy ^^@\tenrm 2\teni pt\tenrm )$) \tentt pred\tenrm ; [cir-cle,draw,font=,inner sep=1pt,fill=red!5]|
+
+\hbox(7.5+2.5)x469.75499, glue set - 1.0
+.\hbox(0.0+0.0)x20.0
+.\tenrm [
+.\tenrm a
+.\tenrm n
+.\tenrm c
+.etc.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:150: Undefined control sequence.
+l.150 \node
+           [rounded corners,draw,name=cell231,minimum width=24pt, minimum he...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:151: Undefined control sequence.
+l.151 \node
+           [minimum width=8pt, minimum height=10pt,anchor=west,font=\tiny,in...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:151: Undefined control sequence.
+l.151 ...inimum height=10pt,anchor=west,font=\tiny
+                                                  ,inner sep=0pt,name=d1] at...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:153: Undefined control sequence.
+l.153 \node
+           [draw,minimum width=8pt, minimum height=10pt,anchor=north,font=\t...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:153: Undefined control sequence.
+l.153 ...nimum height=10pt,anchor=north,font=\tiny
+                                                  ,inner sep=0pt]at (cell231...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:153: Undefined control sequence.
+l.153 ...y,inner sep=0pt]at (cell231.north){\cross
+                                                  };
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:154: Undefined control sequence.
+l.154 \node
+           [draw,minimum width=8pt, minimum height=10pt,anchor=south,font=\t...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:154: Undefined control sequence.
+l.154 ...nimum height=10pt,anchor=south,font=\tiny
+                                                  ,inner sep=0pt]at (cell231...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:154: Undefined control sequence.
+l.154 ...ny,inner sep=0pt]at (cell231.south){\tick
+                                                  };
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:155: Undefined control sequence.
+l.155 \node
+           [name=succ231,circle,fill,minimum size=3pt,inner sep=0pt,outer se...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+Overfull \hbox (4.84096pt too wide) in paragraph at lines 150--156
+\tenrm (cell231.south); [name=succ231,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=0pt] at ($(\teni cell\tenrm 231\teni :east\tenrm ) +|
+
+\hbox(7.5+2.5)x469.75499, glue set - 1.0
+.\tenrm (
+.\tenrm c
+.\tenrm e
+.\tenrm l
+.\tenrm l
+.etc.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:157: Undefined control sequence.
+l.157 \node
+           [anchor=south,font=\tiny,align=center] at ($(cell231.south)+(0pt,...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:157: Undefined control sequence.
+l.157 \node[anchor=south,font=\tiny
+                                   ,align=center] at ($(cell231.south)+(0pt,...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:158: Undefined control sequence.
+l.158 \node
+           [anchor=south,font=\tiny,align=center] at ($(cell231.south)+(0pt,...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:158: Undefined control sequence.
+l.158 \node[anchor=south,font=\tiny
+                                   ,align=center] at ($(cell231.south)+(0pt,...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:158: \scriptfont 7 is undefined (character 1).
+l.158 ...l231.south)+(0pt,-20pt)$) {{$ \tt T, x_1$
+                                                  }};
+Somewhere in the math formula just ended, you used the
+stated character from an undefined font family. For example,
+plain TeX doesn't allow \it or \sl in subscripts. Proceed,
+and I'll try to forget that I needed that character.
+
+
+Overfull \hbox (14.21135pt too wide) in paragraph at lines 157--159
+[]\tenrm [anchor=south,font=,align=center] at ($(\teni cell\tenrm 231\teni :south\tenrm ) + (0\teni pt; \tensy ^^@\tenrm 13\teni pt\tenrm )$) $\tensy ;$\tenrm ; [an-chor=south,font=,align=center]|
+
+\hbox(7.5+2.5)x469.75499, glue set - 1.0
+.\hbox(0.0+0.0)x20.0
+.\tenrm [
+.\tenrm a
+.\tenrm n
+.\tenrm c
+.etc.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:161: Undefined control sequence.
+l.161 \node
+           [rounded corners,draw,name=cell232,minimum width=24pt, minimum he...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:162: Undefined control sequence.
+l.162 \node
+           [minimum width=8pt, minimum height=10pt,anchor=west,font=\tiny,in...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:162: Undefined control sequence.
+l.162 ...inimum height=10pt,anchor=west,font=\tiny
+                                                  ,inner sep=0pt,name=d1] at...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:164: Undefined control sequence.
+l.164 \node
+           [draw,minimum width=8pt, minimum height=10pt,anchor=north,font=\t...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:164: Undefined control sequence.
+l.164 ...nimum height=10pt,anchor=north,font=\tiny
+                                                  ,inner sep=0pt]at (cell232...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:164: Undefined control sequence.
+l.164 ...y,inner sep=0pt]at (cell232.north){\cross
+                                                  };
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:165: Undefined control sequence.
+l.165 \node
+           [draw,minimum width=8pt, minimum height=10pt,anchor=south,font=\t...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:165: Undefined control sequence.
+l.165 ...nimum height=10pt,anchor=south,font=\tiny
+                                                  ,inner sep=0pt]at (cell232...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:165: Undefined control sequence.
+l.165 ...ny,inner sep=0pt]at (cell232.south){\tick
+                                                  };
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:166: Undefined control sequence.
+l.166 \node
+           [name=succ232,circle,fill,minimum size=3pt,inner sep=0pt,outer se...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:167: Undefined control sequence.
+l.167 \node
+           [anchor=south,font=\tiny,align=center] at ($(cell232.south)+(0pt,...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:167: Undefined control sequence.
+l.167 \node[anchor=south,font=\tiny
+                                   ,align=center] at ($(cell232.south)+(0pt,...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:168: Undefined control sequence.
+l.168 \node
+           [anchor=south,font=\tiny,align=center] at ($(cell232.south)+(0pt,...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:168: Undefined control sequence.
+l.168 \node[anchor=south,font=\tiny
+                                   ,align=center] at ($(cell232.south)+(0pt,...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:168: \scriptfont 7 is undefined (character 1).
+l.168 ...ll232.south)+(0pt,-20pt)$) {{$\tt T, x_1$
+                                                  }};
+Somewhere in the math formula just ended, you used the
+stated character from an undefined font family. For example,
+plain TeX doesn't allow \it or \sl in subscripts. Proceed,
+and I'll try to forget that I needed that character.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:169: Undefined control sequence.
+l.169 \node
+           [circle,draw,font=\tiny,inner sep=1pt,fill=red!5] at ($(cell232.n...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:169: Undefined control sequence.
+l.169 \node[circle,draw,font=\tiny
+                                  ,inner sep=1pt,fill=red!5] at ($(cell232.n...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:169: \scriptfont 7 is undefined (character 6).
+l.169 ...cell232.north)+(24.5pt,11pt)$) {$\tt v_6$
+                                                  };
+Somewhere in the math formula just ended, you used the
+stated character from an undefined font family. For example,
+plain TeX doesn't allow \it or \sl in subscripts. Proceed,
+and I'll try to forget that I needed that character.
+
+
+Overfull \hbox (4.84096pt too wide) in paragraph at lines 161--170
+\tenrm (cell232.south); [name=succ232,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=0pt] at ($(\teni cell\tenrm 232\teni :east\tenrm ) +|
+
+\hbox(7.5+2.5)x469.75499, glue set - 1.0
+.\tenrm (
+.\tenrm c
+.\tenrm e
+.\tenrm l
+.\tenrm l
+.etc.
+
+
+Overfull \hbox (52.97762pt too wide) in paragraph at lines 161--170
+\tenrm (\tensy ^^@\tenrm 4\teni pt; \tenrm 0\teni pt\tenrm )$) ; [an-chor=south,font=,align=center] at ($(\teni cell\tenrm 232\teni :south\tenrm ) + (0\teni pt; \tensy ^^@\tenrm 13\teni pt\tenrm )$) $\tensy ;$\tenrm ; [an-chor=south,font=,align=center]|
+
+\hbox(7.5+2.5)x469.75499, glue set - 1.0
+.\tenrm (
+.\tensy ^^@
+.\tenrm 4
+.\teni p
+.\teni t
+.etc.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:171: Undefined control sequence.
+l.171 \draw
+           [->] (succ13) -- (cell231);
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:174: Undefined control sequence.
+l.174 \node
+           [rounded corners,draw,name=cell331,minimum width=24pt, minimum he...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:175: Undefined control sequence.
+l.175 \node
+           [minimum width=8pt, minimum height=10pt,anchor=west,font=\tiny,in...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:175: Undefined control sequence.
+l.175 ...inimum height=10pt,anchor=west,font=\tiny
+                                                  ,inner sep=0pt,name=d1] at...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:177: Undefined control sequence.
+l.177 \node
+           [draw,minimum width=8pt, minimum height=10pt,anchor=north,font=\t...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:177: Undefined control sequence.
+l.177 ...nimum height=10pt,anchor=north,font=\tiny
+                                                  ,inner sep=0pt]at (cell331...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:177: Undefined control sequence.
+l.177 ...y,inner sep=0pt]at (cell331.north){\cross
+                                                  };
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:178: Undefined control sequence.
+l.178 \node
+           [draw,minimum width=8pt, minimum height=10pt,anchor=south,font=\t...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:178: Undefined control sequence.
+l.178 ...nimum height=10pt,anchor=south,font=\tiny
+                                                  ,inner sep=0pt]at (cell331...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:178: Undefined control sequence.
+l.178 ...ny,inner sep=0pt]at (cell331.south){\tick
+                                                  };
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:179: Undefined control sequence.
+l.179 \node
+           [name=succ331,circle,fill,minimum size=3pt,inner sep=0pt,outer se...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+Overfull \hbox (4.84096pt too wide) in paragraph at lines 174--180
+\tenrm (cell331.south); [name=succ331,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=0pt] at ($(\teni cell\tenrm 331\teni :east\tenrm ) +|
+
+\hbox(7.5+2.5)x469.75499, glue set - 1.0
+.\tenrm (
+.\tenrm c
+.\tenrm e
+.\tenrm l
+.\tenrm l
+.etc.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:182: Undefined control sequence.
+l.182 \node
+           [anchor=south,font=\tiny,align=center] at ($(cell331.south)+(0pt,...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:182: Undefined control sequence.
+l.182 \node[anchor=south,font=\tiny
+                                   ,align=center] at ($(cell331.south)+(0pt,...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:183: Undefined control sequence.
+l.183 \node
+           [anchor=south,font=\tiny,align=center] at ($(cell331.south)+(0pt,...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:183: Undefined control sequence.
+l.183 \node[anchor=south,font=\tiny
+                                   ,align=center] at ($(cell331.south)+(0pt,...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:183: \scriptfont 7 is undefined (character 1).
+l.183 ...ell331.south)+(0pt,-20pt)$) {{$\tt T,x_1$
+                                                  }};
+Somewhere in the math formula just ended, you used the
+stated character from an undefined font family. For example,
+plain TeX doesn't allow \it or \sl in subscripts. Proceed,
+and I'll try to forget that I needed that character.
+
+
+Overfull \hbox (14.21135pt too wide) in paragraph at lines 182--184
+[]\tenrm [anchor=south,font=,align=center] at ($(\teni cell\tenrm 331\teni :south\tenrm ) + (0\teni pt; \tensy ^^@\tenrm 13\teni pt\tenrm )$) $\tensy ;$\tenrm ; [an-chor=south,font=,align=center]|
+
+\hbox(7.5+2.5)x469.75499, glue set - 1.0
+.\hbox(0.0+0.0)x20.0
+.\tenrm [
+.\tenrm a
+.\tenrm n
+.\tenrm c
+.etc.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:185: Undefined control sequence.
+l.185 \node
+           [rounded corners,draw,name=cell332,minimum width=24pt, minimum he...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:186: Undefined control sequence.
+l.186 \node
+           [minimum width=8pt, minimum height=10pt,anchor=west,font=\tiny,in...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:186: Undefined control sequence.
+l.186 ...inimum height=10pt,anchor=west,font=\tiny
+                                                  ,inner sep=0pt,name=d1] at...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:188: Undefined control sequence.
+l.188 \node
+           [draw,minimum width=8pt, minimum height=10pt,anchor=north,font=\t...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:188: Undefined control sequence.
+l.188 ...nimum height=10pt,anchor=north,font=\tiny
+                                                  ,inner sep=0pt]at (cell332...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:188: Undefined control sequence.
+l.188 ...y,inner sep=0pt]at (cell332.north){\cross
+                                                  };
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:189: Undefined control sequence.
+l.189 \node
+           [draw,minimum width=8pt, minimum height=10pt,anchor=south,font=\t...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:189: Undefined control sequence.
+l.189 ...nimum height=10pt,anchor=south,font=\tiny
+                                                  ,inner sep=0pt]at (cell332...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:189: Undefined control sequence.
+l.189 ...ny,inner sep=0pt]at (cell332.south){\tick
+                                                  };
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:190: Undefined control sequence.
+l.190 \node
+           [name=succ332,circle,fill,minimum size=3pt,inner sep=0pt,outer se...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+Overfull \hbox (4.84096pt too wide) in paragraph at lines 185--191
+\tenrm (cell332.south); [name=succ332,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=0pt] at ($(\teni cell\tenrm 332\teni :east\tenrm ) +|
+
+\hbox(7.5+2.5)x469.75499, glue set - 1.0
+.\tenrm (
+.\tenrm c
+.\tenrm e
+.\tenrm l
+.\tenrm l
+.etc.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:192: Undefined control sequence.
+l.192 \node
+           [anchor=south,font=\tiny,align=center] at ($(cell332.south)+(0pt,...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:192: Undefined control sequence.
+l.192 \node[anchor=south,font=\tiny
+                                   ,align=center] at ($(cell332.south)+(0pt,...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:193: Undefined control sequence.
+l.193 \node
+           [anchor=south,font=\tiny,align=center] at ($(cell332.south)+(0pt,...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:193: Undefined control sequence.
+l.193 \node[anchor=south,font=\tiny
+                                   ,align=center] at ($(cell332.south)+(0pt,...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:193: \scriptfont 7 is undefined (character 1).
+l.193 ...ell332.south)+(0pt,-20pt)$) {{$\tt T,x_1$
+                                                  }};
+Somewhere in the math formula just ended, you used the
+stated character from an undefined font family. For example,
+plain TeX doesn't allow \it or \sl in subscripts. Proceed,
+and I'll try to forget that I needed that character.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:194: Undefined control sequence.
+l.194 \node
+           [circle,draw,font=\tiny,inner sep=1pt,fill=red!5] at ($(cell332.n...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:194: Undefined control sequence.
+l.194 \node[circle,draw,font=\tiny
+                                  ,inner sep=1pt,fill=red!5] at ($(cell332.n...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:194: \scriptfont 7 is undefined (character 7).
+l.194 ...cell332.north)+(24.5pt,11pt)$) {$\tt v_7$
+                                                  };
+Somewhere in the math formula just ended, you used the
+stated character from an undefined font family. For example,
+plain TeX doesn't allow \it or \sl in subscripts. Proceed,
+and I'll try to forget that I needed that character.
+
+
+Overfull \hbox (14.21135pt too wide) in paragraph at lines 192--195
+[]\tenrm [anchor=south,font=,align=center] at ($(\teni cell\tenrm 332\teni :south\tenrm ) + (0\teni pt; \tensy ^^@\tenrm 13\teni pt\tenrm )$) $\tensy ;$\tenrm ; [an-chor=south,font=,align=center]|
+
+\hbox(7.5+2.5)x469.75499, glue set - 1.0
+.\hbox(0.0+0.0)x20.0
+.\tenrm [
+.\tenrm a
+.\tenrm n
+.\tenrm c
+.etc.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:197: Undefined control sequence.
+l.197 \node
+           [rounded corners,draw,name=cell431,minimum width=24pt, minimum he...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:198: Undefined control sequence.
+l.198 \node
+           [minimum width=8pt, minimum height=10pt,anchor=west,font=\tiny,in...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:198: Undefined control sequence.
+l.198 ...inimum height=10pt,anchor=west,font=\tiny
+                                                  ,inner sep=0pt,name=d1] at...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:199: \scriptfont 7 is undefined (character 1).
+l.199 {$\tt x_1$
+                };
+Somewhere in the math formula just ended, you used the
+stated character from an undefined font family. For example,
+plain TeX doesn't allow \it or \sl in subscripts. Proceed,
+and I'll try to forget that I needed that character.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:200: Undefined control sequence.
+l.200 \node
+           [draw,minimum width=8pt, minimum height=10pt,anchor=north,font=\t...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:200: Undefined control sequence.
+l.200 ...nimum height=10pt,anchor=north,font=\tiny
+                                                  ,inner sep=0pt]at (cell431...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:200: Undefined control sequence.
+l.200 ...y,inner sep=0pt]at (cell431.north){\cross
+                                                  };
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:201: Undefined control sequence.
+l.201 \node
+           [draw,minimum width=8pt, minimum height=10pt,anchor=south,font=\t...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:201: Undefined control sequence.
+l.201 ...nimum height=10pt,anchor=south,font=\tiny
+                                                  ,inner sep=0pt]at (cell431...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:201: Undefined control sequence.
+l.201 ...y,inner sep=0pt]at (cell431.south){\cross
+                                                  };
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:202: Undefined control sequence.
+l.202 \node
+           [name=succ431,circle,fill,minimum size=3pt,inner sep=0pt,outer se...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:203: Undefined control sequence.
+l.203 \node
+           [anchor=south,font=\tiny,align=center] at ($(cell431.south)+(0pt,...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:203: Undefined control sequence.
+l.203 \node[anchor=south,font=\tiny
+                                   ,align=center] at ($(cell431.south)+(0pt,...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:203: \scriptfont 7 is undefined (character 1).
+l.203 ...ell431.south)+(0pt,-13pt)$) {{$\tt H,x_1$
+                                                  }};
+Somewhere in the math formula just ended, you used the
+stated character from an undefined font family. For example,
+plain TeX doesn't allow \it or \sl in subscripts. Proceed,
+and I'll try to forget that I needed that character.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:204: Undefined control sequence.
+l.204 \node
+           [anchor=south,font=\tiny,align=center] at ($(cell431.south)+(0pt,...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:204: Undefined control sequence.
+l.204 \node[anchor=south,font=\tiny
+                                   ,align=center] at ($(cell431.south)+(0pt,...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:204: \scriptfont 7 is undefined (character 1).
+l.204 ...ell431.south)+(0pt,-20pt)$) {{$\tt T,x_1$
+                                                  }};
+Somewhere in the math formula just ended, you used the
+stated character from an undefined font family. For example,
+plain TeX doesn't allow \it or \sl in subscripts. Proceed,
+and I'll try to forget that I needed that character.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:205: Undefined control sequence.
+l.205 \node
+           [anchor=south,font=\tiny,align=center] at ($(cell431.north)+(0pt,...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:205: Undefined control sequence.
+l.205 \node[anchor=south,font=\tiny
+                                   ,align=center] at ($(cell431.north)+(0pt,...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:206: Undefined control sequence.
+l.206 \draw
+           [->] (succ232) -- (cell331);
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:207: Undefined control sequence.
+l.207 \draw
+           [->] (succ332) -- (cell431);
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+Overfull \hbox (4.84096pt too wide) in paragraph at lines 197--208
+\tenrm (cell431.south); [name=succ431,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=0pt] at ($(\teni cell\tenrm 431\teni :east\tenrm ) +|
+
+\hbox(7.5+2.5)x469.75499, glue set - 1.0
+.\tenrm (
+.\tenrm c
+.\tenrm e
+.\tenrm l
+.\tenrm l
+.etc.
+
+
+Overfull \hbox (63.42192pt too wide) in paragraph at lines 197--208
+\tenrm (\tensy ^^@\tenrm 4\teni pt; \tenrm 0\teni pt\tenrm )$) ; [an-chor=south,font=,align=center] at ($(\teni cell\tenrm 431\teni :south\tenrm ) + (0\teni pt; \tensy ^^@\tenrm 13\teni pt\tenrm )$) $\tentt H\teni ; \tentt x[]$\tenrm ; [an-chor=south,font=,align=center]|
+
+\hbox(7.5+2.5)x469.75499, glue set - 1.0
+.\tenrm (
+.\tensy ^^@
+.\tenrm 4
+.\teni p
+.\teni t
+.etc.
+
+[2]
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:211: Undefined control sequence.
+l.211 \node
+           [circle,draw,font=\tiny,inner sep=1pt,fill=red!5] at ($(cell0.eas...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:211: Undefined control sequence.
+l.211 \node[circle,draw,font=\tiny
+                                  ,inner sep=1pt,fill=red!5] at ($(cell0.eas...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:211: \scriptfont 7 is undefined (character 1).
+l.211 ...t ($(cell0.east)+(0pt,-80pt)$) {$\tt v_1$
+                                                  };
+Somewhere in the math formula just ended, you used the
+stated character from an undefined font family. For example,
+plain TeX doesn't allow \it or \sl in subscripts. Proceed,
+and I'll try to forget that I needed that character.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:212: Undefined control sequence.
+l.212 \node
+           [font=\tiny,inner sep=1pt] at ($(cell0.east)+(15pt,-80pt)$) {$\ho...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:212: Undefined control sequence.
+l.212 \node[font=\tiny
+                      ,inner sep=1pt] at ($(cell0.east)+(15pt,-80pt)$) {$\ho...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:213: Undefined control sequence.
+l.213 \node
+           [circle,draw,font=\tiny,inner sep=1pt,fill=red!5] at ($(cell0.eas...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:213: Undefined control sequence.
+l.213 \node[circle,draw,font=\tiny
+                                  ,inner sep=1pt,fill=red!5] at ($(cell0.eas...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:213: \scriptfont 7 is undefined (character 2).
+l.213 ... ($(cell0.east)+(30pt,-80pt)$) {$\tt v_2$
+                                                  };
+Somewhere in the math formula just ended, you used the
+stated character from an undefined font family. For example,
+plain TeX doesn't allow \it or \sl in subscripts. Proceed,
+and I'll try to forget that I needed that character.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:216: Undefined control sequence.
+l.216 \node
+           [circle,draw,font=\tiny,inner sep=1pt,fill=red!5] at ($(cell0.eas...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:216: Undefined control sequence.
+l.216 \node[circle,draw,font=\tiny
+                                  ,inner sep=1pt,fill=red!5] at ($(cell0.eas...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:216: \scriptfont 7 is undefined (character 2).
+l.216 ... ($(cell0.east)+(60pt,-80pt)$) {$\tt v_2$
+                                                  };
+Somewhere in the math formula just ended, you used the
+stated character from an undefined font family. For example,
+plain TeX doesn't allow \it or \sl in subscripts. Proceed,
+and I'll try to forget that I needed that character.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:217: Undefined control sequence.
+l.217 \node
+           [font=\tiny,inner sep=1pt] at ($(cell0.east)+(75pt,-80pt)$) {$\le...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:217: Undefined control sequence.
+l.217 \node[font=\tiny
+                      ,inner sep=1pt] at ($(cell0.east)+(75pt,-80pt)$) {$\le...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:218: Undefined control sequence.
+l.218 \node
+           [circle,draw,font=\tiny,inner sep=1pt,fill=red!5] at ($(cell0.eas...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:218: Undefined control sequence.
+l.218 \node[circle,draw,font=\tiny
+                                  ,inner sep=1pt,fill=red!5] at ($(cell0.eas...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:218: \scriptfont 7 is undefined (character 7).
+l.218 ... ($(cell0.east)+(90pt,-80pt)$) {$\tt v_7$
+                                                  };
+Somewhere in the math formula just ended, you used the
+stated character from an undefined font family. For example,
+plain TeX doesn't allow \it or \sl in subscripts. Proceed,
+and I'll try to forget that I needed that character.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:221: Undefined control sequence.
+l.221 \node
+           [circle,draw,font=\tiny,inner sep=1pt,fill=red!5] at ($(cell0.eas...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:221: Undefined control sequence.
+l.221 \node[circle,draw,font=\tiny
+                                  ,inner sep=1pt,fill=red!5] at ($(cell0.eas...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:221: \scriptfont 7 is undefined (character 1).
+l.221 ...($(cell0.east)+(129pt,-80pt)$) {$\tt v_1$
+                                                  };
+Somewhere in the math formula just ended, you used the
+stated character from an undefined font family. For example,
+plain TeX doesn't allow \it or \sl in subscripts. Proceed,
+and I'll try to forget that I needed that character.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:222: Undefined control sequence.
+l.222 \node
+           [font=\tiny,inner sep=1pt] at ($(cell0.east)+(135pt,-80pt)$) {$\o...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:222: Undefined control sequence.
+l.222 \node[font=\tiny
+                      ,inner sep=1pt] at ($(cell0.east)+(135pt,-80pt)$) {$\o...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:222: Undefined control sequence.
+<recently read> \overset 
+                         
+l.222 ...($(cell0.east)+(135pt,-80pt)$) {$\overset
+                                                  {+}{\hookrightarrow_S}$};
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:223: Undefined control sequence.
+l.223 \node
+           [circle,draw,font=\tiny,inner sep=1pt,fill=red!5] at ($(cell0.eas...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:223: Undefined control sequence.
+l.223 \node[circle,draw,font=\tiny
+                                  ,inner sep=1pt,fill=red!5] at ($(cell0.eas...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:223: \scriptfont 7 is undefined (character 3).
+l.223 ...($(cell0.east)+(150pt,-80pt)$) {$\tt v_3$
+                                                  };
+Somewhere in the math formula just ended, you used the
+stated character from an undefined font family. For example,
+plain TeX doesn't allow \it or \sl in subscripts. Proceed,
+and I'll try to forget that I needed that character.
+
+
+Overfull \hbox (16.92804pt too wide) in paragraph at lines 221--224
+\tenrm ($(\teni cell\tenrm 0\teni :east\tenrm ) + (135\teni pt; \tensy ^^@\tenrm 80\teni pt\tenrm )$) $[][]$; [cir-cle,draw,font=,inner sep=1pt,fill=red!5] at ($(\teni cell\tenrm 0\teni :east\tenrm ) + (150\teni pt; \tensy ^^@\tenrm 80\teni pt\tenrm )$)|
+
+\hbox(7.5+2.5)x469.75499, glue set - 1.0
+.\tenrm (
+.\mathon
+.\tenrm (
+.\teni c
+.\teni e
+.etc.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:226: Undefined control sequence.
+l.226 \node
+           [circle,draw,font=\tiny,inner sep=1pt,fill=red!5] at ($(cell0.eas...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:226: Undefined control sequence.
+l.226 \node[circle,draw,font=\tiny
+                                  ,inner sep=1pt,fill=red!5] at ($(cell0.eas...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:226: \scriptfont 7 is undefined (character 1).
+l.226 ...($(cell0.east)+(180pt,-80pt)$) {$\tt v_1$
+                                                  };
+Somewhere in the math formula just ended, you used the
+stated character from an undefined font family. For example,
+plain TeX doesn't allow \it or \sl in subscripts. Proceed,
+and I'll try to forget that I needed that character.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:227: Undefined control sequence.
+l.227 \node
+           [font=\tiny,inner sep=1pt] at ($(cell0.east)+(195pt,-80pt)$) {${\...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:227: Undefined control sequence.
+l.227 \node[font=\tiny
+                      ,inner sep=1pt] at ($(cell0.east)+(195pt,-80pt)$) {${\...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:227: Undefined control sequence.
+l.227 ...$(cell0.east)+(195pt,-80pt)$) {${\overset
+                                                  {++}{\leftrightarrow}}_S$};
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:228: Undefined control sequence.
+l.228 \node
+           [circle,draw,font=\tiny,inner sep=1pt,fill=red!5] at ($(cell0.eas...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:228: Undefined control sequence.
+l.228 \node[circle,draw,font=\tiny
+                                  ,inner sep=1pt,fill=red!5] at ($(cell0.eas...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:228: \scriptfont 7 is undefined (character 5).
+l.228 ...($(cell0.east)+(210pt,-80pt)$) {$\tt v_5$
+                                                  };
+Somewhere in the math formula just ended, you used the
+stated character from an undefined font family. For example,
+plain TeX doesn't allow \it or \sl in subscripts. Proceed,
+and I'll try to forget that I needed that character.
+
+
+Overfull \hbox (23.59468pt too wide) in paragraph at lines 226--229
+\tenrm ($(\teni cell\tenrm 0\teni :east\tenrm ) + (195\teni pt; \tensy ^^@\tenrm 80\teni pt\tenrm )$) $[][]$; [cir-cle,draw,font=,inner sep=1pt,fill=red!5] at ($(\teni cell\tenrm 0\teni :east\tenrm ) + (210\teni pt; \tensy ^^@\tenrm 80\teni pt\tenrm )$)|
+
+\hbox(7.5+2.5)x469.75499, glue set - 1.0
+.\tenrm (
+.\mathon
+.\tenrm (
+.\teni c
+.\teni e
+.etc.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:231: Undefined control sequence.
+l.231 \node
+           [circle,draw,font=\tiny,inner sep=1pt,fill=red!5] at ($(cell0.eas...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:231: Undefined control sequence.
+l.231 \node[circle,draw,font=\tiny
+                                  ,inner sep=1pt,fill=red!5] at ($(cell0.eas...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:231: \scriptfont 7 is undefined (character 2).
+l.231 ...($(cell0.east)+(240pt,-80pt)$) {$\tt v_2$
+                                                  };
+Somewhere in the math formula just ended, you used the
+stated character from an undefined font family. For example,
+plain TeX doesn't allow \it or \sl in subscripts. Proceed,
+and I'll try to forget that I needed that character.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:232: Undefined control sequence.
+l.232 \node
+           [font=\tiny,inner sep=1pt] at ($(cell0.east)+(255pt,-80pt)$) {${\...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:232: Undefined control sequence.
+l.232 \node[font=\tiny
+                      ,inner sep=1pt] at ($(cell0.east)+(255pt,-80pt)$) {${\...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:232: Undefined control sequence.
+l.232 ...$(cell0.east)+(255pt,-80pt)$) {${\overset
+                                                  {*+}{\leftrightarrow}}_S$};
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:233: Undefined control sequence.
+l.233 \node
+           [circle,draw,font=\tiny,inner sep=1pt,fill=red!5] at ($(cell0.eas...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:233: Undefined control sequence.
+l.233 \node[circle,draw,font=\tiny
+                                  ,inner sep=1pt,fill=red!5] at ($(cell0.eas...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:233: \scriptfont 7 is undefined (character 5).
+l.233 ...($(cell0.east)+(270pt,-80pt)$) {$\tt v_5$
+                                                  };
+Somewhere in the math formula just ended, you used the
+stated character from an undefined font family. For example,
+plain TeX doesn't allow \it or \sl in subscripts. Proceed,
+and I'll try to forget that I needed that character.
+
+
+Overfull \hbox (20.8169pt too wide) in paragraph at lines 231--234
+\tenrm ($(\teni cell\tenrm 0\teni :east\tenrm ) + (255\teni pt; \tensy ^^@\tenrm 80\teni pt\tenrm )$) $[][]$; [cir-cle,draw,font=,inner sep=1pt,fill=red!5] at ($(\teni cell\tenrm 0\teni :east\tenrm ) + (270\teni pt; \tensy ^^@\tenrm 80\teni pt\tenrm )$)|
+
+\hbox(7.5+2.5)x469.75499, glue set - 1.0
+.\tenrm (
+.\mathon
+.\tenrm (
+.\teni c
+.\teni e
+.etc.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:236: Undefined control sequence.
+l.236 \node
+           [circle,draw,font=\tiny,inner sep=1pt,fill=red!5] at ($(cell0.eas...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:236: Undefined control sequence.
+l.236 \node[circle,draw,font=\tiny
+                                  ,inner sep=1pt,fill=red!5] at ($(cell0.eas...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:236: \scriptfont 7 is undefined (character 1).
+l.236 ...($(cell0.east)+(300pt,-80pt)$) {$\tt v_1$
+                                                  };
+Somewhere in the math formula just ended, you used the
+stated character from an undefined font family. For example,
+plain TeX doesn't allow \it or \sl in subscripts. Proceed,
+and I'll try to forget that I needed that character.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:237: Undefined control sequence.
+l.237 \node
+           [font=\tiny,inner sep=1pt] at ($(cell0.east)+(315pt,-80pt)$) {${\...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:237: Undefined control sequence.
+l.237 \node[font=\tiny
+                      ,inner sep=1pt] at ($(cell0.east)+(315pt,-80pt)$) {${\...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:237: Undefined control sequence.
+l.237 ...$(cell0.east)+(315pt,-80pt)$) {${\overset
+                                                  {+o}{\leftrightarrow}}_S$};
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:238: Undefined control sequence.
+l.238 \node
+           [circle,draw,font=\tiny,inner sep=1pt,fill=red!5] at ($(cell0.eas...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:238: Undefined control sequence.
+l.238 \node[circle,draw,font=\tiny
+                                  ,inner sep=1pt,fill=red!5] at ($(cell0.eas...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/viewrelations.tex:238: \scriptfont 7 is undefined (character 7).
+l.238 ...($(cell0.east)+(330pt,-80pt)$) {$\tt v_7$
+                                                  };
+Somewhere in the math formula just ended, you used the
+stated character from an undefined font family. For example,
+plain TeX doesn't allow \it or \sl in subscripts. Proceed,
+and I'll try to forget that I needed that character.
+
+
+Overfull \hbox (20.66411pt too wide) in paragraph at lines 236--239
+\tenrm ($(\teni cell\tenrm 0\teni :east\tenrm ) + (315\teni pt; \tensy ^^@\tenrm 80\teni pt\tenrm )$) $[][]$; [cir-cle,draw,font=,inner sep=1pt,fill=red!5] at ($(\teni cell\tenrm 0\teni :east\tenrm ) + (330\teni pt; \tensy ^^@\tenrm 80\teni pt\tenrm )$)|
+
+\hbox(7.5+2.5)x469.75499, glue set - 1.0
+.\tenrm (
+.\mathon
+.\tenrm (
+.\teni c
+.\teni e
+.etc.
+
+[3] )</usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
+Output written on /Users/trinhcongquy/Desktop/view-abstraction/.texpadtmp/viewrelations.pdf (3 pages, 59468 bytes).
+PDF statistics:
+ 34 PDF objects out of 1000 (max. 8388607)
+ 23 compressed objects within 1 object stream
+ 0 named destinations out of 1000 (max. 500000)
+ 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+
