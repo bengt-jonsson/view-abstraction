@@ -117,11 +117,16 @@
 
 
 
-\newcommand\return[3]{\left(#1,#2,#3\right)\uparrow}
-\newcommand\call[3]{\left(#1,#2,#3\right)\downarrow}
-\newcommand\returntwo[2]{#1\left(#2\right)\uparrow}
-\newcommand\calltwo[2]{#1\left(#2\right)\downarrow}
-\newcommand\eid{\tt eid}
+%% \newcommand\return[3]{\left(#1,#2,#3\right)\uparrow}
+%% \newcommand\call[3]{\left(#1,#2,#3\right)\downarrow}
+\newcommand\return[3]{\mathtt{ret}_{#1}\; #2\left(#3\right)}
+\newcommand\call[3]{\mathtt{call}_{#1}\; #2\left(#3\right)}
+%% \newcommand\returntwo[2]{#1\left(#2\right)\uparrow}
+%% \newcommand\calltwo[2]{#1\left(#2\right)\downarrow}
+\newcommand\returntwo[2]{\mathtt{ret}\; #1\left(#2\right)}
+\newcommand\calltwo[2]{\mathtt{call}\; #1\left(#2\right)}
+%% \newcommand\eid{\tt eid}
+\newcommand\eid{\tt o}
 \newcommand\history{h}
 \newcommand\histories{H}
 \newcommand\historyof[1]{{\mathcal H}\left(#1\right)}

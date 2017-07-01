@@ -1,23 +1,35 @@
 \section{Concurrent Data Structure Implementations}
 \label{programs:section}
 
-In this section, we introduce our representation of implementations of
-concurrent data structures, and of their corresponding correctness criteria.
+In this section, we introduce our representation of
+concurrent data structure implementations, we define the correctness criterion of
+linearizability, we introduce observers and how to use them for specifying
+linearizability.
 
-\subsection{Data Structures}
+\subsection{Concurrent Data Structure Implementations}
+
+We begin by introducing (sequential) data structures.
 A {\it data structure} $\dstruct$ is a pair
 $\tuple{\ddomain,\malphabet}$,
-where $\ddomain$ is the {\it data domain} and 
-$\malphabet$ is an alphabet of method names.
+where $\ddomain$ is an infinite {\it data domain} and 
+$\malphabet$ is an alphabet of {\em method names}.
+%
+We assume w.l.o.g. that the infinite data domain $\ddomain$ is given by the set 
+$\intgrs$ of integers.
 %
 An {\it operation} 
 %\todo{I have changed {\it event} to {\it operation.}}
 $\op$ is of the form
 $\mname(\indata,\outdata)$ where 
 $\mname\in\malphabet$ is a method name and 
-$\indata,\outdata\in\ddomain$ are the {\it input} resp.\ {\it output}
-data values.
+$\indata$ are the {\it input} resp.\ {\it output} values, each of which
+is either in $\intgrs$ or in some fixed finite domain (such as the set of
+booleans).
 %
+For some method names, the input or output value is absent from the operation.
+\todo[inline]{Here, we should give an example of a stack trace. And maybe
+omit the rest of this subsubsection}
+
 A {\it trace} of $\dstruct$ is a sequence of operations.
 The standard (sequential) semantics of a data structure $\dstruct$ is provided by
 a set $\denotationof\dstruct$ of allowed traces,
@@ -48,9 +60,12 @@ for $2$ in the set.
 %% \begin{wrapfigure}{R}{6cm}
 %% \center 
 
+\todo[inline]{Bouajjani et al. use {\em method events} instead of {\em operation}}
 
-\subsection{Concurrent Data Structure Implementations}
-A (concurrent) implementation of a data structure assigns, to each
+
+
+
+A {\em concurrent data structure implementation} assigns, to each
 method name, a method which performs operations
 %% In this section, we introduce programs that consist
 %% of arbitrary numbers of concurrently executing threads
@@ -71,22 +86,23 @@ Each method declares local variables
 %
 Variables are either pointer variables
 (to heap cells), 
-or data variables, assuming values from an infinite (ordered)
-domain,
-or from some finite set $\fset$ that includes the Boolean values $\boolset$.
+or data variables, assuming values from $\intgrs$
+%% an infinite (ordered) domain,
+or from some finite set $\fset$ that includes the Boolean values.
 %
-We assume w.l.o.g. that the infinite set is given by the set 
-$\intgrs$ of integers.
+%% We assume w.l.o.g. that the infinite set is given by the set 
+%% $\intgrs$ of integers.
 %
 The body is built in the standard way
 from atomic commands, using standard control
 flow constructs (sequential composition, selection, and loop constructs).
 %
-Each statement is equipped with a unique label.
+%% Each statement is equipped with a unique label.
 %
-We assume that the set of local variables include the parameter of the method
-in addition to the program counter {\tt pc} whose value is the label of the next
-statement to be executed.
+We assume that the set of local variables include the input
+parameter of the method
+in addition to the program counter {\tt pc}.
+%% whose value is the label of the next statement to be executed.
 %
 Method execution is terminated by executing a {\tt return} command,
 which may return a value.
@@ -99,7 +115,7 @@ We assume that all global variables are pointer variables.
 %
 Heap cells have a fixed set $\fieldset$ of fields, namely
 data fields that assume values in
-$\intgrs$ or $\fset$, and lock fields.
+$\intgrs$ or $\fset$, and possibly lock fields.
 Furthermore, each cell has one or several named pointer fields.
 For instance, in data structure implementations based on singly linked lists,
 each heap cell has a pointer field named {\tt next}, in implementations
@@ -124,12 +140,175 @@ If  equal, it assigns the value of
 otherwise, it leaves {\tt a} unchanged and returns {\tt false}. 
 %
 We assume a memory management mechanism, which automatically collects
-garbage, and also ensures that a new cell is fresh, i.e., has
-not been used before by the program; this avoids the so-called
+garbage, and ensures that a new cell is fresh, i.e., has
+not been used before; this avoids the so-called
 ABA problem (e.g.,~\cite{MS:QueueAlgorithms}).
 
+We define a {\em program} (over a concurrent data structure) to consist 
+of an arbitrary number of concurrently executing threads, each of which
+executes a method that performs an operation
+on the data structure. We assume that the data structure has been initialized
+by the {\tt init} method prior to the start of program execution.
 
-\subsection{Data Structure Correctness and Linearizability}
+\subsection{Formal Semantics}
+\label{semantics:section}
+Let us formalize the semantics of programs.
+Below, we assume a program $\prog$  with a set 
+$\glvarset$ of global variables,
+a data structure $\dstruct$ specified as an observer $\observer$.
+%
+%% We assume that each cell contains a set $\fieldset$ of fields
+%% where each field is either a lock or a data field.
+We assume that each thread $\thread$ executes one method
+denoted $\methodof\thread$.
+%% First, we define the state of the heap and the transition
+%% relation induced by a single thread.
+%% %
+%% From this we derive the semantics of the program and use it to
+%% define its history set.
+%% %
+%% We then define the semantics of observers.
+%% Finally, we define the product of the augmented program and the observer.
+%% This product will ensure that observer
+%% On this basis, we can formally state and prove the correctness of
+%% our approach, as Theorem~\ref{thm:soundness}.
+%% Finally, we introduce  the soundness theorem 
+%% which states that linearizability of the original program
+%% is implied by the fact that the monitor never enters
+%% its ``error'' state.
+
+For a function $\fun:A\mapsto B$ from a set $A$ to
+a set $B$, we use 
+$\fun[\aelem_1\assigned\belem_1,\ldots,\aelem_\nn\assigned\belem_\nn]$ 
+to denote the function
+$\fun'$ such that $\fun'(\aelem_\ii)=\belem_\ii$ and 
+$\fun'(\aelem)=\fun(\aelem)$ if 
+$\aelem\not\in\set{\aelem_1,\ldots,\aelem_\nn}$.
+%
+
+%
+
+
+\paragraph{Heaps.}
+A {\it heap (state)} is a tuple $\heap=\heaptuple$, where
+(i)
+$\cellset$ is a finite set of cells, including the two special cells
+$\nullconst$ and $\dangconst$ (dangling);
+%
+we define $\mcellset=\cellset\setminus\set{\nullconst,\dangconst}$,
+%
+(ii)
+for each pointer field $\pfield_i$ there is a total function
+$\pfield_i:\mcellset\to\cellset$
+that defines where that pointer field points,
+%% the next-pointer relation, i.e., $\priflesuccof{\cell}=\cell'$ means that cell $\cell$ points to $\cell'$,
+(iii)
+$\glval:\glvarset\to\cellset$ maps the global (pointer)
+variables to their values, and
+(iv)
+$\cellval:\cellset\times\fieldset\to\fset\cup\intgrs$
+maps data and lock fields of each cell to their values.
+%
+We let $\initheap$ denote the initial heap produced by the
+{\tt init} method.
+
+\paragraph{Threads.}
+A {\it local state} $\lstate$ of a thread $\thread$
+wrt.\ a heap $\heap$ defines 
+the values of its local variables, including the program counter
+{\tt pc} and the input parameter for the method executed by $\thread$.
+In addition, there is the special initial state $\idlestate$,
+and terminated state $\terminatedstate$.
+%
+%% A {\em projection} $\proj$ is a pair
+%% $\tuple{\lstate,\heap}$, where $\lstate$
+%% is a local state wrt.\  the heap $\heap$.
+%
+A thread $\thread$ induces a transition relation $\movesto\thread{}$
+on pairs $\tuple{\lstate,\heap}$ consisting of a local state
+$\lstate$ and a heap $\heap$, which
+has three types of transitions:
+%
+\begin{enumerate}
+\item
+$\tuple{\idlestate,\heap}
+\movesto\thread{{\call\thread\mname\indata}}
+\tuple{\initlstateof\thread,\heap}$ activates
+thread $\thread$ in a transition
+labeled by a call action with $\thread$ as the action identifier and
+$\mname=\methodof\thread$, taking $\thread$
+to an initial local state $\initlstateof\thread$
+where $\indata$ is the value of its input parameter,
+the value of {\tt pc} is the label of the first statement of the method, and
+the other local variables are undefined.
+\item
+$\tuple{\lstate,\heap}\movesto\thread{}\tuple{\lstate',\heap'}$
+denotes execution of method statements, which are unlabeled,
+%
+%% We write $\proj\movesto\thread\lbl\proj'$ 
+%% to denote that the statement labeled by $\lbl$ can be executed
+%% from $\proj$, yielding $\proj'$.
+%% Note that the next move of $\thread$ is uniquely determined
+%% by $\proj$, since $\thread$ cannot access
+%% the local states of other threads.
+%
+\item 
+$\tuple{\lstate,\heap}\movesto\thread{\return\thread\mname\outdata}
+\tuple{\terminatedstate,\heap}$ terminates
+thread $\thread$ through execution of its {\tt return} command, labeled
+by a return action with $\thread$ as action identifier,
+$\mname=\methodof\thread$, and $\outdata$
+as the returned value.
+\end{enumerate}
+
+
+\paragraph{Programs.}
+A {\it configuration} of a program
+$\prog$ is a tuple
+$\tuple{\athreads,\lstatemapping,\heap}$ where
+$\athreads$ is a set of threads,
+$\heap$ is a heap, and
+$\lstatemapping$
+%% is a {\it local state mapping} over $\athreads$ wrt.\ $\heap$ that
+maps each thread $\thread\in\athreads$ to its
+local state $\lstatemappingof\thread$ wrt.\ $\heap$.
+%
+%% We use $\confsetof\prog$ to denote the set of configurations
+%% of $\prog$.
+%
+The initial configuration
+%% $\initconfof\prog\in\confsetof\prog$ 
+$\initconfof\prog$ 
+is the pair
+$\tuple{\initlstatemapping,\initheap}$,
+where
+%% $\initheap$ is the initial heap, and
+$\initlstatemappingof\thread=\idlestate$ for each
+$\thread\in\athreads$,
+%% i.e.,
+%% $\prog$ starts its execution from a configuration with an initial
+%% heap, and with each thread in its initial local state.
+%
+A program $\prog$ induces a transition relation
+$\movesto\prog{}$ where each step corresponds to one move of a single thread.
+I.e., 
+there is a transition of form
+$\tuple{\athreads,\lstatemapping,\heap}
+\movesto\prog{\emptyword}
+\tuple{\athreads,\lstatemapping[\thread\leftarrow\lstate'],\heap'}$
+whenever the transition relation $\movesto\thread{}$ has a transition
+$\tuple{\lstate,\heap}\movesto\thread\lbl\tuple{\lstate',\heap'}$,
+where the label $\lbl$ is either a call or return action or the empty label.
+%
+Note that the only visible transitions are those
+corresponding to call and return actions.
+
+A {\it history} of $\prog$ is the sequence of call and return actions in
+some sequence of transitions of $\movesto\prog{}$ from the initial configuration.
+We define $\historyof\prog$ to be the set of histories of $\prog$.
+
+\todo[inline]{Now call and return actions are used before they are defined. Fix}
+\subsection{Linearizability}
 In a concurrent
 data structure implementation, an operation $\mname(\indata,\outdata)$
 gives rise to two {\it actions}, namely
@@ -138,14 +317,16 @@ a {\it return action} $\return\eid\mname\outdata$, where $\eid\in\nat$ is an
 {\it action identifier}.
 %
 A {\it history} $\history$ is a sequence of actions such that
-for each return action $\action_2$ in $\history$ there is a unique
-{\it matching}  call action $a_1$ where the action identifiers
-in $\action_1$ and $\action_2$ are identical and different from the action
-identifiers of all other actions in $\history$ and such that
-$\action_1$ occurs before $\action_2$ in $\history$.
+\begin{inparaenum}[(i)]
+\item
+  different occurrences of return actions have different action identifiers, and
+\item
+  for each return action $\action_2$ in $\history$ there is a unique
+{\it matching}  call action $a_1$ with the same action identifier and method name, which occurs before $\action_2$ in $\history$.
+\end{inparaenum}
 %
-A call action carries always the same method name as its matching return
-action.
+%% A call action carries always the same method name as its matching return
+%% action.
 A call action which does not match any return action in $\history$ is said
 to be {\em pending}.
 A history without pending call actions is said to be {\em complete}.
@@ -159,8 +340,7 @@ For action identifiers $\eid_1,\eid_2$, we write
 $\eid_1\occursbefore\history\eid_2$ to denote that
 the return action with identifier $\eid_1$ occurs before
 the call action with identifier $\eid_2$ in $\history$.
-We say that a history is {\it sequential} if
-it is of the form
+A history is {\it sequential} if it is of the form
 $\action_1\action'_1\action_2\action'_2\cdots\action_\nn\action'_\nn$
 %% where $\action'_\nn$ can be absent and
 where $\action'_\ii$ is the matching action of $\action_\ii$ 
@@ -185,7 +365,7 @@ and
 if $\eid_1\occursbefore{\history}\eid_2$
 for each pair of action identifiers $\eid_1$ and $\eid_2$.
 %
-We say that a sequential history $\history'$ is {\it valid} wrt.\ $\dstruct$ if
+A sequential history $\history'$ is {\it valid} wrt.\ $\dstruct$ if
 the corresponding trace is in $\denotationof{\dstruct}$.
 %
 We say that $\history$ is {\it linearizable} wrt.\ $\dstruct$ if there is
@@ -194,101 +374,80 @@ a linearization that is valid wrt.\ $\dstruct$.
 %
 A set $\histories$ of histories is {\it linearizable} wrt.\ $\dstruct$ if 
 all members of $\histories$ are  {\it linearizable} wrt.\ $\dstruct$.
+We say that a program $\prog$ is linearizable wrt.\ 
+$\dstruct$ if the set 
+$\historyof\prog$ is {\em linearizable} wrt.\ $\dstruct$.
 
-\subsection{Setting Up for Verification}
-We verify the correctness of a concurrent data structure implementation by
-verifying that any combination of method executions satisfies the
-appropriate correctness criterion, e.g., of linearizability.
-
-To this end, define a {\em program} to consist 
-of an arbitrary number of concurrently executing threads
-that access a concurrent data structure.
-%(Appendix~\ref{planguage:section} contains
-%the language syntax used in our tool).
-%
-Each thread executes a method that performs an operation
-on the data structure. We assume that the data structure has been initialized
-by the {\tt init} method prior to the start of program execution.
-
-To verify correctness of the data structure, we must verify that the
-sequence of call and return actions satisfy the criterion imposed by
-linearizability. Linearizability states that each operation on the data
-structure can be considered as being
-performed atomically at some point, called the {\em linearization point (LP)},
-between its invocation and return.
-It is difficult to use this definition of linearizability directly, therefore
-a number of techniques have been developed for reducing it to other criteria,
-whose verification is more tractable. The general pattern of these criteria
-is to check that for each program execution,
-the ordering of call and return actions, and possibly other statement
-executions in methods, satisfy certain criteria. For completeness, let us
-survey some of these techniques.
-
+\todo[inline]{Should we mention LP method:
 The most common technique is to annotate methods with LPs. More precisely,
 each method is instrumented to announce precisely when the linearization point
 occurs during each method invocation. In many cases, the linearization point
 can be associated with a particular statement in the method code (so called
 {\em fixed linearization points}). Linearizability can then be verified by
 checking that the occurrence of linearization points is allowed by the
-sequential semantics of the particular data structure that is implemented.
-There are also a number of
-algorithms for which the linearization point depends on the relative order of
-other method executions.
-\bjcom{Provide examples}
-For some of these algorithms, linearizability can be verified by checking
-that the relative ordering of call and return actions satisfy certain
-criteria. 
+sequential semantics of the particular data structure that is implemented.}
 
-\begin{figure}
-\center 
+%% \begin{figure}
+%% \center 
 
-\begin{tikzpicture}[]
+%% \begin{tikzpicture}[]
 
-\node(s0)[draw,line width=0.5pt,circle,text=black]
-{$s_0$};
+%% \node(s0)[draw,line width=0.5pt,circle,text=black]
+%% {$s_0$};
 
-\node(s1)[draw,line width=0.5pt,circle,text=black,anchor=center]
-at ($(s0.center)+(80pt,0pt)$) {$s_1$};
+%% \node(s1)[draw,line width=0.5pt,circle,text=black,anchor=center]
+%% at ($(s0.center)+(80pt,0pt)$) {$s_1$};
 
 
-\node(s2)[draw,line width=0.5pt,circle,text=black,scale=0.9,anchor=center ]
-at ($(s0.center)+(40pt,-61pt)$) {$s_2$};
+%% \node(s2)[draw,line width=0.5pt,circle,text=black,scale=0.9,anchor=center ]
+%% at ($(s0.center)+(40pt,-61pt)$) {$s_2$};
 
-\node[draw,line width=0.5pt,circle,text=black,anchor=center,minimum size=5mm]
-at ($(s0.center)+(40pt,-61pt)$) {};
+%% \node[draw,line width=0.5pt,circle,text=black,anchor=center,minimum size=5mm]
+%% at ($(s0.center)+(40pt,-61pt)$) {};
 
 
-\draw[->,>=stealth,out=45,in=135,line width=0.5pt] (s0) to 
-node[above=-1pt,pos=0.5] {\footnotesize${\tt add}(x,\true)$} 
-(s1);
+%% \draw[->,>=stealth,out=45,in=135,line width=0.5pt] (s0) to 
+%% node[above=-1pt,pos=0.5] {\footnotesize${\tt add}(x,\true)$} 
+%% (s1);
 
-\draw[->,>=stealth,out=225,in=315,line width=0.5pt] (s1) to node[above=0pt,pos=0.5] {\footnotesize${\tt rmv}(x,\true)$} 
-(s0);
+%% \draw[->,>=stealth,out=225,in=315,line width=0.5pt] (s1) to node[above=0pt,pos=0.5] {\footnotesize${\tt rmv}(x,\true)$} 
+%% (s0);
 
-\draw [->,>=stealth,thick,out=270,in=180,line width=0.5pt] (s0) 
-to 
-node[left,pos=0.2] {\footnotesize${\tt add}(x,\false)$} 
-node[left,pos=0.45] {\footnotesize${\tt rmv}(x,\true)$} 
-node[left,pos=0.8] {\footnotesize${\tt ctn}(x,\true)$} 
- (s2);
+%% \draw [->,>=stealth,thick,out=270,in=180,line width=0.5pt] (s0) 
+%% to 
+%% node[left,pos=0.2] {\footnotesize${\tt add}(x,\false)$} 
+%% node[left,pos=0.45] {\footnotesize${\tt rmv}(x,\true)$} 
+%% node[left,pos=0.8] {\footnotesize${\tt ctn}(x,\true)$} 
+%%  (s2);
 
-\draw [->,>=stealth,thick,out=270,in=0,line width=0.5pt] (s1) 
-to 
-node[right,pos=0.2] {\footnotesize${\tt add}(x,\true)$} 
-node[right,pos=0.45] {\footnotesize${\tt rmv}(x,\false)$} 
-node[right,pos=0.8] {\footnotesize${\tt ctn}(x,\false)$} 
- (s2);
+%% \draw [->,>=stealth,thick,out=270,in=0,line width=0.5pt] (s1) 
+%% to 
+%% node[right,pos=0.2] {\footnotesize${\tt add}(x,\true)$} 
+%% node[right,pos=0.45] {\footnotesize${\tt rmv}(x,\false)$} 
+%% node[right,pos=0.8] {\footnotesize${\tt ctn}(x,\false)$} 
+%%  (s2);
 
 
 
 
-\end{tikzpicture}
-\caption{Set observer.}
-\label{set:observer:fig}
-\end{figure}
+%% \end{tikzpicture}
+%% \caption{Set observer.}
+%% \label{set:observer:fig}
+%% \end{figure}
 
-The checking of such ordering constraints can be done by 
-{\em observers}, 
+\subsection{Specification by Observers}
+To verify correctness of a data structure implementation,
+we must verify that any history, i.e., sequence of call and return actions,
+of any program satisfies the linearizability criterion.
+For stacks and queues, it was recently established
+~\cite{BEEH:icalp15} that the linearizability criterion is equivalent to
+a small number of simple ordering constraints of the following form
+\begin{quote}
+for one or two {\em arbitrary} data values, the subsequence of
+call and return actions with these data values as parameters must not be
+in a particular regular set.
+\end{quote}
+For each constraint, this regular set can be expressed by an {\em observer},
 as introduced in~\cite{AHHR:integrated}. 
 %
 Observers are
@@ -312,38 +471,32 @@ set of {\it transitions}.
 %
 %
 Transitions are of the form 
-$\tuple{\ostate_1,\mname(\inxvar,\outxvar),\ostate_2}$ where 
-$\inxvar$ and $\outxvar$ are either registers or constants, i.e.,
+$\tuple{\ostate_1,\calltwo{\mname}{\inxvar,\outxvar},\ostate_2}$ or
+$\tuple{\ostate_1,\returntwo{\mname}{\inxvar,\outxvar},\ostate_2}$
+where $\inxvar$ and $\outxvar$ are either registers or constants, i.e.,
 transitions are labeled by 
 operations whose input or output data may be parameterized on registers.
+The observer processes a history one action at a time.
 %
-%% The observer processes a trace one operation at a time.
-%% %
-%% If there is a transition, whose label, after replacing registers by their
-%% values, matches the operation, such a transition is performed. 
-%% %
-%% If there is no
-%% such transition, the observer remains in its current state.
+If there is a transition, whose label, after replacing registers by their
+values, matches the action, such a transition is performed. 
 %
-The observer accepts a trace if it can  be processed in such a way that
+If there is no
+such transition, the observer remains in its current state.
+The observer accepts a history if it can  be processed in such a way that
 an accepting state is reached.
 %
-Observers can be used to give {\it exact} specifications of
-the behaviors of data structures such as sets, queues, and stacks.
-%
 The observer is defined in such a way that it accepts precisely those
-traces that do {\em not} belong to the behavior
-of the data structure.
-%
-This is best illustrated by an example. Fig.~\ref{set:observer:fig}
-depicts an observer that accepts the
-sequences of operations that are {\em not} in $\denotationof{\tt Set}$.
+history that do {\em not} satisfy the constraint represented by the observerer.
+\bjcom{In Figure XXX we showed observers for the stack}
 %
 %Other
 %observers for stacks and queues can be found in~\cite{AHHR:integrated}
 %and Appendix~\ref{dstruct:sepcs:section}.
 
 
+\todo[inline]{It remains to take care of the criterion that the
+  call of pop already has a return value}
 
 
 
