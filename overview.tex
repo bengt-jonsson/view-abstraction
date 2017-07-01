@@ -3,69 +3,83 @@
 
 In this section, we illustrate our technique by using it to prove correctness of
 a concurrent data structure implementation, namely the Timestamped Stack
-of~\cite{ts-stack}.
+of~\cite{ts-stack}. Correctness of this algorithm has previously not been
+verified by automated techniques.
 
 \subsection{The Algorithm}
 
 \input tscode
 
 %\todo[inline]{Provide a description of the algorithm}
-Figure~\ref{ts-stack:fig} shows a simplified version of the Timestamped Stack (TS stack) without the emptiness check and elimination. The full version of the algorithm is described in the Appendix XXX. The algorithm uses an array of singly-linked lists (SLLs), one for each thread, which are accessed via an array {\tt pools[maxThreads]} of pointers to the first node of each list, each of which is initially $\nullconst$. Each node of a list contains a data value, a time, the next pointer, and a boolean flag indicating whether it is logically removed from the stack or not.
+\todo[inline]{Quy: The line numbers for Pop are scrambled. Can you fix?}
+Figure~\ref{ts-stack:fig} shows a simplified version of the Timestamped Stack (TS stack), where we have omitted the check for emptiness in the {\tt pop} method, and and the optimization using {\tt push}-{\tt pop} elimination. These features are included in fthe full version of the algorithm, described in Appendix XXX, that we have also verified automatically. The algorithm uses an array of singly-linked lists (SLLs), one for each thread, accessed via the array {\tt pools[maxThreads]} of pointers to the first node of each list, each of which is initially $\nullconst$. Each list node contains a data value, a timestamp value, a {\tt next} pointer, and a boolean flag {\tt mark} indicating whether it is logically removed from the stack.
 
-A Push method for inserting an element {\tt d} into the TS-stack is performed as follows: First, a new node with element {\tt d} and minimal timestamp {\tt -1} is inserted at the beginning of the list which is owned by the calling thread (line 1-3). After that, a new timestamp is created and assigned (via the variable {\tt t}) to the {\tt time} field of the added node (line 4-5).
+A {\tt push} method for inserting an element {\tt d} into the TS stack works as follows: first, a new node with element {\tt d} and minimal timestamp {\tt -1} is inserted at the beginning of the list which is owned by the calling thread (line 1-3). After that, a new timestamp is created and assigned (via the variable {\tt t}) to the {\tt time} field of the added node (line 4-5).
 %\bjcom{Quesion to Quy: What happens when pop methods sees uninitialized timestamps?} \quycom{uninitialized time is -1, its smaller than any other time.}
-Finally, the method unlinks all nodes whose {\tt mark} field are equal to {\tt true} and reachable from the added node. The unlink is performed by redirecting the $\tt next$ pointer from the new node to the first node whose $\tt mark$ field is $\tt false$ and previously connected by a sequence of marked nodes (line 7-9).
+Finally, the method unlinks all nodes, reachable from the added node, whose {\tt mark} field is {\tt true}. This is done by redirecting the $\tt next$ pointer of the new node to the first node, whose $\tt mark$ field is $\tt false$, which is
+reachable from the new node by a sequence of $\tt next$ pointers.
 
-Popping an element from TS stack consists in traversing all the lists, finding
-the first element whose {\tt mark} field is {\tt false} in each
-list, and selecting the youngest such node (i.e., with the maximal timestamp) (line 1-11).
+A {\tt pop} method first traverses all the lists, finding
+the first element whose {\tt mark} field is {\tt false} in each list (line 8), and letting the variable {\tt youngest} point to the most recent such node
+(i.e., with the largest timestamp) (line 1-11).
 A compare-and-swap (CAS) is used
 to set the {\tt mark} field of this youngest node to $\true$,
 thereby logically removing it.
-The procedure will restart if the CAS fails. After the youngest node has been removed, the method will unlink all nodes whose {\tt mark} field are equal to {\tt true} appear before (line 15-16) or after removed  node (line 18-21).
+This procedure will restart if the CAS fails. After the youngest node has been removed, the method will unlink all nodes, whose {\tt mark} field is {\tt true},
+that appear before (line 15-16) or after (line 18-21) the removed node.
+Finally, the method returns the {\tt data} value of the removed node.
 %\todo[inline]{Comments by Bengt: How can you return empty? Also, I think you
  % need to explain the extra removal of marked nodes better} \quycom{this code is a simplified version without emptiness checking. If we add emptiness part, the code will be longer and more complicated}
 
-\subsection{Specifying Correctness}
-In this subsection, we describe how we specify that the algorithm in Figure~\ref{ts-stack:fig}
-is correct in the sense that it is a linearizable implementation of a
-stack data structure. Linearizability intuitively states that
+\subsection{Specifying the Correctness Criterion of Linearizability}
+In our verification, we shall establish that the TS stack algorithm of
+Figure~\ref{ts-stack:fig} is is correct in the sense that it is a
+linearizable implementation of a stack data structure.
+Linearizability intuitively states that
 each operation on the data structure can be considered as being
 performed atomically at some point, called the {\em linearization point (LP)},
-between its invocation and return.
+between its invocation and return~\cite{HeWi:linearizability}.
 For many data structure implementations, LPs can be statically
-affixed to particular statements in method implementations (so-called
-{\em fixed LPs}),
+affixed to particular statements in method implementations,
+%% (so-called {\em fixed LPs}),
 implying that correctness can be formulated as constraints on the ordering of the
-occurrences of linearization points of the methods in any program
-execution.
-\bjcom{Give list of works}
+occurrences of LPs in any program execution.
+\bjcom{Give list of works?}
 In our work, we use this technique to specify linearizability of
 set implementations (see Section XXX).
 %% a concept of data-independence, these constraints can be formulated as
 %% a number of samll observers, which are automata that recognize violations
 %% of these ordering requirements~\cite{AHHR:integrated}.
-
-Unfortunately, in the TS Stack algorithm of Figure~\ref{ts-stack:fig},
-LPs cannot be affixed to particular statements. For instance,  two overlapping
-push operations may have to be linearized in different orders depending
-on how their corresponding later pop operations are ordered in time.
+Unfortunately, this technique cannot be applied to the TS stack algorithm.
+%% does not LPs cannot be affixed to particular statements. For instance,  two overlapping
+%% push operations may have to be linearized in different orders depending
+%% on how their corresponding later pop operations are ordered in time.
 %% not be determined during their invocation, but only later
 %% when the ordering between the two corresponding pop operations is determined.
-Fortunately, Bouajjanni etal.\ recently established that for stacks and
-queues, linearizability can be precisely specified without refering to
-linearization points~\cite{BEEH:icalp15}. They showed to linearizability
-of concurrent stack implementations can be precisely described by
-a small number of simple 
-constraints on the ordering of call and return actions.
-Let us describe how to represent and verify these constraints.
+Instead, use a recent technique of~\cite{BEEH:icalp15}. They
+established that for stacks and queues,
+linearizability can be precisely specified by a small number of
+constraints on the ordering of call and return actions of the methods,
+without mentioning LPs.
+In the case of a stack, these constraints intuitively express that
+%\todo[inline]{Quy: Make sure that you have the right constraints. I just guessed that the below four are the right ones}
+\begin{enumerate}
+\item a data item must not be popped before it is pushed,
+\item pop must not return ``empty'' if a data element was pushed but not
+  popped,
+\item a pushed data item must not be popped twice, and
+\item two arbitrary data items must be popped with respect to last in first out stack order.% \bjcom{Here we specify stack order}
+\end{enumerate}
+These constraints must be precisely expressed in terms of sequences of calls
+and returns of different methods. This can be done by
+observers as introduced in~\cite{AHHR:integrated}. 
+Let us how this is done.
 
 Let a call action on an operation $\mname(\data)$ be denoted
-$\calltwo{\mname}{\data}$ and a return operation be denoted
+$\calltwo{\mname}{\data}$ and a return action be denoted
 $\returntwo{\mname}{\data}$. Ordering constraints on the sequence of
 call and return actions for a small set of data values $\data$ can be
 checked by an {\em observer},
-as introduced in~\cite{AHHR:integrated}. 
 %
 Observers are
 finite automata extended with a finite set of {\em registers}
@@ -89,9 +103,8 @@ during a run of the observer.
 %% Transitions are of the form 
 %% $\tuple{\ostate_1,\mname(\inxvar,\outxvar),\ostate_2}$ where 
 %% $\inxvar$ and $\outxvar$ are either registers or constants, i.e.,
-Transitions are labeled by 
-operations whose input or output data may be parameterized on registers.
-%
+Transitions are labeled by call actions whose data value
+is parameterized on registers.%
 %% The observer processes a trace one operation at a time.
 %% %
 %% If there is a transition, whose label, after replacing registers by their
@@ -100,14 +113,14 @@ operations whose input or output data may be parameterized on registers.
 %% If there is no
 %% such transition, the observer remains in its current state.
 %
-The observer accepts a trace if it can  be processed in such a way that
-an accepting state is reached.
-%
-The observer is defined in such a way that it accepts precisely those
-traces that do {\em not} belong to the behavior
-of the data structure.
-As an example, Figure ~\ref{fig:nonpopobserver:fig} shows an observer which intuitively specifies that 
-a data item must not be popped before it is popped. More precisely, it
+The observer accepts a sequence of call and return actions
+if, for some initial assignment of data values to its registers, the sequence
+can  be processed in such a way that an accepting state is reached.
+The observer for a particular constraint is defined in such a way that it
+accepts precisely those sequences  that do {\em not} satisfy the constraing.
+As an example, Figure ~\ref{fig:nonpopobserver:fig} shows an observer which
+makes constraint 1 precise:
+a data item must not be popped before it is it. More precisly, it
 specifies that the pop operation must not return before any push operation
 for the same data value has been called.
 
@@ -174,22 +187,11 @@ node[right=2pt,pos=0.5] {\footnotesize${\tt act(x)}$}
 %  assume differentiated traces, Plese go over the observer again. Also mark
 %  the initial location}
 
-In~\cite{BEEH:icalp15}, is it shown that
-a stack can precisely specified by four observers,
-that specify the following intuitive constraints.
-%\todo[inline]{Quy: Make sure that you have the right constraints. I just guessed that the below four are the right ones}
-\begin{enumerate}
-\item a data item must not be popped before it is pushed,
-\item pop must not return ``empty'' if a data element was pushed but not
-  popped
-\item a pushed data item must not be popped twice
-\item a data item must be popped with respect to last in first out stack order% \bjcom{Here we specify stack order}
-\end{enumerate}
 The exact form of observers for these constraints represent them in
 terms of ordering of call an return actions. Observers for constraint
 2 and 3 are similar to that for constraint 1. The observer for constraint
 4 is more complex, and shown in Figure ~\ref{fig:lifostack:fig}. In the observer, $\tt ret \; pop(x_1)$ happens after sequences of actions $\tt call \; push(x_2)$, $\tt ret \; push(x_2)$, $\tt call \; pop(x_2)$ in which the pair $\tt ret \; push(x_2) / call \; pop(x_2)$ is after $\tt ret \; push(x_2)$ . The $\tt call \; push(x_1)/ret \;push(x_1)$ happens before all the sequence. The observer intuitively specifies that a data cannot be popped from the stack if there is always at least an different data above it in the Stack (regardless of how linearize the execution). 
-%\todo[inline]{Please make a good explanation of Figure 3}
+\todo[inline]{The explanation of Figure 3 to be improved}
 \begin{figure}
 \center 
 
@@ -287,7 +289,7 @@ node[above=-2pt,pos=0.5,  sloped] {\tiny${\tt \neg{call \; ret(x_2)}}$}
 \end{figure}
 
 \subsection{Verification by Fragment Abstraction}
-To verify that TS-Stack is a correct linearizable implementation of a stack, we
+To verify that TS Stack is a correct linearizable implementation of a stack, we
 must show that any concurrent execution of method calls satisfies the
 above four constraints (1) -- (4).
 To this end, define a {\em program} to consist 
@@ -406,7 +408,7 @@ variables the node can be reached by a sequence of pointers, as well as
 which global variables can be reached from the node.
 \bjcom{I believe we could omit this last sentence}
 
-Let us illustrate our symbolic representation for the TS-Stack algorithm.
+Let us illustrate our symbolic representation for the TS Stack algorithm.
 The heap in the algorithm consists of a set of singly linked lists (SLLs). Each
 SLL is accessed from a particular pointer in an array of such pointers. 
 Fig. ~\ref{fig:tsshape} shows an example of a snapshot of the heap state, in a situation when

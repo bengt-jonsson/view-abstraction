@@ -159,7 +159,7 @@
  
  
  %%%%%%%%%%% init %%%%%%%%%%%%%%%%
-\node[linecode,anchor=south west](init) at ($(top-head.east)+(-30pt,-75pt)$) {\scriptsize initialize() :};
+\node[linecode,anchor=south west](init) at ($(top-head.east)+(-30pt,-75pt)$) {\scriptsize init() :};
 %{struct Node(bool lock; int val; Node *next; bool mark);};
 \node(init1)[linecode] at ($(top-head.east)+(-30pt,-80pt)$) {\scriptsize \;\;\;Node* pools[maxThreads];};
 \node(init2)[linecode] at ($(top-head.east)+(-30pt,-90pt)$) {\scriptsize \;\;\;for(int Node* i=0; i<maxThreads; i++)\;\;\;\;\;\;};
