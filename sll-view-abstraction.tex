@@ -26,12 +26,12 @@ heap cells, local {\tt Data} variables, and registers of the observer.
 In order to cope with an unbounded number of threads,
 we extend the {\em thread-modular approach}~\cite{BLMRS:cav08}, in which
 the symbolic representation characterizes
-the projection of the configuration onto a single thread $t$.
+the projection of the configuration onto a single thread $\thread$.
 %% The postcondition computation must consider how this projection can
 %% be changed by execution steps of the program.
 %% Such a step can be performed
-%% either by the thread $t$ (a local step) or by 
-%% some other thread $t'$ (an interference step).
+%% either by the thread $\thread$ (a local step) or by 
+%% some other thread $\thread'$ (an interference step).
 %% Local steps can be handled by adapting standard techniques
 %% for computing postconditions.
 The corresponding postcondition computation must then take into account that
@@ -39,10 +39,10 @@ the projection onto a particular thread can be changed either by step of that
 thread, or by a step of another thread.
 %% interference steps involve to first compute a new abstract configuration
 %% over two thread identifiers
-%% which represents the combined state of both threads $t$ and $t'$,
+%% which represents the combined state of both threads $\thread$ and $\thread'$,
 %% and only therafter
-%% performing the step of $t'$; thereafter the resulting abstract post-state
-%% is projected back onto $t$.
+%% performing the step of $\thread'$; thereafter the resulting abstract post-state
+%% is projected back onto $\thread$.
 In order to cope with an unbounded heap, we have developed a novel symbolic
 representation, called {\em fragment abstraction}.
 The idea of this abstraction is

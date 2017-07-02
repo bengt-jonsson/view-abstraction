@@ -11,25 +11,26 @@ verified by automated techniques.
 \input tscode
 
 %\todo[inline]{Provide a description of the algorithm}
-\todo[inline]{Quy: The line numbers for Pop are scrambled. Can you fix?}
-Figure~\ref{ts-stack:fig} shows a simplified version of the Timestamped Stack (TS stack), where we have omitted the check for emptiness in the {\tt pop} method, and and the optimization using {\tt push}-{\tt pop} elimination. These features are included in fthe full version of the algorithm, described in Appendix XXX, that we have also verified automatically. The algorithm uses an array of singly-linked lists (SLLs), one for each thread, accessed via the array {\tt pools[maxThreads]} of pointers to the first node of each list, each of which is initially $\nullconst$. Each list node contains a data value, a timestamp value, a {\tt next} pointer, and a boolean flag {\tt mark} indicating whether it is logically removed from the stack.
+\todo[inline]{Quy: The line numbers for Pop are scrambled. Can you fix?
+Also, the variable {\tt i} at line 6 is initialized strangely. Can you fix?}
+Figure~\ref{ts-stack:fig} shows a simplified version of the Timestamped Stack (TS stack), where we have omitted the check for emptiness in the {\tt pop} method, and and the optimization using {\tt push}-{\tt pop} elimination. These features are included in the full version of the algorithm, described in Appendix XXX, that we have also verified automatically. The algorithm uses an array of singly-linked lists (SLLs), one for each thread, accessed via the array {\tt pools[maxThreads]} of pointers to the first cell of each list, each of which is initially $\nullconst$. Each list cell contains a data value, a timestamp value, a {\tt next} pointer, and a boolean flag {\tt mark} indicating whether it is logically removed from the stack.
 
-A {\tt push} method for inserting an element {\tt d} into the TS stack works as follows: first, a new node with element {\tt d} and minimal timestamp {\tt -1} is inserted at the beginning of the list which is owned by the calling thread (line 1-3). After that, a new timestamp is created and assigned (via the variable {\tt t}) to the {\tt time} field of the added node (line 4-5).
+A {\tt push} method for inserting an element {\tt d} into the TS stack works as follows: first, a new cell with element {\tt d} and minimal timestamp {\tt -1} is inserted at the beginning of the list which is owned by the calling thread (line 1-3). After that, a new timestamp is created and assigned (via the variable {\tt t}) to the {\tt time} field of the added cell (line 4-5).
 %\bjcom{Quesion to Quy: What happens when pop methods sees uninitialized timestamps?} \quycom{uninitialized time is -1, its smaller than any other time.}
-Finally, the method unlinks all nodes, reachable from the added node, whose {\tt mark} field is {\tt true}. This is done by redirecting the $\tt next$ pointer of the new node to the first node, whose $\tt mark$ field is $\tt false$, which is
-reachable from the new node by a sequence of $\tt next$ pointers.
+Finally, the method unlinks all cells, reachable from the added cell, whose {\tt mark} field is {\tt true}. This is done by redirecting the $\tt next$ pointer of the new cell to the first cell, whose $\tt mark$ field is $\tt false$, which is
+reachable from the new cell by a sequence of $\tt next$ pointers.
 
 A {\tt pop} method first traverses all the lists, finding
-the first element whose {\tt mark} field is {\tt false} in each list (line 8), and letting the variable {\tt youngest} point to the most recent such node
+the first element whose {\tt mark} field is {\tt false} in each list (line 8), and letting the variable {\tt youngest} point to the most recent such cell
 (i.e., with the largest timestamp) (line 1-11).
 A compare-and-swap (CAS) is used
-to set the {\tt mark} field of this youngest node to $\true$,
+to set the {\tt mark} field of this youngest cell to $\true$,
 thereby logically removing it.
-This procedure will restart if the CAS fails. After the youngest node has been removed, the method will unlink all nodes, whose {\tt mark} field is {\tt true},
-that appear before (line 15-16) or after (line 18-21) the removed node.
-Finally, the method returns the {\tt data} value of the removed node.
+This procedure will restart if the CAS fails. After the youngest cell has been removed, the method will unlink all cells, whose {\tt mark} field is {\tt true},
+that appear before (line 15-16) or after (line 18-21) the removed cell.
+Finally, the method returns the {\tt data} value of the removed cell.
 %\todo[inline]{Comments by Bengt: How can you return empty? Also, I think you
- % need to explain the extra removal of marked nodes better} \quycom{this code is a simplified version without emptiness checking. If we add emptiness part, the code will be longer and more complicated}
+ % need to explain the extra removal of marked cells better} \quycom{this code is a simplified version without emptiness checking. If we add emptiness part, the code will be longer and more complicated}
 
 \subsection{Specifying the Correctness Criterion of Linearizability}
 In our verification, we shall establish that the TS stack algorithm of
@@ -117,10 +118,10 @@ The observer accepts a sequence of call and return actions
 if, for some initial assignment of data values to its registers, the sequence
 can  be processed in such a way that an accepting state is reached.
 The observer for a particular constraint is defined in such a way that it
-accepts precisely those sequences  that do {\em not} satisfy the constraing.
+accepts precisely those sequences  that do {\em not} satisfy the constraint.
 As an example, Figure ~\ref{fig:nonpopobserver:fig} shows an observer which
 makes constraint 1 precise:
-a data item must not be popped before it is it. More precisly, it
+a data item must not be popped before it is it. More precisely, it
 specifies that the pop operation must not return before any push operation
 for the same data value has been called.
 
@@ -338,39 +339,84 @@ that the corresponding observer cannot reach an accepting state.
 
 \subsection{Verification by Fragment Abstraction}
 
-In the actual verification, we compute a symbolic representation
-of an invariant that is satisfied by all reachable program configurations (including observer states).
-This invariant is obtained by an abstract-interpretation-based
-fixpoint procedure, which starts
-from a representation of the set of initial configurations, and
-thereafter repeatedly performs
-postcondition computations that extend the
-symbolic representation by the effect of any execution step of the program,
-until convergence.
-This analysis needs to deal with the challenges of an unbounded domain of
+In the actual verification, we must compute a symbolic representation
+of an invariant that is satisfied by all reachable configurations of
+the cross-product of the program  and an observer.
+The verification must address the challenges of an unbounded domain of
 data values, an unbounded number of concurrently executing threads, and an
-unbounded heap. We have therefore developed a symbolic representation, which
+unbounded heap.
+For this, we have developed a symbolic representation,  which
 is a careful combination of
 data abstraction, thread abstraction, and shape abstraction. 
+%% This invariant is obtained by an abstract-interpretation-based
+%% fixpoint procedure, which starts
+%% from a representation of the set of initial configurations, and
+%% thereafter repeatedly performs
+%% postcondition computations that extend the
+%% symbolic representation by the effect of any execution step of the program,
+%% until convergence.
 %% The analysis needs to deal with the challenges of an unbounded domain of
 %% data values, an unbounded number of concurrently executing threads, and an
 %% unbounded heap. We have therefore developed a technique for verification,
 %% which uses a carefully designed combination of
 %% data abstraction, thread abstraction, and shape abstraction.
-Let us illustrate this symbolic representation on the algorithm in
-Figure~\ref{ts-stack:fig}.
-
-Our {\em data abstraction} abstracts from concrete data values in
-$\intgrs$ by representing only {\em relations}
-(in the set $\set{\prec,\equiv,\succ}$) between values of {\tt Data} fields of 
-heap cells, local {\tt Data} variables, and registers of the observer.
-We similarly abstract from concrete values of timestamps by representing
-only relations between values of timestamps in heap cells and in
-local variables.
-In order to cope with an unbounded number of threads,
-we extend the {\em thread-modular approach}~\cite{BLMRS:cav08}, in which
-the symbolic representation characterizes
-the projection of the configuration onto a single thread $t$.
+%% Let us illustrate this symbolic representation on the algorithm in
+%% Figure~\ref{ts-stack:fig}.
+\begin{itemize}
+  \item
+  Our {\em data abstraction} abstracts the values of $\intgrs$-valued variables
+    and $\intgrs$-fields of heap cells, into possible relations
+    (in the set $\set{\prec,\equiv,\succ}$) with global $\intgrs$-variables and
+    observers registers. For timestamps, the abstraction also represents
+    possible relations with with timestamps of heap cells, whose
+    data field has  the same value as some observer register.
+%% between values of {\tt Data} fields of 
+%% heap cells, local {\tt Data} variables, and registers of the observer.
+%% We similarly abstract from concrete values of timestamps by representing
+%% only relations between values of timestamps in heap cells and in
+%% local variables.
+  \item
+We cope with an unbounded number of threads by
+adapting the {\em thread-modular approach}~\cite{BLMRS:cav08}.
+We represent only the part of the global configuration that is visible to
+a single thread $\thread$: this part includes the local state of $\thread$ and
+the part of the heap that $\thread$ can access through its local
+and global pointer variables.
+\item
+  We cope with an unbounded heap by a novel shape abstraction, 
+called {\em fragment abstraction}. This abstraction 
+represents a heap by a set of (heap) {\em fragments}, where each fragment is
+a pair of node types (called {\em tags}) that are connected by a pointer.
+A tag is an abstraction of a heap cell, which contains both 
+\begin{inparaenum}[(i)]
+\item
+  local information about its non-pointer fields, obtained
+   using our data abstraction,
+ \item
+   global information, saying how
+it can be reached from and reach to (by following a chain of pointers)
+other heap cells that are pointed to by global variables, or cells whose
+    data field has  the same value as some observer register.
+\end{inparaenum}
+A set of fragments represents the set of heap structures in which each
+pair of pointer-connected cells are represented by some fragment in the set.
+By construction, our fragment abstraction is finitary, since there is
+a bounded set of tags.
+\end{itemize}
+%% just a pair of cells that are connected by a {\tt next} pointer. Thus, the
+%% representation of a particular heap is obtained as the set of pairs of cells
+%% that are connected by a {\tt next pointer}. Conversely,
+%% a set of (heap) fragments represents the set of heaps that can be formed by
+%% putting together fragments from this set, where each fragment may be used
+%% multiple times. In order to obtain a representation which is both expressive
+%% and bounded, cells are first abstracted to a finite set of cell types, called
+%% {\em tags}. A tag represents both local information about the values of
+%% fields of the cell
+%% and about which pointer variables point to the cell, as well as global
+%% information about how the cell is positioned in the overall projected heap.
+%% The global information records from which global and thread-local pointer
+%% variables the cell can be reached by a sequence of pointers, as well as
+%% which global variables can be reached from the cell.
 %% The postcondition computation must consider how this projection can
 %% be changed by execution steps of the program.
 %% Such a step can be performed
@@ -378,55 +424,51 @@ the projection of the configuration onto a single thread $t$.
 %% some other thread $t'$ (an interference step).
 %% Local steps can be handled by adapting standard techniques
 %% for computing postconditions.
-The corresponding postcondition computation must then take into account that
-the projection onto a particular thread can be changed either by step of that
-thread, or by a step of another thread.
-\bjcom{omit this last sentence?}
+%% The corresponding postcondition computation must then take into account that
+%% the projection onto a particular thread can be changed either by step of that
+%% thread, or by a step of another thread.
 %% interference steps involve to first compute a new abstract configuration
 %% over two thread identifiers
 %% which represents the combined state of both threads $t$ and $t'$,
 %% and only therafter
 %% performing the step of $t'$; thereafter the resulting abstract post-state
 %% is projected back onto $t$.
-
-A main contribution of this work is 
-a novel {\em shape abstraction}, which is designed to cope with an unbounded
-heap (note that the heap visible to a single thread is still unbounded).
-The idea of this abstraction, called {\em fragment abstraction} is
-to represent a heap by a set of (heap) {\em fragments}, where each fragment is
-just a pair of nodes that are connected by a {\tt next} pointer. Thus, the
-representation of a particular heap is obtained as the set of pairs of nodes
-that are connected by a {\tt next pointer}. Conversely,
-a set of (heap) fragments represents the set of heaps that can be formed by
-putting together fragments from this set, where each fragment may be used
-multiple times. In order to obtain a representation which is both expressive
-and bounded, nodes are first abstracted to a finite set of node types, called
-{\em tags}. A tag represents both local information about the values of
-fields of the node
-and about which pointer variables point to the node, as well as global
-information about how the node is positioned in the overall projected heap.
-The global information records from which global and thread-local pointer
-variables the node can be reached by a sequence of pointers, as well as
-which global variables can be reached from the node.
-\bjcom{I believe we could omit this last sentence}
-
-Let us illustrate our symbolic representation for the TS Stack algorithm.
-The heap in the algorithm consists of a set of singly linked lists (SLLs). Each
-SLL is accessed from a particular pointer in an array of such pointers. 
-Fig. ~\ref{fig:tsshape} shows an example of a snapshot of the heap state, in a situation when
-% Quy write from here
-it is accessed concurrently by three threads $\thread_1$, $\thread_2$, and $\thread_3$. The heap consists of three SLLs accessed from three pointer variables $\tt top_1$, $\tt top_2$, and $\tt top_3$ respectively. A variable that labels a node is the pointer variable which point to the node.
+Let us illustrate our symbolic representation for the TS stack algorithm.
+Its heap consists of a set of singly linked lists (SLLs), each of which
+is accessed from a pointer in the array {\tt pools[maxThreads]}.
+Figure~\ref{fig:tsshape} shows an example heap state,
+in a configuration when % Quy write from here
+it is accessed concurrently by three threads $\thread_1$, $\thread_2$, and $\thread_3$. The heap consists of three SLLs accessed from the three pointers $\tt pools[1]$, $\tt pools[2]$, and $\tt pools[3]$ respectively. Each cell is
+shown with the values of its fields, using the layout shown to the right in
+Figure~\ref{fig:tsshape}.
+In addition, each node is labeled by the
+pointer variables that point to it. We use ${\tt lvar[i]}$ to denote the local
+variable {\tt lvar} of thread $\thread_i$.
 %\todo[inline]{Quy: Use a better scheme for indexing local variables. Previously,
 %  we used {\tt var[2]}, for variable {\tt var} of thread 2. Maybe use it also here?}
 %\todo[inline]{You must start by explaining the notation better. E.g., what means
 %  a pointer variable that labels a node?}
-The thread $\thread_1$ is trying to push a new node pointed by its local variable $\tt new[1]$ while $\thread_3$ has just called its push method and $\thread_2$ is doing its pop method. The thread $\thread_2$ find the youngest node in the list owned by $\thread_3$ which is determined by its local variable $\tt youngest[2]$.
+
+Thread $\thread_1$ is trying to push a new node with data value $4$, pointed by its local variable $\tt new$, having reached line 3.
+Thread $\thread_3$ has just called the {\tt push} method.
+Thread $\thread_2$ has reached line XXX, in the execution of the {\tt pop} method,  and has just assigned {\tt youngest} to the first node in the list
+pointed to by $\tt pools[3]$ which is not logically removed.
 %\todo[inline]{Quy: Make a picture of a concrete shape with several threads.
 %  Say which operations are working there now, and give some
 %  explanation of what the figure says}.
+\todo[inline]{Comments on Figure~\ref{fig:tsshape}: Quy, could you make some small
+  modifications:
+(1)
+    In the array {\tt pools}: Could you remove the indices $\tt \thread_i$
+    inside the array fields, and just put the number ($i$) to the left of each
+    field.
+(2) The variables $\tt top_i$ do not exist. I suggest to remove them,
+    and replace by $\tt pools[i]$ (see my new text).
+}
+
 \begin{figure}
 	\input tsshape
-\caption{A concrete shape of timestamp stack with three threads}
+\caption{A possible heap configuration of TS stack with three threads.}
 \label{fig:tsshape}
 \end{figure} 
 %\quycom{I am trying to improve text from here}
@@ -449,74 +491,138 @@ The thread $\thread_1$ is trying to push a new node pointed by its local variabl
 \caption{Fragment abstraction}
 \label{fig:tsviewshape}
 \end{figure} 
-To obtain our symbolic representation by a set of fragments, we first apply data abstraction and
-project the configuration onto a single thread. The fig shows the result
-of projecting onto thread 2, which performs a pop with data abstraction. Secondly, we identify the current working list and abstract the other lists where we do not distinguish the differences between variables in the other list. Finally, we define the information conveyed by node tags. We define one tag for push operations and one for pop operations, since
-their methods use different sets of local variables.
+
+\todo[inline]{to Quy: Variable {\tt n} is never declared. Can you fix?}
+A local configuration of a thread which executes the {\tt pop} method consists
+of the values of the program counter, the boolean variable {\tt success}, the
+pointer variables {\tt youngest}, {\tt myTop}, {\tt n},
+and the timestamp variable {\tt maxTS}.
+A {\em local symbolic configuration} is defined by applying our data abstraction
+to the local non-pointer variables.  For a {\tt pop} method, it maps
+the program counter and {\tt success} to their current values. It also maps
+{\tt maxTS} to a mapping from observer registers to $\set{<,=,>}$, such that
+if a heap node {\tt node} has the same data value as register $\reg_i$, then
+${\tt maxTS} \sim {\tt node.time}$ for some $\sim$ in this set.
+
+In the configuration of Figure~\ref{fig:tsshape}, thread $\thread_2$
+satisfies the local symbolic configuration which maps
+\todo[inline]{to Quy: Can you add the values of observer registers, and
+  complete this sentence.}
+
+
+
+
+
+
+%% Secondly, we identify the current working list and abstract the other lists where we do not distinguish the differences between variables in the other list.
+
+Let us now show how our fragment abstraction represents the view of thread
+$\thread_2$.
+We must first define the notion of tag.
+%% Finally, we define the information conveyed by node tags. We define one tag for push operations and one for pop operations, since
+%% their methods use different sets of local variables.
+For a pop operation, its local pointer variables are 
+{\tt youngest}, {\tt myTop}, and {\tt n}.
+\todo[inline]{Quy: here, we need a good way to explain how to represent {\tt pools[i]}
+  and {\tt pools[k]}}
+\todo[inline]{Thus, which are the global variables?}
 For a pop operation, a {\em tag} is defined as a tuple
-$\tuple{\pvars,\data,\reachfrom,\reachto,\private}$, where
+$\tuple{\pvars,\vals,\reachfrom,\reachto,\private}$, where
 \begin{itemize}
 \item
-  $\pvars$ is a set of pointer variables (i.e., a subset of
-  {\tt top, ctop, youngest, n, myTop}
+  $\pvars$ is a set of local and global pointer variables
+%%   of the {\tt pop} method and (i.e., a subset of {\tt top, ctop, youngest, n, myTop}
   %\bjcom{Quy: Check exactly what this set should be}
 \item
-  $\vals$ maps
+  $\vals$ is an abstraction of non-pointer fields of cells, which maps
   \begin{inparaenum}[(i)]
   \item
-    each {\tt mark} field to a boolean value,
+    the {\tt mark} field to a boolean value,
   \item
-    each {\tt d} field to a mapping from observer registers to $\set{=, \neq}$,
+    the {\tt data} field to a mapping from observer registers to $\set{=, \neq}$,
   \item
-    each {\tt time} field to a mapping from each observer register to a subset of $\set{<,=,>}$ %\bjinsert{Quy: insert the correct text here}.
+    the {\tt ts} field to a mapping from observer registers to subsets of $\set{<,=,>}$.
   \end{inparaenum}
 \item
-  $\reachfrom$ and $\reachto$ are sets of global variables and observer registers, %\bjcom{Quy: Check what is really needed here: Maybe we need only reachfrom?}
+  $\reachfrom$ and $\reachto$ are sets of global variables and observer registers, and %\bjcom{Quy: Check what is really needed here: Maybe we need only reachfrom?}
 \item
   $\private$ is a boolean value.
 \end{itemize}
-A node $\cell$ in the heap of a thread view satisfies a tag $\tagtuple$,
-denoted $\cell \lhd \tagtuple$ if
+For an observer register $\reg_i$, let $\cell$ be a {\em $\reg_i$-cell} if
+the {\tt data} field of $\cell$ has the same value as $\reg_i$.
+A heap cell $\cell$ which is accessible to $\thread_2$ now satisfies a tag
+with respect to $\thread_2$, denoted
+denoted $\cell \satfrag{{\thread_2}} \tagtuple$ if
 \begin{itemize}
 \item
-  $\pvars$ is the set of pointer variables that point to $\cell$.
+  $\pvars$ is the set of global and local (to $\thread_2$)
+  pointer variables that point to $\cell$,
   %\bjcom{Quy: Or Should it be contains?}
 \item
-The value of {\tt mark} field of $\cell$ is equal to the value of $\vals\tt {.(mark)}$. For each observer register $\tt d_i$, the relation of {\tt d} field  and $\tt d_i$ is a subset of $\vals\tt {.(d).(d_i)}$, and the relation between value of {\tt time} field and cells whose $\tt d$ field is equal to $\tt d_i$ is a subset of $\vals\tt {.(time).(d_i)}$. 
-  %\bjcom{Quy: continue to write here}
-\item $\reachfrom$ and $\reachto$ are sets of global variables and observer registers in which the cell is reachable and reach to.
-\item $\private$ is the private information of the cell.
+the non-pointer fields of $\cell$ satisfies the abstraction $\vals$, i.e.
+  \begin{inparaenum}[(i)]
+  \item
+    $\vals({\tt mark})$ is the value of its {\tt mark} field,
+  \item
+    for each observer register $\reg_i$, if $\cell$ is (is not) a
+    $\reg_i$-cell, then $= \in \vals({\tt data})$ ($\neq \in \vals({\tt data})$),
+  \item
+    let $ts$ be the value of its {\tt ts} field, then
+    for each observer register $\reg_i$ a, if
+    the value $ts'$ of the {\tt ts} field of some $\reg_i$-cell
+    satisfies $ts \sim ts'$, then $\sim \in \vals({\tt ts})$,
+  \end{inparaenum}
+\item $\reachfrom$ is the set of global variables from which $\cell$ is 
+  reachable (by a chain of {\tt next}) pointers), and the set of
+  observer registers $\reg_i$ such that $\cell$ is reachable from a $\reg_i$-cell,
+\item $\reachto$ is the set of global variables that point to a cell that
+  is reachable from $\cell$ and  the set of
+  observer registers $\reg_i$ such that a $\reg_i$-cell is reachable from $\cell$,
+\item $\private$ is try only if $\cell$ can be reached only from $\thread_2$.
 \end{itemize}
 
 We can now define the concept of fragment.
-A {\em fragment} is a pair $\tuple{\inputtag,\outputtag}$ of tags.
-A {\em symbolic configuration} is a pair consisting of a set a value of a program
-pointer, observer state, and value of local variables \bjcom{or: local state}, and a set of fragments.
-%\todo[inline]{Quy: Could you explain exactly what is in a symbolic configuration?
-%  Does it contain some information about values of local variables, such as
-%  {\tt success} and {\tt maxTS}?}
+A {\em fragment} $\frag$ is a pair of form $\tuple{\inputtag,\outputtag}$, 
+of form $\tuple{\inputtag,\nullconst}$, or 
+of form $\tuple{\inputtag,\dangconst}$.
+We write  
+$\cell \satfrag{{\thread_2}} \tuple{\inputtag,\outputtag}$ if
+the {\tt next} field of $\cell$ points to a cell $\cell'$ such that
+$\cell \satfrag{{\thread_2}} \inputtag$ and
+$\cell' \satfrag{{\thread_2}} \outputtag$.
+A global configuration satisfies a set of fragments wrp.\ to $\thread_2$ if
+for any cell $\cell$ that is accessible to $\thread_2$, it contains a fragment
+$\frag$ such that $\cell \satfrag{{\thread_2}} \frag$.
 
+Our symbolic representation $\symbrep$ is a partial mapping from the set of
+local symbolic configurations to set of fragments. A global configuration
+satisfies a symbolic representation $\symbrep$ if each thread $\thread$
+satisfies some local symbolic
+configuration in its domain and also the set of fragments
+obtained by applying $\symbrep$ to that local symbolic configuration.
+
+
+\todo[inline]{Quy: can you revise from here, and explain carefully the
+  local symbolic configuration, and set of fragments in 
+  Figure~\ref{fig:tsviewshape}
+}
+
+\todo[inline]{to Quy: Comments on Figure~\ref{fig:tsviewshape}:
+  I suggest to let the data field be a SET, use []- notation for the mappings of
+  the $\lambda_i$, you had some nice notation before for reachfrom and
+  reachto}
 %\todo[inline]{Quy: make a picture with all the fragments obtained from the
  % thread projection}
-The Fig. ~\ref{fig:tsviewshape} shows the symbolic representation of projection on to thread 2 from Fig. ~\ref{fig:tsshape}. Under each node, the $\reachfrom$ of the node is shown in the first row, whereas the $\reachto$ is shown in the second row. The fragments $\tt v_1$, $\tt v_2$, $\tt v_3$, and $\tt v_4$ are obtained from the other lists. Whereas, $\tt v_5$, $\tt v_6$, $\tt v_7$, and $\tt v_8$ are obtained from the current list.   
+Figure~\ref{fig:tsviewshape} shows the symbolic representation of projection on to thread 2 from Fig. ~\ref{fig:tsshape}. Under each node, the $\reachfrom$ of the node is shown in the first row, whereas the $\reachto$ is shown in the second row. The fragments $\tt v_1$, $\tt v_2$, $\tt v_3$, and $\tt v_4$ are obtained from the other lists. Whereas, $\tt v_5$, $\tt v_6$, $\tt v_7$, and $\tt v_8$ are obtained from the current list.   
 A thread-abstracted configuration satisfies a symbolic configuration if
 \begin{itemize}
 \item it satisfies program counter, observer state, and local variables %\bjcom{Say that program counter, and local variables ...}
 \item
-  For each cell $\cell$ in the heap of the configuraion, there is
+  For each cell $\cell$ in the heap of the configuration, there is
   a fragment $\tuple{\inputtag,\outputtag}$ in the set of fragments, such
   that $\cell \lhd \inputtag$ and ${\tt next}(\cell) \lhd \outputtag$.
   \bjcom{check the case when $\cell$ points to null etc.}
 \end{itemize}
-
-symbolic configurations. 
-A {\em symbolic representation} $\symbrep$ is a set of
-symbolic configurations. 
-A  set of thread-abstracted configurations satisfies a symbolic
-representation $\symbrep$ if each of its thread-abstracted
-configuration satisfies some symbolic configuration in $\symbrep$.
-
-
 
 
 
