@@ -11,8 +11,8 @@ verified by automated techniques.
 \input tscode
 
 %\todo[inline]{Provide a description of the algorithm}
-\todo[inline]{Quy: The line numbers for Pop are scrambled. Can you fix?
-Also, the variable {\tt i} at line 6 is initialized strangely. Can you fix?}
+%\todo[inline]{Quy: The line numbers for Pop are scrambled. Can you fix?
+%Also, the variable {\tt i} at line 6 is initialized strangely. Can you fix?}
 Figure~\ref{ts-stack:fig} shows a simplified version of the Timestamped Stack (TS stack), where we have omitted the check for emptiness in the {\tt pop} method, and and the optimization using {\tt push}-{\tt pop} elimination. These features are included in the full version of the algorithm, described in Appendix XXX, that we have also verified automatically. The algorithm uses an array of singly-linked lists (SLLs), one for each thread, accessed via the array {\tt pools[maxThreads]} of pointers to the first cell of each list, each of which is initially $\nullconst$. Each list cell contains a data value, a timestamp value, a {\tt next} pointer, and a boolean flag {\tt mark} indicating whether it is logically removed from the stack.
 
 A {\tt push} method for inserting an element {\tt d} into the TS stack works as follows: first, a new cell with element {\tt d} and minimal timestamp {\tt -1} is inserted at the beginning of the list which is owned by the calling thread (line 1-3). After that, a new timestamp is created and assigned (via the variable {\tt t}) to the {\tt time} field of the added cell (line 4-5).
@@ -27,7 +27,7 @@ A compare-and-swap (CAS) is used
 to set the {\tt mark} field of this youngest cell to $\true$,
 thereby logically removing it.
 This procedure will restart if the CAS fails. After the youngest cell has been removed, the method will unlink all cells, whose {\tt mark} field is {\tt true},
-that appear before (line 15-16) or after (line 18-21) the removed cell.
+that appear before (line 17-19) or after (line 20-23) the removed cell.
 Finally, the method returns the {\tt data} value of the removed cell.
 %\todo[inline]{Comments by Bengt: How can you return empty? Also, I think you
  % need to explain the extra removal of marked cells better} \quycom{this code is a simplified version without emptiness checking. If we add emptiness part, the code will be longer and more complicated}
@@ -191,8 +191,8 @@ node[right=2pt,pos=0.5] {\footnotesize${\tt act(x)}$}
 The exact form of observers for these constraints represent them in
 terms of ordering of call an return actions. Observers for constraint
 2 and 3 are similar to that for constraint 1. The observer for constraint
-4 is more complex, and shown in Figure ~\ref{fig:lifostack:fig}. In the observer, $\tt ret \; pop(x_1)$ happens after sequences of actions $\tt call \; push(x_2)$, $\tt ret \; push(x_2)$, $\tt call \; pop(x_2)$ in which the pair $\tt ret \; push(x_2) / call \; pop(x_2)$ is after $\tt ret \; push(x_2)$ . The $\tt call \; push(x_1)/ret \;push(x_1)$ happens before all the sequence. The observer intuitively specifies that a data cannot be popped from the stack if there is always at least an different data above it in the Stack (regardless of how linearize the execution). 
-\todo[inline]{The explanation of Figure 3 to be improved}
+4 is more complex, and shown in Figure ~\ref{fig:lifostack:fig}. In the observer, the action which leads to an accepting state $\tt ret \; pop(x_1)$ happens after sequences of actions namely $\tt call \; push(x_2)$, $\tt ret \; push(x_2)$, $\tt call \; pop(x_2)$ in which the pair $\tt ret \; push(x_2) / call \; pop(x_2)$ is always after $\tt ret \; push(x_2)$ . The $\tt call \; push(x_1)/ret \;push(x_1)$ happens before all the sequences. Intuitively, the observer specifies that a data cannot be popped from the stack if there is always at least an different data above it in the Stack (regardless of how linearize the execution). 
+%\todo[inline]{The explanation of Figure 3 to be improved}
 \begin{figure}
 \center 
 
@@ -451,20 +451,20 @@ variable {\tt lvar} of thread $\thread_i$.
 
 Thread $\thread_1$ is trying to push a new node with data value $4$, pointed by its local variable $\tt new$, having reached line 3.
 Thread $\thread_3$ has just called the {\tt push} method.
-Thread $\thread_2$ has reached line XXX, in the execution of the {\tt pop} method,  and has just assigned {\tt youngest} to the first node in the list
+Thread $\thread_2$ has reached line 12, in the execution of the {\tt pop} method,  and has just assigned {\tt youngest} to the first node in the list
 pointed to by $\tt pools[3]$ which is not logically removed.
 %\todo[inline]{Quy: Make a picture of a concrete shape with several threads.
 %  Say which operations are working there now, and give some
 %  explanation of what the figure says}.
-\todo[inline]{Comments on Figure~\ref{fig:tsshape}: Quy, could you make some small
-  modifications:
-(1)
-    In the array {\tt pools}: Could you remove the indices $\tt \thread_i$
-    inside the array fields, and just put the number ($i$) to the left of each
-    field.
-(2) The variables $\tt top_i$ do not exist. I suggest to remove them,
-    and replace by $\tt pools[i]$ (see my new text).
-}
+%\todo[inline]{Comments on Figure~\ref{fig:tsshape}: Quy, could you make some small
+%  modifications:
+%(1)
+%    In the array {\tt pools}: Could you remove the indices $\tt \thread_i$
+%    inside the array fields, and just put the number ($i$) to the left of each
+%    field.
+%(2) The variables $\tt top_i$ do not exist. I suggest to remove them,
+%    and replace by $\tt pools[i]$ (see my new text).
+%}
 
 \begin{figure}
 	\input tsshape
@@ -492,7 +492,7 @@ pointed to by $\tt pools[3]$ which is not logically removed.
 \label{fig:tsviewshape}
 \end{figure} 
 
-\todo[inline]{to Quy: Variable {\tt n} is never declared. Can you fix?}
+%\todo[inline]{to Quy: Variable {\tt n} is never declared. Can you fix?}
 A local configuration of a thread which executes the {\tt pop} method consists
 of the values of the program counter, the boolean variable {\tt success}, the
 pointer variables {\tt youngest}, {\tt myTop}, {\tt n},
@@ -505,9 +505,9 @@ if a heap node {\tt node} has the same data value as register $\reg_i$, then
 ${\tt maxTS} \sim {\tt node.time}$ for some $\sim$ in this set.
 
 In the configuration of Figure~\ref{fig:tsshape}, thread $\thread_2$
-satisfies the local symbolic configuration which maps
-\todo[inline]{to Quy: Can you add the values of observer registers, and
-  complete this sentence.}
+satisfies the local symbolic configuration which maps the program counter to the value 12, {\tt success} to {\tt false} and {\tt maxTS} to a mapping from observer registers $\tt x_1$ to $\set{>}$, $\tt x_2$ to $\set{=}$ where values of $\tt x_1$ and $\tt x_2$ are $9$, $16$ respectively.
+%\todo[inline]{to Quy: Can you add the values of observer registers, and
+%  complete this sentence.}
 
 
 
@@ -522,10 +522,10 @@ We must first define the notion of tag.
 %% Finally, we define the information conveyed by node tags. We define one tag for push operations and one for pop operations, since
 %% their methods use different sets of local variables.
 For a pop operation, its local pointer variables are 
-{\tt youngest}, {\tt myTop}, and {\tt n}.
-\todo[inline]{Quy: here, we need a good way to explain how to represent {\tt pools[i]}
-  and {\tt pools[k]}}
-\todo[inline]{Thus, which are the global variables?}
+{\tt youngest}, {\tt myTop}, and {\tt n}. Its global variables are {\tt pools[3]} which is the pointer to the current list, and {\tt pools[i]} represented for both {\tt pools[1]} and {\tt pools[2]} pointer variables.
+%\todo[inline]{Quy: here, we need a good way to explain how to represent {\tt pools[i]}
+%  and {\tt pools[k]}}
+%\todo[inline]{Thus, which are the global variables?}
 For a pop operation, a {\em tag} is defined as a tuple
 $\tuple{\pvars,\vals,\reachfrom,\reachto,\private}$, where
 \begin{itemize}
@@ -602,18 +602,18 @@ configuration in its domain and also the set of fragments
 obtained by applying $\symbrep$ to that local symbolic configuration.
 
 
-\todo[inline]{Quy: can you revise from here, and explain carefully the
-  local symbolic configuration, and set of fragments in 
-  Figure~\ref{fig:tsviewshape}
-}
+%\todo[inline]{Quy: can you revise from here, and explain carefully the
+%  local symbolic configuration, and set of fragments in 
+%  Figure~\ref{fig:tsviewshape}
+%}
 
-\todo[inline]{to Quy: Comments on Figure~\ref{fig:tsviewshape}:
-  I suggest to let the data field be a SET, use []- notation for the mappings of
-  the $\lambda_i$, you had some nice notation before for reachfrom and
-  reachto}
+%\todo[inline]{to Quy: Comments on Figure~\ref{fig:tsviewshape}:
+%  I suggest to let the data field be a SET, use []- notation for the mappings of
+%  the $\lambda_i$, you had some nice notation before for reachfrom and
+%  reachto}
 %\todo[inline]{Quy: make a picture with all the fragments obtained from the
  % thread projection}
-Figure~\ref{fig:tsviewshape} shows the symbolic representation of projection on to thread 2 from Fig. ~\ref{fig:tsshape}. Under each node, the $\reachfrom$ of the node is shown in the first row, whereas the $\reachto$ is shown in the second row. The fragments $\tt v_1$, $\tt v_2$, $\tt v_3$, and $\tt v_4$ are obtained from the other lists. Whereas, $\tt v_5$, $\tt v_6$, $\tt v_7$, and $\tt v_8$ are obtained from the current list.   
+Figure~\ref{fig:tsviewshape} shows the symbolic representation of projection on to thread 2 from Fig. ~\ref{fig:tsshape}. The local symbolic configuration maps the program counter to the value 12, {\tt success} to {\tt false} and {\tt maxTS} to a mapping from observer registers $\tt x_1$ to $\set{>}$, $\tt x_2$ to $\set{=}$. Under each cell in a fragment in the figure, the $\reachfrom$ is shown in the first row, and the $\reachto$ is shown in the second row. The data field of a cell is presented by $\tt x_1$ if its value is equal to $\tt x_1$, $\tt x_2$ if its value is equal to $\tt x_2$ and $\circ$ if its value is different from both $\tt x_1$ and $\tt x_2$. The {\tt ts} field of a cell is presented by one of four values $\lambda_1$, $\lambda_2$, $\lambda_3$ and $\lambda_4$ which are the mappings from observers registers to subsets of $\set{<,=,>}$ as described in the figure. The fragments $\tt v_1$, $\tt v_2$, $\tt v_3$, and $\tt v_4$ are obtained from the other lists. Whereas, $\tt v_5$, $\tt v_6$, $\tt v_7$, and $\tt v_8$ are obtained from the current list.   
 A thread-abstracted configuration satisfies a symbolic configuration if
 \begin{itemize}
 \item it satisfies program counter, observer state, and local variables %\bjcom{Say that program counter, and local variables ...}
