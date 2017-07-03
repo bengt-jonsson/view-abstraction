@@ -490,9 +490,9 @@ consists of the values of its program counter, the boolean variable ${\tt succes
 and the timestamp variable ${\tt maxTS}$.
 In verification, we must also consider the observer. In this case, the added
 observer is the one in Figure~\ref{fig:lifostack:fig}, which has two registers
-$\tt x_1$ and $\tt x_2$, which are assigned the values $9$ and $16$,
+$\tt x_1$ and $\tt x_2$, which are assigned the values $9$ and $15$,
 respectively.
-\todo[inline]{to Quy: what about the variable ${\tt k}$?}
+%\todo[inline]{to Quy: what about the variable ${\tt k}$?}
 
 \begin{figure}
 	\input tsshape
@@ -550,10 +550,10 @@ satisfies the local symbolic configuration shown in the green towards the
 bottom, 
 which maps the program counter to line 12, ${\tt success}$ to ${\tt false}$ and ${\tt maxTS}$ to the mapping from observer registers which maps
 $\tt x_1$ to $\set{>}$ and $\tt x_2$ to $\set{=}$
-(recall that the values of $\tt x_1$ and $\tt x_2$ are $9$, $16$ respectively).
+(recall that the values of $\tt x_1$ and $\tt x_2$ are $4$, $2$ respectively).
 
-\todo[inline]{To Quy: what is the value of ${\tt MaxTS}$? There is no
-  node with data value $16$, so how can this be?}
+%\todo[inline]{To Quy: what is the value of ${\tt MaxTS}$? There is no
+%  node with data value $16$, so how can this be?}
 
 %% Secondly, we identify the current working list and abstract the other lists where we do not distinguish the differences between variables in the other list.
 
