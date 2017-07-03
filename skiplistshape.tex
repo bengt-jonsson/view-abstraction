@@ -1,8 +1,6 @@
 	\begin{tikzpicture}[]%show background rectangle]
 
 \node[name=cell0,minimum width=16pt, minimum height=0pt]{};
-
-
 \node[rounded corners,draw,name=cell1,minimum width=25pt, minimum height=20pt] at ($(cell0.east)+(0pt,0pt)$){};
 \node[minimum width=9pt, minimum height=10pt,anchor=west,font=\tiny,inner sep=0pt,name=d1] at (cell1.west)
 {-$\infty$};
@@ -52,8 +50,6 @@
 %\node[anchor=south,font=\tiny,align=center] at ($(cell21.south)+(0pt,-20pt)$) {{$\tt T,\mkadata1$}};
 
 \draw[->] (succ1) -- (cell21);
-
-
 
 \node[rounded corners,draw,name=cell22,minimum width=24pt, minimum height=20pt] at ($(cell21.east)+(30pt,0pt)$){};
 \node[minimum width=8pt, minimum height=10pt,anchor=west,font=\tiny,inner sep=0pt,name=d1] at (cell22.west)
