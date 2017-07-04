@@ -448,6 +448,88 @@ respectively.
 \label{fig:tsshape}
 \end{figure} 
 
+Our fragment abstraction represents a set of heap states by
+a set of {\em fragments}. Each fragment consists of
+a pair of node types (called {\em tags}) that are connected by a pointer.
+A tag is an abstraction of a heap cell, which contains both 
+\begin{enumerate}[(i)]
+\item
+  local information about its non-pointer fields, obtained
+   using data abstraction if necessary.
+ \item
+   global information, saying how
+it can reach to and be reached from (by following a chain of pointers)
+other heap cells that are pointed to by global variables, or cells whose
+    data field has  the same value as some observer register.
+\end{enumerate}
+Our fragment abstraction incorporate the thread-modular approach by letting
+tags consider local variables of only one arbitrary single thread, and
+only requiring that fragments represent heap cells that can be accessed by
+that thread.
+
+\begin{figure}
+	\input tsabsshape
+\caption{Fragment abstraction}
+\label{fig:tsviewshape}
+\end{figure} 
+
+Figure~\ref{fig:tsviewshape} shows a set of fragments that is
+satisfied wrp.\ to $\thread_2$ by the configuration in Figure~\ref{fig:tsshape}.
+There are $7$ fragments, named $\frag_1$, \ldots , $\frag_2$. Two of
+these ($\frag_3$ and $\frag_7$) consist of a tag that points to $\dangconst$,
+and the other consist of a pair of pointer-connected tags.
+Consider the tag which occurs in fragment $\frag_7$; it is the bottom-rightmost
+tag. This tag is an abstraction of the
+bottom-rightmost heap cell in Figure~\ref{fig:tsshape}, using the same layout
+for fields as Figure~\ref{fig:tsshape}. The different non-pointer fields
+are represented as follows.
+\begin{itemize}
+\item The $\tt data$ field of the tag (to the left) abstracts the data value
+  $2$ to the set of observer registers with that value: in this case
+  $\reg_2$.
+\item The $\tt ts$ field (at the top) abstracts the timer value $15$ to
+  the possible relations with $\tt ts$-fields of heap cells with the same
+  data value as each observer registers. Recall that observer registers
+  $\reg_1$ and $\reg_2$ have values $4$ and $2$, respectively. There are
+  three heap cells with $\tt data$ field value $4$, all with a $\tt ts$
+  value less than $15$. There is one heap cell with
+  $\tt data$ field value $2$, having $\tt ts$ value $15$.
+  Consequently, the abstraction of the $\tt ts$ field maps $\reg_1$ to
+  $\set{>}$ and $\reg_2$ to $\set{=}$: this is shown as the mapping
+  $\lambda_4$ in Figure~\ref{fig:tsviewshape}.
+\item The $\tt mark$ field assumes values from a small finite domain and
+  is represented precisely as in concrete heap cells
+\end{itemize}
+Above the tag are 
+
+Let us illustrate how
+
+
+simply by letting each set of fragments represent only the heap cells that
+are accessible to an arbitrary single thread.
+
+A set of fragments represents the set of heap structures in which each
+pair of pointer-connected cells are represented by some fragment in the set.
+
+
+Each tag in a fragment is depicted with the same layout as heap cells.
+The non-pointer fields are replaced by their corresponding data abstractions. 
+For the $\tt data$ field, a register $\reg_i$ denotes that $\reg_i$ is mapped to
+$\set{=}$, and a $\circ$ that both registers are mapped to $\set{\neq}$.
+The ${\tt ts}$ field has can be mapped to four different mappings: $\lambda_1$, $\lambda_2$, $\lambda_3$ and $\lambda_4$, which are shown in the
+yellow box at the bottom.
+%% which are the mappings from observers registers to subsets of $\set{<,=,>}$ as described in the figure.
+The set $\pvars$ is shown above the tag.
+The sets $\reachfrom$ and $\reachto$ are shown below each tag, with
+$\reachfrom$ is in the first row and $\reachto$ in the second row.
+
+The fragments $\tt v_1$, $\tt v_2$, and $\tt v_3$ represent cells
+in the first two lists, whereas, $\tt v_4$, $\tt v_5$, $\tt v_6$, and $\tt v_7$
+represent cells in the list pointed to by $\tt pools[3]$
+%% The data field of a cell is presented by $\tt x_1$ if its value is equal to $\tt x_1$, $\tt x_2$ if its value is equal to $\tt x_2$ and $\circ$ if its value is different from both $\tt x_1$ and $\tt x_2$. 
+
+
+
 
 %% This invariant is obtained by an abstract-interpretation-based
 %% fixpoint procedure, which starts
@@ -574,11 +656,9 @@ $\tt x_1$ and $\tt x_2$, which are assigned the values $4$ and $2$,
 respectively.
 %\todo[inline]{to Quy: what about the variable ${\tt k}$?}
 
-\begin{figure}
-	\input tsshape
-\caption{A possible heap configuration of TS stack with three threads.}
-\label{fig:tsshape}
-\end{figure} 
+
+
+
 %\quycom{I am trying to improve text from here}
 %\todo[inline]{I do not quite understand that this is the result: Thread 2 is doing a pop from list 3: so it sees ${\tt top}_3$. But why does it see the
 %  list 2? and why does it need to see the list 1? Does thread 2 really see all the nodes and variables in Figure 5?}
@@ -609,11 +689,6 @@ of fragments, which represents the heap that is accessible to $\thread$ in
 the global configuration. In the following, we explain more precisely the
 local symbolic configurations, and our fragment abstraction.
 
-\begin{figure}
-	\input tsabsshape
-\caption{Fragment abstraction}
-\label{fig:tsviewshape}
-\end{figure} 
 A local configuration of a thread which executes the ${\tt pop}$ method consists
 of the values of the program counter, the boolean variable ${\tt success}$, the
 pointer variables ${\tt youngest}$, ${\tt myTop}$, ${\tt n}$,
