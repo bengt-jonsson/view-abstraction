@@ -828,7 +828,7 @@ r := false;};
 \node[linecode] at ($(add.east)+(21pt,-90pt)$)  {\scriptsize          return false; };
 
 \node[linecode] at ($(add.east)+(14pt,-100pt)$)  {\scriptsize        continue; };
-\node[linecode] at ($(add.east)+(14pt,-110pt)$)  {\scriptsize      int highestLocked = -1;};\node[linecode] at ($(add.east)+(14pt,-120pt)$)  {\scriptsize      try };\node[linecode] at ($(add.east)+(21pt,-130pt)$)  {\scriptsize         Node* pred, succ, prevPred = null;};\node[linecode] at ($(add.east)+(21pt,-140pt)$)  {\scriptsize         bool valid = true; };\node[linecode] at ($(add.east)+(21pt,-150pt)$)  {\scriptsize         for (int layer = 0;valid \&\& (layer<=topLayer);layer++) };\node[linecode] at ($(add.east)+(28pt,-160pt)$)  {\scriptsize 			pred = preds[layer]; };\node[linecode] at ($(add.east)+(28pt,-170pt)$)  {\scriptsize 			succ = succs[layer]; };\node[linecode] at ($(add.east)+(28pt,-180pt)$)  {\scriptsize 			if (pred != prevPred)};\node[linecode] at ($(add.east)+(35pt,-190pt)$)  {\scriptsize 			   pred.lock();};\node[linecode] at ($(add.east)+(35pt,-200pt)$)  {\scriptsize 			   highestLocked = layer;};\node[linecode] at ($(add.east)+(35pt,-210pt)$)  {\scriptsize     		   prevPred = pred;};\node[linecode] at ($(add.east)+(28pt,-220pt)$)  {\scriptsize            valid = !pred.marked \&\& !succ.marked};
+\node[linecode] at ($(add.east)+(14pt,-110pt)$)  {\scriptsize      int highestLocked = -1;};\node[linecode] at ($(add.east)+(14pt,-120pt)$)  {\scriptsize      try };\node[linecode] at ($(add.east)+(21pt,-130pt)$)  {\scriptsize         Node* pred, succ, prevPred = null;};\node[linecode] at ($(add.east)+(21pt,-140pt)$)  {\scriptsize         bool valid = true; };\node[linecode] at ($(add.east)+(21pt,-150pt)$)  {\scriptsize         for (int layer = 0;valid\&\&layer<=topLayer;layer++)};\node[linecode] at ($(add.east)+(28pt,-160pt)$)  {\scriptsize 			pred = preds[layer]; };\node[linecode] at ($(add.east)+(28pt,-170pt)$)  {\scriptsize 			succ = succs[layer]; };\node[linecode] at ($(add.east)+(28pt,-180pt)$)  {\scriptsize 			if (pred != prevPred)};\node[linecode] at ($(add.east)+(35pt,-190pt)$)  {\scriptsize 			   pred.lock();};\node[linecode] at ($(add.east)+(35pt,-200pt)$)  {\scriptsize 			   highestLocked = layer;};\node[linecode] at ($(add.east)+(35pt,-210pt)$)  {\scriptsize     		   prevPred = pred;};\node[linecode] at ($(add.east)+(28pt,-220pt)$)  {\scriptsize            valid = !pred.marked \&\& !succ.marked};
 \node[linecode] at ($(add.east)+(55pt,-230pt)$)  {\scriptsize            \&\&pred.nexts[layer]= succ;};
 \node[linecode] at ($(add.east)+(21pt,-240pt)$)  {\scriptsize          if (!valid ) continue;};\node[linecode] at ($(add.east)+(21pt,-250pt)$)  {\scriptsize          Node* newNode = new Node (v,topLayer);};\node[linecode] at ($(add.east)+(21pt,-260pt)$)  {\scriptsize 		 for (int layer = 0; layer <= topLayer; layer++)}; \node[linecode] at ($(add.east)+(28pt,-270pt)$)  {\scriptsize             newNode.nexts[layer] = succs[layer];};\node[linecode] at ($(add.east)+(28pt,-280pt)$)  {\scriptsize             preds[layer].nexts[layer] = newNode;};\node[linecode] at ($(add.east)+(21pt,-290pt)$)  {\scriptsize          newNode.fullyLinked = true;};\node[linecode] at ($(add.east)+(21pt,-300pt)$)  {\scriptsize          return true;};\node[linecode] at ($(add.east)+(14pt,-310pt)$)  {\scriptsize       finally unlock(preds, highestLocked);};
 
@@ -841,7 +841,7 @@ r := false;};
 
 
 \node[linecode,anchor=west](rmv) at ($(locate.west)+(-120pt,-140pt)$) {};
-\node(rmv-head)[font={\small\tt},anchor=west] at (rmv)  {\scriptsize rmv(int v):};\node[linecode] at ($(rmv.east)+(0pt,-10pt)$)  {\scriptsize Node* nodeToDelete = null;};\node[linecode] at ($(rmv.east)+(0pt,-20pt)$)  {\scriptsize bool isMarked = false;};\node[linecode] at ($(rmv.east)+(0pt,-30pt)$)  {\scriptsize int topLayer = -1;};\node[linecode] at ($(rmv.east)+(0pt,-40pt)$)  {\scriptsize Node* preds[MaxHeight], succs[MaxHeight];};\node[linecode] at ($(rmv.east)+(0pt,-50pt)$)  {\scriptsize while (true)};\node[linecode] at ($(rmv.east)+(7pt,-60pt)$)  {\scriptsize int lFound = findNode(v, preds, succs);};\node[linecode] at ($(rmv.east)+(7pt,-70pt)$)  {\scriptsize if (isMarked ||};\node[linecode] at ($(rmv.east)+(14pt,-80pt)$)  {\scriptsize    (lFound != -1 \&\& okToDelete (succs[lFound], lFound)))};\node[linecode] at ($(rmv.east)+(14pt,-90pt)$)  {\scriptsize    if (!isMarked)};\node[linecode] at ($(rmv.east)+(21pt,-100pt)$)  {\scriptsize       nodeToDelete = succs[lFound];};\node[linecode] at ($(rmv.east)+(21pt,-110pt)$)  {\scriptsize       topLayer = nodeToDelete.topLayer;};\node[linecode] at ($(rmv.east)+(21pt,-120pt)$)  {\scriptsize       nodeToDelete.lock.lock();};\node[linecode] at ($(rmv.east)+(21pt,-130pt)$)  {\scriptsize       if(nodeToDelete.marked);};\node[linecode] at ($(rmv.east)+(28pt,-140pt)$)  {\scriptsize 		  nodeToDelete.lock.unlock();};\node[linecode] at ($(rmv.east)+(21pt,-150pt)$)  {\scriptsize        return false;};\node[linecode] at ($(rmv.east)+(21pt,-160pt)$)  {\scriptsize        nodeToDelete.marked = true;};\node[linecode] at ($(rmv.east)+(21pt,-170pt)$)  {\scriptsize        isMarked = true;};\node[linecode] at ($(rmv.east)+(14pt,-180pt)$)  {\scriptsize     int highestLocked = -1;};\node[linecode] at ($(rmv.east)+(14pt,-190pt)$)  {\scriptsize     try};\node[linecode] at ($(rmv.east)+(21pt,-200pt)$)  {\scriptsize        Node* pred, succ, prevPred = null;};\node[linecode] at ($(rmv.east)+(21pt,-210pt)$)  {\scriptsize        bool valid = true;};\node[linecode] at ($(rmv.east)+(21pt,-220pt)$)  {\scriptsize        for (int layer = 0; valid \&\& (layer<=topLayer); layer++)};\node[linecode] at ($(rmv.east)+(28pt,-230pt)$)  {\scriptsize 			pred = preds[layer];};\node[linecode] at ($(rmv.east)+(28pt,-240pt)$)  {\scriptsize 			succ = succs[layer];};\node[linecode] at ($(rmv.east)+(28pt,-250pt)$)  {\scriptsize 		    if (pred != prevPred)};\node[linecode] at ($(rmv.east)+(35pt,-260pt)$)  {\scriptsize 				pred.lock.lock();};\node[linecode] at ($(rmv.east)+(28pt,-270pt)$)  {\scriptsize 			highestLocked = layer;};\node[linecode] at ($(rmv.east)+(28pt,-280pt)$)  {\scriptsize 			prevPred = pred;};\node[linecode] at ($(rmv.east)+(28pt,-290pt)$)  {\scriptsize            valid = !pred.marked \&\& pred.nexts[layer]==succ;};\node[linecode] at ($(rmv.east)+(21pt,-300pt)$)  {\scriptsize         if (!valid) continue;};\node[linecode] at ($(rmv.east)+(21pt,-310pt)$)  {\scriptsize         for (int layer = topLayer; layer >= 0; layer--)};\node[linecode] at ($(rmv.east)+(28pt,-320pt)$)  {\scriptsize             preds[layer].nexts[layer] = nodeToDelete.nexts[layer];};\node[linecode] at ($(rmv.east)+(21pt,-330pt)$)  {\scriptsize         nodeToDelete.lock.unlock();};\node[linecode] at ($(rmv.east)+(21pt,-340pt)$)  {\scriptsize 		 return true;};\node[linecode] at ($(rmv.east)+(14pt,-350pt)$)  {\scriptsize      finally unlock(preds,highestLocked); };\node[linecode] at ($(rmv.east)+(7pt,-360pt)$)  {\scriptsize    else return false; };
+\node(rmv-head)[font={\small\tt},anchor=west] at (rmv)  {\scriptsize rmv(int v):};\node[linecode] at ($(rmv.east)+(0pt,-10pt)$)  {\scriptsize Node* nodeToDelete = null;};\node[linecode] at ($(rmv.east)+(0pt,-20pt)$)  {\scriptsize bool isMarked = false;};\node[linecode] at ($(rmv.east)+(0pt,-30pt)$)  {\scriptsize int topLayer = -1;};\node[linecode] at ($(rmv.east)+(0pt,-40pt)$)  {\scriptsize Node* preds[MaxHeight], succs[MaxHeight];};\node[linecode] at ($(rmv.east)+(0pt,-50pt)$)  {\scriptsize while (true)};\node[linecode] at ($(rmv.east)+(7pt,-60pt)$)  {\scriptsize int lFound = findNode(v, preds, succs);};\node[linecode] at ($(rmv.east)+(7pt,-70pt)$)  {\scriptsize if (isMarked ||};\node[linecode] at ($(rmv.east)+(14pt,-80pt)$)  {\scriptsize    (lFound != -1 \&\& okToDelete (succs[lFound], lFound)))};\node[linecode] at ($(rmv.east)+(14pt,-90pt)$)  {\scriptsize    if (!isMarked)};\node[linecode] at ($(rmv.east)+(21pt,-100pt)$)  {\scriptsize       nodeToDelete = succs[lFound];};\node[linecode] at ($(rmv.east)+(21pt,-110pt)$)  {\scriptsize       topLayer = nodeToDelete.topLayer;};\node[linecode] at ($(rmv.east)+(21pt,-120pt)$)  {\scriptsize       nodeToDelete.lock.lock();};\node[linecode] at ($(rmv.east)+(21pt,-130pt)$)  {\scriptsize       if(nodeToDelete.marked);};\node[linecode] at ($(rmv.east)+(28pt,-140pt)$)  {\scriptsize 		  nodeToDelete.lock.unlock();};\node[linecode] at ($(rmv.east)+(21pt,-150pt)$)  {\scriptsize        return false;};\node[linecode] at ($(rmv.east)+(21pt,-160pt)$)  {\scriptsize        nodeToDelete.marked = true;};\node[linecode] at ($(rmv.east)+(21pt,-170pt)$)  {\scriptsize        isMarked = true;};\node[linecode] at ($(rmv.east)+(14pt,-180pt)$)  {\scriptsize     int highestLocked = -1;};\node[linecode] at ($(rmv.east)+(14pt,-190pt)$)  {\scriptsize     try};\node[linecode] at ($(rmv.east)+(21pt,-200pt)$)  {\scriptsize        Node* pred, succ, prevPred = null;};\node[linecode] at ($(rmv.east)+(21pt,-210pt)$)  {\scriptsize        bool valid = true;};\node[linecode] at ($(rmv.east)+(21pt,-220pt)$)  {\scriptsize        for (int layer = 0;valid \&\&layer<=topLayer; layer++)};\node[linecode] at ($(rmv.east)+(28pt,-230pt)$)  {\scriptsize 			pred = preds[layer];};\node[linecode] at ($(rmv.east)+(28pt,-240pt)$)  {\scriptsize 			succ = succs[layer];};\node[linecode] at ($(rmv.east)+(28pt,-250pt)$)  {\scriptsize 		    if (pred != prevPred)};\node[linecode] at ($(rmv.east)+(35pt,-260pt)$)  {\scriptsize 				pred.lock.lock();};\node[linecode] at ($(rmv.east)+(28pt,-270pt)$)  {\scriptsize 			highestLocked = layer;};\node[linecode] at ($(rmv.east)+(28pt,-280pt)$)  {\scriptsize 			prevPred = pred;};\node[linecode] at ($(rmv.east)+(28pt,-290pt)$)  {\scriptsize            valid = !pred.marked \&\& pred.nexts[layer]==succ;};\node[linecode] at ($(rmv.east)+(21pt,-300pt)$)  {\scriptsize         if (!valid) continue;};\node[linecode] at ($(rmv.east)+(21pt,-310pt)$)  {\scriptsize         for (int layer = topLayer; layer >= 0; layer--)};\node[linecode] at ($(rmv.east)+(28pt,-320pt)$)  {\scriptsize             preds[layer].nexts[layer] = nodeToDelete.nexts[layer];};\node[linecode] at ($(rmv.east)+(21pt,-330pt)$)  {\scriptsize         nodeToDelete.lock.unlock();};\node[linecode] at ($(rmv.east)+(21pt,-340pt)$)  {\scriptsize 		 return true;};\node[linecode] at ($(rmv.east)+(14pt,-350pt)$)  {\scriptsize      finally unlock(preds,highestLocked); };\node[linecode] at ($(rmv.east)+(7pt,-360pt)$)  {\scriptsize    else return false; };
 %
 %\begin{pgfonlayer}{background}
 % \node[code-bg,fit=(rmv-head) (code3) (rmv10) ]{};
@@ -851,41 +851,46 @@ r := false;};
 %%%%%%%%%% ctn %%%%%%%%%%
 
 %\node[linecode](ctn) at ($(rmv.east)+(105pt,-50pt)$) {};
-\node(ctn-head)[font={\small\tt},anchor=west] at 
-($(locate.west)+(70pt,-330pt)$) 
-{\scriptsize ctn(e):};
+\node(ctn-head)[linecode][anchor=west] at 
+($(locate.west)+(120pt,-330pt)$) 
+{\scriptsize bool ctn(int v):};
 
 \node(ctn-local)[linecode] at 
-($(ctn-head.west)+(0pt,-10pt)$) {\scriptsize local c};
+($(ctn-head.west)+(0pt,-10pt)$) {\scriptsize Node* preds[MaxHeight] , succs[MaxHeight] ;};
 
-\node(ctn1)[linenum,anchor=west] at ($(ctn-local.west)+(0pt,-10pt)$) {1};
+\node(ctn1)[linenum,anchor=west] at ($(ctn-local.west)+(0pt,-10pt)$) {};
 \node[linecode] at ($(ctn1.east)+(0pt,0pt)$) 
-{\scriptsize c := Head;};
+{\scriptsize int lFound = findNode ( v,preds,succs);};
 
-\node(ctn2)[linenum] at ($(ctn1.east)+(0pt,-10pt)$) {2};
+\node(ctn2)[linenum] at ($(ctn1.east)+(0pt,-10pt)$) {};
 \node[linecode] at ($(ctn2.east)+(0pt,0pt)$)
-{\scriptsize while (c.val < e)};
+{\scriptsize return (lFound != -1};
 
-\node(ctn3)[linenum] at ($(ctn2.east)+(0pt,-10pt)$) {3};
-\node[linecode] (code3a) at ($(ctn3.east)+(10pt,0pt)$)
-{\scriptsize c := c.next};
+\node(ctn3)[linenum] at ($(ctn2.east)+(0pt,-10pt)$) {};
+\node[linecode] (code3a) at ($(ctn3.east)+(30pt,0pt)$)
+{\scriptsize \&\& succs[lFound].fullyLinked};
 
-\node(ctn4)[linenum] at ($(ctn3.east)+(0pt,-10pt)$) {4};
+\node(ctn4)[linenum] at ($(ctn3.east)+(30pt,-10pt)$) {};
 \node[linecode] at ($(ctn4.east)+(0pt,0pt)$)
-{\scriptsize b := c.mark $\triggersym$};
+{\scriptsize \&\& !succs[lFound].marked);};
 
-\node(ctn5)[linenum] at ($(ctn4.east)+(0pt,-10pt)$) {5};
-\node(code5)[linecode] at ($(ctn5.east)+(0pt,0pt)$) 
-{\scriptsize if (! b \&\& c.val = e) };
 
-\node(ctn6)[linenum] at ($(ctn5.east)+(0pt,-10pt)$) {6};
-\node[linecode] at ($(ctn6.east)+(10pt,0pt)$) 
-{\scriptsize return true;};
 
-\node(ctn7)[linenum] at ($(ctn6.east)+(0pt,-10pt)$) {7};
-\node[linecode] at ($(ctn7.east)+(0pt,0pt)$) 
-{\scriptsize else return false;};
+\node(ctn-head)[linecode][anchor=west] at 
+($(locate.west)+(120pt,-400pt)$) 
+{\scriptsize bool okToDelete(Node* candidate,int lFound):};
 
+\node(ctn2)[linenum] at ($(ctn-head.west)+(0pt,-10pt)$) {};
+\node[linecode] at ($(ctn2.east)+(10pt,0pt)$)
+{\scriptsize return (candidate.fullyLinked};
+
+\node(ctn3)[linenum] at ($(ctn2.east)+(0pt,-10pt)$) {};
+\node[linecode] (code3a) at ($(ctn3.east)+(30pt,0pt)$)
+{\scriptsize \&\& candidate.topLayer=lFound};
+
+\node(ctn4)[linenum] at ($(ctn3.east)+(30pt,-10pt)$) {};
+\node[linecode] at ($(ctn4.east)+(0pt,0pt)$)
+{\scriptsize \&\&  !candidate.marked);};
 
 
 %\begin{pgfonlayer}{background}
@@ -896,7 +901,7 @@ r := false;};
 %%%%%%%%%%% struct %%%%%%%%%%%%%%%%
 
 \node[linecode,anchor=south west](struct) at ($(locate-head.north west)+(-4pt,8pt)$) 
-{\scriptsize struct Node(bool lock; int val; Node *next; bool mark);};
+{\scriptsize struct Node(int key; int topLayer; Node *nexts; bool marked; fullylinked;Lock lock);};
 
 
 %\begin{pgfonlayer}{background}
@@ -914,6 +919,153 @@ r := false;};
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%%%%%%%%%LOCK-FREE SKIPLIST%%%%%%%%%
+
+\begin{figure}
+\begin{tikzpicture}[]
+
+%%%%%%%%%% locate %%%%%%%%%%
+\node(locate){};
+\node(locate-head)[linecode] at ($(locate.west)+(-100pt,-10pt)$) {\scriptsize boolean find(int x, Node* preds[], Node* succs[]):};
+\node[linecode] at ($(locate-head.west)+(0pt,-20pt)$)  {\scriptsize int mLevel = 0;};
+\node[linecode] at ($(locate-head.west)+(0pt,-30pt)$)  {\scriptsize boolean marked[MAXLEVEL] = {false};};
+\node[linecode] at ($(locate-head.west)+(0pt,-40pt)$)  {\scriptsize boolean snip;};
+\node[linecode] at ($(locate-head.west)+(0pt,-50pt)$)  {\scriptsize Node* pred = null, curr = null, succ = null;};
+\node[linecode] at ($(locate-head.west)+(0pt,-60pt)$)  {\scriptsize retry:};
+\node[linecode] at ($(locate-head.west)+(7pt,-70pt)$)  {\scriptsize  while (true) };
+\node[linecode] at ($(locate-head.west)+(14pt,-80pt)$)  {\scriptsize   pred = head; };
+\node[linecode] at ($(locate-head.west)+(14pt,-90pt)$)  {\scriptsize   for (int i = MAXLEVEL; i >= mLevel; i--) };
+\node[linecode] at ($(locate-head.west)+(21pt,-100pt)$)  {\scriptsize    curr = pred.next[i]; };
+\node[linecode] at ($(locate-head.west)+(21pt,-110pt)$)  {\scriptsize    while (true) };
+\node[linecode] at ($(locate-head.west)+(28pt,-120pt)$)  {\scriptsize      succ = curr.next[i].get(marked); };
+ \node[linecode] at ($(locate-head.west)+(28pt,-130pt)$)  {\scriptsize     while (marked[0]) };
+ \node[linecode] at ($(locate-head.west)+(28pt,-140pt)$)  {\scriptsize       s= CAS(pred.next[i],curr,succ,false,false); };
+\node[linecode] at ($(locate-head.west)+(35pt,-150pt)$)  {\scriptsize        if (!s) continue retry; };
+\node[linecode] at ($(locate-head.west)+(35pt,-160pt)$)  {\scriptsize        curr = pred.next[i]; };
+\node[linecode] at ($(locate-head.west)+(35pt,-170pt)$)  {\scriptsize        succ = curr.next[i].get(marked); };
+\node[linecode] at ($(locate-head.west)+(28pt,-180pt)$)  {\scriptsize      if (curr.key < x) };
+\node[linecode] at ($(locate-head.west)+(35pt,-190pt)$)  {\scriptsize         pred = curr; curr = succ; };
+\node[linecode] at ($(locate-head.west)+(28pt,-200pt)$)  {\scriptsize      else };
+\node[linecode] at ($(locate-head.west)+(35pt,-210pt)$)  {\scriptsize         break; };
+\node[linecode] at ($(locate-head.west)+(21pt,-220pt)$)  {\scriptsize    preds[i] = pred; };
+\node[linecode] at ($(locate-head.west)+(21pt,-230pt)$)  {\scriptsize    succs[i] = curr; };
+\node[linecode] at ($(locate-head.west)+(14pt,-240pt)$)  {\scriptsize   return (curr.key == key); };
+
+%%%%%%%%%% add %%%%%%%%%%
+
+\node[anchor=west](add) at ($(locate.east)+(75pt,0pt)$) {};
+\node(add-head)[linecode] at (add) {\scriptsize add(int v):};
+\node[linecode] at ($(add.east)+(0pt,-10pt)$)  {\scriptsize int topLevel = randomLevel();};
+\node[linecode] at ($(add.east)+(0pt,-20pt)$)  {\scriptsize  int mLevel = 0; };
+\node[linecode] at ($(add.east)+(0pt,-30pt)$)  {\scriptsize  Node* preds[MAXLEVEL+1]; };
+\node[linecode] at ($(add.east)+(0pt,-40pt)$)  {\scriptsize  Node* succs[MAXLEVEL+1]; };
+\node[linecode] at ($(add.east)+(0pt,-50pt)$)  {\scriptsize while (true) };
+\node[linecode] at ($(add.east)+(7pt,-60pt)$)  {\scriptsize    boolean found = find(x, preds, succs); };
+\node[linecode] at ($(add.east)+(7pt,-70pt)$)  {\scriptsize    if (found)};
+\node[linecode] at ($(add.east)+(14pt,-80pt)$) {\scriptsize      return false;};
+\node[linecode] at ($(add.east)+(7pt,-90pt)$)  {\scriptsize    else};
+\node[linecode] at ($(add.east)+(14pt,-100pt)$) {\scriptsize      Node* new = new Node(x, topLevel);};
+\node[linecode] at ($(add.east)+(14pt,-110pt)$) {\scriptsize      for (int i= mLevel;level<=topLevel;i++)};
+\node[linecode] at ($(add.east)+(21pt,-120pt)$) {\scriptsize          Node* succ = succs[i];};
+\node[linecode] at ($(add.east)+(21pt,-130pt)$) {\scriptsize          new.next[i].set(succ, false);};
+\node[linecode] at ($(add.east)+(14pt,-140pt)$) {\scriptsize      Node* pred = preds[mLevel];};
+\node[linecode] at ($(add.east)+(14pt,-150pt)$) {\scriptsize      Node* succ = succs[mLevel];};
+\node[linecode] at ($(add.east)+(14pt,-160pt)$) {\scriptsize      new.next[mLevel].set(succ, false);};
+\node[linecode] at ($(add.east)+(14pt,-170pt)$) {\scriptsize      if (!CAS(pred.next[mLevel],succ,new,false,false))};
+\node[linecode] at ($(add.east)+(21pt,-180pt)$) {\scriptsize  		  continue;};
+\node[linecode] at ($(add.east)+(14pt,-190pt)$) {\scriptsize      for (int i=mLevel+1;i<=topLevel;i++)};
+\node[linecode] at ($(add.east)+(21pt,-200pt)$) {\scriptsize         while (true)};
+\node[linecode] at ($(add.east)+(28pt,-210pt)$) {\scriptsize           pred = preds[i];};
+\node[linecode] at ($(add.east)+(28pt,-220pt)$) {\scriptsize           succ = succs[i];};
+\node[linecode] at ($(add.east)+(28pt,-230pt)$) {\scriptsize           if (CAS(pred.next[i],succ,new,false,false))};
+\node[linecode] at ($(add.east)+(35pt,-240pt)$) {\scriptsize               break;};
+\node[linecode] at ($(add.east)+(28pt,-250pt)$) {\scriptsize           find(x,preds,succs);};
+\node[linecode] at ($(add.east)+(14pt,-260pt)$) {\scriptsize      return true;};
+
+%%%%%%%%%% rmv %%%%%%%%%%
+
+\node[linecode,anchor=west](rmv) at ($(locate.west)+(-120pt,-280pt)$) {};
+\node(rmv-head)[font={\small\tt},anchor=west] at (rmv)  {\scriptsize bool rmv(int x):};\node[linecode] at ($(rmv.east)+(0pt,-10pt)$)  {\scriptsize Node* nodeToDelete = null;};\node[linecode] at ($(rmv.east)+(0pt,-20pt)$)  {\scriptsize   int mLevel = 0;};
+\node[linecode] at ($(rmv.east)+(0pt,-30pt)$)  {\scriptsize   Node* preds[MAXLEVEL+1];};
+\node[linecode] at ($(rmv.east)+(0pt,-40pt)$)  {\scriptsize   Node* succs[MAXLEVEL+1];};
+\node[linecode] at ($(rmv.east)+(0pt,-50pt)$)  {\scriptsize   Node* succ;};
+\node[linecode] at ($(rmv.east)+(0pt,-60pt)$)  {\scriptsize   while (true)}; 
+\node[linecode] at ($(rmv.east)+(7pt,-70pt)$)  {\scriptsize     boolean found = find(x, preds, succs);};
+\node[linecode] at ($(rmv.east)+(7pt,-80pt)$)  {\scriptsize     if (!found)};
+\node[linecode] at ($(rmv.east)+(14pt,-90pt)$)  {\scriptsize        return false;};
+\node[linecode] at ($(rmv.east)+(7pt,-100pt)$)  {\scriptsize     else};
+\node[linecode] at ($(rmv.east)+(14pt,-110pt)$)  {\scriptsize        Node* node = succs[mLevel];};
+\node[linecode] at ($(rmv.east)+(14pt,-120pt)$)  {\scriptsize        for (int i = node.topLevel; i >= mLevel+1; i--)};
+\node[linecode] at ($(rmv.east)+(21pt,-130pt)$)  {\scriptsize             boolean marked[MAXLEVEL+1] = {false}; };
+\node[linecode] at ($(rmv.east)+(21pt,-140pt)$)  {\scriptsize             succ = node.next[i].get(marked); }; 
+\node[linecode] at ($(rmv.east)+(21pt,-150pt)$)  {\scriptsize             while (!marked[0])  };
+\node[linecode] at ($(rmv.east)+(28pt,-160pt)$)  {\scriptsize               node.next[i].attemptMark(succ, true); };
+\node[linecode] at ($(rmv.east)+(28pt,-170pt)$)  {\scriptsize               succ = node.next[i].get(marked); };
+\node[linecode] at ($(rmv.east)+(14pt,-180pt)$)  {\scriptsize         boolean marked[MAXLEVEL+1] = {false}; };
+\node[linecode] at ($(rmv.east)+(14pt,-190pt)$)  {\scriptsize         succ = node.next[mLevel].get(marked); };
+\node[linecode] at ($(rmv.east)+(14pt,-200pt)$)  {\scriptsize         while (true)  };
+\node[linecode] at ($(rmv.east)+(21pt,-210pt)$)  {\scriptsize           boolean iMarkedIt = };
+\node[linecode] at ($(rmv.east)+(21pt,-220pt)$)  {\scriptsize           CAS(node.next[mLevel],succ, succ, false, true); };
+\node[linecode] at ($(rmv.east)+(21pt,-230pt)$)  {\scriptsize           succ = succs[mLevel].next[mLevel].get(marked); };
+\node[linecode] at ($(rmv.east)+(21pt,-240pt)$)  {\scriptsize           if (iMarkedIt)};
+\node[linecode] at ($(rmv.east)+(28pt,-250pt)$)  {\scriptsize              find(x, preds, succs); };
+\node[linecode] at ($(rmv.east)+(28pt,-260pt)$)  {\scriptsize              return true; };
+\node[linecode] at ($(rmv.east)+(21pt,-270pt)$)  {\scriptsize           else if (marked[0]) return false; };
+
+
+%%%%%%%%%% ctn %%%%%%%%%%
+
+\node(cnt-head)[linecode][anchor=west] at 
+($(locate.west)+(120pt,-330pt)$) 
+{\scriptsize bool ctn(int x):};
+\node[linecode] at ($(cnt-head.west)+(0pt,-10pt)$)  {\scriptsize int bottomLevel = 0;};
+\node[linecode] at ($(cnt-head.west)+(0pt,-20pt)$)  {\scriptsize bool marked[MAXLEVEL] = {false};};
+\node[linecode] at ($(cnt-head.west)+(0pt,-30pt)$)  {\scriptsize Node* pred = head, curr = null, succ = null;};
+\node[linecode] at ($(cnt-head.west)+(0pt,-40pt)$)  {\scriptsize for (int i = MAXLEVEL; i >= mLevel; i--) };
+\node[linecode] at ($(cnt-head.west)+(7pt,-50pt)$)  {\scriptsize    curr = pred.next[i]; };
+\node[linecode] at ($(cnt-head.west)+(7pt,-60pt)$)  {\scriptsize    while (true) };
+\node[linecode] at ($(cnt-head.west)+(14pt,-70pt)$)  {\scriptsize      succ = curr.next[i].get(marked); };
+\node[linecode] at ($(cnt-head.west)+(14pt,-80pt)$)  {\scriptsize      while (marked[0]) };
+ \node[linecode] at ($(cnt-head.west)+(21pt,-90pt)$)  {\scriptsize       curr = pred.next[i]; };
+\node[linecode] at ($(cnt-head.west)+(21pt,-100pt)$)  {\scriptsize        succ = curr.next[i].get(marked); };
+\node[linecode] at ($(cnt-head.west)+(14pt,-110pt)$)  {\scriptsize     if (curr.key < x) };
+\node[linecode] at ($(cnt-head.west)+(21pt,-120pt)$)  {\scriptsize       pred = curr; };
+\node[linecode] at ($(cnt-head.west)+(21pt,-130pt)$)  {\scriptsize       curr = succ; };
+\node[linecode] at ($(cnt-head.west)+(14pt,-140pt)$)  {\scriptsize      else };
+\node[linecode] at ($(cnt-head.west)+(21pt,-150pt)$)  {\scriptsize        break; };
+\node[linecode] at ($(cnt-head.west)+(0pt,-160pt)$)  {\scriptsize return (curr.key == v); };
+%%%%%%%%%%% struct %%%%%%%%%%%%%%%%
+
+\node[linecode,anchor=south west](struct) at ($(locate-head.north west)+(-4pt,8pt)$) 
+{\scriptsize struct Node(int key; int topLayer; Node *nexts; bool marked);};
+
+\end{tikzpicture}
+\caption{\tt Lock-free Skiplist.}
+\label{fig:lockfreeskiplist}
+\end{figure}
 
 
 
