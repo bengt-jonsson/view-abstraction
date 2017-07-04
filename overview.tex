@@ -543,6 +543,42 @@ a bounded set of tags.
 %% and only therafter
 %% performing the step of $t'$; thereafter the resulting abstract post-state
 %% is projected back onto $t$.
+
+Let us illustrate our fragment abstraction on the TS stack algorithm.
+Its heap consists of a set of singly linked lists (SLLs), each of which
+is accessed from a pointer in the array ${\tt pools[maxThreads]}$.
+Figure~\ref{fig:tsshape} shows an example heap state,
+in a configuration when % Quy write from here
+it is accessed concurrently by three threads $\thread_1$, $\thread_2$, and $\thread_3$. The heap consists of three SLLs accessed from the three pointers $\tt pools[1]$, $\tt pools[2]$, and $\tt pools[3]$ respectively. Each heap cell is
+shown with the values of its fields, using the layout shown to the right in
+Figure~\ref{fig:tsshape}.
+In addition, each cell is labeled by the
+pointer variables that point to it. We use ${\tt lvar[i]}$ to denote the local
+variable ${\tt lvar}$ of thread $\thread_i$.
+%\todo[inline]{Quy: Use a better scheme for indexing local variables. Previously,
+%  we used ${\tt var[2]}$, for variable ${\tt var}$ of thread 2. Maybe use it also here?}
+%\todo[inline]{You must start by explaining the notation better. E.g., what means
+%  a pointer variable that labels a node?}
+
+Thread $\thread_1$ is trying to push a new node with data value $4$, pointed by its local variable $\tt new$, having reached line 3.
+Thread $\thread_3$ has just called the ${\tt push}$ method.
+Thread $\thread_2$ has reached line 12 in the execution of the ${\tt pop}$ method,  and has just assigned ${\tt youngest}$ to the first node in the list
+pointed to by $\tt pools[3]$ which is not logically removed (in this case it is the last node of that list).
+The local state of thread $\thread_2$
+%% which executes the ${\tt pop}$ method
+consists of the values of its program counter, the boolean variable ${\tt success}$, the pointer variables ${\tt youngest}$, ${\tt myTop}$, and ${\tt n}$,
+and the timestamp variable ${\tt maxTS}$.
+In verification, we must also consider the observer. In this case, the added
+observer is the one in Figure~\ref{fig:lifostack:fig}, which has two registers
+$\tt x_1$ and $\tt x_2$, which are assigned the values $4$ and $2$,
+respectively.
+%\todo[inline]{to Quy: what about the variable ${\tt k}$?}
+
+\begin{figure}
+	\input tsshape
+\caption{A possible heap configuration of TS stack with three threads.}
+\label{fig:tsshape}
+\end{figure} 
 %\quycom{I am trying to improve text from here}
 %\todo[inline]{I do not quite understand that this is the result: Thread 2 is doing a pop from list 3: so it sees ${\tt top}_3$. But why does it see the
 %  list 2? and why does it need to see the list 1? Does thread 2 really see all the nodes and variables in Figure 5?}
@@ -711,8 +747,8 @@ The set $\pvars$ is shown above the tag.
 The sets $\reachfrom$ and $\reachto$ are shown below each tag, with
 $\reachfrom$ is in the first row and $\reachto$ in the second row.
 
-The fragments $\tt v_1$, $\tt v_2$, $\tt v_3$, and $\tt v_4$ represent cells
-in the first two lists, whereas, $\tt v_5$, $\tt v_6$, $\tt v_7$, and $\tt v_8$
+The fragments $\tt v_1$, $\tt v_2$, and $\tt v_3$ represent cells
+in the first two lists, whereas, $\tt v_4$, $\tt v_5$, $\tt v_6$, and $\tt v_7$
 represent cells in the list pointed to by $\tt pools[3]$
 %% The data field of a cell is presented by $\tt x_1$ if its value is equal to $\tt x_1$, $\tt x_2$ if its value is equal to $\tt x_2$ and $\circ$ if its value is different from both $\tt x_1$ and $\tt x_2$. 
 
