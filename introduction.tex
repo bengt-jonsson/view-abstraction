@@ -18,50 +18,60 @@ often employ fine-grained synchronization and avoid locking when
 possible. A number of bugs  in published
 algorithms have been reported~\cite{DDGJLMMSS:dcas,MiSc:correction}.
 Consequently, significant research efforts have been directed towards developing
-techniques to verify correctness of such algorithms.
-\bjcom{Maybe provide a concrete example of a verification task}.
+techniques to verify correctness of such algorithms, in particular
+to verify that concurrent algorithms that implement standard data structure
+interfaces are {\em linearizable}, meaning that
+each method invocation can be considered to occur atomically at some point
+between its call and return.
+Many such techniques require significant {\em manual} effort for
+constructing a proof of correctness
+(e.g.,~\cite{LF:pldi13,Vafeiadis:Thesis}),
+in some cases with the support of an interactive theorem prover
+(e.g.,~\cite{Aaron:locigcal:linearizability,Colvin:Lazy-List,Derrick:fm14,SWD:cav12,SDW:tcl14}).
+Development of automated verification techniques is a difficult challenge.
+
 A major difficulty is that a successful verification technique must be
 able to reason about fine-grained concurrent algorithms that are infinite-state
 in many dimensions: 
 they consist of an unbounded number of concurrent threads, which
 operate on an unbounded domain of data values, and use
 unbounded dynamically allocated memory. 
-This makes it very hard to develop automated verification techniques.
-Many presented techniques require significant {\em manual} effort for
-constructing a proof of correctness
-(e.g.,~\cite{LF:pldi13,Vafeiadis:Thesis}),
-in some cases with the support of an interactive theorem prover
-(e.g.,~\cite{Aaron:locigcal:linearizability,Colvin:Lazy-List,Derrick:fm14,SWD:cav12,SDW:tcl14}).
+Perhaps the hardest of these is the problem of handling
+dynamically allocated memory.
+Consequently, all existing techniques for automatically proving correctness
+of such concurrent algorithms restrict attention to the case where
+%% All automated approaches restrict attention to concurrent algorithms in which
+the heap represents shared data byp singly-linked
+lists~\cite{AHHR:integrated,meyer:vmcai16,Quy:sas16,Sagiv:correlation,Vafeiadis:cav10}. Many of these techniques impose additional restrictions on the considered problem, such as bounding the number of accessing
+threads~\cite{Amit:comparisonAbstraction,Vechev:spin09,CernyRZCA:CAV10}.
+\bjcom{Add other restrictions}
+However, many concurrent data structure implementations employ more
+sophisticated structures, such as skip
+lists~\cite{Fomitchev:2004,ArtOfMpP,Sundell:2005}, trees, and arrays of
+of singly-linked lists~\cite{ts-stack}.  There are no
+techniques that have been applied to automatically verify concurrent algorithms
+that operate on such data structures.
+
+
 %% \cite{HSV:concur13,Vafeiadis:cav10},
 %% or requiring auxiliary lemmas
 %% \cite{OHearnlist,Poling}.}
 \todo[inline]{The last list and its description must be improved. We actually should be more precise about what previous work has achieved, in terms of which combinations of challenges have been overcome}
 
-All automated approaches restrict attention to concurrent algorithms in which
-the heap represents shared data by singly-linked
-lists~\cite{AHHR:integrated,meyer:vmcai16,Quy:sas16,Sagiv:correlation,Vafeiadis:cav10}. Many of these impose additional restrictions on the considered problem,
-such as bounding the number of accessing
-threads~\cite{Amit:comparisonAbstraction,Vechev:spin09,CernyRZCA:CAV10}.
-However, many concurrent data structure implementations employ more
-sophisticated structures, such as skip
-lists~\cite{Fomitchev:2004,ArtOfMpP,Sundell:2005}, trees, and various extensions
-of singly-linked lists, e.g., with time-stamps~\cite{ts-stack}.  There are no
-techniques that have been applied to automatically verify concurrent algorithms
-that operate on such data structures.
-
 \paragraph{Contributions}
 In this paper, we present a technique for automatic verification of concurrent
-data structure implementations that operate on data structures which are more
-complex than just singly-linked lists.  Our approach is the first framework that
+data structure implementations that operate on dynamically allocated
+heap structures which are more complex than just singly-linked lists.
+Our approach is the first framework that
 can automatically verify concurrent data structure implementations that employ
 skip lists, singly linked lists, as well as arrays of singly linked lists,
-while also handling an unbounded
+at the same time as handling an unbounded
 number of concurrent threads, an unbounded domain of data values
 (including timestamps), and an unbounded shared heap.
 
 %% thereby abstracting away from the correlation between local states of different threads.
 Our technique is based on a novel shape abstraction,
-called {\em fragment abstraction}, which is able to represent
+called {\em fragment abstraction}, which in a simple way is able to represent
 different kinds of unbounded heap structures, such as arrays of singly linked
 lists and skip lists.
 %% , for representing an unbounded heap.
@@ -69,29 +79,34 @@ lists and skip lists.
 %% heap (note that the heap visible to a single thread is still unbounded).
 Its main idea is to represent a set of heap states by a set of {\em fragments}.
 Each fragment is simply a pair of node types (called {\em tags}) that are
-connected by a pointer. A tag can be seen as a finite abstraction of
+connected by a pointer. A tag can be seen as a finitary abstraction of
 a heap node, which summarizes both local information about
-values of its data fields (applying suitable data abstraction),
-as well as global information, including how
-it can be reached (by following a chain of pointers),
-from other heap cells that are pointed to by global variables.
-A set of fragments represents the set of heap structures in which each
-pair of pointer-connected nodes are represented by some fragment in the set.
+values of its data fields
+%% (applying suitable data abstraction),
+as well as global information about its position in the heap, including how
+it can reach to and be reached from (by following chains of pointers)
+other heap cells that are pointed to by global variables.
+A set of fragments describes how pairs of pointer-connected nodes can be
+``pieced together'' to form heap structures. 
+In other words, a set of fragments represents the set of heap structures in
+which each pair of pointer-connected nodes are represented by some
+fragment in the set.
 By construction, our fragment abstraction is finitary, since there is
 a bounded set of tags.
 
-We cope with the challenge of an unbounded number of threads by combining
-fragment abstraction with
-the successful thread-modular approach~\cite{BLMRS:cav08}, which
-generates and invariant that correlates the global state with the local state of
-an arbitrary thread. 
-In this combination, we use fragment abstraction to represent the part of the
-heap which is visible to a single thread.
-
-Our technique also allows to apply a suitable data abstraction to data fields
-in heap nodes. For instance, timestamp fields can be handles by applying
-an abstraction which records the relation between a timestamp value and the values of global timestamp variables.
-\bjcom{The last sentence was not completely accurate}
+Fragment abstraction can, in a natural way,
+be combined with other abstractions for
+handling unbounded data domains and for handling an unbounded number of threads.
+Our fragment abstraction technique copes with an unbounded data domain by
+letting the definition of tags incorporate
+a suitable data abstraction to the data fields in heap nodes.
+%% For instance, timestamp fields can be handles by applying
+%% an abstraction which records the relation between a timestamp value and the values of global timestamp variables.
+%% \bjcom{The last sentence was not completely accurate}
+We cope with the challenge of an unbounded number of threads by incorporating
+the successful thread-modular approach~\cite{BLMRS:cav08}; this is done
+simply by letting each set of fragments represent only the heap cells that
+are accessible to an arbitrary single thread.
 
 %% representation of a particular heap is obtained as the set of pairs of nodes
 %% that are connected by a {\tt next pointer}. Conversely,
@@ -129,30 +144,52 @@ an abstraction which records the relation between a timestamp value and the valu
 %% dynamically allocated data structures.
 
 We have implemented our approach and applied it to automatically verify
-correctness of concurrent data structure algorithms.
-More specifically, we have successfully verified linearizability of 
-a vast majority of linearizable concurrent implementations
+correctness, in the sense of linearizability, of a large number of
+concurrent data structure algorithms.
+More specifically, we have automatically verified linearizability of 
+most linearizable concurrent implementations
 of sets, stacks, and queues, which emply singly-linked lists, skip lists, or
 arrays of timestamped singly-linked lists, which are known to us in
-the verification literature. In this verification, we specify linearizability
+the literature on concurrent data structures.
+
+For this verification, we we specify linearizability
 using the simple and powerful technique of
-{\em observers}~\cite{AHHR:integrated}, which has been further developed in
-recent years:
-\begin{itemize}
+{\em observers}~\cite{AHHR:integrated}, which can be seen as monitors that
+report violations of the linearizability criterion. Observers synchronize with
+the monitored concurrent programs at designated actions. This can be done in
+two ways.
+\begin{inparaenum}[(1)]
 \item
-  For stacks and queues, linearizability can be completely specified by
+  For concurrent implementations of stacks and queues,
+  linearizability can be precisely specified by
   observers that synchronize on call and return actions of
   methods, as shown by~\cite{BEEH:icalp15,HSV:concur13}; this is done without
  any user annotation.
 \item
   For sets, the verification requires the user to annotate how linearization
-  points are placed in each method; this can be done either by affixing
-  linearization points to particular statements, or in more complex cases by
-  light-weight instrumentation using the approach of
-  controllers~\cite{Quy:sas16}.
-\end{itemize}
+  points are placed in each method; in most cases this is a small burden for
+  the verifier. The observer then synchronizeson these 
+  linearization points.
+%% typically by affixing
+%%   linearization points to particular statements, or in more complex cases by
+%%   light-weight instrumentation using the approach of
+%%   controllers~\cite{Quy:sas16}.
+%% \item
+%%   For sets, the verification requires the user to annotate how linearization
+%%   points are placed in each method, typically by affixing
+%%   linearization points to particular statements, or in more complex cases by
+%%   light-weight instrumentation using the approach of
+%%   controllers~\cite{Quy:sas16}.
+\end{inparaenum}
 Our implementation then automatically checks, using our novel technique based on
-fragment abstraction, that a supplied C-like description of the data structure
-implementation correctly implements a stack, queue, or set.
+fragment abstraction, that a supplied C-like description of a concurrent data structure is a correct linearizable implementation of a stack, queue, or set.
 
+The fact that our fragment abstraction has been able to automatically verify all
+suppplied concurrent algorithms, also those that employ skiplists or
+arrays of SLLs, indicates that the fragment abstraction is a simple
+mechanism for capturing both the local and global information about heap cells
+that is necessary for verifying correctness, in particular for
+concurrent algorithms where an unbounded number of threads interact
+via a shared heap.
 
+\todo[inline]{Here goes the outline}
