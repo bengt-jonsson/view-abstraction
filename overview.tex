@@ -57,7 +57,7 @@ between its invocation and return~\cite{HeWi:linearizability}.
 We specify linearizability using the technique of
 {\em observers}~\cite{AHHR:integrated}. Observers act like monitors that
 synchronize with the monitored concurrent programs over designated actions,
-and report violations of the linearizability criterion. In our verifications,
+and report violations of the linearizability criterion. In our verification,
 we use observers in two ways:
 \begin{enumerate}
 \item
@@ -440,7 +440,6 @@ In this case, the
 observer is the one in Figure~\ref{fig:lifostack:fig}, which has two registers
 $\tt x_1$ and $\tt x_2$, which are assigned the values $4$ and $2$,
 respectively.
-\todo[inline]{to Quy: what about the variable ${\tt k}$?}
 
 \begin{figure}
 	\input tsshape
@@ -455,12 +454,19 @@ A tag is an abstraction of a heap cell, which contains both
 \begin{enumerate}[(i)]
 \item
   local information about its non-pointer fields, obtained
-   using data abstraction if necessary.
+  using data abstraction if necessary, and about variables pointing to the
+  cell, and
  \item
    global information, saying how
 it can reach to and be reached from (by following a chain of pointers)
 other heap cells that are pointed to by global variables, or cells whose
-    data field has  the same value as some observer register.
+data field has the same value as some observer register.
+This global information describes how the cell is positioned relative to
+``important'' cells in the heap. Note that 
+cells which carry the the same data value as some observer register are also
+considered ``important'', since it is necessary to track their position in 
+order to verify ordering constraints that are checked by the observer.
+\bjcom{Do we need to explain this better?}
 \end{enumerate}
 Our fragment abstraction incorporate the thread-modular approach by letting
 tags consider local variables of only one arbitrary single thread, and
@@ -500,179 +506,49 @@ are represented as follows.
 \item The $\tt mark$ field assumes values from a small finite domain and
   is represented precisely as in concrete heap cells
 \end{itemize}
-Above the tag are 
+Above the top, the tag contains the thread-local and global pointer variables
+that point to the cell, in this case $\tt youngest$ and $\tt n$.
+At the bottom of the tag, the first row contains the global variables 
+pointing to cells from which the cell can be reached, in this case
+$\tt pools[3]$, as well as observer registers whose value is equal to the
+${\tt data}$ field of a cell from which  the cell can be reached, in this
+case $\reg_2$ (since the cell itself has the same data value as $\reg_2$).
+The second row contains dual information: now for cells that can be reached
+from the cell itself (this is again $\reg_2$).
 
-Let us illustrate how
+\todo[inline]{Fix the issue with ${\tt pools[3]}$}
 
+Each cell in the heap state of Figure~\ref{fig:tsshape} now satisfies
+some tag in Figure~\ref{fig:tsshape}. Moreoever, each pair of pointer-connected
+cells (where the pointed-to ``cell'' can also be $\dangconst$)
+satisfies some fragment in Figure~\ref{fig:tsshape} in the obvious way.
+Conversely, the set of fragments in
+Figure~\ref{fig:tsshape} represents the set of heaps in which each pair of
+pointer-connected cells satisfies one of its fragments. For instance, the
+list pointed to by $\tt pools[3]$ is represented by the sequence of
+fragments $\frag_4 \frag_5 \frag_6 \frag_7$.
 
-simply by letting each set of fragments represent only the heap cells that
-are accessible to an arbitrary single thread.
+In order to obtain a complete representation of reachable program configurations,
+we must also represent the local states of a thread. This is done in a standard
+manner, by applying the same data abstraction as for heap cells. For instance,
+the local state of thread $\thread_2$ corresponding to
+Figure~\ref{fig:tsshape} is represented by a {\em local symbolic configuration}
+that contains the values of the program counter and variable $\tt success$,
+abstracts the value of ${\tt k}$ into the set $\set{{\tt me},{\tt ot}}$ and
+applies the timestamp abstraction to ${\tt maxTS}$.
 
-A set of fragments represents the set of heap structures in which each
-pair of pointer-connected cells are represented by some fragment in the set.
+We are now ready to present our symbolic representation of a set of
+reachable program configurations. 
+%% It maps each local symbolic configuration to a set of fragments, which
+%% is a symbolic representation of the set of corresponding reachable heaps.
+Our symbolic representation is a mapping from a set of local symbolic
+configurations, which maps each local symbolic configuration in its domain
+to a set of fragments.
+A global configuration satisfies a symbolic representation $\symbrep$
+if the local state of each thread $\thread$ satisfies some local symbolic
+configuration in the domain of $\symbrep$, which is mapped to a set
+of fragments, which is satisfied by heap wrp.\ to thread $\thread$.
 
-
-Each tag in a fragment is depicted with the same layout as heap cells.
-The non-pointer fields are replaced by their corresponding data abstractions. 
-For the $\tt data$ field, a register $\reg_i$ denotes that $\reg_i$ is mapped to
-$\set{=}$, and a $\circ$ that both registers are mapped to $\set{\neq}$.
-The ${\tt ts}$ field has can be mapped to four different mappings: $\lambda_1$, $\lambda_2$, $\lambda_3$ and $\lambda_4$, which are shown in the
-yellow box at the bottom.
-%% which are the mappings from observers registers to subsets of $\set{<,=,>}$ as described in the figure.
-The set $\pvars$ is shown above the tag.
-The sets $\reachfrom$ and $\reachto$ are shown below each tag, with
-$\reachfrom$ is in the first row and $\reachto$ in the second row.
-
-The fragments $\tt v_1$, $\tt v_2$, and $\tt v_3$ represent cells
-in the first two lists, whereas, $\tt v_4$, $\tt v_5$, $\tt v_6$, and $\tt v_7$
-represent cells in the list pointed to by $\tt pools[3]$
-%% The data field of a cell is presented by $\tt x_1$ if its value is equal to $\tt x_1$, $\tt x_2$ if its value is equal to $\tt x_2$ and $\circ$ if its value is different from both $\tt x_1$ and $\tt x_2$. 
-
-
-
-
-%% This invariant is obtained by an abstract-interpretation-based
-%% fixpoint procedure, which starts
-%% from a representation of the set of initial configurations, and
-%% thereafter repeatedly performs
-%% postcondition computations that extend the
-%% symbolic representation by the effect of any execution step of the program,
-%% until convergence.
-%% The analysis needs to deal with the challenges of an unbounded domain of
-%% data values, an unbounded number of concurrently executing threads, and an
-%% unbounded heap. We have therefore developed a technique for verification,
-%% which uses a carefully designed combination of
-%% data abstraction, thread abstraction, and shape abstraction.
-%% Let us illustrate this symbolic representation on the algorithm in
-%% Figure~\ref{ts-stack:fig}.
-\begin{itemize}
-  \item
-    Our {\em data abstraction} abstracts from actual values variables and
-    fields of heap cells that represent data (they range over $\tt int$
-    in Figure~\ref{ts-stack:fig}),
-%%     of $\intgrs$-valued variables and $\intgrs$-fields of heap cells,
-    into possible relations
-    (in the set $\set{<,=,>}$) with global data variables and values of
-    observer registers. 
-    In order to verify that the observer cannot reach an accepting state,
-    it is necessary to
-    keep track of heap cells whose ${\tt data}$ field has the same value as an
-    observer register. Thus, 
-    for an observer register $\reg_i$, let $\cell$ be a {\em $\reg_i$-cell} if
-    the ${\tt data}$ field of $\cell$ has the same value as $\reg_i$.
-    Then, for timestamps, our data abstraction represents
-    possible relations with timestamps of $\reg_i$- cells.
-%% between values of ${\tt Data}$ fields of 
-%% heap cells, local ${\tt Data}$ variables, and registers of the observer.
-%% We similarly abstract from concrete values of timestamps by representing
-%% only relations between values of timestamps in heap cells and in
-%% local variables.
-  \item
-We cope with an unbounded number of threads by
-adapting the {\em thread-modular approach}~\cite{BLMRS:cav08},
-representing only the part of the global configuration that is visible to
-a single thread $\thread$; this part includes the local state of $\thread$ and
-the part of the heap that $\thread$ can access through its local
-and global pointer variables.
-\item
-  We cope with an unbounded heap by a novel shape abstraction, 
-called {\em fragment abstraction}. This abstraction 
-represents a heap by a set of (heap) {\em fragments}, where each fragment is
-a pair of node types (called {\em tags}) that are connected by a pointer.
-A tag is an abstraction of a heap cell, which contains both 
-\begin{inparaenum}[(i)]
-\item
-  local information about its non-pointer fields, obtained
-   using our data abstraction,
- \item
-   global information, saying how
-it can be reached from and reach to (by following a chain of pointers)
-other heap cells that are pointed to by global variables, or cells whose
-    data field has  the same value as some observer register.
-\end{inparaenum}
-A set of fragments represents the set of heap structures in which each
-pair of pointer-connected cells are represented by some fragment in the set.
-By construction, our fragment abstraction is finitary, since there is
-a bounded set of tags.
-\end{itemize}
-%% just a pair of cells that are connected by a ${\tt next}$ pointer. Thus, the
-%% representation of a particular heap is obtained as the set of pairs of cells
-%% that are connected by a ${\tt next pointer}$. Conversely,
-%% a set of (heap) fragments represents the set of heaps that can be formed by
-%% putting together fragments from this set, where each fragment may be used
-%% multiple times. In order to obtain a representation which is both expressive
-%% and bounded, cells are first abstracted to a finite set of cell types, called
-%% {\em tags}. A tag represents both local information about the values of
-%% fields of the cell
-%% and about which pointer variables point to the cell, as well as global
-%% information about how the cell is positioned in the overall projected heap.
-%% The global information records from which global and thread-local pointer
-%% variables the cell can be reached by a sequence of pointers, as well as
-%% which global variables can be reached from the cell.
-%% The postcondition computation must consider how this projection can
-%% be changed by execution steps of the program.
-%% Such a step can be performed
-%% either by the thread $t$ (a local step) or by 
-%% some other thread $t'$ (an interference step).
-%% Local steps can be handled by adapting standard techniques
-%% for computing postconditions.
-%% The corresponding postcondition computation must then take into account that
-%% the projection onto a particular thread can be changed either by step of that
-%% thread, or by a step of another thread.
-%% interference steps involve to first compute a new abstract configuration
-%% over two thread identifiers
-%% which represents the combined state of both threads $t$ and $t'$,
-%% and only therafter
-%% performing the step of $t'$; thereafter the resulting abstract post-state
-%% is projected back onto $t$.
-
-Let us illustrate our fragment abstraction on the TS stack algorithm.
-Its heap consists of a set of singly linked lists (SLLs), each of which
-is accessed from a pointer in the array ${\tt pools[maxThreads]}$.
-Figure~\ref{fig:tsshape} shows an example heap state,
-in a configuration when % Quy write from here
-it is accessed concurrently by three threads $\thread_1$, $\thread_2$, and $\thread_3$. The heap consists of three SLLs accessed from the three pointers $\tt pools[1]$, $\tt pools[2]$, and $\tt pools[3]$ respectively. Each heap cell is
-shown with the values of its fields, using the layout shown to the right in
-Figure~\ref{fig:tsshape}.
-In addition, each cell is labeled by the
-pointer variables that point to it. We use ${\tt lvar[i]}$ to denote the local
-variable ${\tt lvar}$ of thread $\thread_i$.
-%\todo[inline]{Quy: Use a better scheme for indexing local variables. Previously,
-%  we used ${\tt var[2]}$, for variable ${\tt var}$ of thread 2. Maybe use it also here?}
-%\todo[inline]{You must start by explaining the notation better. E.g., what means
-%  a pointer variable that labels a node?}
-
-Thread $\thread_1$ is trying to push a new node with data value $4$, pointed by its local variable $\tt new$, having reached line 3.
-Thread $\thread_3$ has just called the ${\tt push}$ method.
-Thread $\thread_2$ has reached line 12 in the execution of the ${\tt pop}$ method,  and has just assigned ${\tt youngest}$ to the first node in the list
-pointed to by $\tt pools[3]$ which is not logically removed (in this case it is the last node of that list).
-The local state of thread $\thread_2$
-%% which executes the ${\tt pop}$ method
-consists of the values of its program counter, the boolean variable ${\tt success}$, the pointer variables ${\tt youngest}$, ${\tt myTop}$, and ${\tt n}$,
-and the timestamp variable ${\tt maxTS}$.
-In verification, we must also consider the observer. In this case, the added
-observer is the one in Figure~\ref{fig:lifostack:fig}, which has two registers
-$\tt x_1$ and $\tt x_2$, which are assigned the values $4$ and $2$,
-respectively.
-%\todo[inline]{to Quy: what about the variable ${\tt k}$?}
-
-
-
-
-%\quycom{I am trying to improve text from here}
-%\todo[inline]{I do not quite understand that this is the result: Thread 2 is doing a pop from list 3: so it sees ${\tt top}_3$. But why does it see the
-%  list 2? and why does it need to see the list 1? Does thread 2 really see all the nodes and variables in Figure 5?}
-%As can be seen the the figure, the node pointed by $\tt new[1]$ is not visible with $\thread_3$ because it is still the private variable of $\thread_2$. We use three observer registers $\tt d_1$, $\tt d_2$, and $\tt d_3$. The data value $\tt 9$ is equal to $\tt d_1$, $\tt 8$ is equal to $\tt d_2$ and all other data values are equal to $\tt d_3$. To abstract timestamp of a node, we keep the ordering between its timestamp and nodes whose data values are equal to $\tt d_1$ or $\tt d_2$ which are described by $\tt to_1$,...,$\tt to_6$ in the figure.
-% Quy write here
-%\todo[inline]{Quy: make a picture of the correspondingq
-%  thread view with data abstraction  Complete this description}.
-%\begin{figure}
-%	\input tsshapeb
-%\caption{The projection on thread 2 after data abstraction}
-%\label{fig:tsdabsshape}
-%\end{figure} 
-
-%In order to represent the projection in Fig. ~\ref{fig:tsdabsshape} by
 
 Our symbolic representation represents the reachable local states of a thread by
 a finite set of {\em local symbolic configurations}, using our
@@ -689,157 +565,6 @@ of fragments, which represents the heap that is accessible to $\thread$ in
 the global configuration. In the following, we explain more precisely the
 local symbolic configurations, and our fragment abstraction.
 
-A local configuration of a thread which executes the ${\tt pop}$ method consists
-of the values of the program counter, the boolean variable ${\tt success}$, the
-pointer variables ${\tt youngest}$, ${\tt myTop}$, ${\tt n}$,
-and the timestamp variable ${\tt maxTS}$.
-A {\em local symbolic configuration} is defined by applying our data abstraction
-to the local non-pointer variables.  For a ${\tt pop}$ method, it maps
-the program counter and ${\tt success}$ to their current values. It also maps
-${\tt maxTS}$ to a mapping from each observer register $\reg_i$
-to $\set{<,=,>}$, such that if $t$ is the value of some $\reg_i$-node's
-$\tt ts$-field, then ${\tt maxTS} \sim t$ for some $\sim$ in this set.
-
-In the configuration of Figure~\ref{fig:tsshape}, thread $\thread_2$
-satisfies the local symbolic configuration shown in the green towards the
-bottom, 
-which maps the program counter to line 12, ${\tt success}$ to ${\tt false}$ and ${\tt maxTS}$ to the mapping from observer registers which maps
-$\tt x_1$ to $\set{>}$ and $\tt x_2$ to $\set{=}$
-(recall that the values of $\tt x_1$ and $\tt x_2$ are $4$, $2$ respectively).
-
-\todo[inline]{To Quy: what is the value of ${\tt MaxTS}$?}
-
-%% Secondly, we identify the current working list and abstract the other lists where we do not distinguish the differences between variables in the other list.
-
-Let us now show how our fragment abstraction represents the heap that is
-accessible to $\thread_2$.
-%% We must first define the notion of tag.
-%% Finally, we define the information conveyed by node tags. We define one tag for push operations and one for pop operations, since
-%% their methods use different sets of local variables.
-The local pointer variables of $\thread_2$ are 
-${\tt youngest}$, ${\tt myTop}$, and ${\tt n}$. Its global variables are of form
-${\tt pools[i]}$, where ${\tt i}$ is a thread index, which we abstract into the
-two variables ${\tt pools[me]}$, representing ${\tt pools[3]}$
-which points to the list which $\thread_2$ is currently accessing,
-and ${\tt pools[other]}$ representing ${\tt pools[i]}$ for $\tt i \neq 3$.
-%\todo[inline]{Quy: here, we need a good way to explain how to represent ${\tt pools[i]}$
-%  and ${\tt pools[k]}$}
-%\todo[inline]{Thus, which are the global variables?}
-%% For a thread which executes a $\tt pop$ operation, 
-Define a {\em tag} as a tuple
-$\tuple{\pvars,\vals,\reachfrom,\reachto,\private}$, where
-\begin{itemize}
-\item
-  $\pvars$ is a set of local and global pointer variables
-%%   of the ${\tt pop}$ method and (i.e., a subset of ${\tt top, ctop, youngest, n, myTop}$
-  %\bjcom{Quy: Check exactly what this set should be}
-\item
-  $\vals$ is an abstraction of the non-pointer fields of a cell,
-  i.e., it maps
-  \begin{inparaenum}[(i)]
-  \item
-    the ${\tt mark}$ field to a boolean value,
-  \item
-    the ${\tt data}$ field to a mapping from observer registers to $\set{=, \neq}$,
-  \item
-    the ${\tt ts}$ field to a mapping from observer registers to subsets of $\set{<,=,>}$.
-  \end{inparaenum}
-\item
-  $\reachfrom$ and $\reachto$ are sets of global variables and observer registers, and %\bjcom{Quy: Check what is really needed here: Maybe we need only reachfrom?}
-\item
-  $\private$ is a boolean value.
-\end{itemize}
-%% For an observer register $\reg_i$, let $\cell$ be a {\em $\reg_i$-cell} if
-%% the ${\tt data}$ field of $\cell$ has the same value as $\reg_i$.
-A heap cell $\cell$ which is accessible to $\thread_2$ satisfies a tag
-with respect to $\thread_2$,
-denoted $\cell \satfrag{{\thread_2}} \tagtuple$ if
-\begin{itemize}
-\item
-  $\pvars$ is the set of global and local (to $\thread_2$)
-  pointer variables that point to $\cell$,
-  %\bjcom{Quy: Or Should it be contains?}
-\item
-the non-pointer fields of $\cell$ satisfies $\vals$ under our data abstraction, i.e.
-  \begin{inparaenum}[(i)]
-  \item
-    $\vals({\tt mark})$ is the value of its ${\tt mark}$ field,
-  \item
-    for each observer register $\reg_i$, if $\cell$ is (is not) a
-    $\reg_i$-cell, then $= \in \vals({\tt data})$ ($\neq \in \vals({\tt data})$),
-  \item
-    let $ts$ be the value of its ${\tt ts}$ field, then
-    for each observer register $\reg_i$, if
-    the value $t$ of the ${\tt ts}$ field of some $\reg_i$-cell
-    satisfies $ts \sim t$, then $\sim \in \vals({\tt ts})$,
-  \end{inparaenum}
-\item $\reachfrom$ is the set of global variables from which $\cell$ is 
-  reachable (by a chain of ${\tt next}$) pointers), and the set of
-  observer registers $\reg_i$ such that $\cell$ is reachable from some $\reg_i$-cell,
-\item $\reachto$ is the set of global variables that point to a cell that
-  is reachable from $\cell$ and  the set of
-  observer registers $\reg_i$ such that some $\reg_i$-cell is reachable from $\cell$,
-\item $\private$ is $\true$ only if $\cell$ cannot be accessed from any
-  other thread than $\thread_2$.
-\end{itemize}
-
-We can now define the concept of fragment.
-A {\em fragment} $\frag$ is a pair of form $\tuple{\inputtag,\outputtag}$, 
-of form $\tuple{\inputtag,\nullconst}$, or 
-of form $\tuple{\inputtag,\dangconst}$.
-We write  
-$\cell \satfrag{{\thread_2}} \tuple{\inputtag,\outputtag}$ if
-the ${\tt next}$ field of $\cell$ points to a cell $\cell'$ such that
-$\cell \satfrag{{\thread_2}} \inputtag$ and
-$\cell' \satfrag{{\thread_2}} \outputtag$.
-For fragments of form $\tuple{\inputtag,\nullconst}$ 
-or $\tuple{\inputtag,\dangconst}$, the definition is adapted in the obvious way.
-A global configuration satisfies a set of fragments wrp.\ to $\thread_2$ if
-for any cell $\cell$ that is accessible to $\thread_2$, it contains a fragment
-$\frag$ such that $\cell \satfrag{{\thread_2}} \frag$.
-
-%\todo[inline]{Quy: can you revise from here, and explain carefully the
-%  local symbolic configuration, and set of fragments in 
-%  Figure~\ref{fig:tsviewshape}
-%}
-
-%\todo[inline]{to Quy: Comments on Figure~\ref{fig:tsviewshape}:
-%  I suggest to let the data field be a SET, use []- notation for the mappings of
-%  the $\lambda_i$, you had some nice notation before for reachfrom and
-%  reachto}
-%\todo[inline]{Quy: make a picture with all the fragments obtained from the
- % thread projection}
-Figure~\ref{fig:tsviewshape} shows a set of fragments that is
-satisfied wrp.\ to $\thread_2$ by configuration in Figure~\ref{fig:tsshape}.
-Each tag in a fragment is depicted with the same layout as heap cells.
-The non-pointer fields are replaced by their corresponding data abstractions. 
-For the $\tt data$ field, a register $\reg_i$ denotes that $\reg_i$ is mapped to
-$\set{=}$, and a $\circ$ that both registers are mapped to $\set{\neq}$.
-The ${\tt ts}$ field has can be mapped to four different mappings: $\lambda_1$, $\lambda_2$, $\lambda_3$ and $\lambda_4$, which are shown in the
-yellow box at the bottom.
-%% which are the mappings from observers registers to subsets of $\set{<,=,>}$ as described in the figure.
-The set $\pvars$ is shown above the tag.
-The sets $\reachfrom$ and $\reachto$ are shown below each tag, with
-$\reachfrom$ is in the first row and $\reachto$ in the second row.
-
-The fragments $\tt v_1$, $\tt v_2$, and $\tt v_3$ represent cells
-in the first two lists, whereas, $\tt v_4$, $\tt v_5$, $\tt v_6$, and $\tt v_7$
-represent cells in the list pointed to by $\tt pools[3]$
-%% The data field of a cell is presented by $\tt x_1$ if its value is equal to $\tt x_1$, $\tt x_2$ if its value is equal to $\tt x_2$ and $\circ$ if its value is different from both $\tt x_1$ and $\tt x_2$. 
-
-
-%% The local symbolic configuration maps the program counter to the value 12, ${\tt success}$ to ${\tt false}$ and ${\tt maxTS}$ to a mapping from observer registers $\tt x_1$ to $\set{>}$, $\tt x_2$ to $\set{=}$. 
-
-%% A thread-abstracted configuration satisfies a symbolic configuration if
-%% \begin{itemize}
-%% \item it satisfies program counter, observer state, and local variables %\bjcom{Say that program counter, and local variables ...}
-%% \item
-%%   For each cell $\cell$ in the heap of the configuration, there is
-%%   a fragment $\tuple{\inputtag,\outputtag}$ in the set of fragments, such
-%%   that $\cell \lhd \inputtag$ and ${\tt next}(\cell) \lhd \outputtag$.
-%%   \bjcom{check the case when $\cell$ points to null etc.}
-%% \end{itemize}
-
 In the  verification, we must compute a symbolic representation
 that is satisfied by all reachable program configurations (recall that
 program configurations include the state of the observer).
@@ -851,6 +576,7 @@ postcondition computations that extend the
 symbolic representation by the effect of any execution step of the program,
 until convergence.
 This procedure is presented in Section~\ref{subsect:postcond}.
+
 
 
 
