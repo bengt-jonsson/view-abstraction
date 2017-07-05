@@ -309,6 +309,56 @@ symbolic representation by the effect of any execution step of the program,
 until convergence.
 This procedure is presented in Section~\ref{subsect:postcond}.
 
+\subsection{Old text from beginning of Section~\ref{sec:fragment-abstraction}}
+
+By Theorem~\ref{thm:soundness}, linearizability can be verified by
+establishing a 
+reachability property for the product $\system=\augprog\compose\monitor$.
+This verification must handle the challenges of
+an unbounded number of threads, an unbounded heap, and unbounded data domain.
+We have therefore developed a symbolic representation, which
+is a careful combination of
+data abstraction, thread abstraction, and shape abstraction. 
+
+Our {\em data abstraction} abstracts from concrete data values in
+$\intgrs$ by representing only {\em relations}
+(in the set $\set{\prec,\equiv,\succ}$) between values of {\tt Data} fields of 
+heap cells, local {\tt Data} variables, and registers of the observer.
+%% We similarly abstract from concrete values of timestamps by representing
+%% only relations between values of timestamps in heap cells and in
+%% local variables.
+In order to cope with an unbounded number of threads,
+we extend the {\em thread-modular approach}~\cite{BLMRS:cav08}, in which
+the symbolic representation characterizes
+the projection of the configuration onto a single thread $\thread$.
+%% The postcondition computation must consider how this projection can
+%% be changed by execution steps of the program.
+%% Such a step can be performed
+%% either by the thread $\thread$ (a local step) or by 
+%% some other thread $\thread'$ (an interference step).
+%% Local steps can be handled by adapting standard techniques
+%% for computing postconditions.
+The corresponding postcondition computation must then take into account that
+the projection onto a particular thread can be changed either by step of that
+thread, or by a step of another thread.
+%% interference steps involve to first compute a new abstract configuration
+%% over two thread identifiers
+%% which represents the combined state of both threads $\thread$ and $\thread'$,
+%% and only therafter
+%% performing the step of $\thread'$; thereafter the resulting abstract post-state
+%% is projected back onto $\thread$.
+In order to cope with an unbounded heap, we have developed a novel symbolic
+representation, called {\em fragment abstraction}.
+The idea of this abstraction is
+to represent a heap by a set of (heap) {\em fragments}, where each fragment is
+just a pair of nodes that are connected by a pointer.
+In this section, we describe how this is done
+for singly linked lists, i.e., where each heap cell contains exactly one
+pointer field, named {\tt next}. In the following sections XXX and YYY, we describe
+how fragment abstraction is applied to skiplists and to arrays of singly linked
+lists.
+
+\todo[inline]{Maybe we include timestamps from the very start?} 
 
 
 \subsection{Old text on Skiplists}

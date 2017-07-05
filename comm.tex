@@ -97,8 +97,10 @@
 \newcommand{\abstrconf}{\Phi}
 \newcommand{\ac}{\abstrconf}
 \newcommand\action{a}
-\newcommand{\satlocsymbconf}[1]{\models_{#1}}
 \newcommand{\satfrag}[1]{\lhd_{#1}}
+\newcommand{\satlocsymbconf}[1]{\models_{#1}^{\mathit{loc}}}
+\newcommand{\satfragset}[1]{\models_{#1}^{\mathit{heap}}}
+\newcommand{\satconf}[1]{\models_{#1}}
 %% \newcommand{\actuple}{\tuple{\tvarset,\he,\constr}}
 %% \newcommand{\actupleprime}{\tuple{\tvarset,\he',\constr'}}
 \newcommand{\actuple}{\tuple{\indices,\globmap,\nrglobloc,\pexpglobloc,\dmap,\ordconstr}}
@@ -214,25 +216,26 @@
 \newcommand{\greachtoat}[1]{#1.\greachto}
 \newcommand{\gtag}{\mathtt{gtag}}
 \newcommand{\gtagat}[1]{#1.\gtag}
-\newcommand{\gtagtuple}{\tuple{\gpvars,\vals,\greachfrom,\greachto,\private}}
-\newcommand{\gtagtupleof}[1]{\tuple{\gpvarsof{#1},\valsof{#1},\greachfromof{#1},\greachtoof{#1},\privateof{#1}}}
-\newcommand{\gtagtupleat}[1]{\tuple{\gpvarsat{#1},\valsat{#1},\greachfromat{#1},\greachtoat{#1},\privateat{#1}}}
+\newcommand{\gtagtuple}{\tuple{\vals,\gpvars,\greachfrom,\greachto,\private}}
+\newcommand{\gtagtupleof}[1]{\tuple{\valsof{#1},\gpvarsof{#1},\greachfromof{#1},\greachtoof{#1},\privateof{#1}}}
+\newcommand{\gtagtupleat}[1]{\tuple{\valsof{#1},\gpvarsat{#1},\greachfromat{#1},\greachtoat{#1},\privateat{#1}}}
 
 \newcommand{\frag}{\mathtt{v}}
-\newcommand{\fragset}{F}
+\newcommand{\fragset}{V}
 
 
 \newcommand{\atag}{\mathtt{tag}}
 \newcommand{\tagat}[1]{#1.\atag}
-\newcommand{\tagtuple}{\tuple{\pvars,\vals,\reachfrom,\reachto,\private}}
-\newcommand{\tagtupleof}[1]{\tuple{\pvarsof{#1},\valsof{#1},\reachfromof{#1},\reachtoof{#1},\privateof{#1}}}
-\newcommand{\tagtupleat}[1]{\tuple{\pvarsat{#1},\valsat{#1},\reachfromat{#1},\reachtoat{#1},\privateat{#1}}}
+\newcommand{\tagtuple}{\tuple{\vals,\pvars,\reachfrom,\reachto,\private}}
+\newcommand{\tagtupleprime}{\tuple{\vals',\pvars',\reachfrom',\reachto',\private'}}
+\newcommand{\tagtupleof}[1]{\tuple{\valsof{#1},\pvarsof{#1},\reachfromof{#1},\reachtoof{#1},\privateof{#1}}}
+\newcommand{\tagtupleat}[1]{\tuple{\valsat{#1},\pvarsat{#1},\reachfromat{#1},\reachtoat{#1},\privateat{#1}}}
 \newcommand{\tagof}[1]{\mathtt{tag}\left(#1\right)}
 \newcommand{\sllviewtuple}{\tuple{\inputtag,\outputtag,\datarel}}
 \newcommand{\inputtag}{\mathtt{tag}_{in}}
 \newcommand{\outputtag}{\mathtt{tag}_{out}}
 \newcommand{\datarel}{\phi}
-\newcommand{\fragtupleof}[1]{\tuple{\inat{#1},\outat{#1},\datarelat{#1}}}
+\newcommand{\fragtupleat}[1]{\tuple{\inat{#1},\outat{#1},\datarelat{#1}}}
 \newcommand{\inat}[1]{#1.\mathtt{i}}
 \newcommand{\outat}[1]{#1.\mathtt{o}}
 \newcommand{\datarelat}[1]{#1.\datarel}
