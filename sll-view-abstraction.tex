@@ -7,6 +7,10 @@
 \end{center}
 \section{Fragment Abstraction: Singly Linked Lists}
 \label{sec:annotations}
+In this section, we describe in more detail our fragment abstraction for
+concurrent programs that operate on a shared heap where cells have a
+single pointer, named $\tt next$.
+
 By Theorem~\ref{thm:soundness}, linearizability can be verified by
 establishing a 
 reachability property for the product $\system=\augprog\compose\monitor$.
