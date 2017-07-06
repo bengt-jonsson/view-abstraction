@@ -361,6 +361,130 @@ lists.
 \todo[inline]{Maybe we include timestamps from the very start?} 
 
 
+\subsection{Old text on Intersection}
+
+\paragraph{Fragment Intersection:} 
+Let us now describe how to form the intersection of two sets of fragments
+$\fragset_1$ and $\fragset_2$, where $\fragset_i$ characterizes the projection of the heap onto thread $\thread_i$ for $i=1,2$. In order to distinguish
+between local variables of $\thread_1$ and $\thread_2$, we assume that local variable $\lvarof{x}$ in $\thread_i$ is named as $\lvarof{x[i]}$.
+Let $\fragset$ denote the result of intersecting $\fragset_1$ and $\fragset_2$.
+Then, for each heap cell $\cell$, which is
+accessible to either $\thread_1$ or $\thread_2$, the set $\fragset$ must
+contain a fragment $\frag$ with $\cell \satfrag{1,2} \frag$.
+\bjcom{This notation to be defined}
+There are  here two possibilities.
+\begin{itemize}
+\item If $\cell$ is accessible to both $\thread_1$ and $\thread_2$, then
+  there are fragments $\frag_1 \in \fragset_1$ and $\frag_2 \in \fragset_2$
+  such that $\cell \satfrag{1} \frag_1$ and $\cell \satfrag{2} \frag_2$.
+  We use the notation $\frag_1 \sqcap \frag_2$ to denote a set of views such that
+  whenever $\cell \satfrag{1} \frag_1$ and $\cell \satfrag{2} \frag_2$ then
+  $\cell \satfrag{1,2} \frag$ for some $\frag \in (\frag_1 \sqcap \frag_2)$.
+\item If $\cell$ is accessible to only one of $\thread_1$ and $\thread_2$,
+  say $\thread_1$, then $\fragset$ should contain some fragment
+  $\frag_1 \in \fragset_1$ with $\cell \satfrag{1,2} \frag_1$
+  \bjcom{Check that we need not change $\frag_1$}
+\end{itemize}
+For a fragment $\frag$, define
+$\greachfromat{\inat{\frag}}$ as the set of global variables in
+$\reachfromat{\inat{\frag}}$. Define
+$\greachtoat{\inat{\frag}}$,
+$\greachfromat{\outat{\frag}}$,
+$\greachtoat{\outat{\frag}}$,
+$\gpvarsat{\inat{\frag}}$, and
+$\gpvarsat{\outat{\frag}}$
+analogously.
+Define $\gtagat{\outat{\frag}}$ as the tuple
+$\tuple{\gpvarsat{\outat{\frag}},\valsat{\outat{\frag}},\greachfromat{\outat{\frag}},\greachtoat{\outat{\frag}},\privateat{\outat{\frag}}}$.
+
+\todo[inline]{Question to Quy: You have also used the notation
+  $\gvalsat{\inat{\frag}}$. Will you need it, and if so what does it mean?} \quycom{Because in the data, I add data constraint between data fields and local data variable. When we do intersection, we do not need to care about this constraint because its local constraint}
+
+Let us now describe how to compute  $\frag_1 \sqcap \frag_2$ for
+two views $\frag_1 \in \fragset_1$ and $\frag_2 \in \fragset_2$.
+Firstly, we consider the case where both $\frag_1$ and $\frag_2$ have size 2.
+Let us consider some different cases.
+They all take into account the  observation that if a cell $\cell$ satisfies
+$\cell \satfrag{1} \frag_1$ and $\cell \satfrag{2} \frag_2$, then
+the information about global variables in $\frag_1$ and $\frag_2$ must coincide.
+ \begin{itemize}
+ \item if $\greachfromat{\inat{\frag_1}} \neq \emptyset$ and $\greachfromat{\inat{\frag_2}} \neq \emptyset$ then the global information in $\frag_1$ and $\frag_2$ must coincide. We hence obtain:
+  \begin{itemize}
+  \item if $\gtagat{\inat{\frag_1}} = \gtagat{\inat{\frag_2}}$ and $\gtagat{\outat{\frag_1}} = \gtagat{\outat{\frag_2}}$ then $\frag_1 \sqcap v_2 = \set{\frag_{12}}$ where $\frag_{12}$ is identical to $\frag_1$ except that 
+  \begin{itemize}
+  \item $\pvarsat{\inat{\frag_{12}}} = \pvarsat{\inat{\frag_1}} \cup \pvarsat{\inat{\frag_2}}$ 
+  \item  $\pvarsat{\outat{\frag_{12}}} = \pvarsat{\outat{\frag_1}} \cup \pvarsat{\outat{\frag_2}}$
+  \item $\reachfromat{\inat{\frag_{12}}} = \reachfromat{\inat{\frag_{1}}} \cup \reachfromat{\inat{\frag_{2}}}$
+   \item $\reachfromat{\outat{\frag_{12}}} = \reachfromat{\outat{\frag_{1}}} \cup \reachfromat{\outat{\frag_{2}}}$
+     \todo[inline]{Question to Quy: Why do this union only for $\pvars$ and $\reachfrom$, and not for $\reachto$ and $\vals$?}\quycom{we fixed this in the disscussion}
+    \end{itemize}
+  \todo[inline]{Question to Quy: Should we not have an ``else'' here, with
+    $\frag_1 \sqcap \frag_2 = \emptyset$?}\quycom{we fixed this in the disscussion}
+ \end{itemize}
+
+ \item if $\greachfromat{\inat{\frag_1}} = \emptyset$, $\greachfromat{\inat{\frag_2}} = \emptyset$, $\greachfromat{\outat{\frag_1}} \neq \emptyset$ and $\greachfromat{\outat{\frag_2}} \neq \emptyset$ then 
+  \begin{itemize}
+  \item if $\gtagat{\outat{\frag_1}} = \gtagat{\outat{\frag_2}}$, $\privateat{\inat{\frag_1}} = \false$ and $\privateat{\inat{\frag_2}} = \false$ then $\frag_1 \sqcap \frag_2 = \set{\frag_1', \frag_2', \frag_{12}}$ where
+      %$\frag_{12}$ is same as $\frag_1$ except that 
+%    \begin{itemize}
+%  \item $\pvarsat{\inat{\frag_{12}}} = \pvarsat{\inat{\frag_1}} \cup \pvarsat{\inat{\frag_2}}$ 
+%  \item  $\pvarsat{\outat{\frag_{12}}} = \pvarsat{\outat{\frag_1}} \cup \pvarsat{\outat{\frag_2}}$
+%  \item $\reachfromat{\inat{\frag_{12}}} = \reachfromat{\inat{\frag_{1}}} \cup \reachfromat{\inat{\frag_{2}}}$
+%   \item $\reachfromat{\outat{\frag_{12}}} = \reachfromat{\outat{\frag_{1}}} \cup \reachfromat{\outat{\frag_{2}}}$
+%    \end{itemize} and
+      \begin{itemize}
+      \item
+        $\frag_1'$ is same as $\frag_1$ except that 
+    \begin{itemize}
+  \item  $\pvarsat{\outat{\frag_1'}} = \pvarsat{\outat{\frag_1}} \cup \pvarsat{\outat{\frag_2}}$
+  \item $\reachfromat{\outat{\frag_1'}} = \reachfromat{\outat{\frag_{1}}} \cup \reachfromat{\outat{\frag_{2}}}$
+    \end{itemize}
+  \item
+    $\frag_2'$ is same as $\frag_2$ except that 
+    \begin{itemize}
+  \item  $\pvarsat{\outat{\frag_2'}} = \pvarsat{\outat{\frag_1}} \cup \pvarsat{\outat{\frag_2}}$
+  \item $\reachfromat{\outat{\frag_2'}} = \reachfromat{\outat{\frag_{1}}} \cup \reachfromat{\outat{\frag_{2}}}$
+    \end{itemize}
+  \item
+    $\frag_{12}$ is as in the previous case.
+    \bjcom{to Quy: I added this, is it correct?}
+      \end{itemize}
+    \item if $\gtagat{\outat{\frag_1}} = \gtagat{\outat{\frag_2}}$ and $\privateat{\inat{\frag_1}} = \true$ or $\privateat{\inat{\frag_2}} = \true$ then $\frag_1 \sqcap \frag_2 = \set{\frag_1', \frag_2'}$ where
+$\frag_1'$ and $\frag_2'$ are as above.
+ \end{itemize}
+ 
+ \item if $\greachfromat{\inat{\frag_1}} = \emptyset$, $\greachfromat{\inat{\frag_2}} = \emptyset$, $\greachfromat{\outat{\frag_1}} = \emptyset$ and $\greachfromat{\outat{\frag_2}} = \emptyset$ then 
+ \begin{itemize}
+ \item if $\tt gtag(\frag_1, o) = gtag(\frag_2, o)$, $\privateat{\inat{\frag_1}} = false$, $\privateat{\outat{\frag_1}} = false$, $\privateat{\outat{\frag_1}} = false$ and $\privateat{\outat{\frag_2}} = false$ then  $\frag_1 \sqcap \frag_2 = \{\frag_1,\frag_2,\frag_1',\frag_2',\frag_{12}\}$ %where $\frag_{12}$ is same as $\frag_1$ except that 
+   % \begin{itemize}
+ % \item $\pvarsat{\inat{\frag_{12}}} = \pvarsat{\inat{\frag_1}} \cup \pvarsat{\inat{\frag_2}}$ 
+ % \item  $\pvarsat{\outat{\frag_{12}}} = \pvarsat{\outat{\frag_1}} \cup \pvarsat{\outat{\frag_2}}$
+ % \item $\reachfromat{\inat{\frag_{12}}} = \reachfromat{\inat{\frag_{1}}} \cup \reachfromat{\inat{\frag_{2}}}$
+ %  \item $\reachfromat{\outat{\frag_{12}}} = \reachfromat{\outat{\frag_{1}}} \cup \reachfromat{\outat{\frag_{2}}}$
+ %   \end{itemize} and 
+ %   $\frag_{1'}$ is same as $\frag_1$ except that 
+ %   \begin{itemize}
+ % \item  $\pvarsat{\outat{\frag_1'}} = \pvarsat{\outat{\frag_1}} \cup \frag_2.vars(j_o)$
+ % \item $\reachfromat{\outat{\frag_1'}} = \reachfromat{\outat{\frag_{1}}} \cup \reachfromat{\outat{\frag_{2}}}$
+ %   \end{itemize}
+ %  and $\frag_2'$ is same as $\frag_2$ except that 
+ %   \begin{itemize}
+ % \item  $\pvarsat{\outat{\frag_2'}} = \pvarsat{\outat{\frag_1}} \cup \frag_2.vars(j_o)$
+ % \item $\reachfromat{\outat{\frag_2'}} = \reachfromat{\outat{\frag_{1}}} \cup \reachfromat{\outat{\frag_{2}}}$
+ %   \end{itemize}
+    
+    
+   \item if $\tt gtag(\frag_1, o) = gtag(\frag_2, o)$, ($\privateat{\inat{\frag_1}} = true$ or $\privateat{\inat{\frag_2}} = true$) and $\privateat{\outat{\frag_1}} = false$ and $\privateat{\outat{\frag_2}} = false$ then  $\frag_1 \sqcap \frag_2 = \{\frag_1,\frag_2,\frag_1',\frag_2'\}$  
+
+  \item if $\tt gtag(\frag_1, o) = gtag(\frag_2, o)$ and ($\privateat{\outat{\frag_1}} = true$ or $\privateat{\outat{\frag_1}} = true$) then  $\frag_1 \sqcap \frag_2 = \{\frag_1,\frag_2\}$ 
+
+    \item if $\tt gtag(\frag_1, o) \neq gtag(\frag_2, o)$ then $\frag_1 \sqcap \frag_2 = \{\frag_1,\frag_2\}$
+ \end{itemize}
+ 
+ \end{itemize}
+
+
+
 \subsection{Old text on Skiplists}
 
 %\paragraph{Index Consistency:} Let $\tt i_1 \equiv i_2$ denotes that $\tt i_1$ and $\tt i_2$ are equivalent. Intuitively, $\tt i_1 \equiv i_2$ iff  ${\tt Val}^{\tt v}(\tt i_1) = {\tt Val}^{\tt v}(\tt i_2)$, ${\tt Val}^{\tt d}(\tt i_1) = {\tt Val}^{\tt d}(\tt i_2)$, $\tt private(i_1) = private(i_2)$ and $\tt \Phi(i_1.d, z) = \Phi(i_2.d, z)$ for every $\intgrs$-field $\tt d$ and $\intgrs$-term $\tt z$.  The indices $\tt i_1$ and $\tt i_2$ are consistent if they satisfy one of those conditions below
