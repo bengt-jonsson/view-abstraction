@@ -11,12 +11,12 @@
 \node[linecode] at ($(locate-head.west)+(9pt,-50pt)$)  {\scriptsize retry:};
 \node[linecode] at ($(locate-head.west)+(18pt,-60pt)$)  {\scriptsize  while (true) };
 \node[linecode] at ($(locate-head.west)+(27pt,-70pt)$)  {\scriptsize   pred = head; };
-\node(node2)[linecode] at ($(locate-head.west)+(27pt,-80pt)$)  {\scriptsize   for (int i = MAXLEVEL; i >= bottomLevel; i-\;-) };
-\node[linecode] at ($(locate-head.west)+(36pt,-90pt)$)  {\scriptsize    curr = pred.nexts[i]; };
+\node(node2)[linecode] at ($(locate-head.west)+(27pt,-80pt)$)  {\scriptsize   for (int i = MAXLEVEL; i >= bottomLevel; i-\;\!-) };
+\node[linecode] at ($(locate-head.west)+(36pt,-90pt)$)  {\scriptsize    curr = pred.next[i]; };
 \node[linecode] at ($(locate-head.west)+(36pt,-100pt)$)  {\scriptsize    while (true) };
-\node[linecode] at ($(locate-head.west)+(45pt,-110pt)$)  {\scriptsize      succ = curr.nexts[i].get(marked); };
+\node[linecode] at ($(locate-head.west)+(45pt,-110pt)$)  {\scriptsize      succ = curr.next[i].get(marked); };
  \node[linecode] at ($(locate-head.west)+(45pt,-120pt)$)  {\scriptsize     while (marked[0]) };
- \node(node4)[linecode] at ($(locate-head.west)+(54pt,-130pt)$)  {\scriptsize       snip = CAS(pred.nexts[i], curr, succ, false, false); };
+ \node(node4)[linecode] at ($(locate-head.west)+(54pt,-130pt)$)  {\scriptsize       snip = CAS(pred.next[i], curr, succ, false, false); };
 \node[linecode] at ($(locate-head.west)+(54pt,-140pt)$)  {\scriptsize        if (!s) continue retry; };
 \node[linecode] at ($(locate-head.west)+(54pt,-150pt)$)  {\scriptsize        curr = pred.next[i]; };
 \node[linecode] at ($(locate-head.west)+(54pt,-160pt)$)  {\scriptsize        succ = curr.next[i].get(marked); };
@@ -60,7 +60,7 @@
 
 
 \end{tikzpicture}
-\caption{A find method of lock-free Skip-List set.}
+\caption{A $\tt find$ method of a lock-free skiplist-based concurrent set.}
 \label{fig:lockfreeskiplistfind}
 \end{figure}
 

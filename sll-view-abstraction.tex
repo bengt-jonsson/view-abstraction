@@ -1,10 +1,10 @@
-\begin{center}
-\begin{figure}
-\input{sll-lazy-list-shape}
-\caption{Example of Fragment Abstraction}
-\label{lazylist}
-\end{figure}
-\end{center}
+%% \begin{center}
+%% \begin{figure}
+%% \input{sll-lazy-list-shape}
+%% \caption{Example of Fragment Abstraction}
+%% \label{lazylist}
+%% \end{figure}
+%% \end{center}
 \section{Fragment Abstraction: Singly Linked Lists}
 \label{sec:fragment-abstraction}
 In this section, we describe in more detail our fragment abstraction for
@@ -34,6 +34,7 @@ arrays of singly linked lists.
 %% unbounded heap. 
 
 \subsection{Fragment Abstraction for Singly-Linked List-Based Programs}
+\label{subsec:frag-sll}
 In this subsection, we describe our symbolic representation, using fragment
 abstraction, for programs that operate on singly-linked lists (SLLs). This
 representation is also the basis for our representation for programs
@@ -161,7 +162,7 @@ $\atag = \tagtuple$, we write $\cell \satfrag{\thread} \atag$ to denote that
 \begin{definition}[SLL-fragment]
 \label{def:sll-fragment}
 An {\em SLL-fragment} $\frag$ (or just fragment)
-is a triple of of form
+is a tuple of of form
 $\fragtupleat{\frag}$, of form
 $\tuple{\inat{\frag},\nullconst}$, or of form
 $\tuple{\inat{\frag},\dangconst}$,
@@ -350,7 +351,7 @@ pointer variables or the heap, since these are the most interesting cases.
 The main difficulty in the
 postcondition computation is to update the reachability information provided
 in the fields $\reachfrom$ and $\reachto$ in each tag of a 
-fragment. For instance, considerthat a statement $\gvarof{g} := \lvarof{p}$,
+fragment. For instance, consider that a statement $\gvarof{g} := \lvarof{p}$,
 which assigns the value of a local pointer variable $\lvarof{p}$ to a global
 pointer variable $\gvarof{g}$.
 In the postcondition computation, we must for each fragment
@@ -376,7 +377,7 @@ $\private = \private'$.
 Intuitively, $\atag$ and $\atag'$ are consistent if there can exist a cell
 $\cell$ accessible to $\thread$ with $\cell \satfrag{\thread} \atag$
 and $\cell \satfrag{\thread} \atag'$.
-\todo[inline]{To Quy: Can you really require that the data abstrations must
+\todo[inline]{To Quy: Can you really require that the data abstractions must
   be the same?}
 
 Let $\frag_1$ and $\frag_2$ be two fragments in a set $\fragset$ of fragments.
@@ -445,7 +446,7 @@ ${\tt x := y}$, where $\mathtt{x}$ and $\mathtt{y}$ are global or local
 (to thread $\thread$) pointer variables. We must compute a set $\fragsetpost$ of
 fragments which are satisfied by the configuration after the statement.
 We must ensure that any cell $\cell$ which is accessible to $\thread$ after
-the statement satisfies some fragement in $\fragsetpost$.
+the statement satisfies some fragment in $\fragsetpost$.
 The cell $\cell$ must satisfy some
 fragment $\frag$ in $\fragset$, and must be in the same heap state as
 the cell pointed to by $\gvarof{y}$. 
@@ -515,7 +516,7 @@ the fragments obtained by the following transformations on fragments in
 $\fragset$.
 \begin{enumerate}
   \item
-    First, let $\fragsetpost$ containt a new fragment $\frag_{new}$ of form
+    First, let $\fragsetpost$ contain a new fragment $\frag_{new}$ of form
     $\fragtupleat{\frag_{new}}$
     $\tagat{\inat{\frag_{new}}} = \tagat{\inat{\frag_x}}$ and $\tagat{\outat{\frag_{new}}} = \tagat{\inat{\frag_y}}$ except that $\reachfromat{\outat{\frag_{new}}} = \reachfromat{\inat{\frag_y}} \cup \reachfromat{\inat{\frag_x}}$,
     and $\datarelat{\frag_{new}} = \set{<,=,>}$.
@@ -623,34 +624,144 @@ which is identical to $\frag_1$ except that
   $\gvalsat{\inat{\frag}}$. Will you need it, and if so what does it mean?}
 \quycom{Because in the data, I add data constraint between data fields and local data variable. When we do intersection, we do not need to care about this constraint because its local constraint}
 \todo[inline]{New Question to Quy. BUT some of the data abstraction is
-  about observer registers. This must Agree or not?}
+  about observer registers. Mustn't this Agree?}
 
-
-\section{Fragment Abstraction for Skip-Lists}
+\subsection{Fragment Abstraction for Skiplists}
 \input skipcode
 %\todo[inline]{Here goes a description of the fragment abstraction for
 %   skip lists}
- In this section, we describe our symbolic representation, using fragment
-abstraction, for programs that operate on Skip-Lists. For describing the abstraction, let us describe what is a skip-list data structure. A skip-list is a linked list sorted by keys. Each node is assigned a random height, up to a maximum number. At each level of height, a Skip-List node have one successor. The list at each level, other than the bottom level, is a sublist of the list at the lower level. Because there are fewer nodes of higher heights, we can find a key quickly by finding first at higher levels, and skipping over large numbers of shorter nodes and progressively working downward until a node with the desired key is found, or else the bottom level is reached. Therefore, at the beginning and end of the lists, we have head sentinel and tail sentinel nodes with maximum heights respectively. Initially, the tail sentinel is the successor of the head sentinel at every level. The head sentinel's key is larger, and the tail sentinel's key is smaller, than any key that may be added to the set. Finding the Skip-List always starts from the head sentinel. 
+\todo[inline]{for Quy: in the Code, you use sometimes ``snip'', sometimes ``s''.
+  Level 17 is strange: Please adapt the syntax (now marked[0] is never assigned).
+  You might shorten by omitting the unlinking of marked nodes (lines 13 - 17)
+  to make it simple.
+It is a bit strange that marked[] is defined up to MAXLEVEL but only marked[0] is used}
 
-Figure~\ref{fig:lockfreeskiplistfind} shows a find method of a lock-free Skip-List set ~\cite{ArtOfMpP}. The method proceeds starts traversing
-the Skip-List from the topLevel of the head sentinel, which has the maximal
-allowed node level. It then proceeds in each level down the list, filling in $\tt preds$
-and $\tt succs$ nodes that are repeatedly advanced until $\tt pred$ refers to a node with
-the largest value on that level that is strictly less than the target key $\tt key$. The method repeatedly remove marked nodes on the way from the
-given level by using a compareAndSet(CAS) statement. Once an unmarked $\tt curr$ is found, if its key is less than the $\tt key$ then $\tt pred$ is advanced to $\tt curr$. Otherwise, the method breaks out of the current level search loop, saving the current values of $\tt pred$ and $\tt curr$. The method proceeds this way until it reaches the bottom level.
+In this section, we describe the application of our fragment abstraction to concurrent programs that operate on skiplists. Let us first briefly introduce skiplists. Skiplists are a popular structure used in concurrent data structures
+implementing sets and other collections.
+\bjinsert{REFERENCES}
+Heap cells have an array of $\tt next$ pointer, indexed by a level that ranges
+from $0$ and upwards. The pointer arrays of Head and Tail cells always have
+a maximum height, whereas the height of arrays at other nodes vary between $1$
+(only a $\tt next[0]$-pointer) and the maximum. The cells and $\tt next[0]$-pointers form a singly-linked
+list. Higher-level $\tt next$ pointers act as shortcuts in this list, so that
+for each $i$, the $\tt next[i]$-pointers form a sublist of the level-$0$ list.
+Because there are fewer nodes higher levels, one can find a given key quickly,
+by searching first through the list at higher levels,
+progressively working downward until the desired key is found.
+An initial empty skiplist has only a Head and a Tail cell with minimal and
+maximal keys, where 
+the Tail cell is the $\tt next[i]$-successor of the Head cell for each $i$.
+
+Figure~\ref{fig:lockfreeskiplistfind} shows a find method for locating
+a cell with a given key $\tt key$, which is part of a lock-free skiplist-based concurrent set algorithm described in~\cite{ArtOfMpP}.
+The method traverses the skiplist at decreasing levels, starting from
+level $\tt MAXLEVEL$ down until the bottom level $0$, using the pointers
+$\tt curr$ and $\tt pred$ in the standard way.
+%% It then proceeds in each level down the list, filling in $\tt preds$
+%% and $\tt succs$ nodes that are repeatedly advanced until $\tt pred$ refers to a node with
+%% the largest value on that level that is strictly less than the target key $\tt key$.
+During the traversal, the method also unlinks (i.e., physically removes)
+marked (i.e., logically removed) nodes (lines XX -- YY).
+At each level, the traversal continues until $\tt curr$ points to a node
+with a key larger than the desired key: then the $\tt pred$ and $\tt curr$ pointers are saved in the arrays $\tt preds$ and $\tt succs$ at the current level.
  
- Figure ~\ref{skiplistshape} shows an example heap state which is projection onto thread $\thread$ of the lock-free Skip-List set. Each heap cell in each level is shown with the values of its fields, using the layout shown to the top right in Figure ~\ref{skiplistshape}. In addition, each cell is labeled by the pointer variables that point to it. In the heap state of Figure ~\ref{skiplistshape}, thread $\thread$ is trying to find a target key 8 and having reached line 24. In this case, we have one observer register $x_1$ which is assigned the value 12. Figure ~\ref{skiplistabs} shows several fragments that is satisfied wrp. to $\thread$ by the configuration in ~\ref{skiplistshape} where we abstract the value of levels into the set $\set{{\tt h(higher)},{\tt 0}}$. Fragments $\tt v_1$, $\tt v_2$,$\tt v_3$, and $\tt v_4$ are the abstractions of several fragments at level 1 and 2. Fragments $\tt v_5$, $\tt v_6$,$\tt v_7$, and $\tt v_8$ are the abstractions from several fragments at the level 0.
+Figure ~\ref{skiplistshape} shows an example heap state during this method, for
+a skiplist with 3 levels. We show each heap cell as a vertical array of
+boxes, one for each level of this cell. At each level $i$, the $\tt data$,
+$\tt mark[i]$ and $\tt next[i]$ fields are shown, using the layout shown at the top right (there is only one $\tt data$ field, but we show it at each level).
+Each cell is labeled by the pointer variables that point to it.
+In the heap state of Figure ~\ref{skiplistshape}, the thead is trying to find a target key $8$ and has reached line 24, discovering that key $8$ is not in the list.
+For each $i$, the variables $\tt preds[i]$ and $\tt succs[i]$ point to the nearest cells at level $i$.
+
+\subsubsection{Fragment Abstraction for Skiplists}
+We can now describe our fragment abstraction for skiplist-based programs.
+It is based on the fragment abstraction for SLLs, described in
+Section~\ref{subsec:frag-sll}. The main difference is that we define two
+kinds of fragments: one for level-$0$ pointers, and one for higher-level
+pointers. Thus, our abstraction does not distinguish between the different
+higher levels of a skiplist. This also applies to names of pointer
+variables in  tags: we use the abstraction $\gvarof{p[h]}$ to denote a
+pointer variable $\gvarof{p[i]}$ for any $i \geq 1$.
+
+In cells of typical skiplist algorithms, both pointer and data fields
+are arrays indexed from $0$ to the height of the cell. An exception is
+the $\tt data$ field (typically containing a key value), which occurs once
+in each cell. Our fragments at level $i$ will represent the next pointer
+and data fields at level $i$, but global information (in the
+$\reachfrom$ and $\reachto$ fields of tags) is based on
+the underlying SLL structure at level $0$.
+
+
+Define a {\em tag} as a tuple $\atag = \tagtuple$, which the same
+structure as for singly linked lists, defined in Section~\ref{subsec:frag-sll}.
+For a cell $\cell$ which is accessible to thread $\thread$, and a tag
+$\atag = \tagtuple$, we say that
+the cell $\cell$ satisfies tag $\atag$ at level $0$, denoted
+$\cell \satslfrag{\thread}{0} \atag$ in the same way as for SLLs, except that
+\begin{itemize}
+\item
+  $\vals$ represents the concrete values of the non-pointer fields
+  at level $0$ of $\cell$,
+\item
+  in $\pvars$, $\reachfrom$, and $\reachto$ we let 
+  $\gvarof{p[h]}$ stand for any
+  pointer variable $\gvarof{p[i]}$ for any $i \geq 1$
+  (pointer variables $\gvarof{p[0]}$ are represented as such)
+\item
+  in $\reachfrom$ and $\reachto$ we consider reachability
+  wrp.\ to the pointer $\tt next[0]$.
+\end{itemize}
+We say that the cell $\cell$ satisfies tag $\atag$ at level $i$, denoted
+$\cell \satslfrag{\thread}{i} \atag$ in the same way, except that
+\begin{itemize}
+\item
+  $\vals$ represents the concrete values of the non-pointer fields
+  at level $i$ of $\cell$,
+\item
+  in $\reachfrom$ and $\reachto$ we consider reachability
+  wrp.\ to the pointer $\tt next[0]$.
+\end{itemize}
+
+\begin{definition}[Skipist-fragment]
+\label{def:sll-fragment}
+An {\em Skiplist-fragment} $\frag$
+is a tuple of form
+$\slfragtupleat{\frag}$, of form
+$\tuple{\inat{\frag},\nullconst,\sklevel}$, or of form
+$\tuple{\inat{\frag},\dangconst,\sklevel}$,
+which extends an SLL-fragment by a level $\sklevelat{\frag}$ which is either $0$ or $h$.
+\end{definition}
+For a cell $\cell$ which is accessible to thread $\thread$, and a fragment
+$\frag$ of form $\slfragtupleat{\frag}$,
+we write $\cell \satfrag{\thread}\frag$ to denote that
+there is an $i$ with $i= 0$ iff $\sklevelat{\frag} = 0$ such that
+the ${\tt next[i]}$ field of $\cell$ exists and points to a cell $\cell'$ such that
+$\cell \satslfrag{\thread}{i} \inat{\frag}$, and
+$\cell' \satslfrag{\thread}{i} \outat{\frag}$, and
+$\cell.\mathtt{data} \sim \cell'.\mathtt{data}$ for some $\sim \in \datarelat{\frag}$.
+
+Figure ~\ref{skiplistabs} illustrates the definition of skiplist-fragments
+which represent cells in the skiplist heap state of Figure~\ref{skiplistshape}.
+We assume that the program configuration includes an observer with one
+register $\reg_1$, which is assigned the value 12.
+Fragments $\tt v_1$, $\tt v_2$,$\tt v_3$, and $\tt v_4$ are higher-level
+fragments, whereas fragments $\tt v_5$, $\tt v_6$,$\tt v_7$, and $\tt v_8$ are
+fragments at level $0$.
+\todo[inline]{to Quy: could you illustrate how the fragments represent cells,
+  in the same way as in Figure~\ref{fig:viewrelations}?}
  
- 
+\subsubsection{Computing Postconditions for Skiplists}
+\label{subsect:postcond-skiplists}
+The symbolic postcondition computation for skiplists is based on that for
+singly linked lists.
    
    \begin{itemize}
-  \item In the fragment abstraction, $\tt tag$ is define exactly same as $\tt tag$ in SLL abstraction where $\reachfrom$ and $\reachto$ is defined based on the main level of Skip-List. It means that we do not keep the reachability information in higher levels.
-  \item Same as timestamp stacks and queues, in Skip-List we keep the main level and abstract all the higher levels. It means that we do not distinguish the differences between high levels. Hence, we have two types of fragments including main level fragments and higher level fragments which are defined same as SLL fragments. 
+  \item In the fragment abstraction, $\tt tag$ is define exactly same as $\tt tag$ in SLL abstraction where $\reachfrom$ and $\reachto$ is defined based on the main level of skiplist. It means that we do not keep the reachability information in higher levels.
+  \item Same as timestamp stacks and queues, in skiplist we keep the main level and abstract all the higher levels. It means that we do not distinguish the differences between high levels. Hence, we have two types of fragments including main level fragments and higher level fragments which are defined same as SLL fragments. 
    \end{itemize}
  \begin{figure}  
  \input skiplistshape  
- \caption{A possible heap state of 3-level Skip-List set}
+ \caption{An example heap state of the $\tt find$ method for a skiplist with 3 levels.}
  \label{skiplistshape}
 \end{figure}
 
@@ -659,8 +770,7 @@ given level by using a compareAndSet(CAS) statement. Once an unmarked $\tt curr$
  \caption{Skipl-List fragments}
  \label{skiplistabs}
 \end{figure}
-\subsection{Abstract transformers for skip-lists}
-Let us show how to perform the abstract transformer for skip-list programs on the set of fragments $\fragset$ depending on the particular statement.  We consider fragments of size $2$ where $\tt I_{inp} = \{i\}$, $\tt I_{out} = \{{o}\}$, and $\tt next(i) = {o}$ and fragments of size $1$ where $\tt I_{inp} = \{i\}$, $\tt I_{out} = \emptyset$, and $\tt next(i) = null$ or $\tt next(i) = \bot$. For each fragment $\tt v$, let $\tt v.level \in \{1,2\}$ be the level of $\tt v$.
+Let us show how to perform the abstract transformer for skiplist programs on the set of fragments $\fragset$ depending on the particular statement.  We consider fragments of size $2$ where $\tt I_{inp} = \{i\}$, $\tt I_{out} = \{{o}\}$, and $\tt next(i) = {o}$ and fragments of size $1$ where $\tt I_{inp} = \{i\}$, $\tt I_{out} = \emptyset$, and $\tt next(i) = null$ or $\tt next(i) = \bot$. For each fragment $\tt v$, let $\tt v.level \in \{1,2\}$ be the level of $\tt v$.
 
 \paragraph{Local Abstract Transformers:} First, let us show the abstract transformer on the set of fragment $\fragset$ in the fragment of the concurrent thread. Let $\fragset_1$ be set of fragments of level 1 in $\fragset$, $\fragset_2$ be set of fragments of level 2 in $\fragset$. For each program statement, let $\fragset_{post}$ be the set of fragments after executing the statement. Let $\fragset_{post}$ be initialized as the empty set.  Let $\tt R$ be the set of pairs of fragments. Intuitively, in each element in $\tt R$, the second fragment is the transformation of the first fragment. Let $\tt R$ be initialized as the empty set.
 \begin{itemize}
@@ -671,7 +781,7 @@ Let us show how to perform the abstract transformer for skip-list programs on th
 \begin{itemize}
 \item $\pvarsat{\inat{\frag'}} = \pvarsat{\inat{\frag}} \setminus \set{x}$,
 \item $\pvarsat{\outat{\frag'}} = \pvarsat{\outat{\frag}} \cup \set{x}$,
-\item if $\\gvarof{x}$ is a global variable
+\item if $\gvarof{x}$ is a global variable
 \begin{itemize}
 \item $\reachfromat{\inat{\frag'}} = \reachfromat{\inat{\frag}} \setminus \set{x}$,
 \item $\reachtoat{\inat{\frag'}} = \reachtoat{\inat{\frag}} \cup \set{x}$,
@@ -684,7 +794,7 @@ then add $\tt v'$ to $\fragset_{post}$, and $\tt (v,v')$ to $\tt R$
 \begin{itemize}
 \item $\pvarsat{\inat{\frag'}} = \pvarsat{\inat{\frag}} \setminus \set{x}$,
 \item $\pvarsat{\outat{\frag'}} = \pvarsat{\outat{\frag}} \setminus \set{x}$,
-\item if $\\gvarof{x}$ is a global variable
+\item if $\gvarof{x}$ is a global variable
 \begin{itemize}
 \item $\reachfromat{\inat{\frag'}} = \reachfromat{\inat{\frag}} \setminus \set{x}$,
 \item $\reachtoat{\inat{\frag'}} = \reachtoat{\inat{\frag}} \cup \set{x}$,
@@ -697,7 +807,7 @@ then add $\tt v'$ to $\fragset_{post}$, and $\tt (v,v')$ to $\tt R$
 \begin{itemize}
 \item $\pvarsat{\inat{\frag'}} = \pvarsat{\inat{\frag}} \setminus \set{x}$,
 \item $\pvarsat{\outat{\frag'}} = \pvarsat{\outat{\frag}} \setminus \set{x}$,
-\item if $\\gvarof{x}$ is a global variable
+\item if $\gvarof{x}$ is a global variable
 \begin{itemize}
 \item $\reachfromat{\inat{\frag'}} = \reachfromat{\inat{\frag}} \cup \set{x}$,
 \item $\reachtoat{\inat{\frag'}} = \reachtoat{\inat{\frag}} \setminus \set{x}$,
@@ -710,7 +820,7 @@ then add $\tt v'$ to $\fragset_{post}$, and $\tt (v,v')$ to $\fragset'$
 \begin{itemize}
 \item $\pvarsat{\inat{\frag'}} = \pvarsat{\inat{\frag}} \setminus \set{x}$,
 \item $\pvarsat{\outat{\frag'}} = \pvarsat{\outat{\frag}} \setminus \set{x}$,
-\item if $\\gvarof{x}$ is a global variable
+\item if $\gvarof{x}$ is a global variable
 \begin{itemize}
 \item $\reachfromat{\inat{\frag'}} = \reachfromat{\inat{\frag}} \setminus \set{x}$,
 \item $\reachtoat{\inat{\frag'}} = \reachtoat{\inat{\frag}} \setminus \set{x}$,
@@ -723,7 +833,7 @@ then add $\tt v'$ to $\fragset_{post}$, and $\tt (v,v')$ to $\fragset'$
 \begin{itemize}
 \item $\pvarsat{\inat{\frag'}} = \pvarsat{\inat{\frag}} \setminus \set{x}$,
 \item $\pvarsat{\outat{\frag'}} = \pvarsat{\outat{\frag}} \setminus \set{x}$,
-\item if $\\gvarof{x}$ is a global variable
+\item if $\gvarof{x}$ is a global variable
 \begin{itemize}
 \item $\reachfromat{\inat{\frag'}} = \reachfromat{\inat{\frag}} \setminus \set{x}$,
 \item $\reachtoat{\inat{\frag'}} = \reachtoat{\inat{\frag}} \setminus \set{x}$,
@@ -736,7 +846,7 @@ then add $\tt v'$ to $\fragset_{post}$, and $\tt (v,v')$ to $\fragset'$
 \begin{itemize}
 \item $\pvarsat{\inat{\frag'}} = \pvarsat{\inat{\frag}} \cup \set{x}$,
 \item $\pvarsat{\outat{\frag'}} = \pvarsat{\outat{\frag}} \setminus \set{x}$,
-\item if $\\gvarof{x}$ is a global variable
+\item if $\gvarof{x}$ is a global variable
 \begin{itemize}
 \item $\reachtoat{\inat{\frag'}} = \reachtoat{\inat{\frag}} \cup \set{x}$,
  \item $\reachfromat{\inat{\frag'}} = \reachfromat{\inat{\frag}} \cup \set{x}$,

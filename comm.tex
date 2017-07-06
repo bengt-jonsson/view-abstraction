@@ -101,6 +101,9 @@
 \newcommand{\satlocsymbconf}[1]{\models_{#1}^{\mathit{loc}}}
 \newcommand{\satfragset}[1]{\models_{#1}^{\mathit{heap}}}
 \newcommand{\satconf}[1]{\models_{#1}}
+\newcommand{\satslfrag}[2]{\lhd_{#1}^{#2}}
+\newcommand{\sklevel}{\mathtt{level}}
+\newcommand{\sklevelat}[1]{#1.\mathtt{level}}
 %% \newcommand{\actuple}{\tuple{\tvarset,\he,\constr}}
 %% \newcommand{\actupleprime}{\tuple{\tvarset,\he',\constr'}}
 \newcommand{\actuple}{\tuple{\indices,\globmap,\nrglobloc,\pexpglobloc,\dmap,\ordconstr}}
@@ -237,6 +240,7 @@
 \newcommand{\outputtag}{\mathtt{tag}_{out}}
 \newcommand{\datarel}{\phi}
 \newcommand{\fragtupleat}[1]{\tuple{\inat{#1},\outat{#1},\datarelat{#1}}}
+\newcommand{\slfragtupleat}[1]{\tuple{\inat{#1},\outat{#1},\datarelat{#1},\sklevelat{#1}}}
 \newcommand{\inat}[1]{#1.\mathtt{i}}
 \newcommand{\outat}[1]{#1.\mathtt{o}}
 \newcommand{\datarelat}[1]{#1.\datarel}
