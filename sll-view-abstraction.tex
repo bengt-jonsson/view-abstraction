@@ -631,7 +631,8 @@ which is identical to $\frag_1$ except that
 %\todo[inline]{Here goes a description of the fragment abstraction for
 %   skip lists}
 \todo[inline]{for Quy: in the Code, you use sometimes ``snip'', sometimes ``s''.
-  Level 17 is strange: Please adapt the syntax (now marked[0] is never assigned).
+  Line 12 and 17 is strange:
+  Please adapt the syntax (now marked[0] is never assigned).
   You might shorten by omitting the unlinking of marked nodes (lines 13 - 17)
   to make it simple.
 It is a bit strange that marked[] is defined up to MAXLEVEL but only marked[0] is used}
@@ -674,7 +675,7 @@ a skiplist with 3 levels. We show each heap cell as a vertical array of
 boxes, one for each level of this cell. At each level $i$, the $\tt data$,
 $\tt mark[i]$ and $\tt next[i]$ fields are shown, using the layout shown at the top right (there is only one $\tt data$ field, but we show it at each level).
 Each cell is labeled by the pointer variables that point to it.
-In the heap state of Figure ~\ref{skiplistshape}, the thead is trying to find a target key $8$ and has reached line 24, discovering that key $8$ is not in the list.
+In the heap state of Figure ~\ref{skiplistshape}, the thread is trying to find a target key $8$ and has reached line 24, discovering that key $8$ is not in the list.
 For each $i$, the variables $\tt preds[i]$ and $\tt succs[i]$ point to the nearest cells at level $i$.
 
 \subsubsection{Fragment Abstraction for Skiplists}
