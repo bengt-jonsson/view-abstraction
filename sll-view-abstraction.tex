@@ -389,7 +389,6 @@ Let $\frag_1$ and $\frag_2$ be two fragments in a set $\fragset$ of fragments.
   $\pvarsat{\inat{\frag_1}} \cap \pvarsat{\inat{\frag_2}} = \emptyset$ or that
   the global variables in  $\reachfromat{\inat{\frag_1}}$ are disjoint from
   those in $\reachfromat{\inat{\frag_2}}$.
-\todo[inline]{Question: Is this correct?}
 %%   \quycom{$\reachfromat{\inat{\frag_1}} \cap \reachfromat{\inat{\frag_2}} = \emptyset$ here is not correct, we only need the global variables of reachfrom and reachto in this case}
 %% \quycom{In my definition, the consistent here is defined for two views in the same threads. With the view from other thread, I use the notion of intersection.}
 \end{itemize}
@@ -543,14 +542,16 @@ $\frag''$ which is same as $\frag'$, except that $\reachfromat{\outat{\frag''}} 
 \paragraph{Symbolic Postcondition Computation for Interference Steps.} 
 The key step in this computation is
 to form the intersection of two sets of fragments
-$\fragset_1$ and $\fragset_2$, such that for the configuration $\conf$
+$\fragset_1$ and $\fragset_2$, such that for some configuration $\conf$
 we have $\conf \satfragset{\thread_i} \fragset_i$ for $i=1,2$.
 In order to distinguish
 between local variables of $\thread_1$ and $\thread_2$, we assume that local variable $\lvarof{x}$ of thread $\thread_i$ is named as $\lvarof{x[i]}$.
 We must compute a set $\fragset$ which for each
-heap cell accessible to either $\thread_1$ or $\thread_2$, the set $\fragset$ must
+heap cell accessible to either $\thread_1$ or $\thread_2$ should
 contain a fragment $\frag$ with $\cell \satfrag{1,2} \frag$.
-\bjcom{This notation to be defined}
+Here, we extend the relation $\lhd$ to allow satisfaction wrp.\ two threads,
+with the obvious definition.
+
 There are  here two possibilities.
 \begin{itemize}
 \item If $\cell$ is accessible to both $\thread_1$ and $\thread_2$, then
