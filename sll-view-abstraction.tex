@@ -663,22 +663,38 @@ $\frag_1'$ and $\frag_2'$ are as above.
  \end{itemize}
 
 
- \section{Fragment Abstraction for  Skip-Lists}
+ \section{Fragment Abstraction for Skip-Lists}
+\input skipcode
+%\todo[inline]{Here goes a description of the fragment abstraction for
+%   skip lists}
+ In this section, we describe our symbolic representation, using fragment
+abstraction, for programs that operate on Skip-Lists. For describing the abstraction, let us describe what is a skip-list data structure. A skip-list is a linked list sorted by keys. Each node is assigned a random height, up to a maximum number. At each level of height, a Skip-List node have one successor. The list at each level, other than the bottom level, is a sublist of the list at the lower level. Because there are fewer nodes of higher heights, we can find a key quickly by finding first at higher levels, and skipping over large numbers of shorter nodes and progressively working downward until a node with the desired key is found, or else the bottom level is reached. Therefore, at the beginning and end of the lists, we have head sentinel and tail sentinel nodes with maximum heights respectively. Initially, the tail sentinel is the successor of the head sentinel at every level. The head sentinel's key is larger, and the tail sentinel's key is smaller, than any key that may be added to the set. Finding the Skip-List always starts from the head sentinel. 
 
- \todo[inline]{Here goes a description of the fragment abstraction for
-   skip lists}
+Figure~\ref{fig:lockfreeskiplistfind} shows a find method of a lock-free Skip-List set ~\cite{ArtOfMpP}. The method proceeds starts traversing
+the Skip-List from the topLevel of the head sentinel, which has the maximal
+allowed node level. It then proceeds in each level down the list, filling in $\tt preds$
+and $\tt succs$ nodes that are repeatedly advanced until $\tt pred$ refers to a node with
+the largest value on that level that is strictly less than the target key $\tt key$. The method repeatedly remove marked nodes on the way from the
+given level by using a compareAndSet(CAS) statement. Once an unmarked $\tt curr$ is found, if its key is less than the $\tt key$ then $\tt pred$ is advanced to $\tt curr$. Otherwise, the method breaks out of the current level search loop, saving the current values of $\tt pred$ and $\tt curr$. The method proceeds this way until it reaches the bottom level.
+ 
+ Figure ~\ref{skiplistshape} shows an example heap state which is projection onto thread $\thread$ of the lock-free Skip-List set. Each heap cell in each level is shown with the values of its fields, using the layout shown to the top right in Figure ~\ref{skiplistshape}. In addition, each cell is labeled by the pointer variables that point to it. In the heap state of Figure ~\ref{skiplistshape}, thread $\thread$ is trying to find a target key 8 and having reached line 24. In this case, we have one observer register $x_1$ which is assigned the value 12. Figure ~\ref{skiplistabs} shows several fragments that is satisfied wrp. to $\thread$ by the configuration in ~\ref{skiplistshape} where we abstract the value of levels into the set $\set{{\tt h(higher)},{\tt 0}}$. Fragments $\tt v_1$, $\tt v_2$,$\tt v_3$, and $\tt v_4$ are the abstractions of several fragments at level 1 and 2. Fragments $\tt v_5$, $\tt v_6$,$\tt v_7$, and $\tt v_8$ are the abstractions from several fragments at the level 0.
+ 
+ 
+   
    \begin{itemize}
-  \item In the fragment abstraction, $\tt tag$ is define exactly same as $\tt tag$ in SLL abstraction where $\reachfrom$ and $\reachto$ is defined based on the main level of skip-list. It means that we do not keep the reachability information in higher levels.
-  \item Same as timestamp stacks and queues, in skip-list we keep the main level and abstract all the higher levels. It means that we do not distinguish the differences between high levels. Hence, we have two types of fragments including main level fragments and higher level fragments which are defined same as SLL fragments. 
+  \item In the fragment abstraction, $\tt tag$ is define exactly same as $\tt tag$ in SLL abstraction where $\reachfrom$ and $\reachto$ is defined based on the main level of Skip-List. It means that we do not keep the reachability information in higher levels.
+  \item Same as timestamp stacks and queues, in Skip-List we keep the main level and abstract all the higher levels. It means that we do not distinguish the differences between high levels. Hence, we have two types of fragments including main level fragments and higher level fragments which are defined same as SLL fragments. 
    \end{itemize}
  \begin{figure}  
  \input skiplistshape  
- \caption{A concrete shape of 3-level skipl-list with two threads}
+ \caption{A possible heap state of 3-level Skip-List set}
+ \label{skiplistshape}
 \end{figure}
 
  \begin{figure}  
  \input skiplistabs 
- \caption{skipl-list fragments \quycom{i am working with this figure}}
+ \caption{Skipl-List fragments}
+ \label{skiplistabs}
 \end{figure}
 \subsection{Abstract transformers for skip-lists}
 Let us show how to perform the abstract transformer for skip-list programs on the set of fragments $\fragset$ depending on the particular statement.  We consider fragments of size $2$ where $\tt I_{inp} = \{i\}$, $\tt I_{out} = \{{o}\}$, and $\tt next(i) = {o}$ and fragments of size $1$ where $\tt I_{inp} = \{i\}$, $\tt I_{out} = \emptyset$, and $\tt next(i) = null$ or $\tt next(i) = \bot$. For each fragment $\tt v$, let $\tt v.level \in \{1,2\}$ be the level of $\tt v$.
