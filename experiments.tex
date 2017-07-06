@@ -3,36 +3,93 @@
 \label{section:experiments}
 %--------------------------------------------------------
 \newcommand{\emm}{(emm)}
-%\begin{wrapfigure}{r}[0pt]{0.5\textwidth}
-%\vspace{5mm}
+%\begin{table}
+%\footnotesize
+%\begin{tabular}{|c | c | }
+%  \hline
+% \textsf{{{Algorithms}}} &  \textsf{{{Time(s)}}} \\
+%\hline
+%%\textsf{TS stack  ~\cite{MS:QueueAlgorithms}}\;\;\;\;\;\;  & \textsf{76.02} \\
+%\textsf{TS stack  ~\cite{ts-stack}}\;\;\;\;\;\;  & \textsf{176} \\
+%%\textsf{TS queue  ~\cite{MS:QueueAlgorithms}}& \textsf{11.07} \\
+%\textsf{TS queue  ~\cite{ts-stack}}& \textsf{101} \\
+%\hline
+%\end{tabular} aaa \;\;\;\;\;\; \begin{tabular}{|c | c | }
+%  \hline
+% \textsf{{{Algorithms}}} &  \textsf{{{Time(s)}}} \\
+%\hline
+%\textsf{Lock-free set   ~\cite{ArtOfMpP}} & \textsf{1992} \\
+%
+%\textsf{Optimistic set ~\cite{MS:QueueAlgorithms}}& \textsf{500} \\
+% 
+%\textsf{Priority queue 1 ~\cite{Shavit:ElimQueue}}  &  \textsf{1320} \\
+%
+%\textsf{Priority queue 2~\cite{Shavit:ElimQueue}}  &  \textsf{599} \\
+%\hline
+%\end{tabular}
+%
+%\vspace*{1cm}
+%
+%\begin{tabular}{|c | c | }
+%  \hline
+%   \textsf{{{Algorithms}}} &  \textsf{{{Time (s)}}} \\
+%\hline
+%\textsf{Treiber stack  ~\cite{Treiber:stack}}\;\;\;\;\;\; & \textsf {18} \\
+%
+%\textsf{MS lock-free queue  ~\cite{MS:QueueAlgorithms}}& \textsf{21} \\
+%
+%\textsf{DGLM queue  ~\cite{Doherty:lockfree}}&  \textsf {16} \\
+%
+%\textsf{Vechev-CAS set  ~\cite{Vechev:list}}  & \textsf{86} \\
+%
+%\textsf{Vechev-DCAS set  ~\cite{Vechev:list}}   & \textsf{16}  \\
+%
+%\textsf{Michael lock-free set ~\cite{Michael:list}}  & \textsf{178}  \\
+%
+%\textsf{Pessimistic set  ~\cite{ArtOfMpP}}&\textsf{30} \\
+%
+%\textsf{Optimistic set ~\cite{ArtOfMpP}}& \textsf{25} \\
+%
+%\textsf{Lazy set ~\cite{Lazyset}  }  & \textsf {34} \\
+%
+%\textsf {O$\textquotesingle $Hearn set  ~\cite{OHearnlist}}     & \textsf{88} \\
+%
+%\textsf{HM lock-free set  ~\cite{ArtOfMpP} } & \textsf{120} \\
+%\hline
+%\end{tabular}
+%
+%\end{table}
+
+
+
 \begin{figure}[]
 %% \vspace*{-1cm}
 \center
-
+\footnotesize
 
 
 \begin{tabular}{|c | c | }
   \hline
    \textsf{{\textbf{Algorithms}}} &  \textsf{{\textbf{Time (s)}}} \\
 \hline
-\textsf{{\textit{TIMESTAMPS}}} & \\
+\textsf{{{ARRAY OF SLLs}}} & \\
 \hline
 %\textsf{TS stack  ~\cite{MS:QueueAlgorithms}}\;\;\;\;\;\;  & \textsf{76.02} \\
-\textsf{TS stack  ~\cite{MS:QueueAlgorithms}}\;\;\;\;\;\;  & \textsf{176} \\
+\textsf{TS stack  ~\cite{ts-stack}}\;\;\;\;\;\;  & \textsf{176} \\
 %\textsf{TS queue  ~\cite{MS:QueueAlgorithms}}& \textsf{11.07} \\
-\textsf{TS queue  ~\cite{MS:QueueAlgorithms}}& \textsf{101} \\
+\textsf{TS queue  ~\cite{ts-stack}}& \textsf{101} \\
 \hline
- \textsf{{\textit{SKIP-LISTS}}} &   \\
+ \textsf{{{SKIP-LISTS}}} &   \\
 \hline
 \;\;\;\;\textsf{Lock-free skip-list   ~\cite{ArtOfMpP}}\;\;\;\;\;\;  & \textsf{1992} \\
 
 \textsf{Optimistic skip-list ~\cite{MS:QueueAlgorithms}}& \textsf{500} \\
  
-\textsf{Priority queue skip-list 1 ~\cite{Shavit:ElimQueue}}  &  \textsf{1320} \\
+\textsf{Priority queue skip-list 1 ~\cite{priority-queue-skiplist}}  &  \textsf{1320} \\
 
-\textsf{Priority queue skip-list 2~\cite{Shavit:ElimQueue}}  &  \textsf{599} \\
+\textsf{Priority queue skip-list 2~\cite{jonatan:priorityqueue}}  &  \textsf{599} \\
 \hline
-   \textsf{{\textit{SINGLY-LINKED LISTS}}} &   \\
+   \textsf{{{SINGLY-LINKED LISTS}}} &   \\
 \hline
 \textsf{Treiber stack  ~\cite{Treiber:stack}}\;\;\;\;\;\; & \textsf {18} \\
 
@@ -65,7 +122,6 @@
 \label{Experiments:fig}
 \end{figure}
 %\vspace{-0.2cm}
-\todo{I am working here}
 Based on our framework, we have implemented a tool in OCaml, and used
 it for
 verifying concurrent algorithms (both lock-based and lock-free)
@@ -73,85 +129,23 @@ including timestamps stack and queue, skip-list sets and priority queues as well
 All experiments start from the initial heap,  
 and end either when the analysis reaches the fixed point or when a violation of safety properties or linearizability is detected. 
 
-%
-%\paragraph{Helping.}
-%The algorithms marked by  \checkmark \; use helping.
-%%
-%We run  some of the algorithms with two different helping patterns
-%(such as the ones described in Sec.~\ref{programs:section}),
-%and report the execution time for each.
+\paragraph{Linearizability.}
 
+%Our tool is capable of verifying linearizability by forming  as in the automata-theoretic approach [Vardi and Wolper 1986], also adopted in [~\cite{Quy:sas16}, the cross-product of the program and the corresponding observer, where the observer synchronizes with the program on call and return actions that are recognized by the observer. This reduces the problem of checking each of the above constraints to the problem of checking that the corresponding observer cannot reach an accepting state.
+Our tool is capable of verifying linearizability by forming  as in the automata-theoretic approach ~\cite{VW:modelchecking}, and using the technique in ~\cite{Quy:sas16} in which they use observers to specify the sequential semantics of data structures and define controllers that specify the linearization policies. This reduces the problem of checking linearizability to the problem of checking that the corresponding observer cannot reach an accepting state.
+\paragraph{Safety Properties.}
+Our tool is also capable of verifying memory related safety properties such as the absence of null pointer dereferencing,  dangling pointers,  double-freeing, cycles, and dereferencing of freed nodes, as well as sortedness. In fact, for each algorithm, the time reported in Fig.~\ref{Experiments:fig} is the sum of the 
+times taken to show linearizability and all the properties mentioned above.
 
+\paragraph{Array of SLLs benchmarks} For array of SLLs benchmarks, we verified both TS stack and TS queue in ~\cite{ts-stack} which is one of the most recent challenging problems in linearization verification. We use observers with call and return actions in ~\cite{BEEH:icalp15}, and also adopted in ~\cite{Quy:sas16}, where the observer synchronizes with the program on call and return actions that are recognized by the observer. To the best of our knowledge, our tool is the first tool which can handle both TS stack and queue automatically.
+\paragraph{Skip-List benchmarks} The concurrent Skip-List algorithms pose a hard challenge to automated
+verification, since they employ many pointer relations, whose interrelation must be discovered during
+verification. Several approaches to this problem, collectively termed shape analyses, have been developed.
+We have verified four popular Skip-List algorithms including two sets and two priority queues. Note that, in the Skip-List set in ~\cite{ArtOfMpP}, the property where higher-level lists are sub-list of lower-level lists is not preserved. This problem make this Skip-List set much harder to handle. We use the set observer in ~\cite{Quy:sas16} to specify the sets, and priority queue observers in ~\cite{AHHR:integrated:rep} to specify the priority queues. To the best of our knowledge, there has not been any previous work that can
+automatically verify correctness of Skip-List algorithms with unbounded number of levels. We are the first who verify these algorithms automatically.
 
+\paragraph{Singly-linked list benchmarks} We also verified singly-linked list algorithms including stack, queue, and set algorithms. These algorithms are also handled by ~\cite{Quy:sas16}. 
 
-%\expcloseparagraph{Consistency.}
-%In the case of algorithms where the controller
-%performs multiple linearizations for the same thread (e.g.,
-%the {\tt Lazy Set} algorithm), our prototype checks
-%{\it automatically} that
-%(i) 
-%each thread linearizes at least once during
-%its execution, and 
-%(ii) the
-%last value communicated to the observer is identical to the value $r$
-%actually returned by the thread.
-%%
-%To do that, the prototype adds two extra variables per thread, namely
-%a Boolean variable $b$ which records that at least one
-% linearization has taken place, and a variable $v$ of type 
-%$\intgrs\cup\set{\star}$, for some $\star\not\in\intgrs$,
-%where $v$ is initialized to $\star$.
-%%
-%The variable $v$ records the value that has been communicated to
-%the observer by the thread.
-%%
-%%
-%Furthermore, we have to take into account the fact 
-%that ``false'' linearization points
-%may change the state of the observer.
-%%
-%Each time the controller performs a linearization,
-%it will check if the value of $v$ of is different from $\star$.
-%%
-%If {\it yes} then the thread has already linearized once and the run 
-%of the program is stopped.
-%%
-%Otherwise, it updates the value of $b$ to {\tt true},
-%and then decides either
-%to perform a linearization or not.
-%%
-%In the former case, it updates the value of $v$ 
-%to the value communicated to the observer.
-%%
-%In the latter case, it will not update the value of $v$.
-%%
-%This will continue, until we reach the {\tt return} statement of the thread.
-%%
-%We report an error if
-%(i) the observer has reached a bad state.
-%(ii) $b={\tt false}$ holds, since this means the existence of
-%a run long of which the thread never linearizes, or
-%(iii) $(b={\tt true})\wedge(v\neq\star)\wedge(v\neq r)$
-%holds since this means that we have linearized with the wrong value.
-%
-%\paragraph{Arrays.}
-%Our tool does not currently support arrays, and hence
-%we have transformed arrays to singly-linked lists
-%in the algorithms that use the former.
-%
-%\paragraph{Safety Properties.}
-%Our tool is also capable of verifying 
-% memory related safety properties such as the absence of
-%null pointer dereferencing, 
-%dangling pointers,  double-freeing, cycles, and
-%dereferencing of freed nodes, as well as sortedness.
-%%
-%%We check these properties for all the algorithms we consider.
-%%
-%In fact,  for each algorithm,
-%the time reported in Fig.~\ref{Experiments:fig} is the sum of the 
-%times taken to show linearizability and all the properties mentioned above.
-%
 \paragraph{Running Times.}
 As can be seen from the table, the running times
 vary in the different examples.

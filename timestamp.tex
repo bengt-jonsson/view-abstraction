@@ -26,7 +26,7 @@ two ways:
 \subsection{Symbolic Postcondition Computation}
 The symbolic postcondition computation is quite similar to that for singly-linked lists with the following differences
 \todo[inline]{to Quy: can you rephrase the rest of this paragraph? I could not understand it}
-Before computing the post condition of this statement, we change all o-views in the other list to c-views and previous c-views to o-views.  
+For the pop method, before computing the post condition of the statement which accesses to $\tt pools[ot]$. we have to swap values of $\tt ot$ and $\tt me$ because the current list after the post condition now is the list pointed by $\tt pools[ot]$.  
 
 \paragraph{Interference Steps} 
 The intersection between two views are computed same as in the case of singly-linked lists with the difference that two views of push methods should not be intersected. The reason for it is that we do not have more concurrent pushes in a same list.

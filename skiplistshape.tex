@@ -243,11 +243,11 @@ at ($(cell311.east)+(30pt,0pt)$){};
 \node[anchor=south,font=\tiny,align=center] at ($(cell72_l2.north)+(0pt,-2pt)$) {{$\tt T$}};
 
 \node[anchor=south,font=\tiny,align=center] at ($(cell1_l2.north)+(0pt,-2pt)$) {{$\tt H$}};
-\node[anchor=south,font=\tiny,align=center] at ($(cell22_l2.north)+(0pt,-2pt)$) {{$\tt preds[2],preds[1]$}};
-\node[anchor=south,font=\tiny,align=center] at ($(cell32_l2.north)+(0pt,-2pt)$) {{$\tt currs[2], currs[1]$}};
+\node[anchor=south,font=\tiny,align=center] at ($(cell22_l2.north)+(0pt,6pt)$) {{$\tt preds[2],preds[1]$}};
+\node[anchor=south,font=\tiny,align=center] at ($(cell32_l2.north)+(0pt,5pt)$) {{$\tt currs[2], currs[1]$}};
 
 
-\node[anchor=south,font=\tiny,align=center] at ($(cell31.north)+(0pt,-2pt)$) {{$\tt preds[0],pred$}};
+\node[anchor=south,font=\tiny,align=center] at ($(cell31.north)+(0pt,6pt)$) {{$\tt preds[0],pred$}};
 \node[anchor=south,font=\tiny,align=center] at ($(cell310_l1.north)+(0pt,-2pt)$) {{$\tt currs[0],curr$}};
 \node[anchor=south,font=\tiny,align=center] at ($(cell311.north)+(0pt,-2pt)$) {{$\tt succ$}};
 
@@ -270,6 +270,51 @@ at ($(cell6.south)+(2pt,-7pt)$){$\tt mark$};
 callout absolute pointer={($(cell6.east)+(-4pt,0pt)$)},draw,,font=\tiny,align=center]  
 at ($(cell6.east)+(13pt,0pt)$){${\tt next}$};
 
+
+
+\begin{pgfonlayer}{background}
+ \node[name = frag1, rounded corners, draw, dotted, fill = green!5,fit= (cell22_l2) (cell1_l2)]{};
+ \end{pgfonlayer}
+ \node[circle,draw,font=\tiny,inner sep=1pt,fill=red!5] at ($(frag1.north)+(0pt,0pt)$) {$\tt f_1$};
+
+
+\begin{pgfonlayer}{background}
+ \node[name = frag2, rounded corners, draw, dotted, fill = green!5,fit= (cell22_l1) (cell1_l1)]{};
+ \end{pgfonlayer}
+\node[circle,draw,font=\tiny,inner sep=1pt,fill=red!5] at ($(frag2.north)+(0pt,0pt)$) {$\tt f_2$};
+
+
+\begin{pgfonlayer}{background}
+ \node[name = frag21, rounded corners, draw, dotted, fill = green!5,fit= (cell22) (cell1)]{};
+ \end{pgfonlayer}
+\node[circle,draw,font=\tiny,inner sep=1pt,fill=red!5] at ($(frag21.north)+(0pt,0pt)$) {$\tt f_3$};
+
+
+
+
+\begin{pgfonlayer}{background}
+ \node[name = frag3, rounded corners, draw, dotted, fill = green!5,fit= (cell32_l2) (cell72_l2)]{};
+ \end{pgfonlayer}
+ 
+\node[circle,draw,font=\tiny,inner sep=1pt,fill=red!5] at ($(frag3.north)+(0pt,0pt)$) {$\tt f_5$};
+
+
+\begin{pgfonlayer}{background}
+ \node[name = frag4, rounded corners, draw, dotted, fill = green!5,fit= (cell32_l1) (cell72_l1)]{};
+ \end{pgfonlayer}
+\node[circle,draw,font=\tiny,inner sep=1pt,fill=red!5] at ($(frag4.north)+(0pt,0pt)$) {$\tt f_6$};
+
+\begin{pgfonlayer}{background}
+ \node[name = frag4, rounded corners, draw, dotted, fill = green!5,fit= (cell32) (cell41)]{};
+ \end{pgfonlayer}
+\node[circle,draw,font=\tiny,inner sep=1pt,fill=red!5] at ($(frag4.north)+(0pt,0pt)$) {$\tt f_7$};
+
+
+
+\begin{pgfonlayer}{background}
+ \node[name = frag5, rounded corners, draw, dotted, fill = green!5,fit= (cell31) (cell310)]{};
+ \end{pgfonlayer}
+\node[circle,draw,font=\tiny,inner sep=1pt,fill=red!5] at ($(frag5.north)+(0pt,0pt)$) {$\tt f_4$};
 
 \end{tikzpicture}
 

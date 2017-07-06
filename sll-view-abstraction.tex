@@ -539,6 +539,7 @@ $\frag''$ which is same as $\frag'$, except that $\reachfromat{\outat{\frag''}} 
 \end{enumerate}
 \todo[inline]{We should include an argument why the last case above is correct.
   Quy, could you produce one?}
+\quycom{The reason why the last case is correct is that when a pointer of $\tt x$, the $\reachfrom$ of the fragment $v$ will be changed because $v$ is reachable from $v_x$. Therefore we have to subtract reachfrom of $v_x$ from the reachfrom of $v$. However, we do not now which observers variables show we subtract. Because a observer can appear at more than 1 position in the heap. In this case we cove all possible cases.   }  
 
 \paragraph{Symbolic Postcondition Computation for Interference Steps.} 
 The key operation in this computation, called {\em intersection}
@@ -624,18 +625,18 @@ which is identical to $\frag_1$ except that
   $\gvalsat{\inat{\frag}}$. Will you need it, and if so what does it mean?}
 \quycom{Because in the data, I add data constraint between data fields and local data variable. When we do intersection, we do not need to care about this constraint because its local constraint}
 \todo[inline]{New Question to Quy. BUT some of the data abstraction is
-  about observer registers. Mustn't this Agree?}
+  about observer registers. Mustn't this Agree?} \quycom{for data abstraction about observer register, then they must agree.}
 
 \subsection{Fragment Abstraction for Skiplists}
 \input skipcode
 %\todo[inline]{Here goes a description of the fragment abstraction for
 %   skip lists}
-\todo[inline]{for Quy: in the Code, you use sometimes ``snip'', sometimes ``s''.
-  Line 12 and 17 is strange:
-  Please adapt the syntax (now marked[0] is never assigned).
-  You might shorten by omitting the unlinking of marked nodes (lines 13 - 17)
-  to make it simple.
-It is a bit strange that marked[] is defined up to MAXLEVEL but only marked[0] is used}
+%\todo[inline]{for Quy: in the Code, you use sometimes ``snip'', sometimes ``s''.
+%  Line 12 and 17 is strange:
+%  Please adapt the syntax (now marked[0] is never assigned).
+%  You might shorten by omitting the unlinking of marked nodes (lines 13 - 17)
+%  to make it simple.
+%It is a bit strange that marked[] is defined up to MAXLEVEL but only marked[0] is used}
 
 In this section, we describe the application of our fragment abstraction to concurrent programs that operate on skiplists. Let us first briefly introduce skiplists. Skiplists are a popular structure used in concurrent data structures
 implementing sets and other collections.
@@ -753,11 +754,11 @@ Figure ~\ref{skiplistabs} illustrates the definition of skiplist-fragments
 which represent cells in the skiplist heap state of Figure~\ref{skiplistshape}.
 We assume that the program configuration includes an observer with one
 register $\reg_1$, which is assigned the value 12.
-Fragments $\tt v_1$, $\tt v_2$,$\tt v_3$, and $\tt v_4$ are higher-level
-fragments, whereas fragments $\tt v_5$, $\tt v_6$,$\tt v_7$, and $\tt v_8$ are
-fragments at level $0$.
-\todo[inline]{to Quy: could you illustrate how the fragments represent cells,
-  in the same way as in Figure~\ref{fig:viewrelations}?}
+Fragments $\tt v_1$, $\tt v_2$ are higher-level
+fragments in which $\tt v_1$ represents two concrete fragments $\tt f_1$,$\tt f_2$, and $\tt v_2$ represents $\tt f_5$, $\tt f_6$ in Figure~\ref{skiplistshape}, whereas fragments $\tt v_3$, $\tt v_4$, and $\tt v_5$ are
+fragments at level $0$ representing $\tt f_3$, $\tt f_4$ and $\tt f_7$ respectively.
+%\todo[inline]{to Quy: could you illustrate how the fragments represent cells,
+%  in the same way as in Figure~\ref{fig:viewrelations}?}
  
 \subsubsection{Computing Postconditions for Skiplists}
 \label{subsect:postcond-skiplists}
@@ -807,7 +808,7 @@ after the statement.
   $\inat{\frag_h}$ and $\inat{\frag_1}$ are consistent and
   $\outat{\frag_h}$ and $\inat{\frag_2}$ are consistent.
   \todo[inline]{Quy: Could you make a simple diagram which illustrates all the
-    relations between different fragments in this case?}
+    relations between different fragments in this case?} \quycom{Did you mean that I should make the picture of some fragment and show how they are related. I do not really understand your question here}
 \end{enumerate}
 The same principle for postcondition computation is applied to updates of
 $\tt next[0]$-pointers.
@@ -815,6 +816,10 @@ $\tt next[0]$-pointers.
 The postcondition computation for updates of higher-level pointers, e.g.,
 of form $\tt x.next[2] := y$ are done by:
 \todo[inline]{Quy: Can you explain how to do in this case?}
+\quycom{This case is very simple because we do not have reachfrom and reachto via higher level. Therefore, we do not need to update reachfrom and reachto information of consistent fragments as we do for 0-level. For each pair of compatible higher level fragments $\frag_x$, $\frag_y$ in $\fragset$ such that $\lvarof{x} \in \pvarsat{\inat{\frag_x}}$, $\tt y \in \pvarsat{\inat{\frag_y}}$. We just create a higher level view $\frag_{new}$ of form
+    $\fragtupleat{\frag_{new}}$
+    $\tagat{\inat{\frag_{new}}} = \tagat{\inat{\frag_x}}$ and $\tagat{\outat{\frag_{new}}} = \tagat{\inat{\frag_y}}$ except that $\reachfromat{\outat{\frag_{new}}} = \reachfromat{\inat{\frag_y}} \cup \reachfromat{\inat{\frag_x}}$,
+    and $\datarelat{\frag_{new}} = \set{<,=,>}$.}
 
 
   
