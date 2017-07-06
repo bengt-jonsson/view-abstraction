@@ -1,0 +1,66 @@
+\begin{figure}
+\begin{tikzpicture}[]
+
+%%%%%%%%%% locate %%%%%%%%%%
+\node(locate){};
+\node(locate-head)[linecode] at ($(locate.west)+(-130pt,-10pt)$) {\scriptsize bool find(int key, Node* preds[], Node* succs[]):};
+\node(node1)[linecode] at ($(locate-head.west)+(9pt,-10pt)$)  {\scriptsize int bottomLevel = 0;};
+\node[linecode] at ($(locate-head.west)+(9pt,-20pt)$)  {\scriptsize bool marked[MAXLEVEL] = \{false\};};
+\node[linecode] at ($(locate-head.west)+(9pt,-30pt)$)  {\scriptsize bool snip;};
+\node[linecode] at ($(locate-head.west)+(9pt,-40pt)$)  {\scriptsize Node* pred = null, curr = null, succ = null;};
+\node[linecode] at ($(locate-head.west)+(9pt,-50pt)$)  {\scriptsize retry:};
+\node[linecode] at ($(locate-head.west)+(18pt,-60pt)$)  {\scriptsize  while (true) };
+\node[linecode] at ($(locate-head.west)+(27pt,-70pt)$)  {\scriptsize   pred = head; };
+\node(node2)[linecode] at ($(locate-head.west)+(27pt,-80pt)$)  {\scriptsize   for (int i = MAXLEVEL; i >= bottomLevel; i-\;-) };
+\node[linecode] at ($(locate-head.west)+(36pt,-90pt)$)  {\scriptsize    curr = pred.nexts[i]; };
+\node[linecode] at ($(locate-head.west)+(36pt,-100pt)$)  {\scriptsize    while (true) };
+\node[linecode] at ($(locate-head.west)+(45pt,-110pt)$)  {\scriptsize      succ = curr.nexts[i].get(marked); };
+ \node[linecode] at ($(locate-head.west)+(45pt,-120pt)$)  {\scriptsize     while (marked[0]) };
+ \node(node4)[linecode] at ($(locate-head.west)+(54pt,-130pt)$)  {\scriptsize       snip = CAS(pred.nexts[i], curr, succ, false, false); };
+\node[linecode] at ($(locate-head.west)+(54pt,-140pt)$)  {\scriptsize        if (!s) continue retry; };
+\node[linecode] at ($(locate-head.west)+(54pt,-150pt)$)  {\scriptsize        curr = pred.next[i]; };
+\node[linecode] at ($(locate-head.west)+(54pt,-160pt)$)  {\scriptsize        succ = curr.next[i].get(marked); };
+\node[linecode] at ($(locate-head.west)+(45pt,-170pt)$)  {\scriptsize      if (curr.key < key) };
+\node[linecode] at ($(locate-head.west)+(54pt,-180pt)$)  {\scriptsize         pred = curr; curr = succ; };
+\node[linecode] at ($(locate-head.west)+(45pt,-190pt)$)  {\scriptsize      else };
+\node[linecode] at ($(locate-head.west)+(54pt,-200pt)$)  {\scriptsize         break; };
+\node[linecode] at ($(locate-head.west)+(36pt,-210pt)$)  {\scriptsize    preds[i] = pred; };
+\node[linecode] at ($(locate-head.west)+(36pt,-220pt)$)  {\scriptsize    succs[i] = curr; };
+\node(node3)[linecode] at ($(locate-head.west)+(27pt,-230pt)$)  {\scriptsize   return (curr.key == key); };
+
+\node(node1)[linecode] at ($(locate-head.west)+(0pt,-10pt)$)  {\scriptsize 1};
+\node(node1)[linecode] at ($(locate-head.west)+(0pt,-20pt)$)  {\scriptsize 2};
+\node(node1)[linecode] at ($(locate-head.west)+(0pt,-30pt)$)  {\scriptsize 3};
+\node(node1)[linecode] at ($(locate-head.west)+(0pt,-40pt)$)  {\scriptsize 4};
+\node(node1)[linecode] at ($(locate-head.west)+(0pt,-50pt)$)  {\scriptsize 5};
+\node(node1)[linecode] at ($(locate-head.west)+(0pt,-60pt)$)  {\scriptsize 7};
+\node(node1)[linecode] at ($(locate-head.west)+(0pt,-70pt)$)  {\scriptsize 8};
+\node(node1)[linecode] at ($(locate-head.west)+(0pt,-80pt)$)  {\scriptsize 9};
+\node(node1)[linecode] at ($(locate-head.west)+(0pt,-90pt)$)  {\scriptsize 10};
+\node(node1)[linecode] at ($(locate-head.west)+(0pt,-100pt)$)  {\scriptsize 11};
+\node(node1)[linecode] at ($(locate-head.west)+(0pt,-110pt)$)  {\scriptsize 12};
+\node(node1)[linecode] at ($(locate-head.west)+(0pt,-120pt)$)  {\scriptsize 13};
+\node(node1)[linecode] at ($(locate-head.west)+(0pt,-130pt)$)  {\scriptsize 14};
+\node(node1)[linecode] at ($(locate-head.west)+(0pt,-140pt)$)  {\scriptsize 15};
+\node(node1)[linecode] at ($(locate-head.west)+(0pt,-150pt)$)  {\scriptsize 16};
+\node(node1)[linecode] at ($(locate-head.west)+(0pt,-160pt)$)  {\scriptsize 17};
+\node(node1)[linecode] at ($(locate-head.west)+(0pt,-170pt)$)  {\scriptsize 18};
+\node(node1)[linecode] at ($(locate-head.west)+(0pt,-180pt)$)  {\scriptsize 19};
+\node(node1)[linecode] at ($(locate-head.west)+(0pt,-190pt)$)  {\scriptsize 20};
+\node(node1)[linecode] at ($(locate-head.west)+(0pt,-200pt)$)  {\scriptsize 21};
+\node(node1)[linecode] at ($(locate-head.west)+(0pt,-210pt)$)  {\scriptsize 22};
+\node(node1)[linecode] at ($(locate-head.west)+(0pt,-220pt)$)  {\scriptsize 23};
+\node(node1)[linecode] at ($(locate-head.west)+(0pt,-230pt)$)  {\scriptsize 24};
+
+
+
+\begin{pgfonlayer}{background}
+ \node[code-bg,fit=(node1) (node2) (node3) (node4) (locate-head)] {};
+\end{pgfonlayer}
+
+
+\end{tikzpicture}
+\caption{A find method of lock-free Skip-List set.}
+\label{fig:lockfreeskiplistfind}
+\end{figure}
+

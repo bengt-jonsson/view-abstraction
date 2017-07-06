@@ -1,5 +1,7 @@
 	\begin{tikzpicture}[]%show background rectangle]
 
+
+
 \node[name=cell0,minimum width=16pt, minimum height=0pt]{};
 \node[rounded corners,draw,name=cell1,minimum width=25pt, minimum height=20pt] at ($(cell0.east)+(0pt,0pt)$){};
 \node[minimum width=9pt, minimum height=10pt,anchor=west,font=\tiny,inner sep=0pt,name=d1] at (cell1.west)
@@ -8,7 +10,7 @@
 \node[draw,minimum width=8pt, minimum height=20pt,anchor=south,font=\tiny,inner sep=0pt]at (cell1.south){\cross};
 \node[name=succ1,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=0pt] at ($(cell1.east)+(-4pt,0pt)$) {};
 
-\node[font=\tiny,inner sep=1pt,fill=red!5] at ($(cell1.west)+(-15pt,0pt)$){\tt level1};
+\node[font=\tiny,inner sep=1pt,fill=red!5] at ($(cell1.west)+(-15pt,0pt)$){\tt level0};
 
 \node[rounded corners,draw,name=cell1_l1,minimum width=25pt, minimum height=20pt] at ($(cell1.north)+(0pt,25pt)$){};
 \node[minimum width=9pt, minimum height=10pt,anchor=west,font=\tiny,inner sep=0pt,name=d1] at (cell1_l1.west)
@@ -27,8 +29,8 @@
 \node[name=succ1_l2,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=0pt] at ($(cell1_l2.east)+(-4pt,0pt)$) {};
 \node[name=downsucc1_l2,fill,minimum size=0pt,inner sep=0pt,outer sep=0pt] at ($(cell1_l2.south)+(0pt,0pt)$) {};
 
-\node[font=\tiny,inner sep=1pt,fill=red!5] at ($(cell1_l1.west)+(-15pt,0pt)$){\tt level2};
-\node[font=\tiny,inner sep=1pt,fill=red!5] at ($(cell1_l2.west)+(-15pt,0pt)$){\tt level3};
+\node[font=\tiny,inner sep=1pt,fill=red!5] at ($(cell1_l1.west)+(-15pt,0pt)$){\tt level1};
+\node[font=\tiny,inner sep=1pt,fill=red!5] at ($(cell1_l2.west)+(-15pt,0pt)$){\tt level2};
 
 
 \draw[-] (downsucc1_l2) -- (cell1_l1);
@@ -40,18 +42,18 @@
 
 
 
-\node[rounded corners,draw,name=cell21,minimum width=24pt, minimum height=20pt] at ($(cell1.east)+(30pt,0pt)$){};
-\node[minimum width=8pt, minimum height=10pt,anchor=west,font=\tiny,inner sep=0pt,name=d1] at (cell21.west)
-{$3$};
-%\node[draw,minimum width=8pt, minimum height=10pt,anchor=north,font=\tiny,inner sep=0pt]at (cell21.north){$\tt t_2$};
-\node[draw,minimum width=8pt, minimum height=20pt,anchor=south,font=\tiny,inner sep=0pt]at (cell21.south){\cross};
-\node[name=succ21,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=0pt] at ($(cell21.east)+(-4pt,0pt)$) {};
-%\node[anchor=south,font=\tiny,align=center] at ($(cell21.south)+(0pt,-13pt)$) {{$\tt H$}};
-%\node[anchor=south,font=\tiny,align=center] at ($(cell21.south)+(0pt,-20pt)$) {{$\tt T,\mkadata1$}};
+%\node[rounded corners,draw,name=cell21,minimum width=24pt, minimum height=20pt] at ($(cell1.east)+(30pt,0pt)$){};
+%\node[minimum width=8pt, minimum height=10pt,anchor=west,font=\tiny,inner sep=0pt,name=d1] at (cell21.west)
+%{$3$};
+%%\node[draw,minimum width=8pt, minimum height=10pt,anchor=north,font=\tiny,inner sep=0pt]at (cell21.north){$\tt t_2$};
+%\node[draw,minimum width=8pt, minimum height=20pt,anchor=south,font=\tiny,inner sep=0pt]at (cell21.south){\cross};
+%\node[name=succ21,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=0pt] at ($(cell21.east)+(-4pt,0pt)$) {};
+%%\node[anchor=south,font=\tiny,align=center] at ($(cell21.south)+(0pt,-13pt)$) {{$\tt H$}};
+%%\node[anchor=south,font=\tiny,align=center] at ($(cell21.south)+(0pt,-20pt)$) {{$\tt T,\mkadata1$}};
+%
+%\draw[->] (succ1) -- (cell21);
 
-\draw[->] (succ1) -- (cell21);
-
-\node[rounded corners,draw,name=cell22,minimum width=24pt, minimum height=20pt] at ($(cell21.east)+(30pt,0pt)$){};
+\node[rounded corners,draw,name=cell22,minimum width=24pt, minimum height=20pt] at ($(cell1.east)+(30pt,0pt)$){};
 \node[minimum width=8pt, minimum height=10pt,anchor=west,font=\tiny,inner sep=0pt,name=d1] at (cell22.west)
 {$5$};
 %\node[draw,minimum width=8pt, minimum height=10pt,anchor=north,font=\tiny,inner sep=0pt]at (cell22.north){$\tt t_2$};
@@ -84,7 +86,7 @@
 \draw[-] (downsucc22_l1) -- (cell22);
 \draw[-] (downsucc22_l2) -- (cell22_l1);
 
-\draw[->] (succ21) -- (cell22);
+\draw[->] (succ1) -- (cell22);
 
 
 \node[rounded corners,draw,name=cell31,minimum width=24pt, minimum height=20pt]
@@ -214,7 +216,9 @@ at ($(cell311.east)+(30pt,0pt)$){};
 \node[name=downsucc72_l2,fill,minimum size=0pt,inner sep=0pt,outer sep=0pt] at ($(cell72_l2.south)+(0pt,0pt)$) {};
 
 \draw[->] (succ32_l1) -- (cell72_l1);
-\draw[->] (succ1_l2) to[out=25,in=155] (cell32_l2);
+%\draw[->] (succ1_l2) to[out=25,in=155] (cell32_l2);
+\draw[->] (succ1_l2) -- (cell22_l2);
+
 \draw[->] (succ32_l2) -- (cell72_l2);
 \draw[->] (succ310_l1) -- (cell32_l1);
 
@@ -238,13 +242,33 @@ at ($(cell311.east)+(30pt,0pt)$){};
 
 \node[anchor=south,font=\tiny,align=center] at ($(cell72_l2.north)+(0pt,-2pt)$) {{$\tt T$}};
 
-\node[anchor=south,font=\tiny,align=center] at ($(cell1_l2.north)+(0pt,-2pt)$) {{$\tt H,pred_3[1]$}};
-\node[anchor=south,font=\tiny,align=center] at ($(cell22_l2.north)+(0pt,-2pt)$) {{$\tt pred_3[2], pred_2[1]$}};
-\node[anchor=south,font=\tiny,align=center] at ($(cell32_l2.north)+(0pt,-2pt)$) {{$\tt curr_3[1],curr_3[2]$}};
+\node[anchor=south,font=\tiny,align=center] at ($(cell1_l2.north)+(0pt,-2pt)$) {{$\tt H$}};
+\node[anchor=south,font=\tiny,align=center] at ($(cell22_l2.north)+(0pt,-2pt)$) {{$\tt preds[2],preds[1]$}};
+\node[anchor=south,font=\tiny,align=center] at ($(cell32_l2.north)+(0pt,-2pt)$) {{$\tt currs[2], currs[1]$}};
 
 
-\node[anchor=south,font=\tiny,align=center] at ($(cell31.north)+(0pt,-2pt)$) {{$\tt pred_1[1]$}};
-\node[anchor=south,font=\tiny,align=center] at ($(cell310_l1.north)+(0pt,-2pt)$) {{$\tt curr_1[1]$}};
+\node[anchor=south,font=\tiny,align=center] at ($(cell31.north)+(0pt,-2pt)$) {{$\tt preds[0],pred$}};
+\node[anchor=south,font=\tiny,align=center] at ($(cell310_l1.north)+(0pt,-2pt)$) {{$\tt currs[0],curr$}};
+\node[anchor=south,font=\tiny,align=center] at ($(cell311.north)+(0pt,-2pt)$) {{$\tt succ$}};
+
+\node[rounded corners,draw,name=cell6,minimum width=24pt, minimum height=20pt] at ($(cell0.east)+(260pt,120pt)$){};
+\node[minimum width=8pt, minimum height=10pt,anchor=west,font=\tiny,inner sep=0pt,name=d1] at (cell6.west)
+{};
+%\node[draw,minimum width=8pt, minimum height=10pt,anchor=north,font=\tiny,inner sep=0pt]at (cell6.north){};
+\node[draw,minimum width=8pt, minimum height=20pt,anchor=south,font=\tiny,inner sep=0pt]at (cell6.south){};
+\node[name=succ6,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=0pt] at ($(cell6.east)+(-4pt,0pt)$) {};
+
+\node[ellipse callout, fill=yellow!20,anchor=east,inner sep=2pt, 
+callout absolute pointer={($(cell6.north west)+(4pt,-15pt)$)},draw,,font=\tiny,align=center]  
+at ($(cell6.north west)+(-4pt,-12pt)$){$\tt data$};
+
+\node[ellipse callout, fill=yellow!20,inner sep=2pt, 
+callout absolute pointer={($(cell6.south)+(0pt,5pt)$)},draw,,font=\tiny,align=center]  
+at ($(cell6.south)+(2pt,-7pt)$){$\tt mark$};
+
+\node[ellipse callout, fill=yellow!20,inner sep=2pt, 
+callout absolute pointer={($(cell6.east)+(-4pt,0pt)$)},draw,,font=\tiny,align=center]  
+at ($(cell6.east)+(13pt,0pt)$){${\tt next}$};
 
 
 \end{tikzpicture}
