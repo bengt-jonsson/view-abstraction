@@ -640,7 +640,7 @@ It is a bit strange that marked[] is defined up to MAXLEVEL but only marked[0] i
 In this section, we describe the application of our fragment abstraction to concurrent programs that operate on skiplists. Let us first briefly introduce skiplists. Skiplists are a popular structure used in concurrent data structures
 implementing sets and other collections.
 \bjinsert{REFERENCES}
-Heap cells have an array of $\tt next$ pointer, indexed by a level that ranges
+Heap cells have an array of $\tt next$ pointers, indexed by a level that ranges
 from $0$ and upwards. The pointer arrays of Head and Tail cells always have
 a maximum height, whereas the height of arrays at other nodes vary between $1$
 (only a $\tt next[0]$-pointer) and the maximum. The cells and $\tt next[0]$-pointers form a singly-linked

@@ -1,20 +1,35 @@
-\section{Timestamp Stack}
+\section{Fragment Abstraction for Arrays of Singly-Linked Lists}
+In this section, we describe the application of our fragment abstraction to concurrent programs that operate on arrays of singly-linked lists. This structure
+was introduced already in the motivating example in
+Section~\ref{sec:overview}.
+In this setting, the algorithm uses an array of singly-linked lists, accessed via the thread-indexed array ${\tt pools[maxThreads]}$ of pointers to the first cell of each list. In these algorithm, each cell also contains a timestamp value.
 
-\section{Timestamp Abstraction}
-\subsection{View Abstraction}
-For timestamp data structures we have to deal with timestamp ordering and unbound number of lists. The solutions are described as follows:
+\subsection{Fragment Abstraction}
+We verify these algorithm by extending the fragment abstraction for SLLs in
+two ways:
 \begin{itemize}
-	\item  About timestamp ordering, we add timestamp ordering information for each index of a view. The order of index $\tt i$ of view $\tt v$ is of the form $\tt v.i.ts \diamond x$ where $\diamond\in \set{<,=,>}$ and $\tt x$ is an observer register. Intuitively, $\tt v.i.ts \diamond x$ means that $\diamond$ is the order between the timestamp of $\tt v.i$ and timestamp of an index whose data is equal to $\tt x$. 
-	\item To deal with the problem of unbounded number of lists. We use two kind of views which are c-views $\tt v_c$ in a current list and o-views $\tt v_o$ in other lists. Note that, current list is the list where the current thread is accessing to.
+\item   To handle timestamps, we extend the data abstraction. Each timestamp value is abstracted to a mapping from local timestamp variables and observer
+  registers to the set $\set{<,=,>}$.
+  An element $\tsabsmap$ in the abstract domain represents a concrete timetamp value $\tt ts$ if the value $\tt ts'$ of any local timestamp variable
+  $\lvarof{tsvar}$ satisfies $\tt ts \sim ts'$ for some $\sim \in
+  \tsabsmap(\lvarof{tsvar})$ and the value $\tt ts'$ of the timetamp field
+  of any $\reg_i$-cell satisfies $\tt ts \sim ts'$ for some $\sim \in
+  \tsabsmap(\reg_i)$.
+\item
+  We abstract the unbounded set of indices $\tt i$ in arrays of form
+  $\tt pools[maxThreads]$ into the set $\set{\mathit{me},\mathit{other}}$, where
+  for a thread $\thread$, we let $\mathit{me}$ represent the index
+  $\tt i$ such that $\thread$ is currently manipulating the list pointed to
+  by $\tt pools[i]$, and $\mathit{other}$ any other index.
 \end{itemize}
-\subsection{Post-computation}
-The post-computation is quite similar to singly-linked lists with several differences as follows: Before computing the post condition of this statement, we change all o-views in the other list to c-views and previous c-views to o-views.  
-\subsection{Intersection}
-The intersection between two views are computed same as in the case of singly-linked lists with several differences as follows: 
-\begin{itemize}
-	\item Two views of push methods should not be intersected. The reason for it is that we do not have more concurrent pushes in a same list.
-	\item We can intersect o-views and c-views, o-views and o-views as well as c-views and c-views
-\end{itemize}
+
+\subsection{Symbolic Postcondition Computation}
+The symbolic postcondition computation is quite similar to that for singly-linked lists with the following differences
+\todo[inline]{to Quy: can you rephrase the rest of this paragraph? I could not understand it}
+Before computing the post condition of this statement, we change all o-views in the other list to c-views and previous c-views to o-views.  
+
+\paragraph{Interference Steps} 
+The intersection between two views are computed same as in the case of singly-linked lists with the difference that two views of push methods should not be intersected. The reason for it is that we do not have more concurrent pushes in a same list.
 
 
 
