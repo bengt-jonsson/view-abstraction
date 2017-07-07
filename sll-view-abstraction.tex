@@ -233,7 +233,7 @@ $\locsymbconf$ such that $\conf \satconf{\thread}
 \todo[inline]{Skip the following example. Do we need one?}
 \paragraph{Example:} Let us show an example of how a singly linked list (SLL) is split into a set of fragments. Fig.~\ref{lazylist}(a) shows an example of a concrete shape of a singly linked list. Each cell contains the values of $\tt val$, $\tt mark$, and $\tt lock$ from top to bottom, where \tick \; denotes $\tt true$, and \cross \; denotes $\tt false$ (or $\tt free$ for $\tt lock$) and the value of $\tt val$ is denoted by a pair of the observer register $\tt z$ and a subset of $\set{<, =, >}$. There are two threads $1$ and $2$ with two local variables $\tt c_1$ and $\tt c_2$. There are two global variables $\tt H$ and $\tt T$ pointing to the head and tail of the list. The observer register $\tt z$ has value 8. Fig.~\ref{lazylist}(b) shows the result of splitting the list in Fig.~\ref{lazylist}(a) into fragments where each heap fragment is a small list of two nodes. Fig.~\ref{lazylist}(c) shows the abstraction of fragments in Fig.~\ref{lazylist}(b) where for each cell $\cell$, the value of $val$ is abstracted to a subset in $\tt \{<z, =z, >z\}$, the reachability relation between $\cell$ and global variables and observer registers is abstracted to the predicate $\tt X \mapsto \tt Y$ where $\tt X$, $\tt Y$ are sets of global variables and observer registers, $\tt i$ or $\tt o$ states that $\cell$ is an input or output cell.
 
-\subsubsection{Computing Postconditions}
+\subsection{Computing Postconditions}
 \label{subsect:postcond}
 In the  verification, we must compute a symbolic representation
 that is satisfied by all reachable program configurations.
@@ -627,7 +627,8 @@ which is identical to $\frag_1$ except that
 \todo[inline]{New Question to Quy. BUT some of the data abstraction is
   about observer registers. Mustn't this Agree?} \quycom{for data abstraction about observer register, then they must agree.}
 
-\subsection{Fragment Abstraction for Skiplists}
+\section{Fragment Abstraction for Skiplists}
+\label{sec:skiplists}
 \input skipcode
 %\todo[inline]{Here goes a description of the fragment abstraction for
 %   skip lists}
@@ -679,7 +680,7 @@ Each cell is labeled by the pointer variables that point to it.
 In the heap state of Figure ~\ref{skiplistshape}, the thread is trying to find a target key $8$ and has reached line 24, discovering that key $8$ is not in the list.
 For each $i$, the variables $\tt preds[i]$ and $\tt succs[i]$ point to the nearest cells at level $i$.
 
-\subsubsection{Fragment Abstraction for Skiplists}
+\subsection{Fragment Abstraction for Skiplists}
 We can now describe our fragment abstraction for skiplist-based programs.
 It is based on the fragment abstraction for SLLs, described in
 Section~\ref{subsec:frag-sll}. The main difference is that we define two
@@ -760,7 +761,7 @@ fragments at level $0$ representing $\tt f_3$, $\tt f_4$ and $\tt f_7$ respectiv
 %\todo[inline]{to Quy: could you illustrate how the fragments represent cells,
 %  in the same way as in Figure~\ref{fig:viewrelations}?}
  
-\subsubsection{Computing Postconditions for Skiplists}
+\subsection{Computing Postconditions for Skiplists}
 \label{subsect:postcond-skiplists}
 The symbolic postcondition computation for skiplists is based on that for
 singly linked lists, described in Section~\ref{subsect:postcond}, with the

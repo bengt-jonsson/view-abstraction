@@ -1,8 +1,8 @@
-\todo[inline]{This related work remains to be written}
 \paragraph{Related Work}
+
 Much previous work has been devoted to
 the {\it manual} verification of linearizability for
-concurrent programs. Examples
+concurrent data structure implementations. Examples
 include~\cite{LF:pldi13,Aaron:locigcal:linearizability}.
 %% %
 %% For instance, Turon {\it et al.} \cite{Aaron:locigcal:linearizability}
@@ -13,12 +13,12 @@ include~\cite{LF:pldi13,Aaron:locigcal:linearizability}.
 %% propose a program logic with a lightweight instrumentation mechanism 
 %% for verifying linearizability for algorithms with non-fixed LPs.
 %
-In \cite{OHearnlist}, O'Hearn {\it et al.}  define a
-{\it hindsight lemma} that
-provides a non-constructive evidence for linearizability. 
-%
-The lemma is used to prove linearizability of an optimistic variant of 
-the lazy set algorithm.
+%% In \cite{OHearnlist}, O'Hearn {\it et al.}  define a
+%% {\it hindsight lemma} that
+%% provides a non-constructive evidence for linearizability. 
+%% %
+%% The lemma is used to prove linearizability of an optimistic variant of 
+%% the lazy set algorithm.
 %% by identifying the hindsight property of the algorithm. 
 Vafeiadis \cite{Vafeiadis:Thesis}
 uses forward and backward simulation relations together
@@ -34,83 +34,106 @@ For instance, Colvin {\it et al.} \cite{Colvin:Lazy-List}
 verify the lazy set algorithm in  PVS,
 using a combination of forward and backward simulations.
 
-There are several works on {\it automatic} verification of linearizability.
-%
-In \cite{Vafeiadis:cav10}, Vafeiadis
-develops an automatic tool for proving  linearizability that
-employs instrumentation to verify logically pure executions.
-%
-However, this work can handle non-fixed LPs only for read-only methods,
-i.e, methods that do not modify the heap.
-%
-This means that the method cannot handle
- algorithms like the {\it Elimination} queue ~\cite{Shavit:ElimQueue}, {\it HSY} stack~\cite{HSYstack}, {\it CCAS}~\cite{Harris:CAS}, 
-{\it RDCSS}~\cite{Harris:CAS} and {\it HM} set~\cite{ArtOfMpP} that we consider in this paper. In addition, their shape abstraction is not powerful enough to handle algorithms like {\it Harris} set~\cite{Harris:list} and {\it Michael} set~\cite{Michael:list} that are also handled by our method.
-%
-%For instance, in the {\it HSY} stack algorithm both
-%the {\tt push} and {\tt pop} operations modify
-%the heap and help each other~\cite{HSYstack}. 
-%
-Chakraborty {\it et al.} \cite{HSV:concur13}
-describe an ``aspect-oriented'' method for  modular verification 
-of concurrent queues that they use to prove linearizability of the Herlihy/Wing queue.
-Bouajjani et al. \cite{BEEH:icalp15} extended this work to show that verifying 
-linearizability for certain
-fixed abstract data types, including queues and stacks, is reducible to 
-control-state reachability. 
-%
-We can incorporate this technique into
-our framework by a suitable construction of observers.
-The method can not be applied to sets.
-%
-The most recent work of Zhu {\it et al.} \cite{Poling}
-describe a tool that is applied for specific set, queue, and stack  
-algorithms. For queue algorithms, their technique can handle queues with helping mechanism except for {\it HW} queue~\cite{HeWi:linearizability} which is handled by our paper.
-%
-For set algorithms, the authors can only handle those that perform an optimistic contains (or lookup) operation by applying the {\it hindsight lemma} from 
-\cite{OHearnlist}. 
-%
-Hindsight-based proofs provide only {\it non-constructive} 
-evidence of linearizability.
-%
-Furthermore, some algorithms (e.g., the unordered list algorithm
-considered in Sec.~\ref{section:experiments} of this paper)
-do not contain the code patterns required by the hindsight method. Algorithms with non-optimistic contains (or lookup) operation like {\it HM}~\cite{ArtOfMpP}, {\it Harris}~\cite{Harris:list} and {\it Michael}~\cite{Michael:list} sets cannot be verified by their technique.  
-%
-Vechev {\it et al.}~\cite{Vechev:spin09}
-check linearizability with user-specified non-fixed LPs,
-using a tool for finite-state verification.
-Their method assumes a bounded number of threads, and
-they report state space explosion when having more than two threads.
-%
-Dragoi  {\it et al.} \cite{Henzinger:CAV13} describe a method for proving
-linearizability that is applicable to algorithms with non-fixed LPs.
-%
-However, their method needs to rewrite the implementation so that all operations 
-have linearization points within the rewritten code.
-%
+
+There are several works presenting techniques for {\it automated} verification
+of functional correctness (in the sense of, e.g., linearizability)
+for concurrent data structures.
+All these techniques have been applied only to programs operating on singly linked
+lists~\cite{YaSa:queue,Sagiv:correlation,Amit:comparisonAbstraction,EQSST:tacas10,Vafeiadis:cav10,AHHR:integrated,meyer:vmcai16,Quy:sas16}, often under restrictions, such as bounding the number of accessing
+threads~\cite{Amit:comparisonAbstraction,Vechev:spin09,CernyRZCA:CAV10}.
+
 \v{C}ern{\'y} {\it et al} \cite{CernyRZCA:CAV10} show decidability of a class
-of programs with a bounded number of threads operating on concurrent data structures.
-%
-%% This paper is about a different problem
-%% Horn and Kroening \cite{Kroening-Linearizability:FORTE15}
-%% have recently presented an efficient linearizability checker based on {\it P-compositionality} 
-%% which can be applied when having a bounded number of threads.
-%
-Finally, the works~\cite{AHHR:integrated,BLMRS:cav08,Vafeiadis:vmcai09}
-all require fixed linearization points.
+of concurrent data strcuture implementations with a bounded number of threads operating on a singly-linked list structure.
+
+Our technique for specifying and verifying linearizability uses the
+technique of observers~\cite{AHHR:integrated}, which adapts ideas from
+the automata-theoretic approach~\cite{VW:modelchecking} and
+data-independence~\cite{Wolper:dataindependence}. This technique
+reduces the problem of checking linearizability to that of control-state
+reachability.
+We use further development of this approach, in particular that linearizability
+of concurrent stacks and queues can be specified without requiring any user
+annotation~\cite{BEEH:icalp15,HSV:concur13}.
+To verify the linearizability of concurrent sets, we use
+the light-weight instrumentation technique, extending the technique with
+fixed linearization points, of~\cite{Quy:sas16}.
+
+For sequential programs,
+there are several techniques for automated verification of programs that operate
+on heap structures that are more general than singly-linked lists.
+These include approaches based on forest automata~\cite{forester12,boxes13,Quy:atva13:journal}, separation logic~ \cite{InvaderCAV08,dudka13},
+automata \cite{artmc12}, or graph grammars \cite{juggrnaut10}, in some
+cases also combined with data
+abstraction~\cite{Loginov:AbstrRefViaInductLearning:05}.
+These approaches have not been applied to verify functional properties of
+concurrent programs operating on heap structures beyond singly-linked lists.
+
+%% develops an automatic tool for proving  linearizability that
+%% employs instrumentation to verify logically pure executions.
+%% %
+%% However, this work can handle non-fixed LPs only for read-only methods,
+%% i.e, methods that do not modify the heap.
+%% %
+%% This means that the method cannot handle
+%%  algorithms like the {\it Elimination} queue ~\cite{Shavit:ElimQueue}, {\it HSY} stack~\cite{HSYstack}, {\it CCAS}~\cite{Harris:CAS}, 
+%% {\it RDCSS}~\cite{Harris:CAS} and {\it HM} set~\cite{ArtOfMpP} that we consider in this paper. In addition, their shape abstraction is not powerful enough to handle algorithms like {\it Harris} set~\cite{Harris:list} and {\it Michael} set~\cite{Michael:list} that are also handled by our method.
+%% %
+%% %For instance, in the {\it HSY} stack algorithm both
+%% %the {\tt push} and {\tt pop} operations modify
+%% %the heap and help each other~\cite{HSYstack}. 
+%% %
+%% Chakraborty {\it et al.} \cite{HSV:concur13}
+%% describe an ``aspect-oriented'' method for  modular verification 
+%% of concurrent queues that they use to prove linearizability of the Herlihy/Wing queue.
+%% %
+%% We can incorporate this technique into
+%% our framework by a suitable construction of observers.
+%% The method can not be applied to sets.
+%% %
+%% The most recent work of Zhu {\it et al.} \cite{Poling}
+%% describe a tool that is applied for specific set, queue, and stack  
+%% algorithms. For queue algorithms, their technique can handle queues with helping mechanism except for {\it HW} queue~\cite{HeWi:linearizability} which is handled by our paper.
+%% %
+%% For set algorithms, the authors can only handle those that perform an optimistic contains (or lookup) operation by applying the {\it hindsight lemma} from 
+%% \cite{OHearnlist}. 
+%% %
+%% Hindsight-based proofs provide only {\it non-constructive} 
+%% evidence of linearizability.
+%% %
+%% Furthermore, some algorithms (e.g., the unordered list algorithm
+%% considered in Sec.~\ref{section:experiments} of this paper)
+%% do not contain the code patterns required by the hindsight method. Algorithms with non-optimistic contains (or lookup) operation like {\it HM}~\cite{ArtOfMpP}, {\it Harris}~\cite{Harris:list} and {\it Michael}~\cite{Michael:list} sets cannot be verified by their technique.  
+%% %
+%% Vechev {\it et al.}~\cite{Vechev:spin09}
+%% check linearizability with user-specified non-fixed LPs,
+%% using a tool for finite-state verification.
+%% Their method assumes a bounded number of threads, and
+%% they report state space explosion when having more than two threads.
+%% %
+%% Dragoi  {\it et al.} \cite{Henzinger:CAV13} describe a method for proving
+%% linearizability that is applicable to algorithms with non-fixed LPs.
+%% %
+%% However, their method needs to rewrite the implementation so that all operations 
+%% have linearization points within the rewritten code.
+%% %
+%% \v{C}ern{\'y} {\it et al} \cite{CernyRZCA:CAV10} show decidability of a class
+%% of programs with a bounded number of threads operating on concurrent data structures.
+%% %
+%% %% This paper is about a different problem
+%% %% Horn and Kroening \cite{Kroening-Linearizability:FORTE15}
+%% %% have recently presented an efficient linearizability checker based on {\it P-compositionality} 
+%% %% which can be applied when having a bounded number of threads.
+%% %
+%% Finally, the works~\cite{AHHR:integrated,BLMRS:cav08,Vafeiadis:vmcai09}
+%% all require fixed linearization points.
 
 We have not found any report in the literature of a
 verification method that is sufficiently powerful to
-automatically verify the class of concurrent set
-implementations based on sorted and non-sorted
-singly-linked lists having non-optimistic contains (or lookup) operations we consider. For instance %For instance,
-%the shape abstraction of the CAVE implementation
-%\cite{Vafeiadis:cav10}
-%is not powerful enough to handle
-the lock-free sets of {\it HM}~\cite{ArtOfMpP},
-{\it Harris}~\cite{Harris:list}, or {\it Michael}~\cite{Michael:list},
-or unordered set of~\cite{Zhang:unorderedlist},
+automatically verify properties such as linearizablity
+for concurrent data structure implementations based on heap structures, which
+are more general than singly-linked lists. In particular, no approaches
+for automatically verifying concurrent skiplist-based algorithms
+~\cite{Fomitchev:2004,ArtOfMpP,Linden:opodis13,Sundell:2005} or arrays of lists operating on time stamps~\cite{ts-stack}.
 %reported in
 %Section~\ref{section:experiments} (as also confirmed by the CAVE
 %tool implementors).

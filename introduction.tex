@@ -30,7 +30,7 @@ in some cases with the support of an interactive theorem prover
 (e.g.,~\cite{Aaron:locigcal:linearizability,Colvin:Lazy-List,Derrick:fm14,SWD:cav12,SDW:tcl14}).
 Development of automated verification techniques is a difficult challenge.
 
-A major difficulty is that a successful verification technique must be
+A major difficulty is that a successful automated verification technique must be
 able to reason about fine-grained concurrent algorithms that are infinite-state
 in many dimensions: 
 they consist of an unbounded number of concurrent threads, which
@@ -193,3 +193,16 @@ concurrent algorithms where an unbounded number of threads interact
 via a shared heap.
 
 \paragraph{Organization of Paper.}
+After a review of related work, in Section~\ref{sec:overview}, we illustrate our
+fragment abstraction approach by outlining its application to the
+Timestamped stack of~\cite{ts-stack}; this algorithm has not previously been
+verified by automated techniques. Then, in Section~\ref{programs:section},
+we introduce our representation of concurrent data structure implementations,
+and how to specify linearizability. Our fragment abstraction is described
+for singly-linked lists in Section~\ref{sec:fragment-abstraction}, for
+skiplists in Section~\ref{sec:skiplists},
+and for arrays of singly-linked lists in Section~\ref{sec:list-arrays}.
+Section~\ref{section:experiments} describes our implementation of the
+approach and the obtained experimental results.
+Section~\ref{sec:conclusions} contains conclusions and directions for future
+work.
