@@ -1,0 +1,78 @@
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdftex 2015.3.13)  6 JUL 2017 08:58
+entering extended mode
+ restricted \write18 enabled.
+ file:line:error style messages enabled.
+ %&-line parsing enabled.
+**/Users/trinhcongquy/Desktop/view-abstraction/experiments.tex
+(/Users/trinhcongquy/Desktop/view-abstraction/experiments.tex
+/Users/trinhcongquy/Desktop/view-abstraction/experiments.tex:2: Undefined control sequence.
+l.2 \section
+            {Experimental Results}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/experiments.tex:3: Undefined control sequence.
+l.3 \label
+          {section:experiments}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/experiments.tex:5: Undefined control sequence.
+l.5 \newcommand
+               {\emm}{(emm)}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/experiments.tex:5: Undefined control sequence.
+l.5 \newcommand{\emm
+                    }{(emm)}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/experiments.tex:6: Undefined control sequence.
+l.6 \begin
+          {table}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/experiments.tex:7: Undefined control sequence.
+l.7 \footnotesize
+                 
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/Users/trinhcongquy/Desktop/view-abstraction/experiments.tex:8: Undefined control sequence.
+l.8 \begin
+          {tabular}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+[1{/usr/local/texlive/2014/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] )</usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb>
+Output written on /Users/trinhcongquy/Desktop/view-abstraction/.texpadtmp/experiments.pdf (1 page, 15048 bytes).
+PDF statistics:
+ 12 PDF objects out of 1000 (max. 8388607)
+ 7 compressed objects within 1 object stream
+ 0 named destinations out of 1000 (max. 500000)
+ 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+

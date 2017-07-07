@@ -5,7 +5,7 @@
 \node(locate){};
 \node(locate-head)[linecode] at ($(locate.west)+(-130pt,-10pt)$) {\scriptsize bool find(int key, Node* preds[], Node* succs[]):};
 \node(node1)[linecode] at ($(locate-head.west)+(9pt,-10pt)$)  {\scriptsize int bottomLevel = 0;};
-\node[linecode] at ($(locate-head.west)+(9pt,-20pt)$)  {\scriptsize bool marked[MAXLEVEL] = \{false\};};
+\node[linecode] at ($(locate-head.west)+(9pt,-20pt)$)  {\scriptsize bool marked = false;};
 \node[linecode] at ($(locate-head.west)+(9pt,-30pt)$)  {\scriptsize bool snip;};
 \node[linecode] at ($(locate-head.west)+(9pt,-40pt)$)  {\scriptsize Node* pred = null, curr = null, succ = null;};
 \node[linecode] at ($(locate-head.west)+(9pt,-50pt)$)  {\scriptsize retry:};
@@ -15,9 +15,9 @@
 \node[linecode] at ($(locate-head.west)+(36pt,-90pt)$)  {\scriptsize    curr = pred.next[i]; };
 \node[linecode] at ($(locate-head.west)+(36pt,-100pt)$)  {\scriptsize    while (true) };
 \node[linecode] at ($(locate-head.west)+(45pt,-110pt)$)  {\scriptsize      succ = curr.next[i].get(marked); };
- \node[linecode] at ($(locate-head.west)+(45pt,-120pt)$)  {\scriptsize     while (marked[0]) };
+ \node[linecode] at ($(locate-head.west)+(45pt,-120pt)$)  {\scriptsize     while (marked) };
  \node(node4)[linecode] at ($(locate-head.west)+(54pt,-130pt)$)  {\scriptsize       snip = CAS(pred.next[i], curr, succ, false, false); };
-\node[linecode] at ($(locate-head.west)+(54pt,-140pt)$)  {\scriptsize        if (!s) continue retry; };
+\node[linecode] at ($(locate-head.west)+(54pt,-140pt)$)  {\scriptsize        if (!snip) continue retry; };
 \node[linecode] at ($(locate-head.west)+(54pt,-150pt)$)  {\scriptsize        curr = pred.next[i]; };
 \node[linecode] at ($(locate-head.west)+(54pt,-160pt)$)  {\scriptsize        succ = curr.next[i].get(marked); };
 \node[linecode] at ($(locate-head.west)+(45pt,-170pt)$)  {\scriptsize      if (curr.key < key) };
