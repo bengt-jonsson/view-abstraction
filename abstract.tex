@@ -1,0 +1,43 @@
+\begin{abstract}
+We present a technique for automatic verification of concurrent
+data structure algorithms that operate on different forms
+of dynamically allocated heap structures such as singly-linked lists,
+skiplists, and arrays of lists.
+Such concurrent algorithms are notorciously difficult verify automatically,
+since they often employ fine-grained synchronization, and since 
+they consist of an unbounded number of concurrent threads, which
+operate on an unbounded domain of data values, and use
+unbounded dynamically allocated memory. 
+All existing automated verification techniques
+restrict attention to algorithms where
+the heap represents shared data byp singly-linked
+lists, often imposing additional restrictions.
+In this paper, we present the first technique which can automatically verify concurrent
+data structure algoritms that operate on dynamically allocated
+heap structures which are more complex than just singly-linked lists.
+Our approach is the first framework that
+can automatically verify concurrent data structure algorithms that employ
+skip lists, singly linked lists, as well as arrays of singly linked lists,
+Our technique is based on a novel shape abstraction,
+called {\em fragment abstraction} for representing
+different kinds of unbounded heap structures.
+%% such as arrays of singly linked lists and skip lists.
+%% , for representing an unbounded heap.
+%% a novel {\em shape abstraction}, which is designed to cope with an unbounded
+%% heap (note that the heap visible to a single thread is still unbounded).
+Fragment abstration represents  heap states by a set of {\em fragments},
+each of which is a pair of node types (called tags) that are
+connected by a pointer. A tag can be seen as a finitary abstraction of
+a heap node, which summarizes both local information about
+values of its data fields
+%% (applying suitable data abstraction),
+as well as global information about its position in the heap.
+a set of fragments represents the set of heap structures in
+which each pair of pointer-connected nodes are represented by some
+fragment in the set.
+Fragment abstraction can be combined with other abstractions for
+handling unbounded data domains and for handling an unbounded number of threads.
+We have implemented our framework in a tool and successfully used it to  prove linearizability  for a wide range of concurrent data structure algorithms.
+In particular, we provide the first automated verification of such
+algorithms that operate on skiplists and arrays of lists with timestamps.
+\end{abstract}
