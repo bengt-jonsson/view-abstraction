@@ -1,39 +1,26 @@
 \section{Conclusions}
-\label{sec:conclusion}
-\vspace*{-6pt}
-\todo[inline]{To be adapted. PLEASE, BJ:}
-We have presented a uniform framework for automatically verifying
-linearizability of  singly-linked list-based concurrent implementations of
-sets, stacks, and queues, annotated with linearization policies.
-Our contributions include a novel formalism for specifying
-linearization policies with non-fixed LPs, an extension of thread-modular
-reasoning, and an extension of existing symbolic representations
-of unbounded singly-linked-list structures containing data from
-an unbounded domain.
-We have verified all linearizable singly-linked list-based implementations
-known to us in the literature.
-%% \begin{itemize}
-%% \item
-%%   We present a novel formalism for specifying the occurrence of linearization
-%%   points, called {\it controllers}.
-%% Controllers  can handle, in a simple and uniform manner, complex patterns for
-%% We have presented a framework for proving linearizability
-%% of algorithms for concurrent data structures such as 
-%% % 
-%% To that end, we provide a specification language that
-%% allows defining complex linearization patterns in a
-%% simple and concise manner.
-%% %
-%% The systems we consider are infinite in multiple dimensions, namely,
-%% in the size of the data, the number of threads, and the size
-%% of the heap.
-%% %
-%% Therefore, we define a collection of powerful
-%% abstraction schemes that allow both precision
-%% and efficiency of the analysis.
-%
+\label{sec:conclusions}
+We have present a technique for automatic verification of concurrent
+data structure algorithms that operate on different forms
+of dynamically allocated heap structures such as singly-linked lists,
+skiplists, and arrays of lists.
+It is the first technique which can automatically verify concurrent
+data structure algoritms that operate on dynamically allocated
+heap structures which are more complex than just singly-linked lists, such as
+skip lists and arrays of singly linked lists.
+Our fragment abstraction represent heap states by a set of  fragments,
+each of which describes how two node types (tags) can be connected by a
+pointer-field. 
+We have implemented our technique, and provided the first automated
+verification of concurrent data structure algorithms
+that operate on skiplists and arrays of lists with timestamps.
+
+The success of our technique indicate that
+tags appear to carry a suitable combination of local and
+global information, that is particularly suitable for symmetric concurrent
+algorithms, in which threads communicate via the heap and global variables.
 In the future,
 %% Since the shape abstraction  is orthogonal to the rest of the framework, 
-we intend to extend the framework to more
-complex data structures.
+we intend to extend the framework to other
+complex data structures, such as trees.
 
