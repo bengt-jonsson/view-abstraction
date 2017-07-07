@@ -12,13 +12,15 @@ concurrent programs that operate on a shared heap.
 We consider a program with global variables $\glvarset$ and
 thread-local variables $\locvarset$.
 We assume that all global variables are pointer variables.
-We describe our fragment abstractions for three classes of heap structures:
-in the following subsection, we consider programs operating on singly-linked
-lists, in Subsection~\ref{subsect:skiplists}, we consider programs operating
-on skiplists, and in
-Subsection~\ref{subsect:skiplists}, we consider programs operating
-arrays of singly linked lists.
-
+We describe our fragment abstractions for three classes of heap structures.
+In this section, we consider programs operating on singly-linked lists (SLLs).
+%% In section~\ref{subsect:skiplists}, we consider programs operating
+%% on skiplists, and in Section~\ref{subsect:skiplists}, we consider programs operating arrays of singly linked lists.
+Our fragment abstraction for singly-linked lists is also
+the basis for our fragment abstraction for programs
+operating on skiplists, described in Section~\ref{sec:skiplists}
+and for programs operating on arrays of SLLs, described in
+Section\ref{sec:list-arrays}.
 
 %% In the actual verification, we compute a symbolic representation
 %% of an invariant that is satisfied by all reachable program configurations (including observer states).
@@ -33,27 +35,22 @@ arrays of singly linked lists.
 %% data values, an unbounded number of concurrently executing threads, and an
 %% unbounded heap. 
 
-\subsection{Fragment Abstraction for Singly-Linked List-Based Programs}
-\label{subsec:frag-sll}
-In this subsection, we describe our symbolic representation, using fragment
-abstraction, for programs that operate on singly-linked lists (SLLs). This
-representation is also the basis for our representation for programs
-operating on skiplists, described in Subsection~\ref{subsect:skiplists}
-and programs operating on arrays of SLLs, in Subsection~\ref{subsect:skiplists}.
-
-\bjcom{Say that for now, we ignore timers?}
-
-We assume that we must analyze the product of a program and an observer.
+Recall from Section~\ref{programs:section} that
+we must analyze an augmented program, consisting of a program and an observer.
 The program operates on a heap, where each cell has exactly one
 pointer field, named {\tt next}, and at most one {\tt data} field, which
 assumes values from the same domain $\ddomain$ as observer registers.
+In Section\ref{sec:list-arrays}, we extend the treatment to consider also fields
+that carry timestamps.
 
-\bjcom{Introduce notation for the set of local $\ddomain$-variables?.
-  Maybe defined which threads we talk about?
-  For now, we skip timestamps.
-}
+Fragment abstraction represents heap cells by a combination of local and
+global information. A basic building block for the local information
+is a data abstraction that concisely represents values of non-pointer fields.
+For the case where these include fields ranging over small
+finite domains, and locks, and $\tt data$ fields which
+assumes values from the same domain $\ddomain$ as observer registers,
+the data abstraction is defined as follows.
 
-We first define our {\em data abstraction}.
 For each thread-local variable, and each non-pointer cell field, which ranges
 over some concrete domain, we define a corresponding abstract domain,
 as follows.
@@ -61,18 +58,17 @@ as follows.
 \item For small concrete domains (including that of the program counter),
   the abstract domain is the same as the concrete one.
 \item
-  For locks variables and lock fields, the abstract domain is $\set{\mathit{me},\mathit{other},\mathit{free}}$.
-\bjcom{Should we explain?}
+  For locks variables and lock fields, the abstract domain is $\set{\mathit{me},\mathit{other},\mathit{free}}$, representing that the lock is taken by the
+  considered thread, some other thread, or is not taken.
 \item For the concrete domain $\ddomain$ of data values, the abstract domain
   is the set of mappings from local variables ranging over $\ddomain$ and
   observer registers to the set $\set{<,=,>}$.
-  An element in the abstract domain represents a concrete data value $\tt d$
-  if
-    it maps each local variable and observer register with value $\tt d'$
-    to a set which includes a relation
-    $\sim$ such that $\tt d \sim \tt d'$.
+  An element $\datamap$ in the abstract domain represents all concrete data values $\tt d$ such that each local variable and observer register with value $\tt d'$
+  such that  $\tt d \sim \tt d'$ is  mapped by $\datamap$ to a set which includes $\sim$. For programs that do not compare data values wrp.\ to ordering,
+  we can let the set of possible relations be $\set{=,\neq}$.
 \end{itemize}
-Define a {\em local symbolic configuration} as a mapping from local
+For a program,
+define a {\em local symbolic configuration} as a mapping from local
 variables (including the program counter) to their corresponding abstract
 domains.
 We use $\conf \satlocsymbconf{\thread} \locsymbconf$ to denote that in the
@@ -80,15 +76,15 @@ global configuration $\conf$, the
 local configuration of thread $\thread$ satisfies the local symbolic
 configuration $\locsymbconf$, defined in the natural way.
 
-As partial motivation for the definition of tags, we
-observe that in order to verify ordering properties represented by the
+An intuitive partial motivation for considering observer register
+in the data abstraction that
+in order to verify ordering properties represented by the
 observer, e.g., that data elements are popped in LIFO order, it is necessary to
-track the relative positions of heap cells whose {\tt data} field has the same
+track the relative positions of heap cells whose ${\tt data}$ field has the same
 value as some observer register. Thus,   in a given configuration,
 for an observer register $\reg_i$,  define a
 {\em $\reg_i$-cell} to be a heap cell whose
 ${\tt data}$ has the same value as $\reg_i$.
-\bjcom{Move this paragraph?}
 
 Next, define a {\em tag} as a tuple
 $\atag = \tagtuple$, where
