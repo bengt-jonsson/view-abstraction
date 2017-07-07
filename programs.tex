@@ -1,12 +1,12 @@
-\section{Concurrent Data Structure Implementations}
+\section{Concurrent Data Structure Algorithms}
 \label{programs:section}
 
 In this section, we introduce our representation of
-concurrent data structure implementations, we define the correctness criterion of
+concurrent data structure algorithms, we define the correctness criterion of
 linearizability, we introduce observers and how to use them for specifying
 linearizability.
 
-\subsection{Concurrent Data Structure Implementations}
+\subsection{Concurrent Data Structure Algorithms}
 
 We begin by introducing (sequential) data structures.
 A {\it data structure} $\dstruct$ is a pair
@@ -27,9 +27,8 @@ is either in $\ddomain$ or in some fixed finite domain (such as the set of
 booleans).
 %
 For some method names, the input or output value is absent from the operation.
-\todo[inline]{Here, we should give an example of a stack trace. And maybe
-omit the rest of this subsubsection}
-
+%% \todo[inline]{Here, we should give an example of a stack trace. And maybe
+%% omit the rest of this subsubsection}
 For example, for the {\tt Stack} data structure, the method names
 are $\tt push$ and $\tt pop$.
 %
@@ -54,7 +53,7 @@ called the {\it legal} traces of $\dstruct$.
 %% \begin{wrapfigure}{R}{6cm}
 %% \center 
 
-A {\em concurrent data structure implementation} operates on a shared
+A {\em concurrent data structure algorithm} operates on a shared
 state consisting of shared global variables and a shared heap.
 It assigns, to each method name, a method which performs operations
 %% In this section, we introduce programs that consist
@@ -65,7 +64,7 @@ It assigns, to each method name, a method which performs operations
 %
 %% Each thread executes a method that performs an operation
 on the shared state.
-Each data structure implementation also comes with an initialization method,
+Each data structure algorithm also comes with an initialization method,
 named {\tt init}, which initializes its shared state.
 
 %\todo{What is the difference between methods here in 
@@ -107,42 +106,42 @@ Heap cells have a fixed set $\fieldset$ of fields, namely
 data fields that assume values in
 $\ddomain$ or $\fset$, and possibly lock fields.
 Furthermore, each cell has one or several named pointer fields.
-For instance, in data structure implementations based on singly linked lists,
-each heap cell has a pointer field named {\tt next}, in implementations
+For instance, in data structure algorithms based on singly linked lists,
+each heap cell has a pointer field named ${\tt next}$, in algorithms
 based on skip lists, there is an array of pointer fields named
-{\tt next[k]} where {\tt k} ranges from $1$ to the maximum level of the
+${\tt next[k]}$ where ${\tt k}$ ranges from $0$ up to the maximum level of the
 skip list.
 %% heap cells are organized into singly-linked lists.%\todo{Possibly with a 
 %cycle?}
-We use the term $\ddomain$-field for a data field that
-assumes values in $\ddomain$, and the terms $\fset$-field and lock field
-with analogous meaning.
+%% We use the term $\ddomain$-field for a data field that
+%% assumes values in $\ddomain$, and the terms $\fset$-field and lock field
+%% with analogous meaning.
 Atomic commands include assignments between data variables, 
 pointer variables, or fields of cells pointed to by a pointer variable.
 %
-The command {\tt new Node()} allocates a new structure of type
-{\tt Node} on the heap, and returns a reference to it.
+The command ${\tt new Node()}$ allocates a new structure of type
+${\tt Node}$ on the heap, and returns a reference to it.
 %
-The compare-and-swap command {\tt CAS(\&a,b,c)} atomically
-compares the values of {\tt a} and {\tt b}.
+The compare-and-swap command ${\tt CAS(\&a,b,c)}$ atomically
+compares the values of ${\tt a}$ and ${\tt b}$.
 If  equal, it assigns the value of
-{\tt c} to {\tt a}  and returns {\tt true}, 
-otherwise, it leaves {\tt a} unchanged and returns {\tt false}. 
+${\tt c}$ to ${\tt a}$  and returns ${\tt true}$, 
+otherwise, it leaves ${\tt a}$ unchanged and returns ${\tt false}$. 
 %
 We assume a memory management mechanism, which automatically collects
 garbage, and ensures that a new cell is fresh, i.e., has
-not been used before; this avoids the so-called
-ABA problem (e.g.,~\cite{MS:QueueAlgorithms}).
+not been used before.
+%% this avoids the so-called ABA problem (e.g.,~\cite{MS:QueueAlgorithms}).
 
 We define a {\em program} (over a concurrent data structure) to consist 
 of an arbitrary number of concurrently executing threads, each of which
 executes a method that performs an operation
 on the data structure. We assume that the data structure has been initialized
-by the {\tt init} method prior to the start of program execution.
+by the ${\tt init}$ method prior to the start of program execution.
 
 \subsection{Linearizability}
 In a concurrent
-data structure implementation, we represent the calling of a method by
+data structure algorithm, we represent the calling of a method by
 a {\it call action} $\call\eid\mname\indata$, and the return of a method by
 %% an operation $\mname(\indata,\outdata)$
 %% corresponds to two {\it actions}, namely
@@ -269,9 +268,23 @@ sequential semantics of the particular data structure that is implemented.}
 %% \end{figure}
 
 \subsection{Specification by Observers}
-To verify correctness of a data structure implementation,
+To verify correctness of a data structure algorithm,
 we must verify that any history, i.e., sequence of call and return actions,
 of any program execution satisfies the linearizability criterion.
+For this, we employ observers, using two different methods.
+For concurrent stacks and queues, we use the technique illustrated in
+Section~\ref{sec:overview}, in which observers check the sequence of
+method call and return actions.
+It was recently established~\cite{BEEH:icalp15,HSV:concur13} that this
+technique can precisely characterize linearizability for stacks and queues
+(under a very mild technical condition of data-independence).
+For concurrent sets, we use the obsevers to check the sequence of
+linerarization points of methods. This puts a mild burden on the user to
+annotate the methods with linearization points, in some cases
+combined with a linearization policy~\cite{Quy:sas16}.
+For completeness, we here describe both approaches.
+
+\subsubsection{Observers for Call an Return Actions}
 For stacks and queues, it was recently established
 ~\cite{BEEH:icalp15,HSV:concur13} that the linearizability criterion is equivalent to
 a small number of simple ordering constraints of the following form
@@ -306,9 +319,9 @@ set of {\it transitions}.
 Transitions are of the form 
 $\tuple{\ostate_1,\calltwo{\mname}{\inxvar,\outxvar},\ostate_2}$ or
 $\tuple{\ostate_1,\returntwo{\mname}{\inxvar,\outxvar},\ostate_2}$
-where $\inxvar$ and $\outxvar$ are either registers or constants, i.e.,
-transitions are labeled by 
-operations whose input or output data may be parameterized on registers.
+where $\inxvar$ and $\outxvar$ are either registers, or constants, or absent,
+i.e., transitions are labeled by 
+operations whose input or output data values may be parameterized on registers.
 The observer processes a history one action at a time.
 %
 If there is a transition, whose label (after replacing registers by their
@@ -321,19 +334,81 @@ an accepting state is reached.
 %
 The observer is defined in such a way that it accepts precisely those
 histories that do {\em not} satisfy the constraint represented by the observerer.
-\bjcom{In Figure XXX we showed observers for the stack}
+In Figures~\ref{fig:nonpopobserver:fig} and~\ref{fig:lifostack:fig} we showed
+observers for two constraints in the specification of linearizability for
+concurrent stack algorithms.
 %
 %Other
 %observers for stacks and queues can be found in~\cite{AHHR:integrated}
 %and Appendix~\ref{dstruct:sepcs:section}.
+\subsubsection{Observers for Linearization Points}
+In this technique, we use observers to specify that a trace (i.e., 
+sequence of operations)  is allowed by the sequential data structure.
+\begin{figure}{R}{6cm}
+\center 
+
+\begin{tikzpicture}[]
+
+\node(s0)[draw,line width=1pt,fill=blue!10,circle,text=black]
+{$s_0$};
+
+\node(s1)[draw,line width=1pt,fill=blue!10,circle,text=black,anchor=center]
+at ($(s0.center)+(80pt,0pt)$) {$s_1$};
+
+
+\node(s2)[draw,line width=1pt,fill=blue!10,circle,text=black,scale=0.9,anchor=center ]
+at ($(s0.center)+(40pt,-61pt)$) {$s_2$};
+
+\node[draw,line width=1pt,circle,text=black,anchor=center,minimum size=5mm]
+at ($(s0.center)+(40pt,-61pt)$) {};
+
+
+\draw[->,>=stealth,out=45,in=135,line width=1pt] (s0) to 
+node[above=-1pt,pos=0.5] {\footnotesize${\tt add}(x,\true)$} 
+(s1);
+
+\draw[->,>=stealth,out=225,in=315,line width=1pt] (s1) to node[above=0pt,pos=0.5] {\footnotesize${\tt rmv}(x,\true)$} 
+(s0);
+
+\draw [->,>=stealth,thick,out=270,in=180,line width=1pt] (s0) 
+to 
+node[left,pos=0.2] {\footnotesize${\tt add}(x,\false)$} 
+node[left,pos=0.45] {\footnotesize${\tt rmv}(x,\true)$} 
+node[left,pos=0.8] {\footnotesize${\tt ctn}(x,\true)$} 
+ (s2);
+
+\draw [->,>=stealth,thick,out=270,in=0,line width=1pt] (s1) 
+to 
+node[right,pos=0.2] {\footnotesize${\tt add}(x,\true)$} 
+node[right,pos=0.45] {\footnotesize${\tt rmv}(x,\false)$} 
+node[right,pos=0.8] {\footnotesize${\tt ctn}(x,\false)$} 
+ (s2);
+
+
+
+
+\end{tikzpicture}
+\caption{Set observer.}
+\label{set:observer:fig}
+\end{figure}
+As an example, Figure~\ref{set:observer:fig}
+depicts an observer that accepts the
+sequences of operations that are {\em not} in $\denotationof{\tt Set}$.
+This technique presupposes to
+instrument each method to generate operations at its linearization point (LP),
+using standard techniques.
+For some algorithms, LPs can be statically affixed to method statements.
+For algorithms where this is not possible, we use the extension of this
+technique by linearization policies of~\cite{Quy:sas16}.
 
 
 \todo[inline]{It remains to take care of the criterion that the
   call of pop already has a return value}
 
+\todo[inline]{I will continue working here. BJ}
 \subsection{Formal Semantics}
 \label{semantics:section}
-For preciseness, we formalize the semantics of programs and
+For completeness, we formalize the semantics of programs and
 observers. Below, we assume a program $\prog$  with a set 
 $\glvarset$ of global variables, and an ordering constraint
 specified by an observer $\observer$.
@@ -357,7 +432,6 @@ denoted $\methodof\thread$.
 %% which states that linearizability of the original program
 %% is implied by the fact that the monitor never enters
 %% its ``error'' state.
-
 For a function $\fun:A\mapsto B$ from a set $A$ to
 a set $B$, we use 
 $\fun[\aelem_1\assigned\belem_1,\ldots,\aelem_\nn\assigned\belem_\nn]$ 
@@ -368,6 +442,7 @@ $\aelem\not\in\set{\aelem_1,\ldots,\aelem_\nn}$.
 %
 
 %
+
 
 
 \paragraph{Heaps.}
