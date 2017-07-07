@@ -405,7 +405,6 @@ technique by linearization policies of~\cite{Quy:sas16}.
 \todo[inline]{It remains to take care of the criterion that the
   call of pop already has a return value}
 
-\todo[inline]{I will continue working here. BJ}
 \subsection{Formal Semantics}
 \label{semantics:section}
 For completeness, we formalize the semantics of programs and
@@ -415,7 +414,8 @@ specified by an observer $\observer$.
 %
 %% We assume that each cell contains a set $\fieldset$ of fields
 %% where each field is either a lock or a data field.
-We assume that each thread $\thread$ executes one method
+We assume here, to simplify notation,
+that each thread $\thread$ executes one method
 denoted $\methodof\thread$.
 %% First, we define the state of the heap and the transition
 %% relation induced by a single thread.
@@ -498,9 +498,12 @@ where $\indata$ is the value of its input parameter,
 the value of {\tt pc} is the label of the first statement of the method, and
 the other local variables are undefined.
 \item
-$\tuple{\lstate,\heap}\movesto\thread{}\tuple{\lstate',\heap'}$
-  denotes execution of method statements, which are unlabeled; these are defined
-  in the standard way for each statement form.
+$\tuple{\lstate,\heap}\movesto\thread{\mathit{label}}\tuple{\lstate',\heap'}$
+  denotes execution of method statements, where the label $\mathit{label}$ is
+  empty for most statements, except for those that are instrumented
+  with a linearization point (provided we use the method where
+  observers check sequences of operations),
+  in which case $\mathit{label}$ is the corresponding operation.
 %
 %% We write $\proj\movesto\thread\lbl\proj'$ 
 %% to denote that the statement labeled by $\lbl$ can be executed
@@ -551,29 +554,32 @@ $\movesto\prog{}$ where each step corresponds to one move of a single thread.
 I.e., 
 there is a transition of form
 $\tuple{\athreads,\lstatemapping,\heap}
-\movesto\prog{\emptyword}
+\movesto\prog{\mathit{label}}
 \tuple{\athreads,\lstatemapping[\thread\leftarrow\lstate'],\heap'}$
-whenever the transition relation $\movesto\thread{}$ has a transition
-$\tuple{\lstate,\heap}\movesto\thread\lbl\tuple{\lstate',\heap'}$,
-where the label $\lbl$ is either a call or return action or the empty label.
+whenever the transition relation $\movesto\thread{}$ of thread $\thread$
+has a transition
+$\tuple{\lstate,\heap}\movesto\thread{\mathit{label}}\tuple{\lstate',\heap'}$,
+%% where the label $\lbl$ is either a call or return action or the empty label.
 %
-Note that the only visible transitions are those
-corresponding to call and return actions.
+%% Note that the only visible transitions are those
+%% corresponding to call and return actions.
 
 \paragraph{Cross-Product of Program and Observer}
-We use $\system=\prog\compose\observer$ to denote the cross-product obtained by
-running $\prog$ and $\observer$ together.
+We use $\system=\prog\compose\observer$ to denote the augmented program obtained
+executing running $\prog$ and $\observer$ together.
 %
 The initial configuration of $\system$ is
 $\tuple{\initconfof\prog,\oinitstate}$.
 Transitions of $\system$ are of the form
-$\tuple{\pconf,\ostate},\movesto{\system}{},\tuple{{\pconf}',\ostate'}$,
+$\tuple{\pconf,\ostate}\movesto{\system}{}\tuple{{\pconf}',\ostate'}$,
 obtained from a transition
 $\pconf \movesto\prog{l} {\pconf}'$ of the program with some (possibly empty)
-label $l$, and
+label $\mathit{label}$, and
 a corresponding synchronizing transition
-$\tuple{\ostate,\returntwo{\mname}{l},\ostate'}$
-of the monitor.
+$\tuple{\ostate,\mathit{label},\ostate'}$
+of the observer
+(which is the trivial self-loop $\tuple{\ostate,\mathit{\emptyword},\ostate}$
+if the observer does not have a synchronizing transition).
 The verification problem is now to check that $\system$ cannot reach
 a configuration $\tuple{\pconf,\oaccstate}$ with an accepting
 observer state.
