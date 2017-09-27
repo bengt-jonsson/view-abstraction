@@ -1,7 +1,14 @@
-\documentclass[acmsmall,review,anonymous]{acmart}
-\settopmatter{printfolios=true}
+%\documentclass[acmsmall,review,anonymous]{llncs}
+\documentclass{llncs}  
 
-\citestyle{acmauthoryear}
+%\settopmatter{printfolios=true}
+
+\usepackage{epsfig}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+
+%\citestyle{acmauthoryear}
 \usepackage{adjustbox}
 \usepackage{algorithmicx} 
 
@@ -20,20 +27,14 @@
 \input related-work
 \input overview
 \input programs
-%% \input linearizability
-%% \input observers
-%% \input semantics 
-%% \input data-abstraction
-%% \input thabstraction
+
 \input sll-view-abstraction
-%% \input shape-analysis-formalized
 \input timestamp
 \input experiments
-%% \input conclusion
-\bibliographystyle{ACM-Reference-Format}
+%\bibliographystyle{ACM-Reference-Format}
+\bibliographystyle{splncs03}
 \bibliography{bibdatabase}
 \appendix
-%% \input examples
 \input codes
-\input textbank
+%\input textbank
 \end{document}

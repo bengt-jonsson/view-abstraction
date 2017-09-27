@@ -1,6 +1,6 @@
 \section{Concurrent Data Structure Implementations}
 \label{programs:section}
-
+Variables are either pointer variables (to heap cells) or data variables, assuming values from $\boolset$ 
 In this section, we introduce our representation of
 concurrent data structure implementations, we define the correctness criterion of
 linearizability, we introduce observers and how to use them for specifying
@@ -74,11 +74,7 @@ named {\tt init}, which initializes its shared state.
 Each method declares local variables
   and a method body.
 %
-Variables are either pointer variables
-(to heap cells)
-or data variables, assuming values from $\ddomain$
-%% an infinite (ordered) domain,
-or from some finite set $\fset$ that includes the Boolean values.
+Variables are either pointer variables (to heap cells) or data variables, assuming values from $\ddomain$ or from some finite set $\fset$ that includes the Boolean values.
 %
 %% We assume w.l.o.g. that the infinite set is given by the set 
 %% $\intgrs$ of integers.

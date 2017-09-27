@@ -5,8 +5,8 @@
 %%%%%%%%%%% struct %%%%%%%%%%%%%%%%
 \node[linecode,anchor=south west](struct) at ($(top-head.east)+(-30pt,0pt)$) { \scriptsize struct Node \scriptsize \{};
 %{struct Node(bool lock; int val; Node *next; bool mark);};
-\node(struct1)[linecode] at ($(top-head.west)+(10pt,-5pt)$) {\scriptsize int data;\;\;\;\;\;\;};
-\node(struct2)[linecode] at ($(top-head.west)+(10pt,-15pt)$) {\scriptsize Timestamp ts;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;};
+\node(struct1)[linecode] at ($(top-head.west)+(10pt,-5pt)$) {\scriptsize int data;};
+\node(struct2)[linecode] at ($(top-head.west)+(10pt,-15pt)$) {\scriptsize Timestamp ts;};
 \node(struct3)[linecode] at ($(top-head.west)+(10pt,-26pt)$) {\scriptsize Node* next;};
 \node(struct4)[linecode] at ($(top-head.west)+(10pt,-37pt)$) {\scriptsize bool mark;};
 \node(struct5)[linecode] at ($(top-head.west)+(0pt,-47pt)$) {\scriptsize \}};
@@ -161,9 +161,9 @@
  %%%%%%%%%%% init %%%%%%%%%%%%%%%%
 \node[linecode,anchor=south west](init) at ($(top-head.east)+(-30pt,-75pt)$) {\scriptsize init() :};
 %{struct Node(bool lock; int val; Node *next; bool mark);};
-\node(init1)[linecode] at ($(top-head.east)+(-30pt,-80pt)$) {\scriptsize \;\;\;Node* pools[maxThreads];};
-\node(init2)[linecode] at ($(top-head.east)+(-30pt,-90pt)$) {\scriptsize \;\;\;for(int i=0; i<maxThreads; i++)\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;};
-\node(init4)[linecode] at ($(top-head.east)+(-30pt,-100pt)$) {\scriptsize \;\;\;\;\;\;\;pools[i].next = null;};
+\node(init1)[linecode] at ($(top-head.east)+(-30pt,-80pt)$) {\scriptsize Node* pools[maxThreads];};
+\node(init2)[linecode] at ($(top-head.east)+(-30pt,-90pt)$) {\scriptsize for(int i=0; i<maxThreads; i++)};
+\node(init4)[linecode] at ($(top-head.east)+(-30pt,-100pt)$) {\scriptsize pools[i].next = null;};
 
 \node(bot)[linecode] at ($(init4.east)+(0pt,-4pt)$) {};
 
