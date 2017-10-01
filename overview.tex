@@ -19,9 +19,19 @@ as reported in Section~\ref{section:experiments}.
 \center  
  \input skiplistshape  
  \caption{A concrete shape of 3-level skipl-list with two threads}
+\label{sl-shape}
 \end{figure}
+
 \input slcode
 
+\subsection{The Skiplist Algorithm}
+Figure~\ref{sl-code:fig} shows the skiplist find method. The method returns −1 if the item  $\tt x$ is not found. It traverses the SkipList using two pointer variables $\tt pred$ and $\tt curr$ which start from the head and at the highest level. It then proceeds in each level down the list, filling in $\tt preds$
+and $\tt succs$ nodes that are repeatedly advanced until $\tt pred$ points to a node with
+the largest value on that level that is strictly less than the target key. The method repeatedly snips out marked nodes from the
+given level as they are encountered (Lines 15 to 19) using a $\tt compareAndSet$ statement. Once an unmarked $\tt curr$ is found (Line 20), it is
+tested to see if its key is less than the target key. If so, $\tt pred$ is advanced to $\tt curr$. Otherwise, $\tt curr$’s key is greater than or equal to the $\tt x$, so the current value
+of $\tt pred$ is the target node’s immediate predecessor. The find method breaks
+out of the current level search loop, saving the current values of $\tt pred$ and $\tt curr$. It proceeds this way until it reaches the bottom level. \todo{I am working with add and remove methods}
 \subsection{The Timestamped Stack Algorithm}
 
 \input tscode
