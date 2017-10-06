@@ -552,31 +552,39 @@ respectively.
 \label{fig:tsshape}
 \end{figure} 
 
-Our fragment abstraction represents a set of heap states by
-a set of {\em fragments}. Each fragment consists of
-a pair of node types (called {\em tags}) that are connected by a pointer.
-A tag is an abstraction of a heap cell, which contains both 
-\begin{enumerate}[(i)]
+Our verification technique is based on a combination of a thread abstraction, a
+a shape abstraction, and data abstraction.
+\begin{itemize}
+  \item
+  Our thread abstraction employs the thread-modular approach by representing only the view of single, but arbitrary, thread $\thread$. Such a view consists of
+the local state of thread $\thread$ and the part of the heap that is accessible to thread $\thread$ via its local pointer variables or via global pointer variables.
 \item
-  local information about its non-pointer fields, obtained
-  using data abstraction if necessary, and about variables pointing to the
-  cell, and
- \item
-   global information, saying how
-it can reach to and be reached from (by following a chain of pointers)
-other heap cells that are pointed to by global variables, or cells whose
-data field has the same value as some observer register.
-This global information describes how the cell is positioned relative to
-``important'' cells in the heap. Note that 
-cells which carry the the same data value as some observer register are also
-considered ``important'', since it is necessary to track their position in 
-order to verify ordering constraints that are checked by the observer.
-\bjcom{Do we need to explain this better?}
-\end{enumerate}
-Our fragment abstraction incorporate the thread-modular approach by letting
-tags consider local variables of only one arbitrary single thread, and
-only requiring that fragments represent heap cells that can be accessed by
-that thread.
+The accessible part of the heap is represented by  
+a set of {\em fragments}. Each fragment is an abstraction of a pair of
+nodes that are connected by a pointer. The abstraction represents
+\begin{itemize}
+\item the contents of the data fields in the pair of nodes,
+\item which pointer variables (either global or local to $\thread$)
+  point  to the nodes,
+\item and also represents global information, which expresses how
+  each node in the pair can reach to and be reached from
+  (by following a chain of pointers) a finite set of {\em globally significant}
+  heap cells. A cell is globally significant if it is pointed to by a
+  global pointer variable or if it triggers some noteworthy behavior in
+  a thread that reaches it: for our example this happens for nodes whose
+  {\tt key} field has the  same value as the observer register.
+\end{itemize}
+\item
+Finally, a natural data abstraction is applied to the non-pointer local
+variables of the thread and the non-pointer fields of each fragment. For our
+skiplist algorithm, fields that range over small finite domains are represented
+with their concrete values, whereas the fields that range over the domain of
+data values are represented by constraints over their relative ordering
+(wrp.\ to the order $<$),
+as well as their ordering with respect to the value of the observer register.
+\end{itemize}
+\todo[inline]{Here should be a motivation why this abstraction is good,
+in particular focussing on the fragment abstraction}
 
 \begin{figure}
 	\input tsabsshape
