@@ -62,31 +62,34 @@ Finally, the method returns the ${\tt data}$ value of the removed cell.
 % need to explain the extra removal of marked cells better} \quycom{this code is a simplified version without emptiness checking. If we add emptiness part, the code will be longer and more complicated}
 
 \subsection{Specifying the Correctness Criterion of Linearizability}
-In our verification, we establish that the TS stack algorithm of
-Figure~\ref{ts-stack:fig} is correct in the sense that it is a
+In our verification, we establish that the skiplist algorithm of
+Figure~\ref{sl-code:fig} is correct in the sense that it is a
 linearizable implementation of a set data structure.
 Linearizability intuitively states that
 each operation on the data structure can be considered as being
-performed atomically at some point, called the {\em linearization point (LP)},
+performed atomically at some point (called the {\em linearization point (LP)})
 between its invocation and return~\cite{HeWi:linearizability}.
-We specify linearizability using the technique of
-{\em observers}~\cite{AHHR:integrated}. Observers act like monitors that
-synchronize with the monitored concurrent programs over designated actions,
-and report violations of the linearizability criterion. In our verification,
-the verification requires the user to annotate how linearization
-points are placed in each method. For the skiplist algorithms, this
-is done by affixing   linearization points to particular statements.
 
-In more complex cases, we use
-  light-weight instrumentation using the approach of
-  controllers~\cite{Quy:sas16}, which puts a small burden on
-  the verifier. This is used in Section XXX for the verification of some
-  implementations of sets based on singly-linked lists.
-  For concurrent implementations of stacks and queues, no user instrumentation
-  is necessary, winc   linearizability can be precisely specified by
-  observers that synchronize on call and return actions of
-  methods, as shown by~\cite{BEEH:icalp15,HSV:concur13}.
-  We use this technique for sets and stacks in Section XXX
+We specify linearizability by extending of the technique of
+{\em observers}~\cite{AHHR:integrated}, which can be extended in different
+ways~\cite{BEEH:icalp15,HSV:concur13,Quy:sas16}.
+In the case of the skiplist algorithm,
+LPs can be associated to fixed statements in the code. The user then instruments
+these statements so that they also announce the corresponding operation on
+the data structure. For instance, \bjcom{Quy: Please insert a text of
+how some LP is inserted into the code of Figure~\ref{sl-code:fig}}.
+Having instrumented methods at LPs, we
+then consider an arbitrary concurrent program consisting of
+an arbitrary collection of threads, each of which executes some method call.
+We must check that the concurrent execution of such a program generates
+(through its instrumentation) a sequence of operations which satisfies the
+semantics of the set data structure. 
+This check is performed by an {\em observer}, which 
+monitors the sequence of operations that is announced by the
+instrumentation, and report when it violates the semantics of the set
+data structure.
+
+
 %% typically by affixing
 %%   linearization points to particular statements, or in more complex cases by
 %%   light-weight instrumentation using the approach of
@@ -110,8 +113,10 @@ In more complex cases, we use
 %% constraints on the ordering of call and return actions of the methods,
 %% without any reference to LPs.
 
-\begin{figure}
 
+%% \begin{wrapfigure}{r}{.55\textwidth}
+\begin{figure}
+\begin{center}
 \begin{tikzpicture}[]
 
 \node(s0)[draw,line width=1pt,fill=blue!10,circle,text=black]
@@ -149,65 +154,54 @@ node[right,pos=0.45] {\footnotesize${\tt rmv}(x,\false)$}
 node[right,pos=0.8] {\footnotesize${\tt ctn}(x,\false)$} 
  (s2);
 
+
 \end{tikzpicture}
-\caption{Observer for Set}
+\end{center}
+\caption{Set observer.}
 \label{set:observer:fig}
 \end{figure}
 
-In the case of set, we use observers to the constraint that intuitively
-expresses that
-%\todo[inline]{Quy: Make sure that you have the right constraints. I just guessed that the below four are the right ones}
-for any data item, successful insertions and removals must alternate,
-  starting with insertion.
-It is straight-forward to construct an observer
-that checks this constraint.
 {\em Observers} are
 finite automata extended with a finite set of {\em registers}
-that assume values in $\intgrs$. 
-%
-%
-At initialization,
-the registers are nondeterministically
-assigned arbitrary values, which never change
+that assume values in $\intgrs$, which are 
+nondeterministically initialized with arbitrary values, which never change
 during a run of the observer. 
-%
-Formally, an observer $\observer$ is a tuple
-$\otuple$ where $\ostateset$ is a finite set 
-of {\it observer states} including the 
-{\it initial state} $\oinitstate$ and
-the {\it accepting state} $\oaccstate$, 
-a finite set $\ovarset$  
-of {\it registers}, and $\otransitionset$ is a finite
-set of {\it transitions}.
-%
-%
-Transitions are of the form 
-$\tuple{\ostate_1,\mname(\inxvar,\outxvar),\ostate_2}$ where 
-$\inxvar$ and $\outxvar$ are either registers or constants, i.e.,
-transitions are labeled by 
-operations whose input or output data may be parameterized on registers.
-%
-%% The observer processes a trace one operation at a time.
-%% %
-%% If there is a transition, whose label, after replacing registers by their
-%% values, matches the operation, such a transition is performed. 
-%% %
-%% If there is no
-%% such transition, the observer remains in its current state.
-%
-The observer accepts a trace if it can  be processed in such a way that
+The observer accepts a trace if, for {\em some} initial values of the
+registers, the trace can  be processed in such a way that
 an accepting state is reached.
-%
-Observers can be used to give {\it exact} specifications of
-the behaviors of data structures such as sets, queues, and stacks.
-%
-The observer is defined in such a way that it accepts precisely those
+In other words, the observer is defined in such a way that it accepts precisely those
 traces that do {\em not} belong to the behavior
 of the data structure.
+%% Observers can be used to give {\it exact} specifications of
+%% the behaviors of data structures such as sets, queues, and stacks.
 %
-This is best illustrated by an example. Fig.~\ref{set:observer:fig}
+%
+Fig.~\ref{set:observer:fig}
 depicts an observer that accepts the
-sequences of operations that are {\em not} in $\denotationof{\tt Set}$.
+sequences of operations that do {\em not} conform to the semantics of a set
+data structure.
+
+To verify that no execution of the program may cause the observer to
+accept, we form as in the automata-theoretic approach~\cite{VW:modelchecking}
+(adapted in~\cite{AHHR:integrated}),
+the cross-product of the program  and the corresponding
+observer, where the observer synchronizes with the program on the operations
+that are announced at LPs. This reduces the
+problem of checking linearizability to the problem of checking
+that, in the cross-product, the observer cannot reach an accepting state.
+
+We note that linearizability of stacks and queues can be verified without any
+user-suppplied instrumentation is necessary. For stacks and queues,
+linearizability can be precisely specified by
+observers that process the sequence of call and return actions of
+methods,  instead of the user-supplied LPs~\cite{BEEH:icalp15,HSV:concur13}.
+We use this technique for sets and stacks in Section XXX.
+
+%% In more complex cases, we use
+%%   light-weight instrumentation using the approach of
+%%   controllers~\cite{Quy:sas16}, which puts a small burden on
+%%   the verifier. This is used in Section XXX for the verification of some
+%%   implementations of sets based on singly-linked lists.
 
 %% For concurrent data structures, one must be careful to 
 %% expressed it exactly in terms of allowed sequences of calls
@@ -447,27 +441,17 @@ sequences of operations that are {\em not} in $\denotationof{\tt Set}$.
 %% \label{fig:lifostack:fig}
 %% \end{figure}
 
-To verify that the skiplist algorithm is a correct linearizable implementation
-of a set, we
-must show that any concurrent execution of method calls satisfies the
-above constraint.
-To this end, define a {\em program} to consist 
-of an arbitrary number of concurrently executing threads,
-%(Appendix~\ref{planguage:section} contains
-%the language syntax used in our tool).
-%
-each of which executes an add or remove method with some data value as parameter.
-We assume that the data structure has been initialized
-by the ${\tt init}$ method prior to the start of program execution.
-We must verify that any execution of such a program satisfies the 
-constraints. To verify a constraint, 
-we form, as in the automata-theoretic approach~\cite{VW:modelchecking},
-also adopted in~\cite{AHHR:integrated},
-the cross-product of the program  and the corresponding
-observer, where the observer synchronizes with the program on the designated
-linearization points. This reduces the
-problem of checking linearizability to the problem of checking
-that the corresponding observer cannot reach an accepting state.
+
+%% To this end, define a {\em program} to consist 
+%% of an arbitrary number of concurrently executing threads,
+%% %(Appendix~\ref{planguage:section} contains
+%% %the language syntax used in our tool).
+%% %
+%% each of which executes an add or remove method with some data value as parameter.
+%% We assume that the data structure has been initialized
+%% by the ${\tt init}$ method prior to the start of program execution.
+%% We must verify that any execution of such a program satisfies the 
+%% constraints.
 
 \todo[inline]{We may have to say that we check the trivial conditions that
   were checked by the monitor in SAS 16}
@@ -553,39 +537,66 @@ respectively.
 \end{figure} 
 
 Our verification technique is based on a combination of a thread abstraction, a
-a shape abstraction, and data abstraction.
+data  abstraction, and a shape abstraction.
 \begin{itemize}
   \item
-  Our thread abstraction employs the thread-modular approach by representing only the view of single, but arbitrary, thread $\thread$. Such a view consists of
-the local state of thread $\thread$ and the part of the heap that is accessible to thread $\thread$ via its local pointer variables or via global pointer variables.
+  Our thread abstraction adapts the thread-modular approach by representing only the view of single, but arbitrary, thread $\thread$. Such a view consists of
+  \begin{inparaenum}[(i)]
+  \item the local state of thread $\thread$,
+  \item the part of the heap that is accessible to thread $\thread$ via its local pointer variables or via global pointer variables, and
+  \item the state of the observer.
+  \end{inparaenum}
 \item
-The accessible part of the heap is represented by  
+A natural data abstraction is applied to the non-pointer local
+variables of the thread, the non-pointer fields of each fragment, as well as
+the observer registers. For our
+skiplist algorithm, fields that range over small finite domains are represented
+with their concrete values, whereas the fields that range over the domain of
+data values, and observer registers,
+are represented by constraints over their relative ordering
+(wrp.\ to the order $<$).
+%% Note that the abstraction then represents the
+%% relation between as well as their ordering with respect to the value of the observer register.
+\item
+The part of the heap that is accessible to a thread $\thread$ is represented by  
 a set of {\em fragments}. Each fragment is an abstraction of a pair of
-nodes that are connected by a pointer. The abstraction represents
+nodes in the heap that are connected by a pointer. The abstraction represents
 \begin{itemize}
-\item the contents of the data fields in the pair of nodes,
+\item the contents of the data fields in the pair of nodes (under the empoyed
+  data abstraction),
 \item which pointer variables (either global or local to $\thread$)
-  point  to the nodes,
-\item and also represents global information, which expresses how
+  point  to the nodes, and
+\item global reachability information, which expresses how
   each node in the pair can reach to and be reached from
   (by following a chain of pointers) a finite set of {\em globally significant}
   heap cells. A cell is globally significant if it is pointed to by a
-  global pointer variable or if it triggers some noteworthy behavior in
-  a thread that reaches it: for our example this happens for nodes whose
-  {\tt key} field has the  same value as the observer register.
+  global pointer variable or if it triggers some significant behavior in
+  a thread that reaches it: in the \bjcom{WHICH?}
+  skiplist algorithm, this happens for nodes whose
+  {\tt key} field has the  same value as the register of the set observer.
 \end{itemize}
-\item
-Finally, a natural data abstraction is applied to the non-pointer local
-variables of the thread and the non-pointer fields of each fragment. For our
-skiplist algorithm, fields that range over small finite domains are represented
-with their concrete values, whereas the fields that range over the domain of
-data values are represented by constraints over their relative ordering
-(wrp.\ to the order $<$),
-as well as their ordering with respect to the value of the observer register.
+In our fragment abstraction, a set of fragments represents the set of heap
+structures in which each pair of pointer-connected nodes is represented by some
+fragment in the set.
+Inuitively, a set of fragments describes the set of heaps that can be formed by
+``piecing together'' fragments in the set. This ``piecing together'' must
+be both locally consistent (appending only fragments that agree on their
+common node), and globally consistent (respecting the global reachability
+information).
+By construction, our fragment abstraction is finitary, since there is
+a bounded set of tags.
 \end{itemize}
-\todo[inline]{Here should be a motivation why this abstraction is good,
-in particular focussing on the fragment abstraction}
+Let a {\em local symbolic configuration} be an abstraction of the program
+counter and local data variables of an arbitrary thread $\thread$.
+Our symbolic representation of a set of program configurations consists of
+a mapping from a set of local symbolic configurations,
+which maps each local symbolic configuration in its domain to a set of fragments.
+A global configuration satisfies a symbolic representation $\symbrep$
+if the view of each thread $\thread$ satisfies some local symbolic
+configuration in the domain of $\symbrep$, which is mapped to a set
+of fragments, which represents the heap that is accessible to $\thread$.
 
+\todo[inline]{Quy: After this, you must provide a nice example}
 \begin{figure}
 	\input tsabsshape
 \caption{Fragment abstraction}
@@ -650,33 +661,33 @@ that contains the values of the program counter and variable $\tt success$,
 abstracts the value of ${\tt k}$ into the set $\set{{\tt me},{\tt ot}}$ and
 applies the timestamp abstraction to ${\tt maxTS}$.
 
-We are now ready to present our symbolic representation of a set of
-reachable program configurations. 
+%% We are now ready to present our symbolic representation of a set of
+%% reachable program configurations. 
+%% %% It maps each local symbolic configuration to a set of fragments, which
+%% %% is a symbolic representation of the set of corresponding reachable heaps.
+%% Our symbolic representation is a mapping from a set of local symbolic
+%% configurations, which maps each local symbolic configuration in its domain
+%% to a set of fragments.
+%% A global configuration satisfies a symbolic representation $\symbrep$
+%% if the local state of each thread $\thread$ satisfies some local symbolic
+%% configuration in the domain of $\symbrep$, which is mapped to a set
+%% of fragments, which is satisfied by heap wrp.\ to thread $\thread$.
+
+
+%% Our symbolic representation represents the reachable local states of a thread by
+%% a finite set of {\em local symbolic configurations}, using our
+%% data abstraction.
 %% It maps each local symbolic configuration to a set of fragments, which
 %% is a symbolic representation of the set of corresponding reachable heaps.
-Our symbolic representation is a mapping from a set of local symbolic
-configurations, which maps each local symbolic configuration in its domain
-to a set of fragments.
-A global configuration satisfies a symbolic representation $\symbrep$
-if the local state of each thread $\thread$ satisfies some local symbolic
-configuration in the domain of $\symbrep$, which is mapped to a set
-of fragments, which is satisfied by heap wrp.\ to thread $\thread$.
-
-
-Our symbolic representation represents the reachable local states of a thread by
-a finite set of {\em local symbolic configurations}, using our
-data abstraction.
-It maps each local symbolic configuration to a set of fragments, which
-is a symbolic representation of the set of corresponding reachable heaps.
-Thus, our symbolic representation is a mapping from a set of local symbolic
-configurations, which maps each local symbolic configuration in its domain
-to a set of fragments.
-A global configuration satisfies a symbolic representation $\symbrep$
-if the local stat of each thread $\thread$ satisfies some local symbolic
-configuration in the domain of $\symbrep$, which is mapped to a set
-of fragments, which represents the heap that is accessible to $\thread$ in
-the global configuration. In the following, we explain more precisely the
-local symbolic configurations, and our fragment abstraction.
+%% Thus, our symbolic representation is a mapping from a set of local symbolic
+%% configurations, which maps each local symbolic configuration in its domain
+%% to a set of fragments.
+%% A global configuration satisfies a symbolic representation $\symbrep$
+%% if the local stat of each thread $\thread$ satisfies some local symbolic
+%% configuration in the domain of $\symbrep$, which is mapped to a set
+%% of fragments, which represents the heap that is accessible to $\thread$ in
+%% the global configuration. In the following, we explain more precisely the
+%% local symbolic configurations, and our fragment abstraction.
 
 In the  verification, we must compute a symbolic representation
 that is satisfied by all reachable program configurations (recall that
