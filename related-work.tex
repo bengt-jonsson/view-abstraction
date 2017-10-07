@@ -1,11 +1,34 @@
-\todo[inline]{This related work remains to be written}
 \paragraph{Related Work}
+\cite{GBCS:pldi07} presents a thread-modular shape analysis for multi-threaded
+programs in which locks protect portions of the heap, and threads have to
+acquire a lock before accessing the corresponding portion of the heap.
+Fine-grained concurrent algorithms do not follow this pattern.
+
+Thread-modular approaches for verifying fine-grained concurrent algorithms
+have been presented in several works. 
+\cite{AHHR:integrated} introduce observers to specify the semantics of
+data structures. It verifies program using the thread-modular approach, where
+heaps are specified by reachability constraints between cells pointed to
+by program variables. The work is applied to concurrent stack and
+queue implementaitons based on singly-linked lists.
+\cite{Holik:sas17} present a more efficient way to handle the expensive
+interference steps for common programming idioms in lock-free data structures.
+\cite{Quy:sas16} extend this approach to be able to verify linearizability
+for a large class of concurrent data structures based on singly-linked lists.
+It used a specifically designed finitary abstraction of unbounded singly-linked
+list segments.
+
+\bjcom{We should say something about to CAVE}
+
+\bjcom{We should have a paragraph on verification of skiplists, and on verification of the TS queue/stack}
+
+\todo[inline]{Below is related work from the SAS paper}
 Much previous work has been devoted to
 the {\it manual} verification of linearizability for
 concurrent programs. Examples
-include~\cite{LF:pldi13,Aaron:locigcal:linearizability}.
+include~\cite{LF:pldi13,Aaron:logical:linearizability}.
 %% %
-%% For instance, Turon {\it et al.} \cite{Aaron:locigcal:linearizability}
+%% For instance, Turon {\it et al.} \cite{Aaron:logical:linearizability}
 %% propose a semantic model, 
 %% based on Kripke logical relations, that can be used for proving linearizability.
 %% %
@@ -33,6 +56,11 @@ provers, have been reported in
 For instance, Colvin {\it et al.} \cite{Colvin:Lazy-List}
 verify the lazy set algorithm in  PVS,
 using a combination of forward and backward simulations.
+
+Several techniques for verifying linearizability are based on establishing
+commutation properties between atomic actions inside each method.
+Such methods can be partly automated~\cite{EQSST:tacas10,singh:issre16}
+or part of automated program analysis~\cite{LMP:cav14}.
 
 There are several works on {\it automatic} verification of linearizability.
 %

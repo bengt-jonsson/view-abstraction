@@ -1,19 +1,20 @@
 \section{Overview}
 \label{sec:overview}
 
+\todo[inline]{This is derived from the
+  previous overview section, which described TS-stack}
+
 In this section, we illustrate our technique by using it to prove correctness, in
 the sense of linearizability, of
-a concurrent data structure implementation, namely the Timestamped Stack
-of~\cite{ts-stack}. This algorithm operates on a shared heap which represents
-an array of singly linked lists.
-The verification of correctness for this algorithm and the related
-Timestamped queue, also of~\cite{ts-stack}, has been challenging. Only
-recently has the TS stack been verified by non-automated
-techniques~\cite{bouajjani:icalp17:rep} using a non-trivial extension of
-forward simulation, and the TS queue by been verified manually by a new technique
-based on partial orders~\cite{ts-stack}.
-We have verified both these algorithms automatically using fragment abstraction,
-as reported in Section~\ref{section:experiments}.
+a concurrent data structure implementation which uses skiplists.
+We consider an implementation of a set data structure, which operates on
+a shared heap which represents a skiplist. Here, we consider the
+{\bf WHICH ONE?} implementation in~\cite{ArtOfMpP}.
+To the best of our knowledge, no existing automated verification technique
+has succeded in verifying funcional correctness of concurrent
+skiplist algorithms.
+We have verified {\bf WHICH?} algorithms automatically using fragment
+abstraction, as reported in Section~\ref{section:experiments}.
 
 \begin{figure}
 \center  
@@ -31,12 +32,10 @@ the largest value on that level that is strictly less than the target key. The m
 given level as they are encountered (Lines 15 to 19) using a $\tt compareAndSet$ statement. Once an unmarked $\tt curr$ is found (Line 20), it is
 tested to see if its key is less than the target key. If so, $\tt pred$ is advanced to $\tt curr$. Otherwise, $\tt curr$’s key is greater than or equal to the $\tt x$, so the current value
 of $\tt pred$ is the target node’s immediate predecessor. The find method breaks
-out of the current level search loop, saving the current values of $\tt pred$ and $\tt curr$. It proceeds this way until it reaches the bottom level. \todo{I am working with add and remove methods}
-\subsection{The Timestamped Stack Algorithm}
+out of the current level search loop, saving the current values of $\tt pred$ and $\tt curr$. It proceeds this way until it reaches the bottom level.
+\todo[inline]{I am working with add and remove methods}
 
-\input tscode
-
-
+\todo[inline]{To Quy: PLease update the below text asap}
 
 %\todo[inline]{Provide a description of the algorithm}
 %\todo[inline]{Quy: The line numbers for Pop are scrambled. Can you fix?
@@ -62,44 +61,39 @@ Finally, the method returns the ${\tt data}$ value of the removed cell.
 %\todo[inline]{Comments by Bengt: How can you return empty? Also, I think you
 % need to explain the extra removal of marked cells better} \quycom{this code is a simplified version without emptiness checking. If we add emptiness part, the code will be longer and more complicated}
 
-\todo[inline]{It would here be nice with some intuitive argument why the
-  algorithm works}
-
 \subsection{Specifying the Correctness Criterion of Linearizability}
-In our verification, we establish that the TS stack algorithm of
-Figure~\ref{ts-stack:fig} is is correct in the sense that it is a
-linearizable implementation of a stack data structure.
+In our verification, we establish that the skiplist algorithm of
+Figure~\ref{sl-code:fig} is correct in the sense that it is a
+linearizable implementation of a set data structure.
 Linearizability intuitively states that
 each operation on the data structure can be considered as being
-performed atomically at some point, called the {\em linearization point (LP)},
+performed atomically at some point (called the {\em linearization point (LP)})
 between its invocation and return~\cite{HeWi:linearizability}.
-We specify linearizability using the technique of
-{\em observers}~\cite{AHHR:integrated}. Observers act like monitors that
-synchronize with the monitored concurrent programs over designated actions,
-and report violations of the linearizability criterion. In our verification,
-we use observers in two ways:
-\begin{enumerate}
-\item
-  For concurrent implementations of stacks and queues,
-  linearizability can be precisely specified by
-  observers that synchronize on call and return actions of
-  methods, as shown by~\cite{BEEH:icalp15,HSV:concur13}; this is done without
- any user annotation.
-\item
-  For sets, the verification requires the user to annotate how linearization
-  points are placed in each method, typically by affixing
-  linearization points to particular statements, or in more complex cases by
-  light-weight instrumentation using the approach of
-  controllers~\cite{Quy:sas16}; this puts a small burden on
-  the verifier.
-In our work, we use this technique to specify linearizability of
-set implementations (see Section XXX).
+
+We specify linearizability by extending of the technique of
+{\em observers}~\cite{AHHR:integrated}, which can be extended in different
+ways~\cite{BEEH:icalp15,HSV:concur13,Quy:sas16}.
+In the case of the skiplist algorithm,
+LPs can be associated to fixed statements in the code. The user then instruments
+these statements so that they also announce the corresponding operation on
+the data structure. For instance, \bjcom{Quy: Please insert a text of
+how some LP is inserted into the code of Figure~\ref{sl-code:fig}}.
+Having instrumented methods at LPs, we
+then consider an arbitrary concurrent program consisting of
+an arbitrary collection of threads, each of which executes some method call.
+We must check that the concurrent execution of such a program generates
+(through its instrumentation) a sequence of operations which satisfies the
+semantics of the set data structure. 
+This check is performed by an {\em observer}, which 
+monitors the sequence of operations that is announced by the
+instrumentation, and report when it violates the semantics of the set
+data structure.
+
+
 %% typically by affixing
 %%   linearization points to particular statements, or in more complex cases by
 %%   light-weight instrumentation using the approach of
 %%   controllers~\cite{Quy:sas16}.
-\end{enumerate}
-In our verification of TS stack, we use the first approach. 
 
 %% For many data structure implementations, LPs can be statically
 %% affixed to particular statements in method implementations,
@@ -118,275 +112,346 @@ In our verification of TS stack, we use the first approach.
 %% linearizability can be precisely specified by a small number of
 %% constraints on the ordering of call and return actions of the methods,
 %% without any reference to LPs.
-In the case of a stack, we use observers to check constraints that intuitively express that
-%\todo[inline]{Quy: Make sure that you have the right constraints. I just guessed that the below four are the right ones}
-\begin{enumerate}
-\item a data item must not be popped before it is pushed,
-\item pop must not return ``empty'' if some data element was pushed but not
-  popped,
-\item a pushed data item must not be popped twice, and
-\item any two data items must be popped in last in first out stack order.% \bjcom{Here we specify stack order}
-\end{enumerate}
-For a sequential data structure, it is straight-forward to construct observers
-that check each of these constraints.
-For concurrent data structures, one must be careful to 
-expressed them exactly in terms of allowed sequences of calls
-and returns of different methods. For completeness, we here
-present how this can be done for a stack implementation, as shown
-in~\cite{BEEH:icalp15}.
-%% show how this can be done using observers, introduced in~\cite{AHHR:integrated}. 
-
-Let $\calltwo{\tt push}{\tt d}$ and $\returntwo{\tt push}{\tt d}$ denote the
-action of calling or returning from a ${\tt push}$ method with data parameter ${\tt d}$.
-Let $\calltwo{\tt pop}{\tt d}$ and $\returntwo{\tt pop}{\tt d}$ denote the
-action of calling or returning from a ${\tt pop}$ method which returns
-the value ${\tt d}$.
-%% Let a call action on an operation $\mname(\data)$ be denoted
-%% $\calltwo{\mname}{\data}$ and a return action be denoted
-%% $\returntwo{\mname}{\data}$.
-Constraints on the ordering of such actions can be
-checked by an {\em observer}.
-%
-Observers are
-finite automata extended with a finite set of {\em registers} whose values range
-over the domain of data values.
-%
-At initialization,
-the registers are nondeterministically
-assigned arbitrary distinct data values, which never change
-during a run of the observer. 
-%
-%% Formally, an observer $\observer$ is a tuple
-%% $\otuple$ where $\ostateset$ is a finite set 
-%% of {\it observer states} including the 
-%% {\it initial state} $\oinitstate$ and
-%% the {\it accepting state} $\oaccstate$, 
-%% a finite set $\ovarset$  
-%% of {\it registers}, and $\otransitionset$ is a finite
-%% set of {\it transitions}.
-%% %
-%% %
-%% Transitions are of the form 
-%% $\tuple{\ostate_1,\mname(\inxvar,\outxvar),\ostate_2}$ where 
-%% $\inxvar$ and $\outxvar$ are either registers or constants, i.e.,
-Transitions are labeled by actions parameterized by registers.
-%% is the value of a register parameterized on registers.%
-The observer processes a sequence of actions, one action at a time.
-If there is a transition, whose label, after replacing registers by their
-values, matches the action, such a transition is performed; otherwise
-the observer remains in its current state.
-%% %
-%% If there is no
-%% such transition, 
-%
-The observer accepts a sequence of actions
-if, for some initial assignment of data values to its registers, the sequence
-can be processed in such a way that an accepting state is reached.
-The observer for a particular constraint is defined in such a way that it
-accepts precisely those sequences  that do {\em not} satisfy the constraint.
 
 
+%% \begin{wrapfigure}{r}{.55\textwidth}
 \begin{figure}
-\center 
-
+\begin{center}
 \begin{tikzpicture}[]
 
-\node(s0)[draw,line width=0.5pt,circle,text=black]
+\node(s0)[draw,line width=1pt,fill=blue!10,circle,text=black]
 {$s_0$};
 
-\node(s2)[draw,line width=0.5pt,circle,text=black,anchor=center]
-at ($(s0.center)+(40pt,50pt)$) {$s_2$};
-
-
-
-\node(s1)[draw,line width=0.5pt,circle,text=black,anchor=center]
+\node(s1)[draw,line width=1pt,fill=blue!10,circle,text=black,anchor=center]
 at ($(s0.center)+(80pt,0pt)$) {$s_1$};
 
-\node(init)[line width=0.5pt,circle,text=black,anchor=center]
-at ($(s0.center)+(-30pt,0pt)$) {};
-\draw[->,>=stealth,line width=0.5pt] (init) to 
-node[left=5pt,pos=0.5] {} 
-(s0);
 
-\node[draw,line width=0.5pt,circle,text=black,anchor=center,minimum size=5mm]
-at ($(s0.center)+(80pt,0pt)$) {};
+\node(s2)[draw,line width=1pt,fill=blue!10,circle,text=black,scale=0.9,anchor=center ]
+at ($(s0.center)+(40pt,-61pt)$) {$s_2$};
+
+\node[draw,line width=1pt,circle,text=black,anchor=center,minimum size=5mm]
+at ($(s0.center)+(40pt,-61pt)$) {};
 
 
-\draw[->,>=stealth,line width=0.5pt,] (s0) to 
-node[above=-1pt,pos=0.5] {\footnotesize${\tt ret \; pop}(x)$} 
+\draw[->,>=stealth,out=45,in=135,line width=1pt] (s0) to 
+node[above=-1pt,pos=0.5] {\footnotesize${\tt add}(x,\true)$} 
 (s1);
 
-\draw[->,>=stealth,line width=0.5pt] (s0) to 
-node[left=5pt,pos=0.5] {\footnotesize${\tt call \; push}(x)$} 
-(s2);
-
-\draw[->,>=stealth,line width=0.5pt, in=-50,out=-130,loop] (s0) to 
-node[above=-15pt,pos=0.5] {\footnotesize${\tt call \; pop}(x)$} 
+\draw[->,>=stealth,out=225,in=315,line width=1pt] (s1) to node[above=0pt,pos=0.5] {\footnotesize${\tt rmv}(x,\true)$} 
 (s0);
 
-%% \draw[->,>=stealth,line width=0.5pt, in=50,out=-30,loop] (s2) to 
-%% node[right=2pt,pos=0.5] {\footnotesize${\tt act(x)}$} 
+\draw [->,>=stealth,thick,out=270,in=180,line width=1pt] (s0) 
+to 
+node[left,pos=0.2] {\footnotesize${\tt add}(x,\false)$} 
+node[left,pos=0.45] {\footnotesize${\tt rmv}(x,\true)$} 
+node[left,pos=0.8] {\footnotesize${\tt ctn}(x,\true)$} 
+ (s2);
+
+\draw [->,>=stealth,thick,out=270,in=0,line width=1pt] (s1) 
+to 
+node[right,pos=0.2] {\footnotesize${\tt add}(x,\true)$} 
+node[right,pos=0.45] {\footnotesize${\tt rmv}(x,\false)$} 
+node[right,pos=0.8] {\footnotesize${\tt ctn}(x,\false)$} 
+ (s2);
+
+
+\end{tikzpicture}
+\end{center}
+\caption{Set observer.}
+\label{set:observer:fig}
+\end{figure}
+
+{\em Observers} are
+finite automata extended with a finite set of {\em registers}
+that assume values in $\intgrs$, which are 
+nondeterministically initialized with arbitrary values, which never change
+during a run of the observer. 
+The observer accepts a trace if, for {\em some} initial values of the
+registers, the trace can  be processed in such a way that
+an accepting state is reached.
+In other words, the observer is defined in such a way that it accepts precisely those
+traces that do {\em not} belong to the behavior
+of the data structure.
+%% Observers can be used to give {\it exact} specifications of
+%% the behaviors of data structures such as sets, queues, and stacks.
+%
+%
+Fig.~\ref{set:observer:fig}
+depicts an observer that accepts the
+sequences of operations that do {\em not} conform to the semantics of a set
+data structure.
+
+To verify that no execution of the program may cause the observer to
+accept, we form as in the automata-theoretic approach~\cite{VW:modelchecking}
+(adapted in~\cite{AHHR:integrated}),
+the cross-product of the program  and the corresponding
+observer, where the observer synchronizes with the program on the operations
+that are announced at LPs. This reduces the
+problem of checking linearizability to the problem of checking
+that, in the cross-product, the observer cannot reach an accepting state.
+
+We note that linearizability of stacks and queues can be verified without any
+user-suppplied instrumentation is necessary. For stacks and queues,
+linearizability can be precisely specified by
+observers that process the sequence of call and return actions of
+methods,  instead of the user-supplied LPs~\cite{BEEH:icalp15,HSV:concur13}.
+We use this technique for sets and stacks in Section XXX.
+
+%% In more complex cases, we use
+%%   light-weight instrumentation using the approach of
+%%   controllers~\cite{Quy:sas16}, which puts a small burden on
+%%   the verifier. This is used in Section XXX for the verification of some
+%%   implementations of sets based on singly-linked lists.
+
+%% For concurrent data structures, one must be careful to 
+%% expressed it exactly in terms of allowed sequences of calls
+%% and returns of different methods. For completeness, we here
+%% present how this can be done for a stack implementation, as shown
+%% in~\cite{BEEH:icalp15}.
+%% show how this can be done using observers, introduced in~\cite{AHHR:integrated}. 
+
+%% Let $\calltwo{\tt push}{\tt d}$ and $\returntwo{\tt push}{\tt d}$ denote the
+%% action of calling or returning from a ${\tt push}$ method with data parameter ${\tt d}$.
+%% Let $\calltwo{\tt pop}{\tt d}$ and $\returntwo{\tt pop}{\tt d}$ denote the
+%% action of calling or returning from a ${\tt pop}$ method which returns
+%% the value ${\tt d}$.
+%% %% Let a call action on an operation $\mname(\data)$ be denoted
+%% %% $\calltwo{\mname}{\data}$ and a return action be denoted
+%% %% $\returntwo{\mname}{\data}$.
+%% Constraints on the ordering of such actions can be
+%% checked by an {\em observer}.
+%% %
+%% Observers are
+%% finite automata extended with a finite set of {\em registers} whose values range
+%% over the domain of data values.
+%% %
+%% At initialization,
+%% the registers are nondeterministically
+%% assigned arbitrary distinct data values, which never change
+%% during a run of the observer. 
+%% %
+%% %% Formally, an observer $\observer$ is a tuple
+%% %% $\otuple$ where $\ostateset$ is a finite set 
+%% %% of {\it observer states} including the 
+%% %% {\it initial state} $\oinitstate$ and
+%% %% the {\it accepting state} $\oaccstate$, 
+%% %% a finite set $\ovarset$  
+%% %% of {\it registers}, and $\otransitionset$ is a finite
+%% %% set of {\it transitions}.
+%% %% %
+%% %% %
+%% %% Transitions are of the form 
+%% %% $\tuple{\ostate_1,\mname(\inxvar,\outxvar),\ostate_2}$ where 
+%% %% $\inxvar$ and $\outxvar$ are either registers or constants, i.e.,
+%% Transitions are labeled by actions parameterized by registers.
+%% %% is the value of a register parameterized on registers.%
+%% The observer processes a sequence of actions, one action at a time.
+%% If there is a transition, whose label, after replacing registers by their
+%% values, matches the action, such a transition is performed; otherwise
+%% the observer remains in its current state.
+%% %% %
+%% %% If there is no
+%% %% such transition, 
+%% %
+%% The observer accepts a sequence of actions
+%% if, for some initial assignment of data values to its registers, the sequence
+%% can be processed in such a way that an accepting state is reached.
+%% The observer for a particular constraint is defined in such a way that it
+%% accepts precisely those sequences  that do {\em not} satisfy the constraint.
+
+
+%% \begin{figure}
+%% \center 
+
+%% \begin{tikzpicture}[]
+
+%% \node(s0)[draw,line width=0.5pt,circle,text=black]
+%% {$s_0$};
+
+%% \node(s2)[draw,line width=0.5pt,circle,text=black,anchor=center]
+%% at ($(s0.center)+(40pt,50pt)$) {$s_2$};
+
+
+
+%% \node(s1)[draw,line width=0.5pt,circle,text=black,anchor=center]
+%% at ($(s0.center)+(80pt,0pt)$) {$s_1$};
+
+%% \node(init)[line width=0.5pt,circle,text=black,anchor=center]
+%% at ($(s0.center)+(-30pt,0pt)$) {};
+%% \draw[->,>=stealth,line width=0.5pt] (init) to 
+%% node[left=5pt,pos=0.5] {} 
+%% (s0);
+
+%% \node[draw,line width=0.5pt,circle,text=black,anchor=center,minimum size=5mm]
+%% at ($(s0.center)+(80pt,0pt)$) {};
+
+
+%% \draw[->,>=stealth,line width=0.5pt,] (s0) to 
+%% node[above=-1pt,pos=0.5] {\footnotesize${\tt ret \; pop}(x)$} 
+%% (s1);
+
+%% \draw[->,>=stealth,line width=0.5pt] (s0) to 
+%% node[left=5pt,pos=0.5] {\footnotesize${\tt call \; push}(x)$} 
 %% (s2);
 
+%% \draw[->,>=stealth,line width=0.5pt, in=-50,out=-130,loop] (s0) to 
+%% node[above=-15pt,pos=0.5] {\footnotesize${\tt call \; pop}(x)$} 
+%% (s0);
 
-%\node[]
-%at ($(s2.center)+(60pt,20pt)$) {\footnotesize${\tt call \; push}(x)+$};
-%\node[] at ($(s2.center)+(60pt,10pt)$) {\footnotesize${\tt ret \; push}(x)+$};
-%\node[] at ($(s2.center)+(60pt,0pt)$) {\footnotesize${\tt call \; pop}(x)+$};
-%\node[] at ($(s2.center)+(60pt,-10pt)$) {\footnotesize${\tt ret \; pop}(x)$};
-
-\end{tikzpicture}
-\caption{An observer recognizing sequences in which ${\tt pop}$ for some data value returns although no
-  corresponding ${\tt push}$ has been previously called. The observer has one register $\tt x$.}
-\label{fig:nonpopobserver:fig}
-\end{figure}
-
-%\todo[inline]{Quy: make a picture of this observer, and describe intuitively
-%  how it works}
+%% %% \draw[->,>=stealth,line width=0.5pt, in=50,out=-30,loop] (s2) to 
+%% %% node[right=2pt,pos=0.5] {\footnotesize${\tt act(x)}$} 
+%% %% (s2);
 
 
-%\todo[inline]{The observer of Fig. 2 is not correct: You must also include
-%  call push(x) which goes to a sink state. Moreover, you must explain that you
-%  assume differentiated traces, Plese go over the observer again. Also mark
-%  the initial location}
+%% %\node[]
+%% %at ($(s2.center)+(60pt,20pt)$) {\footnotesize${\tt call \; push}(x)+$};
+%% %\node[] at ($(s2.center)+(60pt,10pt)$) {\footnotesize${\tt ret \; push}(x)+$};
+%% %\node[] at ($(s2.center)+(60pt,0pt)$) {\footnotesize${\tt call \; pop}(x)+$};
+%% %\node[] at ($(s2.center)+(60pt,-10pt)$) {\footnotesize${\tt ret \; pop}(x)$};
 
-As an example, Figure~\ref{fig:nonpopobserver:fig} shows an observer for
-Constraint 1, which checks
-that a ${\tt pop}$ method must not return before any ${\tt push}$ method
-with the same data value has been called.
-%% The exact form of observers for these constraints represent them in
-%% terms of ordering of call an return actions.
-Observers for Constraints 2 and 3 are similar to that for Constraint 1.
-The observer for Constraint 4 is more complex,
-and shown in Figure~\ref{fig:lifostack:fig}.
-It has two registers $\tt x_1$ and $\tt x_2$. Let $\tt d_1$ and $\tt d_2$
-denote their initial values.
-In a sequence of actions that leads to the accepting state $s_6$, a
-${\tt push(d_1)}$ must be linearized before a ${\tt push(d_2)}$, since
-${\tt push(d_1)}$ returns before ${\tt push(d_2)}$ is called; however
-a ${\tt pop(d_1)}$ returns in a situation where the number of returned
-${\tt push(d_2)}$ methods exceeds the number of called
-${\tt pop(d_2)}$ methods, thereby violating LIFO ordering.
-%% ${\tt pop(d_2)}$ which leaves some data value $\tt d_2$ on top of
-%% $\tt d_1$ in the stack, also violating LIFO ordering.
-%% In the observer, the action which leads to an accepting state $\tt ret \; pop(x_1)$ happens after sequences of actions namely $\tt call \; push(x_2)$, $\tt ret \; push(x_2)$, $\tt call \; pop(x_2)$ in which the pair $\tt ret \; push(x_2) / call \; pop(x_2)$ is always after $\tt ret \; push(x_2)$ . The $\tt call \; push(x_1)/ret \;push(x_1)$ happens before all the sequences. Intuitively, the observer specifies that a data cannot be popped from the stack if there is always at least an different data above it in the Stack (regardless of how linearize the execution). 
-%\todo[inline]{The explanation of Figure 3 to be improved}
-\begin{figure}
-\center 
+%% \end{tikzpicture}
+%% \caption{An observer recognizing sequences in which ${\tt pop}$ for some data value returns although no
+%%   corresponding ${\tt push}$ has been previously called. The observer has one register $\tt x$.}
+%% \label{fig:nonpopobserver:fig}
+%% \end{figure}
 
-\begin{tikzpicture}[]
-
-\node(s0)[draw,line width=0.5pt,circle,text=black]
-{$s_0$};
+%% %\todo[inline]{Quy: make a picture of this observer, and describe intuitively
+%% %  how it works}
 
 
-\node(s1)[draw,line width=0.5pt,circle,text=black,anchor=center]
-at ($(s0.center)+(60pt,0pt)$) {$s_1$};
+%% %\todo[inline]{The observer of Fig. 2 is not correct: You must also include
+%% %  call push(x) which goes to a sink state. Moreover, you must explain that you
+%% %  assume differentiated traces, Plese go over the observer again. Also mark
+%% %  the initial location}
 
-\node(s2)[draw,line width=0.5pt,circle,text=black,anchor=center]
-at ($(s0.center)+(120pt,0pt)$) {$s_2$};
+%% As an example, Figure~\ref{fig:nonpopobserver:fig} shows an observer for
+%% Constraint 1, which checks
+%% that a ${\tt pop}$ method must not return before any ${\tt push}$ method
+%% with the same data value has been called.
+%% %% The exact form of observers for these constraints represent them in
+%% %% terms of ordering of call an return actions.
+%% Observers for Constraints 2 and 3 are similar to that for Constraint 1.
+%% The observer for Constraint 4 is more complex,
+%% and shown in Figure~\ref{fig:lifostack:fig}.
+%% It has two registers $\tt x_1$ and $\tt x_2$. Let $\tt d_1$ and $\tt d_2$
+%% denote their initial values.
+%% In a sequence of actions that leads to the accepting state $s_6$, a
+%% ${\tt push(d_1)}$ must be linearized before a ${\tt push(d_2)}$, since
+%% ${\tt push(d_1)}$ returns before ${\tt push(d_2)}$ is called; however
+%% a ${\tt pop(d_1)}$ returns in a situation where the number of returned
+%% ${\tt push(d_2)}$ methods exceeds the number of called
+%% ${\tt pop(d_2)}$ methods, thereby violating LIFO ordering.
+%% %% ${\tt pop(d_2)}$ which leaves some data value $\tt d_2$ on top of
+%% %% $\tt d_1$ in the stack, also violating LIFO ordering.
+%% %% In the observer, the action which leads to an accepting state $\tt ret \; pop(x_1)$ happens after sequences of actions namely $\tt call \; push(x_2)$, $\tt ret \; push(x_2)$, $\tt call \; pop(x_2)$ in which the pair $\tt ret \; push(x_2) / call \; pop(x_2)$ is always after $\tt ret \; push(x_2)$ . The $\tt call \; push(x_1)/ret \;push(x_1)$ happens before all the sequences. Intuitively, the observer specifies that a data cannot be popped from the stack if there is always at least an different data above it in the Stack (regardless of how linearize the execution). 
+%% %\todo[inline]{The explanation of Figure 3 to be improved}
+%% \begin{figure}
+%% \center 
 
-\node(s3)[draw,line width=0.5pt,circle,text=black,anchor=center]
-at ($(s0.center)+(180pt,0pt)$) {$s_3$};
+%% \begin{tikzpicture}[]
 
-\node(s4)[draw,line width=0.5pt,circle,text=black,anchor=center]
-at ($(s0.center)+(240pt,0pt)$) {$s_4$};
-
-\node(s6)[draw,line width=0.5pt,circle,text=black,anchor=center]
-at ($(s0.center)+(300pt,0pt)$) {$s_6$};
-
-\node(s5)[draw,line width=0.5pt,circle,text=black,anchor=center]
-at ($(s0.center)+(240pt,-100pt)$) {$s_5$};
-
-\node[draw,line width=0.5pt,circle,text=black,anchor=center,minimum size=5mm]
-at ($(s0.center)+(300pt,0pt)$) {};
+%% \node(s0)[draw,line width=0.5pt,circle,text=black]
+%% {$s_0$};
 
 
-\draw[->,>=stealth,line width=0.5pt,] (s0) to 
-node[above=-1pt,pos=0.5] {\tiny${\tt call \; push}(x_1)$} 
-(s1);
-\draw[->,>=stealth,line width=0.5pt,] (s1) to 
-node[above=-1pt,pos=0.5] {\tiny${\tt ret \; push}(x_1)$} 
-(s2);
+%% \node(s1)[draw,line width=0.5pt,circle,text=black,anchor=center]
+%% at ($(s0.center)+(60pt,0pt)$) {$s_1$};
 
-\draw[->,>=stealth,line width=0.5pt,] (s2) to 
-node[above=-1pt,pos=0.5] {\tiny${\tt ret \; push}(x_2)$} 
-(s3);
+%% \node(s2)[draw,line width=0.5pt,circle,text=black,anchor=center]
+%% at ($(s0.center)+(120pt,0pt)$) {$s_2$};
 
-\draw[->,>=stealth,line width=0.5pt,] (s3) to 
-node[above=-1pt,pos=0.5] {\tiny${\tt call \; pop}(x_1)$} 
-(s4);
+%% \node(s3)[draw,line width=0.5pt,circle,text=black,anchor=center]
+%% at ($(s0.center)+(180pt,0pt)$) {$s_3$};
 
-\draw[->,>=stealth,line width=0.5pt,] (s4) to 
-node[above=-1pt,pos=0.5] {\tiny${\tt ret \; pop}(x_1)$} 
-(s6);
+%% \node(s4)[draw,line width=0.5pt,circle,text=black,anchor=center]
+%% at ($(s0.center)+(240pt,0pt)$) {$s_4$};
 
-\draw[->,>=stealth,line width=0.5pt, in=50,out=130,loop] (s2) to 
-node[above=2pt,pos=0.5] {\tiny${\tt call \; push}(x_2)$} 
-(s2);
+%% \node(s6)[draw,line width=0.5pt,circle,text=black,anchor=center]
+%% at ($(s0.center)+(300pt,0pt)$) {$s_6$};
 
-\draw[->,>=stealth,line width=0.5pt,out=-35,in=35] (s4) to 
-node[right=-2pt,pos=0.5] {\tiny${\tt ret \; push}(x_2)$} 
-(s5);
+%% \node(s5)[draw,line width=0.5pt,circle,text=black,anchor=center]
+%% at ($(s0.center)+(240pt,-100pt)$) {$s_5$};
 
-\draw[->,>=stealth,line width=0.5pt,out=145,in=-145] (s5) to 
-node[left=-2pt,pos=0.5] {\tiny${\tt call \; pop}(x_2)$} 
-(s4);
+%% \node[draw,line width=0.5pt,circle,text=black,anchor=center,minimum size=5mm]
+%% at ($(s0.center)+(300pt,0pt)$) {};
 
-\node(init)[line width=0.5pt,circle,text=black,anchor=center]
-at ($(s0.center)+(-30pt,0pt)$) {};
-\draw[->,>=stealth,line width=0.5pt] (init) to 
-node[left=5pt,pos=0.5] {} 
-(s0);
 
-\node(s7)[draw,line width=0.5pt,circle,text=black,anchor=center]
-at ($(s5.center)+(-180pt,-2pt)$) {$s_7$};
+%% \draw[->,>=stealth,line width=0.5pt,] (s0) to 
+%% node[above=-1pt,pos=0.5] {\tiny${\tt call \; push}(x_1)$} 
+%% (s1);
+%% \draw[->,>=stealth,line width=0.5pt,] (s1) to 
+%% node[above=-1pt,pos=0.5] {\tiny${\tt ret \; push}(x_1)$} 
+%% (s2);
 
-\draw[->,>=stealth,line width=0.5pt] (s0) to 
-node[above = -2pt,pos=0.5, sloped] {\tiny${\tt \neg{call \;push(x_1)}}$} 
-(s7);
-\draw[->,>=stealth,line width=0.5pt] (s1) to 
-node[above=-2pt,pos=0.5,  sloped] {\tiny${\tt \neg {ret \; push(x_1)}}$} 
-(s7);
-\draw[->,>=stealth,line width=0.5pt] (s2) to 
-node[above=-2pt,pos=0.5,  sloped] {\tiny${\tt \neg{call \; push(x_2) \wedge \neg{ret \; push(x_2)}}}$} 
-(s7);
-\draw[->,>=stealth,line width=0.5pt] (s3) to 
-node[above=-2pt,pos=0.5,  sloped] {\tiny${\tt \neg{call \; pop(x_1)}}$}  
-(s7);
-\draw[->,>=stealth,line width=0.5pt] (s4) to 
-node[above=-2pt,pos=0.5,  sloped] {\tiny${\tt \neg{ret \; pop(x_1) \wedge \neg{ret \; pop(x_2)}}}$}  
-(s7);
-\draw[->,>=stealth,line width=0.5pt] (s5) to 
-node[above=-2pt,pos=0.5,  sloped] {\tiny${\tt \neg{call \; ret(x_2)}}$}  
-(s7);
+%% \draw[->,>=stealth,line width=0.5pt,] (s2) to 
+%% node[above=-1pt,pos=0.5] {\tiny${\tt ret \; push}(x_2)$} 
+%% (s3);
 
-\end{tikzpicture}
-\caption{An observer recognizing LIFO violations. The registers are $\tt x_1$ and $\tt x_2$. For each action $\tt act$ parameterized by $\tt x_1$ or $\tt x_2$, the label $\tt \neg act(x_i)$ is the union of  all actions parameterized by $\tt x_1$ or $\tt x_2$ except for $\tt act(x_i)$.  
-}
-\label{fig:lifostack:fig}
-\end{figure}
+%% \draw[->,>=stealth,line width=0.5pt,] (s3) to 
+%% node[above=-1pt,pos=0.5] {\tiny${\tt call \; pop}(x_1)$} 
+%% (s4);
 
-To verify that TS Stack is a correct linearizable implementation of a stack, we
-must show that any concurrent execution of method calls satisfies the
-above four constraints (1) -- (4).
-To this end, define a {\em program} to consist 
-of an arbitrary number of concurrently executing threads,
-%(Appendix~\ref{planguage:section} contains
-%the language syntax used in our tool).
-%
-each of which executes a push or pop method with some data value as parameter.
-We assume that the data structure has been initialized
-by the ${\tt init}$ method prior to the start of program execution.
-We must verify that any execution of such a program satisfies the four
-constraints above. To verify a constraint, 
-we form, as in the automata-theoretic approach~\cite{VW:modelchecking},
-also adopted in~\cite{AHHR:integrated},
-the cross-product of the program  and the corresponding
-observer, where the observer synchronizes with the program on call and
-return actions that are recognized by the observer. This reduces the
-problem of checking each of the above constraints to the problem of checking
-that the corresponding observer cannot reach an accepting state.
+%% \draw[->,>=stealth,line width=0.5pt,] (s4) to 
+%% node[above=-1pt,pos=0.5] {\tiny${\tt ret \; pop}(x_1)$} 
+%% (s6);
+
+%% \draw[->,>=stealth,line width=0.5pt, in=50,out=130,loop] (s2) to 
+%% node[above=2pt,pos=0.5] {\tiny${\tt call \; push}(x_2)$} 
+%% (s2);
+
+%% \draw[->,>=stealth,line width=0.5pt,out=-35,in=35] (s4) to 
+%% node[right=-2pt,pos=0.5] {\tiny${\tt ret \; push}(x_2)$} 
+%% (s5);
+
+%% \draw[->,>=stealth,line width=0.5pt,out=145,in=-145] (s5) to 
+%% node[left=-2pt,pos=0.5] {\tiny${\tt call \; pop}(x_2)$} 
+%% (s4);
+
+%% \node(init)[line width=0.5pt,circle,text=black,anchor=center]
+%% at ($(s0.center)+(-30pt,0pt)$) {};
+%% \draw[->,>=stealth,line width=0.5pt] (init) to 
+%% node[left=5pt,pos=0.5] {} 
+%% (s0);
+
+%% \node(s7)[draw,line width=0.5pt,circle,text=black,anchor=center]
+%% at ($(s5.center)+(-180pt,-2pt)$) {$s_7$};
+
+%% \draw[->,>=stealth,line width=0.5pt] (s0) to 
+%% node[above = -2pt,pos=0.5, sloped] {\tiny${\tt \neg{call \;push(x_1)}}$} 
+%% (s7);
+%% \draw[->,>=stealth,line width=0.5pt] (s1) to 
+%% node[above=-2pt,pos=0.5,  sloped] {\tiny${\tt \neg {ret \; push(x_1)}}$} 
+%% (s7);
+%% \draw[->,>=stealth,line width=0.5pt] (s2) to 
+%% node[above=-2pt,pos=0.5,  sloped] {\tiny${\tt \neg{call \; push(x_2) \wedge \neg{ret \; push(x_2)}}}$} 
+%% (s7);
+%% \draw[->,>=stealth,line width=0.5pt] (s3) to 
+%% node[above=-2pt,pos=0.5,  sloped] {\tiny${\tt \neg{call \; pop(x_1)}}$}  
+%% (s7);
+%% \draw[->,>=stealth,line width=0.5pt] (s4) to 
+%% node[above=-2pt,pos=0.5,  sloped] {\tiny${\tt \neg{ret \; pop(x_1) \wedge \neg{ret \; pop(x_2)}}}$}  
+%% (s7);
+%% \draw[->,>=stealth,line width=0.5pt] (s5) to 
+%% node[above=-2pt,pos=0.5,  sloped] {\tiny${\tt \neg{call \; ret(x_2)}}$}  
+%% (s7);
+
+%% \end{tikzpicture}
+%% \caption{An observer recognizing LIFO violations. The registers are $\tt x_1$ and $\tt x_2$. For each action $\tt act$ parameterized by $\tt x_1$ or $\tt x_2$, the label $\tt \neg act(x_i)$ is the union of  all actions parameterized by $\tt x_1$ or $\tt x_2$ except for $\tt act(x_i)$.  
+%% }
+%% \label{fig:lifostack:fig}
+%% \end{figure}
+
+
+%% To this end, define a {\em program} to consist 
+%% of an arbitrary number of concurrently executing threads,
+%% %(Appendix~\ref{planguage:section} contains
+%% %the language syntax used in our tool).
+%% %
+%% each of which executes an add or remove method with some data value as parameter.
+%% We assume that the data structure has been initialized
+%% by the ${\tt init}$ method prior to the start of program execution.
+%% We must verify that any execution of such a program satisfies the 
+%% constraints.
 
 \todo[inline]{We may have to say that we check the trivial conditions that
   were checked by the monitor in SAS 16}
@@ -426,9 +491,14 @@ unbounded heap.
 For this, we have developed a novel shape representation, called
 {\em fragment abstraction}, which can also be combined with
 data abstraction and thread abstraction.
-Let us illustrate how fragment abstraction to the TS stack algorithm.
+Let us illustrate how fragment abstraction applies to the skiplist
+algorithm.
 
-Figure~\ref{fig:tsshape} shows an  example heap state of TS stack.
+\todo[inline]{Quy: you must provide example heaps, etc. before I can continue
+  writing}
+
+Figure~\ref{fig:tsshape} shows an  example state of the heap of the
+skiplist algorithm.
 The heap consists of a set of singly linked lists (SLLs), each of which
 is accessed from a pointer in the array ${\tt pools[maxThreads]}$
 in a configuration when % Quy write from here
@@ -466,32 +536,67 @@ respectively.
 \label{fig:tsshape}
 \end{figure} 
 
-Our fragment abstraction represents a set of heap states by
-a set of {\em fragments}. Each fragment consists of
-a pair of node types (called {\em tags}) that are connected by a pointer.
-A tag is an abstraction of a heap cell, which contains both 
-\begin{enumerate}[(i)]
+Our verification technique is based on a combination of a thread abstraction, a
+data  abstraction, and a shape abstraction.
+\begin{itemize}
+  \item
+  Our thread abstraction adapts the thread-modular approach by representing only the view of single, but arbitrary, thread $\thread$. Such a view consists of
+  \begin{inparaenum}[(i)]
+  \item the local state of thread $\thread$,
+  \item the part of the heap that is accessible to thread $\thread$ via its local pointer variables or via global pointer variables, and
+  \item the state of the observer.
+  \end{inparaenum}
 \item
-  local information about its non-pointer fields, obtained
-  using data abstraction if necessary, and about variables pointing to the
-  cell, and
- \item
-   global information, saying how
-it can reach to and be reached from (by following a chain of pointers)
-other heap cells that are pointed to by global variables, or cells whose
-data field has the same value as some observer register.
-This global information describes how the cell is positioned relative to
-``important'' cells in the heap. Note that 
-cells which carry the the same data value as some observer register are also
-considered ``important'', since it is necessary to track their position in 
-order to verify ordering constraints that are checked by the observer.
-\bjcom{Do we need to explain this better?}
-\end{enumerate}
-Our fragment abstraction incorporate the thread-modular approach by letting
-tags consider local variables of only one arbitrary single thread, and
-only requiring that fragments represent heap cells that can be accessed by
-that thread.
+A natural data abstraction is applied to the non-pointer local
+variables of the thread, the non-pointer fields of each fragment, as well as
+the observer registers. For our
+skiplist algorithm, fields that range over small finite domains are represented
+with their concrete values, whereas the fields that range over the domain of
+data values, and observer registers,
+are represented by constraints over their relative ordering
+(wrp.\ to the order $<$).
+%% Note that the abstraction then represents the
+%% relation between as well as their ordering with respect to the value of the observer register.
+\item
+The part of the heap that is accessible to a thread $\thread$ is represented by  
+a set of {\em fragments}. Each fragment is an abstraction of a pair of
+nodes in the heap that are connected by a pointer. The abstraction represents
+\begin{itemize}
+\item the contents of the data fields in the pair of nodes (under the empoyed
+  data abstraction),
+\item which pointer variables (either global or local to $\thread$)
+  point  to the nodes, and
+\item global reachability information, which expresses how
+  each node in the pair can reach to and be reached from
+  (by following a chain of pointers) a finite set of {\em globally significant}
+  heap cells. A cell is globally significant if it is pointed to by a
+  global pointer variable or if it triggers some significant behavior in
+  a thread that reaches it: in the \bjcom{WHICH?}
+  skiplist algorithm, this happens for nodes whose
+  {\tt key} field has the  same value as the register of the set observer.
+\end{itemize}
+In our fragment abstraction, a set of fragments represents the set of heap
+structures in which each pair of pointer-connected nodes is represented by some
+fragment in the set.
+Inuitively, a set of fragments describes the set of heaps that can be formed by
+``piecing together'' fragments in the set. This ``piecing together'' must
+be both locally consistent (appending only fragments that agree on their
+common node), and globally consistent (respecting the global reachability
+information).
+By construction, our fragment abstraction is finitary, since there is
+a bounded set of tags.
+\end{itemize}
+Let a {\em local symbolic configuration} be an abstraction of the program
+counter and local data variables of an arbitrary thread $\thread$.
+Our symbolic representation of a set of program configurations consists of
+a mapping from a set of local symbolic configurations,
+which maps each local symbolic configuration in its domain to a set of fragments.
+A global configuration satisfies a symbolic representation $\symbrep$
+if the view of each thread $\thread$ satisfies some local symbolic
+configuration in the domain of $\symbrep$, which is mapped to a set
+of fragments, which represents the heap that is accessible to $\thread$.
 
+\todo[inline]{Quy: After this, you must provide a nice example}
 \begin{figure}
 	\input tsabsshape
 \caption{Fragment abstraction}
@@ -500,7 +605,7 @@ that thread.
 
 Figure~\ref{fig:tsviewshape} shows a set of fragments that is
 satisfied wrp.\ to $\thread_2$ by the configuration in Figure~\ref{fig:tsshape}.
-There are $7$ fragments, named $\frag_1$, \ldots , $\frag_2$. Two of
+There are $7$ fragments, named $\frag_1$, \ldots , $\frag_7$. Two of
 these ($\frag_3$ and $\frag_7$) consist of a tag that points to $\dangconst$,
 and the other consist of a pair of pointer-connected tags.
 Consider the tag which occurs in fragment $\frag_7$; it is the bottom-rightmost
@@ -556,33 +661,33 @@ that contains the values of the program counter and variable $\tt success$,
 abstracts the value of ${\tt k}$ into the set $\set{{\tt me},{\tt ot}}$ and
 applies the timestamp abstraction to ${\tt maxTS}$.
 
-We are now ready to present our symbolic representation of a set of
-reachable program configurations. 
+%% We are now ready to present our symbolic representation of a set of
+%% reachable program configurations. 
+%% %% It maps each local symbolic configuration to a set of fragments, which
+%% %% is a symbolic representation of the set of corresponding reachable heaps.
+%% Our symbolic representation is a mapping from a set of local symbolic
+%% configurations, which maps each local symbolic configuration in its domain
+%% to a set of fragments.
+%% A global configuration satisfies a symbolic representation $\symbrep$
+%% if the local state of each thread $\thread$ satisfies some local symbolic
+%% configuration in the domain of $\symbrep$, which is mapped to a set
+%% of fragments, which is satisfied by heap wrp.\ to thread $\thread$.
+
+
+%% Our symbolic representation represents the reachable local states of a thread by
+%% a finite set of {\em local symbolic configurations}, using our
+%% data abstraction.
 %% It maps each local symbolic configuration to a set of fragments, which
 %% is a symbolic representation of the set of corresponding reachable heaps.
-Our symbolic representation is a mapping from a set of local symbolic
-configurations, which maps each local symbolic configuration in its domain
-to a set of fragments.
-A global configuration satisfies a symbolic representation $\symbrep$
-if the local state of each thread $\thread$ satisfies some local symbolic
-configuration in the domain of $\symbrep$, which is mapped to a set
-of fragments, which is satisfied by heap wrp.\ to thread $\thread$.
-
-
-Our symbolic representation represents the reachable local states of a thread by
-a finite set of {\em local symbolic configurations}, using our
-data abstraction.
-It maps each local symbolic configuration to a set of fragments, which
-is a symbolic representation of the set of corresponding reachable heaps.
-Thus, our symbolic representation is a mapping from a set of local symbolic
-configurations, which maps each local symbolic configuration in its domain
-to a set of fragments.
-A global configuration satisfies a symbolic representation $\symbrep$
-if the local stat of each thread $\thread$ satisfies some local symbolic
-configuration in the domain of $\symbrep$, which is mapped to a set
-of fragments, which represents the heap that is accessible to $\thread$ in
-the global configuration. In the following, we explain more precisely the
-local symbolic configurations, and our fragment abstraction.
+%% Thus, our symbolic representation is a mapping from a set of local symbolic
+%% configurations, which maps each local symbolic configuration in its domain
+%% to a set of fragments.
+%% A global configuration satisfies a symbolic representation $\symbrep$
+%% if the local stat of each thread $\thread$ satisfies some local symbolic
+%% configuration in the domain of $\symbrep$, which is mapped to a set
+%% of fragments, which represents the heap that is accessible to $\thread$ in
+%% the global configuration. In the following, we explain more precisely the
+%% local symbolic configurations, and our fragment abstraction.
 
 In the  verification, we must compute a symbolic representation
 that is satisfied by all reachable program configurations (recall that

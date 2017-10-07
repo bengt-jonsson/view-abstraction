@@ -449,7 +449,7 @@ IEEE Int.\ Symp.\ on Fault-Tolerant Computing"}
 @string{Z91 =  "Proc.\ \Nth{6} Annual {Z} User Meeting"}
 
 %%% Publishers.
-@string{SV = "Springer Verlag"}
+@string{SV = "Springer"}
 @string{NH = "North-Holland"}
 @string{KA = "Kluwer Academic"}
 
@@ -563,10 +563,11 @@ Year=1983
   pages     = {3--19},
 	Series = LNCS,
 	Volume = 9207,
+        Publisher = SV,
   year      = {2015},
 }
 
-@INPROCEEDINGS{Aaron:locigcal:linearizability,
+@INPROCEEDINGS{Aaron:logical:linearizability,
   author    = {Aaron Joseph Turon and
                Jacob Thamsborg and
                Amal Ahmed and
@@ -8999,7 +9000,7 @@ Proc.\ 7th SPIN Workshop",
                O. Subasi and
                S. Tasiran},
   title     = {Simplifying Linearizability Proofs with Reduction and Abstraction},
-  booktitle = "{Proc. of TACAS'10}",
+  booktitle = {TACAS},
   year      = {2010},
   pages     = {296-311},
   publisher = SV,
@@ -12727,6 +12728,7 @@ YEAR = "1994"
   pages     = {242-256},
   series    = {LNCS},
   volume    = {8052},
+        Publisher = SV,
 }
                   
 @ARTICLE{HeYaSaYu:dataflow,
@@ -17068,6 +17070,17 @@ source={http://theory.lcs.mit.edu/~dmjones/hbp/tcs/tcs.bib}
 	Month = "May",
 	Year = 1990}
 
+@inproceedings{LMP:cav14,
+  title={Automatic Atomicity Verification for Clients of Concurrent Data Structures},
+  author={M. Lesani and T. Millstein and J. Palsberg},
+  booktitle={{CAV}},
+  pages={550--567},
+  Series = LNCS,
+  Volume = 8559,
+  Publisher = SV,
+  year={2014},
+}
+                  
 @INPROCEEDINGS{LHR:parameterized,
         Author = "D. Lesens and N. Halbwachs and P. Raymond",
         Title = "Automatic Verification of Parameterized Linear Networks of Processes",
@@ -22690,6 +22703,7 @@ address={Paris, France}}
   year      = {2012},
   pages     = {243-259},
   series    = {LNCS},
+        Publisher = SV,
   volume    = {7358},
 }
                   
@@ -25343,6 +25357,7 @@ Crete, July, 2001}}
   year      = {2009},
   pages     = {261-278},
   series    = {LNCS},
+        Publisher = SV,
   volume    = {5578},
 }
 
@@ -26760,7 +26775,7 @@ publisher = {McGraw-Hill Book Company},
   pages     = {30-46},
   publisher = {Springer},
   volume={5904},
-  series={Lecture Notes in Computer Science},
+  series= LNCS,
 }
 
 @INPROCEEDINGS{SteffMRN:04,
@@ -26900,6 +26915,15 @@ for Highly Concurrent Data Structures",
   year      = {2016},
 }
 
+@inproceedings{singh:issre16,
+  title={Proving Concurrent Data Structures Linearizable},
+  author={V. Singh and I. Neamtiu and R. Gupta},
+  booktitle={{ISSRE}},
+  pages={230--240},
+  year={2016},
+  publiser={IEEE}
+}
+
 @inproceedings{meyer:vmcai16,
   author    = {Fr{\'{e}}d{\'{e}}ric Haziza and
                Luk{\'{a}}s Hol{\'{\i}}k and
@@ -26912,5 +26936,19 @@ for Highly Concurrent Data Structures",
   doi       = {10.1007/978-3-662-49122-5_19},
   series    = {Lecture Notes in Computer Science},
   volume    = {9583},
+  publisher = {Springer},
+}
+                  
+@inproceedings{holik:sas17,
+  author    = {Luk{\'{a}}s Hol{\'{\i}}k and
+               Roland Meyer and
+               Tom{\'{a}}s Vojnar and	       
+               Sebastian Wolff},
+  title     = {Effect Summaries for Thread-Modular Analysis - Sound Analysis Despite an Unsound Heuristic},
+  booktitle = {{SAS}},
+  pages     = {169--191},
+  year      = {2017},
+  series    = LNCS,
+  volume    = {10422},
   publisher = {Springer},
 }

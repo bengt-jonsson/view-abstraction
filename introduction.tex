@@ -27,7 +27,7 @@ Many such techniques require significant {\em manual} effort for
 constructing a proof of correctness
 (e.g.,~\cite{LF:pldi13,Vafeiadis:Thesis}),
 in some cases with the support of an interactive theorem prover
-(e.g.,~\cite{Aaron:locigcal:linearizability,Colvin:Lazy-List,Derrick:fm14,SWD:cav12,SDW:tcl14}).
+(e.g.,~\cite{Aaron:logical:linearizability,Colvin:Lazy-List,Derrick:fm14,SWD:cav12,SDW:tcl14}).
 Development of automated verification techniques is a difficult challenge.
 
 A major difficulty is that a successful verification technique must be
@@ -86,11 +86,14 @@ values of its data fields
 as well as global information about its position in the heap, including how
 it can reach to and be reached from (by following chains of pointers)
 other heap cells that are pointed to by global variables.
-A set of fragments describes how pairs of pointer-connected nodes can be
-``pieced together'' to form heap structures. 
-In other words, a set of fragments represents the set of heap structures in
-which each pair of pointer-connected nodes are represented by some
+A set of fragments represents the set of heap
+structures in which each pair of pointer-connected nodes are represented by some
 fragment in the set.
+Inuitively, a set of fragments describes the set of heaps that can be formed by
+``pieced together'' fragments in the set. This ``piecing together'' must
+be both locally consistent (appending only fragments that agree on their
+common node), and globally consistent (respecting the global reachability
+information).
 By construction, our fragment abstraction is finitary, since there is
 a bounded set of tags.
 
