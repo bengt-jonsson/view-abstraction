@@ -3,8 +3,7 @@
 
 \todo[inline]{This is derived from the
   previous overview section, which described TS-stack}
-
-In this section, we illustrate our technique by using it to prove correctness, in
+  In this section, we illustrate our technique by using it to prove correctness, in
 the sense of linearizability, of
 a concurrent data structure implementation which uses skiplists.
 We consider an implementation of a set data structure, which operates on
@@ -16,50 +15,59 @@ skiplist algorithms.
 We have verified {\bf WHICH?} algorithms automatically using fragment
 abstraction, as reported in Section~\ref{section:experiments}.
 
-\begin{figure}
-\center  
- \input skiplistshape  
- \caption{A concrete shape of 3-level skipl-list with two threads}
-\label{sl-shape}
-\end{figure}
-
-\input slcode
 
 \subsection{The Skiplist Algorithm}
-Figure~\ref{sl-code:fig} shows the skiplist find method. The method returns −1 if the item  $\tt x$ is not found. It traverses the SkipList using two pointer variables $\tt pred$ and $\tt curr$ which start from the head and at the highest level. It then proceeds in each level down the list, filling in $\tt preds$
+A skiplist is a list consisting of a number of sorted linked lists, each of which is located at a layer. Each skiplist node has a key value, one successor at each layer in which it participates, and is assigned a height. There is an important property of skip-list stating that the list at any higher layer is a sublist of the list at the layer beneath it. A skip-list has head and tail nodes with the maximum heights at the head and tail positions respectively. The head’s key value is assigned $-\infty$, and the tail’s key value is $+\infty$. Figure~\ref{sl} shows a skip-list with maximum height of 3.
+\begin{figure}
+\center  
+ \input skiplist
+  \caption{A concrete shape example of 3-level skip-list}
+\label{sl}
+\end{figure}
+
+
+
+Figure~\ref{sl-code:fig} shows the skiplist find method. The method returns $\tt false$ if the item  $\tt x$ is not found. It traverses the SkipList using two pointer variables $\tt pred$ and $\tt curr$ which start from the head and at the highest level. It then proceeds in each level down the list, filling in $\tt preds$
 and $\tt succs$ nodes that are repeatedly advanced until $\tt pred$ points to a node with
-the largest value on that level that is strictly less than the target key. The method repeatedly snips out marked nodes from the
+the largest value on that level that is strictly less than the $\tt x$. The method repeatedly remove marked nodes from the
 given level as they are encountered (Lines 15 to 19) using a $\tt compareAndSet$ statement. Once an unmarked $\tt curr$ is found (Line 20), it is
-tested to see if its key is less than the target key. If so, $\tt pred$ is advanced to $\tt curr$. Otherwise, $\tt curr$’s key is greater than or equal to the $\tt x$, so the current value
-of $\tt pred$ is the target node’s immediate predecessor. The find method breaks
-out of the current level search loop, saving the current values of $\tt pred$ and $\tt curr$. It proceeds this way until it reaches the bottom level.
-\todo[inline]{I am working with add and remove methods}
+tested to see if its key is less than the target key. If so, $\tt pred$ is advanced to $\tt curr$. Otherwise, $\tt curr$âs key is greater than or equal to $\tt x$, so the current value
+of $\tt pred$ is the target nodeâs immediate predecessor. The find method breaks
+out of the current level search loop, saving the current values of $\tt pred$ and $\tt curr$. It proceeds by this way until reaching the bottom level. The $\tt add$ method for adding a node with the key $\tt k$ works as follows: 
+\input slcode
 
-\todo[inline]{To Quy: PLease update the below text asap}
+%\todo[inline]{I am working with add and remove methods}
 
-%\todo[inline]{Provide a description of the algorithm}
-%\todo[inline]{Quy: The line numbers for Pop are scrambled. Can you fix?
-%Also, the variable {\tt i} at line 6 is initialized strangely. Can you fix?}
-Figure~\ref{ts-stack:fig} shows a simplified version of the Timestamped Stack (TS stack), where we have omitted the check for emptiness in the ${\tt pop}$ method, and the optimization using ${\tt push}$-${\tt pop}$ elimination. These features are included in the full version of the algorithm, described in Appendix XXX, that we have verified automatically.
+%\todo[inline]{To Quy: PLease update the below text asap}
 
-The algorithm uses an array of singly-linked lists (SLLs), one for each thread, accessed via the thread-indexed array ${\tt pools[maxThreads]}$ of pointers to the first cell of each list. The ${\tt init}$ method initializes each of these pointers to $\nullconst$. Each list cell contains a data value, a timestamp value, a ${\tt next}$ pointer, and a boolean flag ${\tt mark}$ which indicates whether the node is logically removed from the stack. Each thread pushes elements to ``its own'' list, and can pop elements from any list.
 
-A ${\tt push}$ method for inserting a data element ${\tt d}$ works as follows: first, a new cell with element ${\tt d}$ and minimal timestamp ${\tt -1}$ is inserted at the beginning of the list indexed by the calling thread (line 1-3). After that, a new timestamp is created and assigned (via the variable ${\tt t}$) to the ${\tt ts}$ field of the inserted cell (line 4-5).
-%\bjcom{Quesion to Quy: What happens when pop methods sees uninitialized timestamps?} \quycom{uninitialized time is -1, its smaller than any other time.}
-Finally, the method unlinks (i.e., physically removes) all cells that are reachable (through a sequence of $\tt next$ pointers) from the inserted cell and whose ${\tt mark}$ field is ${\tt true}$; these cells are already logically removed. This is done by redirecting the $\tt next$ pointer of the inserted cell to the first cell with a $\false$ $\tt mark$ field, which is
-reachable from the inserted cell.
+The $\tt add$ method uses $\tt find$ method to check whether a node with key $\tt k$ is already in the list or not. If an unmarked node with key $\tt k$ is found in the bottom-level list, the $\tt add$ method returns $\tt false$. If no node is found, then the next step is to try to add the new node into the list. It is performed by linking it into the bottom-level list between the $\tt preds$ and $\tt succs$ nodes returned by $\tt find$. The method then links the node in at higher levels. 
+The $\tt remove$ method also use $\tt find$ to determine whether an unmarked node with a matching key $\tt k$ is in the bottom-level list. If no node is found in the bottom-level list, or the node with a matching key is marked, the method returns false. If an unmarked node is found, then the method logically removes the associated key from the list, and prepares it for physical removal. First, starting from the topLevel, all links up to and not including the bottom-level link are marked . If the link is found to be marked the method moves on to the next-level link. Otherwise, the marking attempt must be repeated. Once all levels but the bottom one have been marked, the method marks the bottom levelâs next reference. Before returning true, the $\tt find$ method is called again. This call physically removes all links to the node it is searching for if that node is already logically removed.
 
-A ${\tt pop}$ method first traverses all lists, finding in each list
-the first cell whose ${\tt mark}$ field is ${\tt false}$(line 8), and letting the variable ${\tt youngest}$ point to the most recent such cell
-(i.e., with the largest timestamp) (line 1-11).
-A compare-and-swap (CAS) is used
-to set the ${\tt mark}$ field of this youngest cell to $\true$,
-thereby logically removing it.
-This procedure will restart if the CAS fails. After the youngest cell has been removed, the method will unlink all cells, whose ${\tt mark}$ field is ${\tt true}$,
-that appear before (line 17-19) or after (line 20-23) the removed cell.
-Finally, the method returns the ${\tt data}$ value of the removed cell.
-%\todo[inline]{Comments by Bengt: How can you return empty? Also, I think you
-% need to explain the extra removal of marked cells better} \quycom{this code is a simplified version without emptiness checking. If we add emptiness part, the code will be longer and more complicated}
+%For each level, it attempts to set the predecessor, if it refers to the valid successor, to the new node . If successful, it moves on to the next level. If unsuccessful, the $\tt find$ method is called again to find a new valid position. 
+
+%We use $\tt compareAndSet$ to set the reference while validating that these nodes still refer one to the other and have not been removed from the list. If the $\tt compareAndSet$ fails, the call restarts. 
+%Figure~\ref{ts-stack:fig} shows a simplified version of the Timestamped Stack (TS stack), where we have omitted the check for emptiness in the ${\tt pop}$ method, and the optimization using ${\tt push}$-${\tt pop}$ elimination. These features are included in the full version of the algorithm, described in Appendix XXX, that we have verified automatically.
+%
+%The algorithm uses an array of singly-linked lists (SLLs), one for each thread, accessed via the thread-indexed array ${\tt pools[maxThreads]}$ of pointers to the first cell of each list. The ${\tt init}$ method initializes each of these pointers to $\nullconst$. Each list cell contains a data value, a timestamp value, a ${\tt next}$ pointer, and a boolean flag ${\tt mark}$ which indicates whether the node is logically removed from the stack. Each thread pushes elements to ``its own'' list, and can pop elements from any list.
+%
+%A ${\tt push}$ method for inserting a data element ${\tt d}$ works as follows: first, a new cell with element ${\tt d}$ and minimal timestamp ${\tt -1}$ is inserted at the beginning of the list indexed by the calling thread (line 1-3). After that, a new timestamp is created and assigned (via the variable ${\tt t}$) to the ${\tt ts}$ field of the inserted cell (line 4-5).
+%%\bjcom{Quesion to Quy: What happens when pop methods sees uninitialized timestamps?} \quycom{uninitialized time is -1, its smaller than any other time.}
+%Finally, the method unlinks (i.e., physically removes) all cells that are reachable (through a sequence of $\tt next$ pointers) from the inserted cell and whose ${\tt mark}$ field is ${\tt true}$; these cells are already logically removed. This is done by redirecting the $\tt next$ pointer of the inserted cell to the first cell with a $\false$ $\tt mark$ field, which is
+%reachable from the inserted cell.
+%
+%A ${\tt pop}$ method first traverses all lists, finding in each list
+%the first cell whose ${\tt mark}$ field is ${\tt false}$(line 8), and letting the variable ${\tt youngest}$ point to the most recent such cell
+%(i.e., with the largest timestamp) (line 1-11).
+%A compare-and-swap (CAS) is used
+%to set the ${\tt mark}$ field of this youngest cell to $\true$,
+%thereby logically removing it.
+%This procedure will restart if the CAS fails. After the youngest cell has been removed, the method will unlink all cells, whose ${\tt mark}$ field is ${\tt true}$,
+%that appear before (line 17-19) or after (line 20-23) the removed cell.
+%Finally, the method returns the ${\tt data}$ value of the removed cell.
+%%\todo[inline]{Comments by Bengt: How can you return empty? Also, I think you
+%% need to explain the extra removal of marked cells better} \quycom{this code is a simplified version without emptiness checking. If we add emptiness part, the code will be longer and more complicated}
+
 
 \subsection{Specifying the Correctness Criterion of Linearizability}
 In our verification, we establish that the skiplist algorithm of
@@ -493,6 +501,12 @@ For this, we have developed a novel shape representation, called
 data abstraction and thread abstraction.
 Let us illustrate how fragment abstraction applies to the skiplist
 algorithm.
+\begin{figure}
+\center  
+ \input skiplistshape  
+ \caption{A concrete shape of 3-level skipl-list with two threads}
+\label{sl-shape}
+\end{figure}
 
 \todo[inline]{Quy: you must provide example heaps, etc. before I can continue
   writing}
@@ -529,6 +543,13 @@ In this case, the
 observer is the one in Figure~\ref{fig:lifostack:fig}, which has two registers
 $\tt x_1$ and $\tt x_2$, which are assigned the values $4$ and $2$,
 respectively.
+
+\begin{figure}
+\center  
+ \input skiplistabs  
+ \caption{Fragment abstraction of the skip-list algorithm}
+\label{sl-abs}
+\end{figure}
 
 \begin{figure}
 	\input tsshape
