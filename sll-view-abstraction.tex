@@ -12,12 +12,18 @@ concurrent programs that operate on a shared heap.
 We consider a program with global variables $\glvarset$ and
 thread-local variables $\locvarset$.
 We assume that all global variables are pointer variables.
-We describe our fragment abstractions for three classes of heap structures:
-in the following subsection, we consider programs operating on singly-linked
-lists, in Subsection~\ref{subsect:skiplists}, we consider programs operating
-on skiplists, and in
-Subsection~\ref{subsect:skiplists}, we consider programs operating
-arrays of singly linked lists.
+In the following subsection, we describe our symbolic representation, using fragment
+abstraction, for programs that operate on singly-linked lists (SLLs). This
+representation is also the basis for our representation for programs
+operating on skiplists, described in Subsection~\ref{subsect:skiplists}
+and programs operating on arrays of SLLs, in Subsection~\ref{subsect:skiplists}.
+
+%% We describe our fragment abstractions for three classes of heap structures:
+%% in the following subsection, we consider programs operating on singly-linked
+%% lists, in Subsection~\ref{subsect:skiplists}, we consider programs operating
+%% on skiplists, and in
+%% Subsection~\ref{subsect:skiplists}, we consider programs operating
+%% arrays of singly linked lists.
 
 
 %% In the actual verification, we compute a symbolic representation
@@ -34,11 +40,6 @@ arrays of singly linked lists.
 %% unbounded heap. 
 
 \subsection{Fragment Abstraction for Singly-Linked List-Based Programs}
-In this subsection, we describe our symbolic representation, using fragment
-abstraction, for programs that operate on singly-linked lists (SLLs). This
-representation is also the basis for our representation for programs
-operating on skiplists, described in Subsection~\ref{subsect:skiplists}
-and programs operating on arrays of SLLs, in Subsection~\ref{subsect:skiplists}.
 
 \bjcom{Say that for now, we ignore timers?}
 

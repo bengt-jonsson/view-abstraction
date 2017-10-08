@@ -17,17 +17,26 @@ abstraction, as reported in Section~\ref{section:experiments}.
 
 
 \subsection{The Skiplist Algorithm}
-A skiplist is a list consisting of a number of sorted linked lists, each of which is located at a layer. Each skiplist node has a key value, one successor at each layer in which it participates, and is assigned a height. There is an important property of skip-list stating that the list at any higher layer is a sublist of the list at the layer beneath it. A skip-list has head and tail nodes with the maximum heights at the head and tail positions respectively. The head’s key value is assigned $-\infty$, and the tail’s key value is $+\infty$. Figure~\ref{sl} shows a skip-list with maximum height of 3.
+
+\todo[inline]{Comment from BJ to Quy: begin with context: Which algorithm are
+  we showing? what does that algorithm do?}
+
+A skiplist is a list consisting of a number of sorted linked lists, each of which is located at a layer. Each skiplist node has a key value, one successor at each layer in which it participates, and is assigned a height. There is an important property of skiplist stating that the list at any higher layer is a sublist of the list at the layer beneath it.
+\bjcom{This does not hold in our case, so I think it may confuse. Start rather with the reason for higher-level (they are shortcuts). You might want to find some
+  good text on this topic as inspiration}
+A skiplist has head and tail nodes with the maximum heights at the head and tail positions respectively. The head’s key value is assigned $-\infty$, and the tail’s key value is $+\infty$. Figure~\ref{sl} shows a skiplist with maximum height of 3.
 \begin{figure}
 \center  
  \input skiplist
-  \caption{A concrete shape example of 3-level skip-list}
+  \caption{A concrete shape example of 3-level skiplist}
 \label{sl}
 \end{figure}
 
 
 
-Figure~\ref{sl-code:fig} shows the skiplist find method. The method returns $\tt false$ if the item  $\tt x$ is not found. It traverses the SkipList using two pointer variables $\tt pred$ and $\tt curr$ which start from the head and at the highest level. It then proceeds in each level down the list, filling in $\tt preds$
+Figure~\ref{sl-code:fig} shows the skiplist find method.
+\bjcom{Start with the most important property of the method. What does it do?}
+The method returns $\tt false$ if the item  $\tt x$ is not found. It traverses the SkipList using two pointer variables $\tt pred$ and $\tt curr$ which start from the head and at the highest level. It then proceeds in each level down the list, filling in $\tt preds$
 and $\tt succs$ nodes that are repeatedly advanced until $\tt pred$ points to a node with
 the largest value on that level that is strictly less than the $\tt x$. The method repeatedly remove marked nodes from the
 given level as they are encountered (Lines 15 to 19) using a $\tt compareAndSet$ statement. Once an unmarked $\tt curr$ is found (Line 20), it is
@@ -199,7 +208,7 @@ problem of checking linearizability to the problem of checking
 that, in the cross-product, the observer cannot reach an accepting state.
 
 We note that linearizability of stacks and queues can be verified without any
-user-suppplied instrumentation is necessary. For stacks and queues,
+user-supplied instrumentation. For stacks and queues,
 linearizability can be precisely specified by
 observers that process the sequence of call and return actions of
 methods,  instead of the user-supplied LPs~\cite{BEEH:icalp15,HSV:concur13}.
@@ -504,7 +513,7 @@ algorithm.
 \begin{figure}
 \center  
  \input skiplistshape  
- \caption{A concrete shape of 3-level skipl-list with two threads}
+ \caption{A concrete shape of 3-level skiplist with two threads}
 \label{sl-shape}
 \end{figure}
 
@@ -547,15 +556,15 @@ respectively.
 \begin{figure}
 \center  
  \input skiplistabs  
- \caption{Fragment abstraction of the skip-list algorithm}
+ \caption{Fragment abstraction of the skiplist algorithm}
 \label{sl-abs}
 \end{figure}
 
-\begin{figure}
-	\input tsshape
-\caption{A possible heap state of TS stack with three threads.}
-\label{fig:tsshape}
-\end{figure} 
+%% \begin{figure}
+%% 	\input tsshape
+%% \caption{A possible heap state of TS stack with three threads.}
+%% \label{fig:tsshape}
+%% \end{figure} 
 
 Our verification technique is based on a combination of a thread abstraction, a
 data  abstraction, and a shape abstraction.
