@@ -6,13 +6,13 @@
 %%%%%%%%%%% struct %%%%%%%%%%%%%%%%
 
 
-\node[linecode,anchor=south west](struct) at ($(top.east)+(-30pt,0pt)$) { \scriptsize \textcolor{magenta}{struct} Node \scriptsize \{ \textcolor{magenta}{int} data; \textcolor{magenta}{int} topLayer; Node \textcolor{magenta}{*}next[]; bool marked;\}} ;
+\node[linecode,anchor=south west](struct) at ($(top.west)+(-130pt,0pt)$) { \scriptsize \textcolor{magenta}{struct} Node \scriptsize \{ \textcolor{magenta}{int} data; \textcolor{magenta}{int} topLayer; Node \textcolor{magenta}{*}next[]; bool marked;\}} ;
 \begin{pgfonlayer}{background}
  \node[code-bg,fit=(struct)] {};
 \end{pgfonlayer}
 
 
-\node(locate-head)[linecode] at ($(top.west)+(-10pt,-15pt)$) {\scriptsize {boolean} find(\textcolor{magenta}{int} x, Node\textcolor{magenta}{*} preds[], Node\textcolor{magenta}{*} succs[]):};
+\node(locate-head)[linecode] at ($(top.west)+(-130pt,-15pt)$) {\scriptsize {boolean} find(\textcolor{magenta}{int} x,Node\textcolor{magenta}{*} preds[],Node\textcolor{magenta}{*} succs[])};
 
 \node(locate1)[linenum,anchor=west] at ($(locate-head.west)+(0pt,-10pt)$) {\scriptsize 1};
 \node[linecode] at ($(locate1.east)+(0pt,0pt)$) {\scriptsize \textcolor{magenta}{int} mLevel \textcolor{magenta}{=} \textcolor{blue}{0};};
@@ -24,7 +24,7 @@
 \node(code3)[linecode] at ($(locate3.east)+(0pt,0pt)$) {\scriptsize {boolean} snip;};
 
 \node(locate4)[linenum] at ($(locate3.east)+(0pt,-10pt)$) {\scriptsize 4};
-\node(code4)[linecode] at ($(locate4.east)+(0pt,0pt)$) {\scriptsize Node\textcolor{magenta}{*} pred \textcolor{magenta}{=} \textcolor{blue}{null}, curr \textcolor{magenta}{=} \textcolor{blue}{null}, succ \textcolor{magenta}{=} \textcolor{blue}{null};}; 
+\node(code4)[linecode] at ($(locate4.east)+(0pt,0pt)$) {\scriptsize Node\textcolor{magenta}{*} pred \textcolor{magenta}{=} \textcolor{blue}{null},curr \textcolor{magenta}{=} \textcolor{blue}{null},succ \textcolor{magenta}{=} \textcolor{blue}{null};}; 
 
 \node(locate5)[linenum] at ($(locate4.east)+(0pt,-10pt)$) {\scriptsize 5};
 \node[linecode] at ($(locate5.east)+(0pt,0pt)$) {\scriptsize \textcolor{magenta}{int} k; };
@@ -33,61 +33,68 @@
 \node[linecode] at ($(locate6.east)+(0pt,0pt)$) {\scriptsize \textcolor{magenta}{for}(\textcolor{magenta}{int} i\textcolor{magenta}{=}\textcolor{blue}{0}; i\textcolor{magenta}{<}maxThreads; i\textcolor{magenta}{++})};
  
 \node(locate7)[linenum] at ($(locate6.east)+(0pt,-10pt)$) {\scriptsize 7};
-\node[linecode] at ($(locate7.east)+(14pt,0pt)$) {\scriptsize Node\textcolor{magenta}{*} pred \textcolor{magenta}{=} \textcolor{blue}{null}, curr \textcolor{magenta}{=} \textcolor{blue}{null}, succ \textcolor{magenta}{=} \textcolor{blue}{null};};
+\node[linecode] at ($(locate7.east)+(8pt,0pt)$) {\scriptsize Node\textcolor{magenta}{*} pred \textcolor{magenta}{=} \textcolor{blue}{null},curr \textcolor{magenta}{=} \textcolor{blue}{null},succ \textcolor{magenta}{=} \textcolor{blue}{null};};
 
 \node(locate8)[linenum] at ($(locate7.east)+(0pt,-10pt)$) {\scriptsize 8};
-\node(code8)[linecode] at ($(locate8.east)+(14pt,0pt)$) {\scriptsize {retry}:};
+\node(code8)[linecode] at ($(locate8.east)+(8pt,0pt)$) {\scriptsize {retry}:};
 
 \node(locate9)[linenum] at ($(locate8.east)+(0pt,-10pt)$) {\scriptsize 9};
-\node[linecode] at ($(locate9.east)+(14pt,0pt)$) {\scriptsize \textcolor{magenta}{while} (\textcolor{blue}{true})};
+\node[linecode] at ($(locate9.east)+(8pt,0pt)$) {\scriptsize \textcolor{magenta}{while} (\textcolor{blue}{true})};
 
 \node(locate10)[linenum] at ($(locate9.east)+(0pt,-10pt)$) {\scriptsize 10};
-\node[linecode] at ($(locate10.east)+(21pt,0pt)$) {\scriptsize  pred \textcolor{magenta}{=} head;};
+\node[linecode] at ($(locate10.east)+(15pt,0pt)$) {\scriptsize  pred \textcolor{magenta}{=} head;};
 
 \node(locate11)[linenum] at ($(locate10.east)+(0pt,-10pt)$) {\scriptsize 11};
-\node[linecode] at ($(locate11.east)+(21pt,0pt)$) {\scriptsize \textcolor{magenta}{for} (\textcolor{magenta}{int} i \textcolor{magenta}{=} MAXLEVEL; i \textcolor{magenta}{>=} mLevel; i\textcolor{magenta}{--})};
+\node[linecode] at ($(locate11.east)+(15pt,0pt)$) {\scriptsize \textcolor{magenta}{for} (\textcolor{magenta}{int} i \textcolor{magenta}{=} MAXLEVEL; i \textcolor{magenta}{>=} mLevel; i\textcolor{magenta}{--})};
 
 \node(locate12)[linenum] at ($(locate11.east)+(0pt,-10pt)$) {\scriptsize 12};
-\node[linecode] at ($(locate12.east)+(21pt,0pt)$) {\scriptsize curr \textcolor{magenta}{=} pred.next[i];};
+\node[linecode] at ($(locate12.east)+(15pt,0pt)$) {\scriptsize curr \textcolor{magenta}{=} pred.next[i];};
 
 \node(locate13)[linenum] at ($(locate12.east)+(0pt,-10pt)$) {\scriptsize 13};
-\node[linecode] at ($(locate13.east)+(21pt,0pt)$) {\scriptsize  \textcolor{magenta}{while} (\textcolor{magenta}{true})};
+\node[linecode] at ($(locate13.east)+(15pt,0pt)$) {\scriptsize  \textcolor{magenta}{while} (\textcolor{magenta}{true})};
 
 \node(locate14)[linenum] at ($(locate13.east)+(0pt,-10pt)$) {\scriptsize 14};
-\node(code14)[linecode] at ($(locate14.east)+(28pt,0pt)$) {\scriptsize succ \textcolor{magenta}{=} curr.next[i].get(marked);};
+\node(code14)[linecode] at ($(locate14.east)+(19pt,0pt)$) {\scriptsize succ \textcolor{magenta}{=} curr.next[i].get(marked);};
 
 \node(locate15)[linenum] at ($(locate14.east)+(0pt,-10pt)$) {\scriptsize 15};
-\node[linecode] at ($(locate15.east)+(28pt,0pt)$) {\scriptsize  \textcolor{magenta}{while} (marked[0])};
+\node[linecode] at ($(locate15.east)+(19pt,0pt)$) {\scriptsize  \textcolor{magenta}{while} (marked[0])};
 
 \node(locate16)[linenum] at ($(locate15.east)+(0pt,-10pt)$) {\scriptsize 16};
-\node(code16)[linecode] at ($(locate16.east)+(35pt,0pt)$) {\scriptsize s\textcolor{magenta}{=} CAS(pred.next[i],curr,succ,\textcolor{blue}{false},\textcolor{blue}{false});};
+\node(code16)[linecode] at ($(locate16.east)+(24pt,0pt)$) {\scriptsize s\textcolor{magenta}{=} CAS(pred.next[i],curr,succ,\textcolor{blue}{false}};
 
-\node(locate17)[linenum] at ($(locate16.east)+(0pt,-10pt)$) {\scriptsize 17};
-\node[linecode] at ($(locate17.east)+(35pt,0pt)$) {\scriptsize \textcolor{magenta}{if} (\textcolor{magenta}{!}s) \textcolor{magenta}{continue} {retry};};
+\node(locate161)[linenum] at ($(locate16.east)+(0pt,-10pt)$) {};
+\node(code161)[linecode] at ($(locate161.east)+(24pt,0pt)$) {\scriptsize \textcolor{blue}{false});};
+
+
+\node(locate17)[linenum] at ($(locate161.east)+(0pt,-10pt)$) {\scriptsize 17};
+\node[linecode] at ($(locate17.east)+(24pt,0pt)$) {\scriptsize \textcolor{magenta}{if} (\textcolor{magenta}{!}s) \textcolor{magenta}{continue} {retry};};
 
 \node(locate18)[linenum] at ($(locate17.east)+(0pt,-10pt)$) {\scriptsize 18};
-\node[linecode] at ($(locate18.east)+(35pt,0pt)$) {\scriptsize curr \textcolor{magenta}{=} pred.next[i];};
+\node[linecode] at ($(locate18.east)+(24pt,0pt)$) {\scriptsize curr \textcolor{magenta}{=} pred.next[i];};
 
 
 \node(locate19)[linenum] at ($(locate18.east)+(0pt,-10pt)$) {\scriptsize 19};
-\node[linecode] at ($(locate19.east)+(35pt,0pt)$) {\scriptsize succ \textcolor{magenta}{=} curr.next[i].get(marked);};
+\node[linecode] at ($(locate19.east)+(24pt,0pt)$) {\scriptsize succ \textcolor{magenta}{=} curr.next[i].get(marked);};
 
 \node(locate21)[linenum] at ($(locate19.east)+(0pt,-10pt)$) {\scriptsize 20};
-\node[linecode] at ($(locate21.east)+(28pt,0pt)$) {\scriptsize \textcolor{magenta}{if} (curr.key \textcolor{magenta}{<} x)};
+\node[linecode] at ($(locate21.east)+(19pt,0pt)$) {\scriptsize \textcolor{magenta}{if} (curr.key \textcolor{magenta}{<} x)};
 
 \node(locate22)[linenum] at ($(locate21.east)+(0pt,-10pt)$) {\scriptsize 21};
-\node(code22)[linecode] at ($(locate22.east)+(35pt,0pt)$) {\scriptsize pred \textcolor{magenta}{=} curr; curr \textcolor{magenta}{=} succ;};
+\node(code22)[linecode] at ($(locate22.east)+(24pt,0pt)$) {\scriptsize pred \textcolor{magenta}{=} curr;};
 
-\node(locate23)[linenum] at ($(locate22.east)+(0pt,-10pt)$) {\scriptsize 22};
-\node[linecode] at ($(locate23.east)+(28pt,0pt)$) {\scriptsize \textcolor{magenta}{else break};};
+\node(locate221)[linenum] at ($(locate22.east)+(0pt,-10pt)$) {\scriptsize 22};
+\node(code22)[linecode] at ($(locate221.east)+(24pt,0pt)$) {\scriptsize curr \textcolor{magenta}{=} succ;};
 
-\node(locate24)[linenum] at ($(locate23.east)+(0pt,-10pt)$) {\scriptsize 23};
-\node[linecode] at ($(locate24.east)+(14pt,0pt)$) {\scriptsize  preds[i] \textcolor{magenta}{=} pred;};
+\node(locate23)[linenum] at ($(locate221.east)+(0pt,-10pt)$) {\scriptsize 23};
+\node[linecode] at ($(locate23.east)+(19pt,0pt)$) {\scriptsize \textcolor{magenta}{else break};};
 
-\node(locate25)[linenum] at ($(locate24.east)+(0pt,-10pt)$) {\scriptsize 24};
-\node[linecode] at ($(locate25.east)+(14pt,0pt)$) {\scriptsize succs[i] \textcolor{magenta}{=} curr;};
+\node(locate24)[linenum] at ($(locate23.east)+(0pt,-10pt)$) {\scriptsize 24};
+\node[linecode] at ($(locate24.east)+(8pt,0pt)$) {\scriptsize  preds[i] \textcolor{magenta}{=} pred;};
 
-\node(locate26)[linenum] at ($(locate25.east)+(0pt,-10pt)$) {\scriptsize 25};
+\node(locate25)[linenum] at ($(locate24.east)+(0pt,-10pt)$) {\scriptsize 25};
+\node[linecode] at ($(locate25.east)+(8pt,0pt)$) {\scriptsize succs[i] \textcolor{magenta}{=} curr;};
+
+\node(locate26)[linenum] at ($(locate25.east)+(0pt,-10pt)$) {\scriptsize 26};
 \node[linecode] at ($(locate26.east)+(0pt,0pt)$) {\scriptsize \textcolor{magenta}{return} (curr.key \textcolor{magenta}{==} x);};
 
 
@@ -102,6 +109,109 @@
  \node[code-bg,fit=(locate-head) (code3) (locate14) (code22) (bot) (code16) ]{};
  \end{pgfonlayer}
 
+ 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%ADD%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+\node(locate-head)[linecode] at ($(top.west)+(59pt,-15pt)$) {\scriptsize boolean {add} (\textcolor{magenta}{int} x):};
+%
+\node(locate1)[linenum,anchor=west] at ($(locate-head.west)+(0pt,-10pt)$) {\scriptsize 1};
+\node[linecode] at ($(locate1.east)+(0pt,0pt)$) {\scriptsize \textcolor{magenta}{int} topLevel \textcolor{magenta}{=} {randomLevel}; mLevel \textcolor{magenta}{=} \textcolor{blue}{0};};
+%
+
+\node(locate3)[linenum] at ($(locate1.east)+(0pt,-10pt)$) {\scriptsize 3};
+\node(code3)[linecode] at ($(locate3.east)+(0pt,0pt)$) {\scriptsize Node\textcolor{magenta}{*} preds[MAXLEVEL\textcolor{magenta}{+1}];};
+
+\node(locate4)[linenum] at ($(locate3.east)+(0pt,-10pt)$) {\scriptsize 4};
+\node(code4)[linecode] at ($(locate4.east)+(0pt,0pt)$) {\scriptsize Node\textcolor{magenta}{*} succs[MAXLEVEL\textcolor{magenta}{+}1];}; 
+%
+\node(locate5)[linenum] at ($(locate4.east)+(0pt,-10pt)$) {\scriptsize 5};
+\node[linecode] at ($(locate5.east)+(0pt,0pt)$) {\scriptsize \textcolor{magenta}{while} (\textcolor{blue}{true});};
+%
+%
+\node(locate6)[linenum] at ($(locate5.east)+(0pt,-10pt)$) {\scriptsize 6};
+\node[linecode] at ($(locate6.east)+(8pt,0pt)$) {\scriptsize boolean found = \textcolor{magenta}{find}(x,preds,succs);};
+ 
+\node(locate7)[linenum] at ($(locate6.east)+(0pt,-10pt)$) {\scriptsize 7};
+\node[linecode] at ($(locate7.east)+(8pt,0pt)$) {\scriptsize \textcolor{magenta}{if} (found);};
+%
+\node(locate8)[linenum] at ($(locate7.east)+(0pt,-10pt)$) {\scriptsize 8};
+\node(code8)[linecode] at ($(locate8.east)+(14pt,0pt)$) {\scriptsize \textcolor{magenta}{return} \textcolor{blue}{false};};
+%
+\node(locate9)[linenum] at ($(locate8.east)+(0pt,-10pt)$) {\scriptsize 9};
+\node[linecode] at ($(locate9.east)+(8pt,0pt)$) {\scriptsize \textcolor{magenta}{else}};
+%
+\node(locate10)[linenum] at ($(locate9.east)+(0pt,-10pt)$) {\scriptsize 10};
+\node[linecode] at ($(locate10.east)+(14pt,0pt)$) {\scriptsize  Node\textcolor{magenta}{*} new \textcolor{magenta}{=} \textcolor{magenta}{new} Node(x, topLevel);};
+%
+\node(locate11)[linenum] at ($(locate10.east)+(0pt,-10pt)$) {\scriptsize 11};
+\node(A)[linecode] at ($(locate11.east)+(14pt,0pt)$) {\scriptsize \textcolor{magenta}{for}(\textcolor{magenta}{int} i\textcolor{magenta}{=} mLevel;level\textcolor{magenta}{<=}topLevel;i\textcolor{magenta}{++})};
+%
+\node(locate12)[linenum] at ($(locate11.east)+(0pt,-10pt)$) {\scriptsize 12};
+\node[linecode] at ($(locate12.east)+(19pt,0pt)$) {\scriptsize Node\textcolor{magenta}{*} succ \textcolor{magenta}{=} succs[i];};
+
+\node(locate13)[linenum] at ($(locate12.east)+(0pt,-10pt)$) {\scriptsize 13};
+\node[linecode] at ($(locate13.east)+(19pt,0pt)$) {\scriptsize  new.next[i].set(succ, false);};
+
+\node(locate14)[linenum] at ($(locate13.east)+(0pt,-10pt)$) {\scriptsize 14};
+\node(code14)[linecode] at ($(locate14.east)+(14pt,0pt)$) {\scriptsize Node\textcolor{magenta}{*} pred \textcolor{magenta}{=} preds[mLevel];};
+
+\node(locate15)[linenum] at ($(locate14.east)+(0pt,-10pt)$) {\scriptsize 15};
+\node[linecode] at ($(locate15.east)+(14pt,0pt)$) {\scriptsize  Node\textcolor{magenta}{*} succ \textcolor{magenta}{=} succs[mLevel];};
+
+\node(locate16)[linenum] at ($(locate15.east)+(0pt,-10pt)$) {\scriptsize 16};
+\node(code16)[linecode] at ($(locate16.east)+(14pt,0pt)$) {\scriptsize new.next[mLevel].set(succ, false);};
+
+\node(locate161)[linenum] at ($(locate16.east)+(0pt,-10pt)$) {};
+\node(code161)[linecode] at ($(locate161.east)+(14pt,0pt)$) {\scriptsize \textcolor{magenta}{if} (\textcolor{magenta}{!}CAS(pred.next[mLevel],succ,new;};
+
+\node(locate1610)[linenum] at ($(locate161.east)+(0pt,-10pt)$) {};
+\node(code161)[linecode] at ($(locate1610.east)+(14pt,0pt)$) {\scriptsize ,false,false));};
+
+
+\node(locate17)[linenum] at ($(locate1610.east)+(0pt,-10pt)$) {\scriptsize 17};
+\node[linecode] at ($(locate17.east)+(19pt,0pt)$) {\scriptsize \textcolor{magenta}{continue};};
+
+\node(locate18)[linenum] at ($(locate17.east)+(0pt,-10pt)$) {\scriptsize 18};
+\node[linecode] at ($(locate18.east)+(14pt,0pt)$) {\scriptsize \textcolor{magenta}{for} (\textcolor{magenta}{int} i\textcolor{magenta}{=}mLevel\textcolor{magenta}{+}1;i\textcolor{magenta}{<=}topLevel;i\textcolor{magenta}{++})};
+
+
+\node(locate19)[linenum] at ($(locate18.east)+(0pt,-10pt)$) {\scriptsize 19};
+\node[linecode] at ($(locate19.east)+(19pt,0pt)$) {\scriptsize \textcolor{magenta}{while} (\textcolor{blue}{true});};
+%
+\node(locate21)[linenum] at ($(locate19.east)+(0pt,-10pt)$) {\scriptsize 20};
+\node[linecode] at ($(locate21.east)+(24pt,0pt)$) {\scriptsize pred \textcolor{magenta}{=} preds[i];};
+%
+\node(locate22)[linenum] at ($(locate21.east)+(0pt,-10pt)$) {\scriptsize 21};
+\node(code22)[linecode] at ($(locate22.east)+(24pt,0pt)$) {\scriptsize succ \textcolor{magenta}{=} succs[i];};
+%
+\node(locate23)[linenum] at ($(locate22.east)+(0pt,-10pt)$) {\scriptsize 22};
+\node[linecode] at ($(locate23.east)+(24pt,0pt)$) {\scriptsize \textcolor{magenta}{if} (CAS(pred.next[i],succ,new};
+
+\node(locate231)[linenum] at ($(locate23.east)+(0pt,-10pt)$) {\scriptsize 22};
+\node[linecode] at ($(locate231.east)+(24pt,0pt)$) {\scriptsize ,false,false));};
+
+
+%
+\node(locate24)[linenum] at ($(locate231.east)+(0pt,-10pt)$) {\scriptsize 23};
+\node[linecode] at ($(locate24.east)+(29pt,0pt)$) {\scriptsize  \textcolor{magenta}{break};};
+%
+\node(locate25)[linenum] at ($(locate24.east)+(0pt,-10pt)$) {\scriptsize 24};
+\node[linecode] at ($(locate25.east)+(24pt,0pt)$) {\scriptsize find(x,preds,succs);};
+%
+\node(locate26)[linenum] at ($(locate25.east)+(0pt,-10pt)$) {\scriptsize 25};
+\node[linecode] at ($(locate26.east)+(0pt,0pt)$) {\scriptsize \textcolor{magenta}{return} \textcolor{blue}{true};};
+%
+%
+
+
+
+
+
+
+\node(bot)[linecode] at ($(locate25.east)+(0pt,-10pt)$) {};
+\begin{pgfonlayer}{background}
+ \node[code-bg,fit=(locate-head) (code3) (locate14) (code22) (bot) (code16) (A) ]{};
+ \end{pgfonlayer}
 
 
 

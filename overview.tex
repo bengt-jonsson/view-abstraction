@@ -17,13 +17,12 @@ abstraction, as reported in Section~\ref{section:experiments}.
 
 
 \subsection{The Skiplist Algorithm}
-
 \todo[inline]{Comment from BJ to Quy: begin with context: Which algorithm are
   we showing? what does that algorithm do?}
-
-A skiplist is a list consisting of a number of sorted linked lists, each of which is located at a layer. Each skiplist node has a key value, one successor at each layer in which it participates, and is assigned a height. There is an important property of skiplist stating that the list at any higher layer is a sublist of the list at the layer beneath it.
-\bjcom{This does not hold in our case, so I think it may confuse. Start rather with the reason for higher-level (they are shortcuts). You might want to find some
-  good text on this topic as inspiration}
+  
+In this section, we describe a concurrent lock-free skiplist algorithm ~\cite{ArtOfMpP}. Firstly, let us describe the definition of a skiplist structure. A skiplist is a list consisting of a number of sorted linked lists, each of which is located at a layer. Each skiplist node has a key value, one successor at each layer in which it participates, and is assigned a height. The lowest-level list is an ordered list of all stored elements. Higher-level lists serve as shortcuts into lower-level lists.
+%\bjcom{This does not hold in our case, so I think it may confuse. Start rather with the reason for higher-level (they are shortcuts). You might want to find some
+%  good text on this topic as inspiration}
 A skiplist has head and tail nodes with the maximum heights at the head and tail positions respectively. The head’s key value is assigned $-\infty$, and the tail’s key value is $+\infty$. Figure~\ref{sl} shows a skiplist with maximum height of 3.
 \begin{figure}
 \center  
@@ -34,7 +33,7 @@ A skiplist has head and tail nodes with the maximum heights at the head and tail
 
 
 
-Figure~\ref{sl-code:fig} shows the skiplist find method.
+Now, let us describe an important method $\tt find$ of the algorithm. The method   Figure~\ref{sl-code:fig} shows the skiplist find method.
 \bjcom{Start with the most important property of the method. What does it do?}
 The method returns $\tt false$ if the item  $\tt x$ is not found. It traverses the SkipList using two pointer variables $\tt pred$ and $\tt curr$ which start from the head and at the highest level. It then proceeds in each level down the list, filling in $\tt preds$
 and $\tt succs$ nodes that are repeatedly advanced until $\tt pred$ points to a node with
@@ -51,7 +50,7 @@ out of the current level search loop, saving the current values of $\tt pred$ an
 
 
 The $\tt add$ method uses $\tt find$ method to check whether a node with key $\tt k$ is already in the list or not. If an unmarked node with key $\tt k$ is found in the bottom-level list, the $\tt add$ method returns $\tt false$. If no node is found, then the next step is to try to add the new node into the list. It is performed by linking it into the bottom-level list between the $\tt preds$ and $\tt succs$ nodes returned by $\tt find$. The method then links the node in at higher levels. 
-The $\tt remove$ method also use $\tt find$ to determine whether an unmarked node with a matching key $\tt k$ is in the bottom-level list. If no node is found in the bottom-level list, or the node with a matching key is marked, the method returns false. If an unmarked node is found, then the method logically removes the associated key from the list, and prepares it for physical removal. First, starting from the topLevel, all links up to and not including the bottom-level link are marked . If the link is found to be marked the method moves on to the next-level link. Otherwise, the marking attempt must be repeated. Once all levels but the bottom one have been marked, the method marks the bottom levelâs next reference. Before returning true, the $\tt find$ method is called again. This call physically removes all links to the node it is searching for if that node is already logically removed.
+The $\tt remove$ method also use $\tt find$ to determine whether an unmarked node with a matching key $\tt k$ is in the bottom-level list. If no node is found in the bottom-level list, or the node with a matching key is marked, the method returns false. If an unmarked node is found, then the method logically removes the associated key from the list, and prepares it for physical removal. First, starting from the topLevel, all links up to and not including the bottom-level link are marked . If the link is found to be marked the method moves on to the next-level link. Otherwise, the marking attempt must be repeated. Once all levels but the bottom one have been marked, the method marks the bottom levels next reference. Before returning true, the $\tt find$ method is called again. This call physically removes all links to the node it is searching for if that node is already logically removed.
 
 %For each level, it attempts to set the predecessor, if it refers to the valid successor, to the new node . If successful, it moves on to the next level. If unsuccessful, the $\tt find$ method is called again to find a new valid position. 
 
