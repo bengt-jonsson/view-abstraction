@@ -284,57 +284,58 @@ monitors the sequence of operations that is announced by the
 instrumentation, and report when it violates the semantics of the set
 data structure.
 
-{\em Observers} are
-finite automata extended with a finite set of {\em registers}
-that assume values in $\intgrs$, which are 
-nondeterministically initialized with arbitrary values, which never change
-during a run of the observer. 
-The observer accepts a trace if, for {\em some} initial values of the
-registers, the trace can  be processed in such a way that
-an accepting state is reached.
-In other words, the observer is defined in such a way that it accepts precisely those
-traces that do {\em not} belong to the behavior
-of the data structure.
-%% Observers can be used to give {\it exact} specifications of
-%% the behaviors of data structures such as sets, queues, and stacks.
-%
-%
-Fig.~\ref{set:observer:fig}
-depicts an observer that accepts the
-sequences of operations that do {\em not} conform to the semantics of a set
-data structure.
+%% {\em Observers} are
+%% finite automata extended with a finite set of {\em registers}
+%% that assume values in $\intgrs$, which are 
+%% nondeterministically initialized with arbitrary values, which never change
+%% during a run of the observer. 
+%% The observer accepts a trace if, for {\em some} initial values of the
+%% registers, the trace can  be processed in such a way that
+%% an accepting state is reached.
+%% In other words, the observer is defined in such a way that it accepts precisely those
+%% traces that do {\em not} belong to the behavior
+%% of the data structure.
+%% %% Observers can be used to give {\it exact} specifications of
+%% %% the behaviors of data structures such as sets, queues, and stacks.
+%% %
+%% %
+%% Fig.~\ref{set:observer:fig}
+%% depicts an observer that accepts the
+%% sequences of operations that do {\em not} conform to the semantics of a set
+%% data structure.
 
 
 
-For queue and stack implementations, we employ another technique which does
-not require user annotation.
-For stacks and queues, it was recently established
-~\cite{BEEH:icalp15,HSV:concur13} that the linearizability criterion can be
-checked by an observer
+%% For queue and stack implementations, we employ another technique which does
+%% not require user annotation.
+%% For stacks and queues, it was recently established
+%% ~\cite{BEEH:icalp15,HSV:concur13} that the linearizability criterion can be
+%% checked by an observer
 
-is equivalent to
-a small number of simple ordering constraints of the following form
-\begin{quote}
-for one or two {\em arbitrary} data values, the subsequence of
-call and return actions with these data values as parameters is in 
-a particular regular set.
-\end{quote}
-The complement of each such constraint can be
+%% is equivalent to
+%% a small number of simple ordering constraints of the following form
+%% \begin{quote}
+%% for one or two {\em arbitrary} data values, the subsequence of
+%% call and return actions with these data values as parameters is in 
+%% a particular regular set.
+%% \end{quote}
+%% The complement of each such constraint can be
 
-The user then instruments
-these statements so that they also announce the corresponding operation on
-the data structure. For instance, \bjcom{Quy: Please insert a text of
-how some LP is inserted into the code of Figure~\ref{sl-code:fig}}.
-Having instrumented methods at LPs, we
-then consider an arbitrary concurrent program consisting of
-an arbitrary collection of threads, each of which executes some method call.
-We must check that the concurrent execution of such a program generates
-(through its instrumentation) a sequence of operations which satisfies the
-semantics of the set data structure. 
-This check is performed by an {\em observer}, which 
-monitors the sequence of operations that is announced by the
-instrumentation, and reports when it violates the semantics of the set
-data structure.
+%% The user then instruments
+%% these statements so that they also announce the corresponding operation on
+%% the data structure. For instance, \bjcom{Quy: Please insert a text of
+%% how some LP is inserted into the code of Figure~\ref{sl-code:fig}}.
+%% Having instrumented methods at LPs, we
+%% then consider an arbitrary concurrent program consisting of
+%% an arbitrary collection of threads, each of which executes some method call.
+%% We must check that the concurrent execution of such a program generates
+%% (through its instrumentation) a sequence of operations which satisfies the
+%% semantics of the set data structure. 
+%% This check is performed by an {\em observer}, which 
+%% monitors the sequence of operations that is announced by the
+%% instrumentation, and reports when it violates the semantics of the set
+%% data structure.
+
 Formally, an observer $\observer$ is a tuple
 $\otuple$ where $\ostateset$ is a finite set 
 of {\it observer states} including the 
@@ -404,7 +405,181 @@ We illustrate this in Section XXX.
 \todo[inline]{It remains to take care of the criterion that the
   call of pop already has a return value}
 
-\todo[inline]{I removed the subsection on formal semantics}
+\subsection{Formal Semantics}
+\label{semantics:section}
+For preciseness, we outline how we formalize the semantics of programs and
+observers. We assume a program $\prog$
+%% with a set $\glvarset$ of global variables,
+and a specification given by an observer $\observer$.
+%
+%% We assume that each cell contains a set $\fieldset$ of fields
+%% where each field is either a lock or a data field.
+We assume that each thread $\thread$ executes one method
+denoted $\methodof\thread$.
+%% First, we define the state of the heap and the transition
+%% relation induced by a single thread.
+%% %
+%% From this we derive the semantics of the program and use it to
+%% define its history set.
+%% %
+%% We then define the semantics of observers.
+%% Finally, we define the product of the augmented program and the observer.
+%% This product will ensure that observer
+%% On this basis, we can formally state and prove the correctness of
+%% our approach, as Theorem~\ref{thm:soundness}.
+%% Finally, we introduce  the soundness theorem 
+%% which states that linearizability of the original program
+%% is implied by the fact that the monitor never enters
+%% its ``error'' state.
+
+For a function $\fun:A\mapsto B$ from a set $A$ to
+a set $B$, we use 
+$\fun[\aelem_1\assigned\belem_1,\ldots,\aelem_\nn\assigned\belem_\nn]$ 
+to denote the function
+$\fun'$ such that $\fun'(\aelem_\ii)=\belem_\ii$ and 
+$\fun'(\aelem)=\fun(\aelem)$ if 
+$\aelem\not\in\set{\aelem_1,\ldots,\aelem_\nn}$.
+%
+
+%
+
+\paragraph{Heaps.}
+A {\it heap (state)} is a tuple $\heap=\heaptuple$, where
+(i)
+$\cellset$ is a finite set of cells, including the two special cells
+$\nullconst$ and $\dangconst$ (dangling);
+%
+we define $\mcellset=\cellset\setminus\set{\nullconst,\dangconst}$,
+%
+(ii)
+for each pointer field $\pfield_i$ there is a total function
+$\pfield_i:\mcellset\to\cellset$
+that defines where that pointer field points,
+%% the next-pointer relation, i.e., $\priflesuccof{\cell}=\cell'$ means that cell $\cell$ points to $\cell'$,
+(iii)
+$\glval:\glvarset\to\cellset$ maps the global (pointer)
+variables $\glvarset$ to their values, and
+(iv)
+$\cellval:\cellset\times\fieldset\to\fset\cup\ddomain$
+maps data and lock fields of each cell to their values.
+%
+We let $\initheap$ denote the initial heap produced by the
+{\tt init} method.
+
+\paragraph{Threads.}
+A {\it local state} $\lstate$ of a thread $\thread$
+wrt.\ a heap $\heap$ defines 
+the values of its local variables, including the program counter
+{\tt pc} and the input parameter for the method executed by $\thread$.
+In addition, there is the special initial state $\idlestate$,
+and terminated state $\terminatedstate$.
+%
+%% A {\em projection} $\proj$ is a pair
+%% $\tuple{\lstate,\heap}$, where $\lstate$
+%% is a local state wrt.\  the heap $\heap$.
+%
+We formalize the behavior of a thread $\thread$ by
+a labeled transition relation $\movesto\thread{}$
+on pairs $\tuple{\lstate,\heap}$ consisting of a local state
+$\lstate$ and a heap $\heap$, with three types of transitions:
+%
+\begin{enumerate}
+\item
+$\tuple{\idlestate,\heap}
+\movesto\thread{{\call\thread\mname\indata}}
+\tuple{\initlstateof\thread,\heap}$ activates
+thread $\thread$ through a transition
+labeled by a call action with $\thread$ as the action identifier and
+$\mname=\methodof\thread$, taking $\thread$
+to an initial local state $\initlstateof\thread$
+where $\indata$ is the value of its input parameter,
+the value of {\tt pc} is the label of the first statement of the method, and
+the other local variables are undefined.
+\item
+$\tuple{\lstate,\heap}\movesto\thread{}\tuple{\lstate',\heap'}$
+  denotes execution of method statements, which are unlabeled; these are defined
+  in the standard way for each statement form.
+%
+%% We write $\proj\movesto\thread\lbl\proj'$ 
+%% to denote that the statement labeled by $\lbl$ can be executed
+%% from $\proj$, yielding $\proj'$.
+%% Note that the next move of $\thread$ is uniquely determined
+%% by $\proj$, since $\thread$ cannot access
+%% the local states of other threads.
+%
+\item 
+$\tuple{\lstate,\heap}\movesto\thread{\return\thread\mname\outdata}
+\tuple{\terminatedstate,\heap}$ terminates
+thread $\thread$ through execution of its {\tt return} command, labeled
+by a return action with $\thread$ as action identifier,
+$\mname=\methodof\thread$, and $\outdata$
+as the returned value.
+\end{enumerate}
+
+
+\paragraph{Programs.}
+A {\it configuration} of a program
+$\prog$ is a tuple
+$\tuple{\athreads,\lstatemapping,\heap}$ where
+$\athreads$ is a set of threads,
+$\heap$ is a heap, and
+$\lstatemapping$
+%% is a {\it local state mapping} over $\athreads$ wrt.\ $\heap$ that
+maps each thread $\thread\in\athreads$ to its
+local state $\lstatemappingof\thread$ wrt.\ $\heap$.
+%
+%% We use $\confsetof\prog$ to denote the set of configurations
+%% of $\prog$.
+%
+The initial configuration
+%% $\initconfof\prog\in\confsetof\prog$ 
+$\initconfof\prog$ 
+is the pair
+$\tuple{\initlstatemapping,\initheap}$,
+where
+%% $\initheap$ is the initial heap, and
+$\initlstatemappingof\thread=\idlestate$ for each
+$\thread\in\athreads$,
+%% i.e.,
+%% $\prog$ starts its execution from a configuration with an initial
+%% heap, and with each thread in its initial local state.
+%
+A program $\prog$ induces a transition relation
+$\movesto\prog{}$ where each step corresponds to one move of a single thread.
+I.e., 
+there is a transition of form
+$\tuple{\athreads,\lstatemapping,\heap}
+\movesto\prog{\emptyword}
+\tuple{\athreads,\lstatemapping[\thread\leftarrow\lstate'],\heap'}$
+whenever the transition relation $\movesto\thread{}$ has a transition
+$\tuple{\lstate,\heap}\movesto\thread\lbl\tuple{\lstate',\heap'}$,
+where the label $\lbl$ is either a call or return action or the empty label.
+%
+Note that the only visible transitions are those
+corresponding to call and return actions.
+
+\paragraph{Cross-Product of Program and Observer}
+We use $\system=\prog\compose\observer$ to denote the cross-product obtained by
+running $\prog$ and $\observer$ together.
+%
+The initial configuration of $\system$ is
+$\tuple{\initconfof\prog,\oinitstate}$.
+Transitions of $\system$ are of the form
+$\tuple{\pconf,\ostate},\movesto{\system}{},\tuple{{\pconf}',\ostate'}$,
+obtained from a transition
+$\pconf \movesto\prog{l} {\pconf}'$ of the program with some (possibly empty)
+label $l$, and
+a corresponding synchronizing transition
+$\tuple{\ostate,\returntwo{\mname}{l},\ostate'}$
+of the monitor.
+The verification problem is now to check that $\system$ cannot reach
+a configuration $\tuple{\pconf,\oaccstate}$ with an accepting
+observer state.
+
+%% A {\it history} of $\prog$ is the sequence of call and return actions in
+%% some sequence of transitions of $\movesto\prog{}$ from the initial configuration.
+%% We define $\historyof\prog$ to be the set of histories of $\prog$.
+
 
 
 
