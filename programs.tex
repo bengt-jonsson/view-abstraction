@@ -347,9 +347,9 @@ set of {\it transitions}.
 %
 %
 Transitions are of the form 
-$\tuple{\ostate_1,\calltwo{\mname}{\inxvar,\outxvar},\ostate_2}$ or
-$\tuple{\ostate_1,\returntwo{\mname}{\inxvar,\outxvar},\ostate_2}$
-where $\inxvar$ and $\outxvar$ are either registers or constants, i.e.,
+$\tuple{\ostate_1,\mname(\indata,\outdata),\ostate_2}$,
+$\mname\in\malphabet$ is a method name and 
+$\inxvar$ and $\outxvar$ are either registers or constants, i.e.,
 transitions are labeled by 
 operations whose input or output data may be parameterized on registers.
 The observer processes a sequence of operations one operation at a time.
@@ -481,24 +481,13 @@ and terminated state $\terminatedstate$.
 We formalize the behavior of a thread $\thread$ by
 a labeled transition relation $\movesto\thread{}$
 on pairs $\tuple{\lstate,\heap}$ consisting of a local state
-$\lstate$ and a heap $\heap$, with three types of transitions:
-%
-\begin{enumerate}
-\item
-$\tuple{\idlestate,\heap}
-\movesto\thread{{\call\thread\mname\indata}}
-\tuple{\initlstateof\thread,\heap}$ activates
-thread $\thread$ through a transition
-labeled by a call action with $\thread$ as the action identifier and
-$\mname=\methodof\thread$, taking $\thread$
-to an initial local state $\initlstateof\thread$
-where $\indata$ is the value of its input parameter,
-the value of {\tt pc} is the label of the first statement of the method, and
-the other local variables are undefined.
-\item
-$\tuple{\lstate,\heap}\movesto\thread{}\tuple{\lstate',\heap'}$
-  denotes execution of method statements, which are unlabeled; these are defined
-  in the standard way for each statement form.
+$\lstate$ and a heap $\heap$, with transitions of the form:
+%% $\tuple{\lstate,\heap}\movesto\thread{}\tuple{\lstate',\heap'}$
+$\tuple{\lstate,\heap}\movesto\thread{\lbl}\tuple{\lstate',\heap'}$, which
+denote execution of method statements, labeled by $\lbl$. The label
+$\lbl$ is empty, except when the executed statement is annotated as
+a linearization point, in which case it is labeled by the corresponding
+operation (of form $\mname(\indata,\outdata)$).
 %
 %% We write $\proj\movesto\thread\lbl\proj'$ 
 %% to denote that the statement labeled by $\lbl$ can be executed
@@ -507,15 +496,6 @@ $\tuple{\lstate,\heap}\movesto\thread{}\tuple{\lstate',\heap'}$
 %% by $\proj$, since $\thread$ cannot access
 %% the local states of other threads.
 %
-\item 
-$\tuple{\lstate,\heap}\movesto\thread{\return\thread\mname\outdata}
-\tuple{\terminatedstate,\heap}$ terminates
-thread $\thread$ through execution of its {\tt return} command, labeled
-by a return action with $\thread$ as action identifier,
-$\mname=\methodof\thread$, and $\outdata$
-as the returned value.
-\end{enumerate}
-
 
 \paragraph{Programs.}
 A {\it configuration} of a program
@@ -549,14 +529,14 @@ $\movesto\prog{}$ where each step corresponds to one move of a single thread.
 I.e., 
 there is a transition of form
 $\tuple{\athreads,\lstatemapping,\heap}
-\movesto\prog{\emptyword}
+\movesto\prog{\lbl}
 \tuple{\athreads,\lstatemapping[\thread\leftarrow\lstate'],\heap'}$
 whenever the transition relation $\movesto\thread{}$ has a transition
 $\tuple{\lstate,\heap}\movesto\thread\lbl\tuple{\lstate',\heap'}$,
 where the label $\lbl$ is either a call or return action or the empty label.
 %
-Note that the only visible transitions are those
-corresponding to call and return actions.
+%% Note that the only visible transitions are those
+%% corresponding to call and return actions.
 
 \paragraph{Cross-Product of Program and Observer}
 We use $\system=\prog\compose\observer$ to denote the cross-product obtained by
@@ -567,11 +547,9 @@ $\tuple{\initconfof\prog,\oinitstate}$.
 Transitions of $\system$ are of the form
 $\tuple{\pconf,\ostate},\movesto{\system}{},\tuple{{\pconf}',\ostate'}$,
 obtained from a transition
-$\pconf \movesto\prog{l} {\pconf}'$ of the program with some (possibly empty)
-label $l$, and
-a corresponding synchronizing transition
-$\tuple{\ostate,\returntwo{\mname}{l},\ostate'}$
-of the monitor.
+$\pconf \movesto\prog{\lbl} {\pconf}'$ of the program with some (possibly empty)
+label $\lbl$, where the observer makes a transition if it can perform a matching
+transition $\tuple{\ostate,\returntwo{\mname}{l},\ostate'}$.
 The verification problem is now to check that $\system$ cannot reach
 a configuration $\tuple{\pconf,\oaccstate}$ with an accepting
 observer state.
@@ -580,8 +558,7 @@ observer state.
 %% some sequence of transitions of $\movesto\prog{}$ from the initial configuration.
 %% We define $\historyof\prog$ to be the set of histories of $\prog$.
 
-
-
+\todo[inline]{Here, we need to state a the theorem that we have reduced linearizability checking to reachability}
 
 
 
