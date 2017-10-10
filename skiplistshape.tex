@@ -93,7 +93,7 @@ at ($(cell22.east)+(30pt,0pt)$){};
 \node[rounded corners,draw,name=cell310,minimum width=24pt, minimum height=20pt]
 at ($(cell31.east)+(30pt,0pt)$){};
 \node[minimum width=8pt, minimum height=10pt,anchor=west,font=\tiny,inner sep=0pt,name=d1] at (cell310.west)
-{$9$};
+{$10$};
 %\node[draw,minimum width=8pt, minimum height=10pt,anchor=north,font=\tiny,inner sep=0pt]at (cell31.north){$\tt t_2$};
 \node[draw,minimum width=8pt, minimum height=20pt,anchor=south,font=\tiny,inner sep=0pt]at (cell310.south){\cross};
 \node[name=succ310,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=0pt] at ($(cell310.east)+(-4pt,0pt)$) {};
@@ -102,7 +102,7 @@ at ($(cell31.east)+(30pt,0pt)$){};
 \node[rounded corners,draw,name=cell310_l1,minimum width=24pt, minimum height=20pt]
 at ($(cell310.north)+(0pt,25pt)$){};
 \node[minimum width=8pt, minimum height=10pt,anchor=west,font=\tiny,inner sep=0pt,name=d1] at (cell310_l1.west)
-{$9$};
+{$10$};
 %\node[draw,minimum width=8pt, minimum height=10pt,anchor=north,font=\tiny,inner sep=0pt]at (cell31.north){$\tt t_2$};
 \node[draw,minimum width=8pt, minimum height=20pt,anchor=south,font=\tiny,inner sep=0pt]at (cell310_l1.south){\cross};
 \node[name=succ310_l1,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=0pt] at ($(cell310_l1.east)+(-4pt,0pt)$) {};
@@ -154,14 +154,23 @@ at ($(cell310.east)+(30pt,0pt)$){};
 \node[rounded corners,draw,name=cell32_l2,minimum width=24pt, minimum height=20pt] at ($(cell32_l1.north)+(0pt,25pt)$){};
 \node[minimum width=8pt, minimum height=10pt,anchor=west,font=\tiny,inner sep=0pt,name=d1] at (cell32_l2.west)
 {+$\infty$};
-%\node[draw,minimum width=8pt, minimum height=10pt,anchor=north,font=\tiny,inner sep=0pt]at (cell32_l2.north){$\tt t_2$};
 \node[draw,minimum width=8pt, minimum height=20pt,anchor=south,font=\tiny,inner sep=0pt]at (cell32_l2.south){\cross};
 \node[name=succ32_l2,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=0pt] at ($(cell32_l2.east)+(-4pt,0pt)$) {};
 \node[name=downsucc32_l2,fill,minimum size=0pt,inner sep=0pt,outer sep=0pt] at ($(cell32_l2.south)+(0pt,0pt)$) {};
+
+
 \draw[-] (downsucc32_l2) -- (cell32_l1);
 \draw[-] (downsucc32_l1) -- (cell32);
 \draw[->] (succ310) -- (cell32);
 
+
+
+\node[rounded corners,draw,name=celldelete,minimum width=24pt, minimum height=20pt] at ($(cell31.east)+(30pt,-40pt)$){};
+\node[minimum width=8pt, minimum height=10pt,anchor=west,font=\tiny,inner sep=0pt,name=d1] at (celldelete.west)
+{$9$};
+\node[draw,minimum width=8pt, minimum height=20pt,anchor=south,font=\tiny,inner sep=0pt]at (celldelete.south){\tick};
+\node[name=succdelete,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=0pt] at ($(celldelete.east)+(-4pt,0pt)$) {};
+\draw[->] (succdelete) -- (cell32);
 
 %\node[rounded corners,draw,name=cell41,minimum width=24pt, minimum height=20pt] at ($(cell32.east)+(30pt,0pt)$){};
 %\node[minimum width=8pt, minimum height=10pt,anchor=west,font=\tiny,inner sep=0pt,name=d1] at (cell41.west)
@@ -236,13 +245,13 @@ at ($(cell310.east)+(30pt,0pt)$){};
  
 %\node[anchor=south,font=\tiny,align=center] at ($(cell72_l2.north)+(0pt,-2pt)$) {{$\tt T$}};
 
-\node[anchor=south,font=\tiny,align=center] at ($(cell1_l2.north)+(0pt,-2pt)$) {{$\tt H,pred_3[1]$}};
-\node[anchor=south,font=\tiny,align=center] at ($(cell22_l2.north)+(0pt,-2pt)$) {{$\tt pred_3[2], pred_2[1]$}};
-\node[anchor=south,font=\tiny,align=center] at ($(cell32_l2.north)+(0pt,-2pt)$) {{$\tt curr_3[1],curr_3[2]$}};
+\node[anchor=south,font=\tiny,align=center] at ($(cell1_l2.north)+(0pt,-2pt)$) {{$\tt H,pred(3)[1]$}};
+\node[anchor=south,font=\tiny,align=center] at ($(cell22_l2.north)+(0pt,-2pt)$) {{$\tt pred(3)[2], pred(2)[1]$}};
+\node[anchor=south,font=\tiny,align=center] at ($(cell32_l2.north)+(0pt,-2pt)$) {{$\tt curr(3)[1],curr(3)[2]$}};
 
 
-\node[anchor=south,font=\tiny,align=center] at ($(cell31.north)+(0pt,-2pt)$) {{$\tt pred_1[1]$}};
-\node[anchor=south,font=\tiny,align=center] at ($(cell310_l1.north)+(0pt,-2pt)$) {{$\tt curr_1[1]$}};
-
+\node[anchor=south,font=\tiny,align=center] at ($(cell31.north)+(0pt,-2pt)$) {{$\tt pred(1)[1]$}};
+%\node[anchor=south,font=\tiny,align=center] at ($(cell310_l1.north)+(0pt,-2pt)$) {{$\tt curr_1[1]$}};
+\node[anchor=south,font=\tiny,align=center] at ($(celldelete.north)+(0pt,-2pt)$) {{$\tt curr(1)[1]$}};
 
 \end{tikzpicture}
