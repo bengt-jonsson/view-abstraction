@@ -7,17 +7,23 @@
 \end{center}
 \section{Fragment Abstraction: Singly Linked Lists}
 \label{sec:fragment-abstraction}
-In this section, we describe in more detail our fragment abstraction for
-concurrent programs that operate on a shared heap.
-We consider a program with global variables $\glvarset$ and
-thread-local variables $\locvarset$.
-We assume that all global variables are pointer variables.
-In the following subsection, we describe our symbolic representation, using fragment
+In the previous section, we reduced the problem of verifying linearizability
+to the problem of verifying
+that, in any execution of the cross-product of a program and an observer, 
+the observer cannot reach an accepting state.
+In this section, we describe our technique for performing this verification.
+The main novel contribution is our fragment abstraction for
+representing the possible heap configurations of a concurrent program.
+In the following subsection, we describe our symbolic representation and
+verification technique, using fragment
 abstraction, for programs that operate on singly-linked lists (SLLs). This
 representation is also the basis for our representation for programs
 operating on skiplists, described in Subsection~\ref{subsect:skiplists}
 and programs operating on arrays of SLLs, in Subsection~\ref{subsect:skiplists}.
 
+We consider a program with global variables $\glvarset$ and
+thread-local variables $\locvarset$.
+We assume that all global variables are pointer variables.
 %% We describe our fragment abstractions for three classes of heap structures:
 %% in the following subsection, we consider programs operating on singly-linked
 %% lists, in Subsection~\ref{subsect:skiplists}, we consider programs operating
@@ -42,36 +48,96 @@ and programs operating on arrays of SLLs, in Subsection~\ref{subsect:skiplists}.
 \subsection{Fragment Abstraction for Singly-Linked List-Based Programs}
 
 \bjcom{Say that for now, we ignore timers?}
-
-We assume that we must analyze the product of a program and an observer.
-The program operates on a heap, where each cell has exactly one
-pointer field, named {\tt next}, and at most one {\tt data} field, which
-assumes values from the same domain $\ddomain$ as observer registers.
-
 \bjcom{Introduce notation for the set of local $\ddomain$-variables?.
-  Maybe defined which threads we talk about?
+  Maybe define which threads we talk about?
   For now, we skip timestamps.
 }
 
-We first define our {\em data abstraction}.
-For each thread-local variable, and each non-pointer cell field, which ranges
-over some concrete domain, we define a corresponding abstract domain,
-as follows.
+%% We assume that we must analyze the product of a program and an observer.
+In this subsection, we present our fragment abstraction for programs that
+operate on singly-linked lists. This means that
+each cell has exactly one pointer field, named {\tt next}.
+In order to simplify the presentation in this section, we assume that
+each heap cell has at most one $\ddomain$-field, named  {\tt data}.
+Our verification technique is based on a combination of a thread abstraction, a
+shape  abstraction, and a data abstraction.
+
+Assume some global configuration $\conf$ and thread $\thread$.
+We say that a heap cell $\cell$ is {\em accessible} to a thread $\thread$
+in $\conf$,
+if $\cell$ is reachable (directly or via sequence of
+{\tt next}-pointers) from a global pointer variable or local pointer
+variable of $\thread$.
+%% In a given configuration,
+For a pointer variable $p$, let a $p$-cell be the cell to which $p$ points.
+For an observer register $\reg_i$,  define a
+{\em $\reg_i$-cell} to be a heap cell whose
+${\tt data}$ field has the same value as $\reg_i$.
+A heap cell is {\em globally significant} if it is either a $p$-cell for
+a global pointer variable $p$, or a $\reg_i$-cell for some
+observer register $\reg_i$.
+
+\paragraph{Thread Abstraction.}
+Our thread abstraction adapts the thread-modular approach by representing only the view of a single, but arbitrary, thread $\thread$.
+Such a view consists of
+\begin{inparaenum}[(i)]
+\item the local state of thread $\thread$,
+\item the state of the observer,
+\item the cells of the heap that are accessible to thread $\thread$, and
+\item a predicate $\private$ over heap cells accessible to $\thread$, which
+    is true for cells that are not accessible to any other thread.
+\end{inparaenum}
+
+\paragraph{Shape Abstraction.}
+We represent the part of the heap that is accessible to $\thread$ by a
+set of {\em fragments}. 
+A fragment consists of a pair of heap cells that are connected by a pointer,
+in which each of the two heap cell is labeled by
+\begin{inparaenum}[(i)]
+\item the pointer variables (either global or local to $\thread$) that point
+  to it, and
+\item globally significant cells that can reach it and be reached from it
+  (by following a chain of {\tt next}-pointers); these cells are represented by
+  the corresponding global pointer variables and observer registers.
+\end{inparaenum}
+A set of fragments represents the set of heap views
+in which each pair of pointer-connected nodes is represented by some
+fragment in the set.
+Inuitively, a set of fragments describes the set of heap views
+that can be formed by ``piecing together'' fragments in the set.
+This ``piecing together'' must
+be both locally consistent (connecting only fragments that agree on their
+common node), and globally consistent (respecting the reachability
+information wrp.\ to globally significant cells).
+
+\paragraph{Data Abstraction.}
+We apply a natural data abstraction to the local state of a thread, the
+state of the observer, and to each fragment. This abstraction
+represents small finite domains exactly, and abstracts a set of
+data values in $\ddomain$ by their relative ordering. The data abstraction
+can be conveniently represented by defining an abstract domain for
+each concrete domain of data values.
+%% For each thread-local variable, and each non-pointer cell field, which ranges
+%% over some concrete domain, we define a corresponding abstract domain,
+%% as follows.
 \begin{itemize}
 \item For small concrete domains (including that of the program counter),
   the abstract domain is the same as the concrete one.
 \item
-  For locks variables and lock fields, the abstract domain is $\set{\mathit{me},\mathit{other},\mathit{free}}$.
-\bjcom{Should we explain?}
+  For locks, the abstract domain is $\set{\mathit{me},\mathit{other},\mathit{free}}$,
+  where $\mathit{me}$ means that the lock is held by $\thread$,
+  where $\mathit{other}$ means that the lock is held by some other thread, and
+  $\mathit{free}$ means that the lock is free.
 \item For the concrete domain $\ddomain$ of data values, the abstract domain
-  is the set of mappings from local variables ranging over $\ddomain$ and
+  is the set of mappings from local variables ranging over $\ddomain$ and from
   observer registers to the set $\set{<,=,>}$.
-  An element in the abstract domain represents a concrete data value $\tt d$
-  if
-    it maps each local variable and observer register with value $\tt d'$
-    to a set which includes a relation
-    $\sim$ such that $\tt d \sim \tt d'$.
+  An element in the abstract domain
+  represents a concrete data value $\tt d$
+  if it maps each local variable and observer register with value $\tt d'$
+  to a set which includes a relation $\sim$ such that $\tt d \sim \tt d'$.
 \end{itemize}
+We are now ready to define our abstract symbolic representation. 
+
 Define a {\em local symbolic configuration} as a mapping from local
 variables (including the program counter) to their corresponding abstract
 domains.
@@ -80,18 +146,9 @@ global configuration $\conf$, the
 local configuration of thread $\thread$ satisfies the local symbolic
 configuration $\locsymbconf$, defined in the natural way.
 
-As partial motivation for the definition of tags, we
-observe that in order to verify ordering properties represented by the
-observer, e.g., that data elements are popped in LIFO order, it is necessary to
-track the relative positions of heap cells whose {\tt data} field has the same
-value as some observer register. Thus,   in a given configuration,
-for an observer register $\reg_i$,  define a
-{\em $\reg_i$-cell} to be a heap cell whose
-${\tt data}$ has the same value as $\reg_i$.
-\bjcom{Move this paragraph?}
-
-Next, define a {\em tag} as a tuple
-$\atag = \tagtuple$, where
+Let us next define the combination of our data abstraction and fragment
+abstraction.
+Define a {\em tag} as a tuple $\atag = \tagtuple$, where
 \begin{itemize}
 \item
   $\vals$ is a mapping from non-pointer fields to their corresponding abstract
@@ -102,17 +159,12 @@ $\atag = \tagtuple$, where
    $\reachfrom$ and $\reachto$ are sets of global pointer variables and observer registers, and
   \item $\private$ is a boolean value.
 \end{itemize}
-Assume some global configuration $\conf$.
-We say that a heap cell $\cell$ be {\em accessible} to a thread $\thread$
-%% in a configuration $\conf$
-if $\cell$ is reachable (directly or via sequence of
-next-pointers) from a global pointer variable or local pointer
-variable of $\thread$.
-For a cell $\cell$ which is accessible to thread $\thread$, and a tag
+For a heap cell $\cell$ that is accessible to thread $\thread$ 
+in a configuration $\conf$, and a tag
 $\atag = \tagtuple$, we write $\cell \satfrag{\thread} \atag$ to denote that
 \begin{itemize}
 \item
-  $\vals$ represents the concrete values of the non-pointer fields of $\cell$,
+  $\vals$ is an abstraction of the concrete values of the non-pointer fields of $\cell$,
 %%   is satisfied in the following sense:
 %%   \begin{enumerate}[(i)]
 %%     \item
@@ -154,8 +206,10 @@ $\atag = \tagtuple$, we write $\cell \satfrag{\thread} \atag$ to denote that
     from $\cell$.
   \end{inparaenum}
 \item
-  $\private$ is $\true$ if
-   $\cell$ has never been published (by assigning a heap pointer-field or global pointer variable) by its creating thread $\thread$.
+  $\private$ is $\true$ only if $\cell$ is not accessible to any other thread
+  than $\thread$ \bjcom{This needs fixing}.
+  %% $\private$ is $\true$ if
+  %%  $\cell$ has never been published (by assigning a heap pointer-field or global pointer variable) by its creating thread $\thread$.
 \end{itemize}
 
 
@@ -172,11 +226,11 @@ where $\inat{\frag}$ and $\outat{\frag}$ are tags,
 
 For a cell $\cell$ which is accessible to thread $\thread$, and a fragment
 $\frag$ of form $\fragtupleat{\frag}$, we write $\cell \satfrag{\thread}\frag$ to denote that
-the ${\tt next}$ field of $\cell$ points to a cell $\cell'$ such that
 $\cell \satfrag{\thread} \inat{\frag}$, and
-$\cell' \satfrag{\thread} \outat{\frag}$, and
-$\cell.\mathtt{data} \sim \cell'.\mathtt{data}$ for some $\sim \in \datarel$.
-For a fragment $\frag = \tuple{\inat{\frag},\nullconst}$, let
+that the ${\tt next}$ field of $\cell$ points to a cell $\cell'$ such that
+$\cell' \satfrag{\thread} \outat{\frag}$ and
+$\cell.\mathtt{data} \sim \cell'.\mathtt{data}$ for some $\sim \in \datarelat{\frag}$.
+For a fragment of form $\frag = \tuple{\inat{\frag},\nullconst}$, let
 $\cell \lhd \frag$ denote that
 $\cell \lhd \inat{\frag}$ and $\mathtt{next}(\cell) = \nullconst$.
 Define $\cell \lhd \frag$ for $\frag$ of form $\tuple{\inat{\frag},\dangconst}$
