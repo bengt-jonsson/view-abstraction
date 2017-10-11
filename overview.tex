@@ -543,12 +543,12 @@ the $\tt pred$, in any level, never refers to an unmarked node whose key is grea
 %$\tt x_1$ and $\tt x_2$, which are assigned the values $4$ and $2$,
 %respectively.
 
-\begin{figure}
-\center  
- \input skiplistabs  
- \caption{Fragment abstraction of the skiplist algorithm}
-\label{sl-abs}
-\end{figure}
+%\begin{figure}
+%\center  
+% \input skiplistabs  
+% \caption{Fragment abstraction of the skiplist algorithm}
+%\label{sl-abs}
+%\end{figure}
 
 
 Our verification technique is based on a combination of a thread abstraction, a
@@ -611,13 +611,14 @@ of fragments, which represents the heap that is accessible to $\thread$.
 
 \todo[inline]{Quy: After this, you must provide a nice example}
 \begin{figure}
-	\input tsabsshape
-\caption{Fragment abstraction}
-\label{fig:tsviewshape}
+\center
+	\input skiplistabs
+\caption{Fragment abstraction of skiplist algorithm}
+\label{fig:skiplistabs}
 \end{figure} 
 
-Figure~\ref{fig:tsviewshape} shows a set of fragments that is
-satisfied wrp.\ to $\thread_2$ by the configuration in Figure~\ref{fig:tsshape}.
+Figure~\ref{fig:skiplistabs} shows a set of fragments that is
+satisfied wrp.\ to $\thread_3$ by the configuration in Figure~\ref{sl-shape}.
 There are $7$ fragments, named $\frag_1$, \ldots , $\frag_7$. Two of
 these ($\frag_3$ and $\frag_7$) consist of a tag that points to $\dangconst$,
 and the other consist of a pair of pointer-connected tags.
