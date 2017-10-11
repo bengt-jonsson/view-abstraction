@@ -21,6 +21,7 @@ representation is also the basis for our representation for programs
 operating on skiplists, described in Subsection~\ref{subsect:skiplists}
 and programs operating on arrays of SLLs, in Subsection~\ref{subsect:skiplists}.
 
+\bjcom{Where to put this paragraph?}
 We consider a program with global variables $\glvarset$ and
 thread-local variables $\locvarset$.
 We assume that all global variables are pointer variables.
@@ -62,9 +63,10 @@ each heap cell has at most one $\ddomain$-field, named  {\tt data}.
 Our verification technique is based on a combination of a thread abstraction, a
 shape  abstraction, and a data abstraction.
 
-Assume some global configuration $\conf$ and thread $\thread$.
+Assume a configuration $\sconf$ of $\system=\prog\compose\observer$
+and thread $\thread$.
 We say that a heap cell $\cell$ is {\em accessible} to a thread $\thread$
-in $\conf$,
+in $\sconf$,
 if $\cell$ is reachable (directly or via sequence of
 {\tt next}-pointers) from a global pointer variable or local pointer
 variable of $\thread$.
@@ -73,82 +75,73 @@ For a pointer variable $p$, let a $p$-cell be the cell to which $p$ points.
 For an observer register $\reg_i$,  define a
 {\em $\reg_i$-cell} to be a heap cell whose
 ${\tt data}$ field has the same value as $\reg_i$.
+\bjcom{Maybe skip the following}
 A heap cell is {\em globally significant} if it is either a $p$-cell for
 a global pointer variable $p$, or a $\reg_i$-cell for some
 observer register $\reg_i$.
-
-\paragraph{Thread Abstraction.}
-Our thread abstraction adapts the thread-modular approach by representing only the view of a single, but arbitrary, thread $\thread$.
-Such a view consists of
+\begin{itemize}
+  \item
+Our {\em thread abstraction}
+adapts the thread-modular approach by representing only the view of a single, but arbitrary, thread $\thread$. Such a view consists of
 \begin{inparaenum}[(i)]
 \item the local state of thread $\thread$,
 \item the state of the observer,
-\item the cells of the heap that are accessible to thread $\thread$, and
-\item a predicate $\private$ over heap cells accessible to $\thread$, which
-    is true for cells that are not accessible to any other thread.
+\item the part of the heap (including global variables) that is accessible to thread $\thread$, and
+\item a predicate, which for each heap cell accessible to $\thread$ says
+  whether it is {\em private} to $\thread$, i.e.,
+  not accessible to any other thread.
 \end{inparaenum}
-
-\paragraph{Shape Abstraction.}
-We represent the part of the heap that is accessible to $\thread$ by a
-set of {\em fragments}. 
-A fragment consists of a pair of heap cells that are connected by a pointer,
-in which each of the two heap cell is labeled by
+\item
+We use a novel {\em shape abstraction}, which represents the part of the heap
+that is accessible to $\thread$ by a set of {\em fragments}. 
+A fragment consists of a pair of heap cells that are connected by a pointer.
+For each of these cells, the fragment represents
 \begin{inparaenum}[(i)]
-\item the pointer variables (either global or local to $\thread$) that point
+\item the values of its data fields,
+\item the pointer variables (either local to $\thread$ or global) that point
   to it, and
-\item globally significant cells that can reach it and be reached from it
-  (by following a chain of {\tt next}-pointers); these cells are represented by
-  the corresponding global pointer variables and observer registers.
+\item global pointer variables $p$ and observer registers $\reg_i$ such that
+   the cell can either reach to or be reached from
+ (by a chain of {\tt next}-pointers) a $p$-cell or a $\reg_i$-cell, respectively.
 \end{inparaenum}
-A set of fragments represents the set of heap views
+A set of fragments represents the set of heaps 
 in which each pair of pointer-connected nodes is represented by some
 fragment in the set.
-Inuitively, a set of fragments describes the set of heap views
-that can be formed by ``piecing together'' fragments in the set.
-This ``piecing together'' must
-be both locally consistent (connecting only fragments that agree on their
-common node), and globally consistent (respecting the reachability
-information wrp.\ to globally significant cells).
-
-\paragraph{Data Abstraction.}
-We apply a natural data abstraction to the local state of a thread, the
+Thus, a set of fragments describes the set of heaps
+that can be formed by ``piecing together'' fragments, in a way that is
+locally consistent (connecting only fragments that agree on their
+common node) and globally consistent (respecting the reachability
+information wrp.\ to global pointer variables and observer registers).
+%% globally significant cells).
+\item
+We apply a natural {\em data abstraction} to the local state of a thread, the
 state of the observer, and to each fragment. This abstraction
 represents small finite domains exactly, and abstracts a set of
-data values in $\ddomain$ by their relative ordering. The data abstraction
-can be conveniently represented by defining an abstract domain for
-each concrete domain of data values.
+data values in $\ddomain$ by their relative ordering.
+\end{itemize}
+Let us now describe our symbolic representation in concrete detail.
+Our data abstraction is conveniently represented by defining an
+abstract domain for each concrete domain of data values.
 %% For each thread-local variable, and each non-pointer cell field, which ranges
 %% over some concrete domain, we define a corresponding abstract domain,
 %% as follows.
 \begin{itemize}
-\item For small concrete domains (including that of the program counter),
+\item For small concrete domains (including that of the program counter, and
+  of the observer location),
   the abstract domain is the same as the concrete one.
 \item
   For locks, the abstract domain is $\set{\mathit{me},\mathit{other},\mathit{free}}$,
-  where $\mathit{me}$ means that the lock is held by $\thread$,
-  where $\mathit{other}$ means that the lock is held by some other thread, and
-  $\mathit{free}$ means that the lock is free.
+  mening that the lock is held by $\thread$,  held by some other thread, or is
+  free, respectively.
 \item For the concrete domain $\ddomain$ of data values, the abstract domain
-  is the set of mappings from local variables ranging over $\ddomain$ and from
-  observer registers to the set $\set{<,=,>}$.
-  An element in the abstract domain
-  represents a concrete data value $\tt d$
-  if it maps each local variable and observer register with value $\tt d'$
+  is the set of mappings from observer registers and local variables
+  ranging over $\ddomain$ to subsets of $\set{<,=,>}$.
+  An element in this abstract domain represents a concrete data value $\tt d$
+  if it maps each local variable and observer register with a value ${\tt d'} \in \ddomain$
   to a set which includes a relation $\sim$ such that $\tt d \sim \tt d'$.
 \end{itemize}
-We are now ready to define our abstract symbolic representation. 
-
-Define a {\em local symbolic configuration} as a mapping from local
-variables (including the program counter) to their corresponding abstract
-domains.
-We use $\conf \satlocsymbconf{\thread} \locsymbconf$ to denote that in the
-global configuration $\conf$, the
-local configuration of thread $\thread$ satisfies the local symbolic
-configuration $\locsymbconf$, defined in the natural way.
-
-Let us next define the combination of our data abstraction and fragment
-abstraction.
-Define a {\em tag} as a tuple $\atag = \tagtuple$, where
+In our shape abstration, we represent each fragment by a pair of
+{\em tags}. A {\em tag} is a tuple $\atag = \tagtuple$, where
 \begin{itemize}
 \item
   $\vals$ is a mapping from non-pointer fields to their corresponding abstract
@@ -156,12 +149,12 @@ Define a {\em tag} as a tuple $\atag = \tagtuple$, where
 \item
   $\pvars$ is a set of (global or local) pointer variables,
  \item
-   $\reachfrom$ and $\reachto$ are sets of global pointer variables and observer registers, and
+   $\reachfrom$ and $\reachto$ are sets of global pointer variables and observer registers,
   \item $\private$ is a boolean value.
 \end{itemize}
 For a heap cell $\cell$ that is accessible to thread $\thread$ 
-in a configuration $\conf$, and a tag
-$\atag = \tagtuple$, we write $\cell \satfrag{\thread} \atag$ to denote that
+in a configuration $\sconf$, and a tag
+$\atag = \tagtuple$, we write $\cell \satfrag{\thread}{\sconf} \atag$ to denote that
 \begin{itemize}
 \item
   $\vals$ is an abstraction of the concrete values of the non-pointer fields of $\cell$,
@@ -184,8 +177,8 @@ $\atag = \tagtuple$, we write $\cell \satfrag{\thread} \atag$ to denote that
 %% \bjcom{Should we also do that for local data and timestamp variables?}
 %%   \end{enumerate}
 \item
-  $\pvars$ is the set of global pointer variables and
-  local pointer variables of $\thread$ that point to $\cell$,
+  $\pvars$ is the set of pointer variables (global or
+  local to $\thread$) that point to $\cell$,
 \item
   $\reachfrom$ is the set of
   \begin{inparaenum}[(i)]
@@ -201,13 +194,13 @@ $\atag = \tagtuple$, we write $\cell \satfrag{\thread} \atag$ to denote that
   \begin{inparaenum}[(i)]
   \item global pointer variables
     %% and local pointer variables of $\thread$
-    that point to a cell which is reachable from $\cell$, and
+    pointing to a cell that is reachable from $\cell$, and
   \item observer registers $\reg_i$ such that some $\reg_i$-cell is reachable
     from $\cell$.
   \end{inparaenum}
 \item
-  $\private$ is $\true$ only if $\cell$ is not accessible to any other thread
-  than $\thread$ \bjcom{This needs fixing}.
+  $\private$ is $\true$ only if $\cell$ is private to $\thread$ in $\sconf$
+  \bjcom{Should we add: ``is not accessible to any other thread than $\thread$''}
   %% $\private$ is $\true$ if
   %%  $\cell$ has never been published (by assigning a heap pointer-field or global pointer variable) by its creating thread $\thread$.
 \end{itemize}
@@ -216,20 +209,24 @@ $\atag = \tagtuple$, we write $\cell \satfrag{\thread} \atag$ to denote that
 \begin{definition}[SLL-fragment]
 \label{def:sll-fragment}
 An {\em SLL-fragment} $\frag$ (or just fragment)
-is a triple of of form
+is a triple of form
 $\fragtupleat{\frag}$, of form
 $\tuple{\inat{\frag},\nullconst}$, or of form
 $\tuple{\inat{\frag},\dangconst}$,
-where $\inat{\frag}$ and $\outat{\frag}$ are tags,
-    and where $\datarelat{\frag}$ is a subset of $\set{<, =, >}$.
+where $\inat{\frag}$ and $\outat{\frag}$ are tags
+    and $\datarelat{\frag}$ is a subset of $\set{<, =, >}$.
 \end{definition}
 
 For a cell $\cell$ which is accessible to thread $\thread$, and a fragment
-$\frag$ of form $\fragtupleat{\frag}$, we write $\cell \satfrag{\thread}\frag$ to denote that
-$\cell \satfrag{\thread} \inat{\frag}$, and
-that the ${\tt next}$ field of $\cell$ points to a cell $\cell'$ such that
-$\cell' \satfrag{\thread} \outat{\frag}$ and
-$\cell.\mathtt{data} \sim \cell'.\mathtt{data}$ for some $\sim \in \datarelat{\frag}$.
+$\frag$ of form $\fragtupleat{\frag}$, let $\cell \satfrag{\thread}{\sconf}\frag$ denote that
+the ${\tt next}$ field of $\cell$ points to a cell $\cell'$ such that
+\begin{inparaenum}[(i)]
+\item
+  $\cell \satfrag{\thread}{\sconf} \inat{\frag}$,
+\item
+$\cell' \satfrag{\thread}{\sconf} \outat{\frag}$, and
+\item $\cell.\mathtt{data} \sim \cell'.\mathtt{data}$ for some $\sim \in \datarelat{\frag}$.
+\end{inparaenum}
 For a fragment of form $\frag = \tuple{\inat{\frag},\nullconst}$, let
 $\cell \lhd \frag$ denote that
 $\cell \lhd \inat{\frag}$ and $\mathtt{next}(\cell) = \nullconst$.
@@ -238,16 +235,13 @@ analogously.
 %% For $\tuple{\inat{\frag},\dangconst}$, the definition is adapted in the obvious way.
 
 Let $\fragset$ be a set of fragments.
-A global configuration satisfies a set $\fragset$ of fragments wrp.\ to $\thread$,
-denoted  $\conf \satfragset{\thread} \fragset$,
+A global configuration $\sconf$ satisfies a set $\fragset$ of fragments
+wrp.\ to $\thread$, denoted  $\sconf \satfragset{\thread} \fragset$,
 if
 for any cell $\cell$ that is accessible to $\thread$, there is a fragment
-$\frag \in \fragset$ such that $\cell \satfrag{{\thread}} \frag$.
-For a local symbolic  configuration $\locsymbconf$ and set $\fragset$ of
-fragments, we write
-$\conf \satconf{\thread} \tuple{\locsymbconf,\fragset}$ to denote that
-that $\conf \satlocsymbconf{\thread} \locsymbconf$
-and $\conf \satfragset{\thread} \fragset$.
+$\frag \in \fragset$ such that $\cell \satfrag{{\thread}}{\sconf} \frag$.
+
+
 
 %% \begin{itemize}
 %% \item
@@ -276,13 +270,41 @@ and $\conf \satfragset{\thread} \fragset$.
 %% \item for each $\cell$ that is accessible from $\thread$, there is
 %%   a fragment $\frag$ such that $\cell \lhd_{\thread} \frag$.
 %% \end{itemize}
-A {\em symbolic representation} $\symbrep$ is a mapping from
-local symbolic  configurations to sets of fragments.
-A configuration $\conf$ of a program satisfies a symbolic representation
+We are now ready to define our abstract symbolic representation, which
+is defined as a partial mapping from combinations of abstract observer
+and local thread states to sets of fragments. 
+
+Define a {\em local symbolic configuration} as a mapping from local
+variables (including the program counter) to their corresponding abstract
+domains.
+We use $\sconf \satlocsymbconf{\thread} \locsymbconf$ to denote that in the
+global configuration $\sconf$, the
+local configuration of thread $\thread$ satisfies the local symbolic
+configuration $\locsymbconf$, defined in the natural way.
+
+\begin{definition}
+  \label{def:symbrep}
+    A {\em symbolic representation} $\symbrep$ is a partial mapping from
+pairs of local symbolic configurations and observer locations
+to sets of fragments.
+A system configuration $\sconf$ satisfies a symbolic representation $\symbrep$
 if for each thread $\thread$, 
-the domain of $\symbrep$ contains a local symbolic configuration
-$\locsymbconf$ such that $\conf \satconf{\thread}
-\tuple{\locsymbconf,\symbrep(\locsymbconf)}$.
+the domain of $\symbrep$ contains a pair
+$\tuple{\locsymbconf,\ostate}$ such that
+\begin{inparaenum}[(i)]
+\item $\sconf \satlocsymbconf{\thread} \locsymbconf$,
+  \item the observer is in location $\ostate$, and
+\item  $\sconf \satfragset{\thread} \symbrep(\tuple{\locsymbconf,\ostate})$.
+\end{inparaenum}
+\end{definition}
+%% For a local symbolic  configuration $\locsymbconf$ and set $\fragset$ of
+%% fragments, we write
+%% $\conf \satconf{\thread} \tuple{\locsymbconf,\fragset}$ to denote that
+%% that $\conf \satlocsymbconf{\thread} \locsymbconf$
+%% and
+
+
+
 
 \todo[inline]{Skip the following example. Do we need one?}
 \paragraph{Example:} Let us show an example of how a singly linked list (SLL) is split into a set of fragments. Fig.~\ref{lazylist}(a) shows an example of a concrete shape of a singly linked list. Each cell contains the values of $\tt val$, $\tt mark$, and $\tt lock$ from top to bottom, where \tick \; denotes $\tt true$, and \cross \; denotes $\tt false$ (or $\tt free$ for $\tt lock$) and the value of $\tt val$ is denoted by a pair of the observer register $\tt z$ and a subset of $\set{<, =, >}$. There are two threads $1$ and $2$ with two local variables $\tt c_1$ and $\tt c_2$. There are two global variables $\tt H$ and $\tt T$ pointing to the head and tail of the list. The observer register $\tt z$ has value 8. Fig.~\ref{lazylist}(b) shows the result of splitting the list in Fig.~\ref{lazylist}(a) into fragments where each heap fragment is a small list of two nodes. Fig.~\ref{lazylist}(c) shows the abstraction of fragments in Fig.~\ref{lazylist}(b) where for each cell $\cell$, the value of $val$ is abstracted to a subset in $\tt \{<z, =z, >z\}$, the reachability relation between $\cell$ and global variables and observer registers is abstracted to the predicate $\tt X \mapsto \tt Y$ where $\tt X$, $\tt Y$ are sets of global variables and observer registers, $\tt i$ or $\tt o$ states that $\cell$ is an input or output cell.
@@ -429,8 +451,8 @@ $\vals$ and $\vals'$, and if
 $\pvars = \pvars'$, $\reachfrom = \reachfrom'$, $\reachto = \reachto'$, and
 $\private = \private'$.
 Intuitively, $\atag$ and $\atag'$ are consistent if there can exist a cell
-$\cell$ accessible to $\thread$ with $\cell \satfrag{\thread} \atag$
-and $\cell \satfrag{\thread} \atag'$.
+$\cell$ accessible to $\thread$ with $\cell \satfrag{\thread}{\sconf} \atag$
+and $\cell \satfrag{\thread}{\sconf} \atag'$.
 \todo[inline]{To Quy: Can you really require that the data abstrations must
   be the same?}
 
@@ -604,19 +626,19 @@ In order to distinguish
 between local variables of $\thread_1$ and $\thread_2$, we assume that local variable $\lvarof{x}$ of thread $\thread_i$ is named as $\lvarof{x[i]}$.
 We must compute a set $\fragset$ which for each
 heap cell accessible to either $\thread_1$ or $\thread_2$, the set $\fragset$ must
-contain a fragment $\frag$ with $\cell \satfrag{1,2} \frag$.
+contain a fragment $\frag$ with $\cell \satfrag{1,2}{\sconf} \frag$.
 \bjcom{This notation to be defined}
 There are  here two possibilities.
 \begin{itemize}
 \item If $\cell$ is accessible to both $\thread_1$ and $\thread_2$, then
   there are fragments $\frag_1 \in \fragset_1$ and $\frag_2 \in \fragset_2$
-  such that $\cell \satfrag{1} \frag_1$ and $\cell \satfrag{2} \frag_2$.
+  such that $\cell \satfrag{1}{\sconf} \frag_1$ and $\cell \satfrag{2}{\sconf} \frag_2$.
   We use the notation $\frag_1 \sqcap \frag_2$ to denote a set of views such that
-  whenever $\cell \satfrag{1} \frag_1$ and $\cell \satfrag{2} \frag_2$ then
-  $\cell \satfrag{1,2} \frag$ for some $\frag \in (\frag_1 \sqcap \frag_2)$.
+  whenever $\cell \satfrag{1}{\sconf} \frag_1$ and $\cell \satfrag{2}{\sconf} \frag_2$ then
+  $\cell \satfrag{1,2}{\sconf} \frag$ for some $\frag \in (\frag_1 \sqcap \frag_2)$.
 \item If $\cell$ is accessible to only one of $\thread_1$ and $\thread_2$,
   say $\thread_1$, then $\fragset$ should contain some fragment
-  $\frag_1 \in \fragset_1$ with $\cell \satfrag{1,2} \frag_1$
+  $\frag_1 \in \fragset_1$ with $\cell \satfrag{1,2}{\sconf} \frag_1$
   \bjcom{Check that we need not change $\frag_1$}
 \end{itemize}
 For a fragment $\frag$, define
@@ -639,7 +661,7 @@ two views $\frag_1 \in \fragset_1$ and $\frag_2 \in \fragset_2$.
 Firstly, we consider the case where both $\frag_1$ and $\frag_2$ have size 2.
 Let us consider some different cases.
 They all take into account the  observation that if a cell $\cell$ satisfies
-$\cell \satfrag{1} \frag_1$ and $\cell \satfrag{2} \frag_2$, then
+$\cell \satfrag{1}{\sconf} \frag_1$ and $\cell \satfrag{2}{\sconf} \frag_2$, then
 the information about global variables in $\frag_1$ and $\frag_2$ must coincide.
  \begin{itemize}
  \item if $\greachfromat{\inat{\frag_1}} \neq \emptyset$ and $\greachfromat{\inat{\frag_2}} \neq \emptyset$ then the global information in $\frag_1$ and $\frag_2$ must coincide. We hence obtain:
