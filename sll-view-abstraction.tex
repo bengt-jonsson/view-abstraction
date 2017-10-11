@@ -277,23 +277,28 @@ and local thread states to sets of fragments.
 Define a {\em local symbolic configuration} as a mapping from local
 variables (including the program counter) to their corresponding abstract
 domains.
-We use $\sconf \satlocsymbconf{\thread} \locsymbconf$ to denote that in the
+We let $\sconf \satlocsymbconf{\thread} \locsymbconf$ denote that in the
 global configuration $\sconf$, the
 local configuration of thread $\thread$ satisfies the local symbolic
 configuration $\locsymbconf$, defined in the natural way.
+For an observer location $\ostate$,
+we let $\sconf \satlocsymbconf{\thread} \tuple{\locsymbconf,\ostate}$ denote
+that $\sconf \satlocsymbconf{\thread} \locsymbconf$
+and that the observer location of $\sconf$ is $\ostate$.
 
 \begin{definition}
   \label{def:symbrep}
     A {\em symbolic representation} $\symbrep$ is a partial mapping from
 pairs of local symbolic configurations and observer locations
 to sets of fragments.
-A system configuration $\sconf$ satisfies a symbolic representation $\symbrep$
+A system configuration $\sconf$ satisfies a symbolic representation $\symbrep$,
+denoted $\sconf \satsymbrep \symbrep$,
 if for each thread $\thread$, 
 the domain of $\symbrep$ contains a pair
 $\tuple{\locsymbconf,\ostate}$ such that
 \begin{inparaenum}[(i)]
-\item $\sconf \satlocsymbconf{\thread} \locsymbconf$,
-  \item the observer is in location $\ostate$, and
+\item $\sconf \satlocsymbconf{\thread} \tuple{\locsymbconf,\ostate}$, and
+%%   \item the observer is in location $\ostate$, and
 \item  $\sconf \satfragset{\thread} \symbrep(\tuple{\locsymbconf,\ostate})$.
 \end{inparaenum}
 \end{definition}
@@ -306,23 +311,25 @@ $\tuple{\locsymbconf,\ostate}$ such that
 
 
 
-\todo[inline]{Skip the following example. Do we need one?}
+\todo[inline]{Do we need an example here?}
 \paragraph{Example:} Let us show an example of how a singly linked list (SLL) is split into a set of fragments. Fig.~\ref{lazylist}(a) shows an example of a concrete shape of a singly linked list. Each cell contains the values of $\tt val$, $\tt mark$, and $\tt lock$ from top to bottom, where \tick \; denotes $\tt true$, and \cross \; denotes $\tt false$ (or $\tt free$ for $\tt lock$) and the value of $\tt val$ is denoted by a pair of the observer register $\tt z$ and a subset of $\set{<, =, >}$. There are two threads $1$ and $2$ with two local variables $\tt c_1$ and $\tt c_2$. There are two global variables $\tt H$ and $\tt T$ pointing to the head and tail of the list. The observer register $\tt z$ has value 8. Fig.~\ref{lazylist}(b) shows the result of splitting the list in Fig.~\ref{lazylist}(a) into fragments where each heap fragment is a small list of two nodes. Fig.~\ref{lazylist}(c) shows the abstraction of fragments in Fig.~\ref{lazylist}(b) where for each cell $\cell$, the value of $val$ is abstracted to a subset in $\tt \{<z, =z, >z\}$, the reachability relation between $\cell$ and global variables and observer registers is abstracted to the predicate $\tt X \mapsto \tt Y$ where $\tt X$, $\tt Y$ are sets of global variables and observer registers, $\tt i$ or $\tt o$ states that $\cell$ is an input or output cell.
 
-\subsubsection{Computing Postconditions}
+\todo[inline]{We ust always say that we consider the cross-product of a program
+  and an observer}
+
+\subsubsection{Symbolic Postcondition Computation}
 \label{subsect:postcond}
-In the  verification, we must compute a symbolic representation
-that is satisfied by all reachable program configurations.
+In the  verification, we must compute an invariant in the form
+of a symbolic representation
+which is satisfied by all reachable program configurations.
 %% (including observer states).
-This invariant is obtained by an abstract-interpretation-based
+Such an invariant is obtained by an abstract interpretation-based
 fixpoint procedure, which starts
 from a representation of the set of initial configurations, and
-thereafter repeatedly performs
-postcondition computations that extend the
+thereafter repeatedly performs postcondition computations that extend the
 symbolic representation by the effect of any execution step of the program,
 until convergence.
-In this subsection, we describe the symbolic postcondition computation, which
-is the key step in this procedure.
+In this subsection, we describe the symbolic postcondition computation.
 %% \bjcom{The following should be included more smoothly, if really needed}
 %% Let $\tt gtag(v,i)$ be the tuple $\tt \tuple{\tt gvars(i), gdata(i),{\tt greachfrom}(\tt i), {\tt reachto}(\tt i), private(i )}$ where $\tt gvars(i)$ is the set of global variables in $\tt vars(i)$ and $\tt greachfrom(i)$ is the set of global variables in $\tt reachfrom(i)$.
 
@@ -351,43 +358,67 @@ is the key step in this procedure.
 %
 %% We use $\confsetof\prog$ to denote the set of configurations
 
-%% In this subsection, we describe how to perform the abstract postcondition computation on our symbolic representation for singly linked lists.
-The symbolic postcondition computation must ensure that the symbolic representation
+\todo[inline]{Polish the inclusion of the observer!}
+
+The symbolic postcondition computation must ensure that the symbolic
+representation
 of the reachable configurations of a program is closed under execution of a
 statement by some thread.
-More precisely, assume that a global configuration $\conf$ satisfies
-a symbolic representation $\symbrep$. Let $\thread$ be an arbitrary thread.
-Assume that there is
-a local symbolic configuration $\locsymbconf \in \domof{\symbrep}$ such that
-$\conf \satconf{\thread} \tuple{\locsymbconf,\symbrep(\locsymbconf)}$.
-We must ensure that this property still hols after any execution of a
-statement by some thread.
+So, assume a symbolic representation $\symbrep$. The symbolic
+postcondition operation on $\symbrep$ produces an extension $\symbrep'$
+of $\symbrep$, such that whenever $\sconf$ is a configuration with
+$\sconf \satsymbrep \symbrep$, then any step from $\sconf$ must
+lead to a configuration ${\sconf}'$ with ${\sconf}' \satsymbrep \symbrep'$.
+Let $\thread$ be an arbitrary thread. Then $\sconf \satsymbrep \symbrep$
+implies that $\domof{\symbrep}$ contains a pair
+$\tuple{\locsymbconf,\ostate}$ such that
+$\sconf \satlocsymbconf{\thread} \tuple{\locsymbconf,\ostate}$ and
+$\sconf \satfragset{\thread} \symbrep(\tuple{\locsymbconf,\ostate})$. Our
+symbolic postcondition computation must ensure that
+%% this property still holds after any execution of a
+%% statement by some thread, i.e., that
+$\domof{\symbrep'}$ contains a pair
+$\tuple{\locsymbconf',\ostate'}$ such that
+${\sconf}' \satlocsymbconf{\thread} \tuple{\locsymbconf',\ostate'}$ and
+${\sconf}' \satfragset{\thread} \symbrep(\tuple{\locsymbconf',\ostate'})$.
+%% from which a step $\sconf \movesto{\system} {\sconf}'$, then ${\sconf}' \satsymbrep \symbrep'$.
+%% More precisely, assume that a global configuration $\conf$ satisfies
+%% a symbolic representation $\symbrep$. Let $\thread$ be an arbitrary thread.
+%% Assume that there is
+%% a local symbolic configuration $\locsymbconf \in \domof{\symbrep}$ such that
+%% $\conf \satconf{\thread} \tuple{\locsymbconf,\symbrep(\locsymbconf)}$.
 %% it is still the case that
 %% $\domof{\symbrep}$ contains a local symbolic configuration 
 %% $\locsymbconf'$ such that
 %% $\conf \satconf{\thread} \tuple{\locsymbconf',\symbrep(\locsymbconf)}$
 %% for some thread $\thread$.
-In the thread-modular approach, we must consider two cases:
+In the thread-modular approach, there are two cases to consider, depending
+on which thread causes the step from $\sconf$ to ${\sconf}'$.
 \begin{itemize}
 \item
-  {\it Local Steps:} The thread $\thread$ itself executes some statement,
-  which may change its local state and the state of the heap.
-  In this case, we compute a local symbolic configuration $\locsymbconf'$ and
-  set $\fragset'$ such that the resulting configuration $\conf'$ satisfies
-  $\conf' \satconf{\thread} \tuple{\locsymbconf',\fragset'}$, and (if necessary)
-  extend $\symbrep$ so that $\locsymbconf' \in \domof{\symbrep}$ and
-  $\fragset' \in \symbrep(\locsymbconf')$.
+  {\it Local Steps:} The step
+  is caused by $\thread$ itself executing a statement
+  which may change its local state, the location of the observer,
+  and the state of the heap.
+  In this case, we first compute a local symbolic configuration $\locsymbconf'$ and
+  observer location $\ostate'$, and a set $\fragset'$ of fragments such that
+  ${\sconf}' \satlocsymbconf{\thread} \tuple{\locsymbconf',\ostate'}$ and
+  ${\sconf}' \satfragset{\thread} \fragset'$,
+  and then (if necessary) extend $\symbrep$ so that
+  $\tuple{\locsymbconf',\ostate'} \in \domof{\symbrep}$ and
+  $\fragset' \subseteq \symbrep(\tuple{\locsymbconf',\ostate'})$.
 \item
-  {\it Interference Steps:} Another thread $\thread_2$, which 
-  satisfies a local symbolic configuration $\locsymbconf_2$
-  in $\domof{\symbrep}$ with
-  $\conf \satconf{\thread_2} \tuple{\locsymbconf_2,\symbrep(\locsymbconf_2)}$
-  performs a computation step,  which affects the state of the heap in
-  such a way that makes it necessary to extend $\symbrep(\locsymbconf)$.
-  We must then compute a set $\fragset'$ of fragments such that
-  the resulting configuration $\conf'$ satisfies
-  $\conf' \satfragset{\thread} \fragset'$ and 
-  make sure that $\fragset' \in \symbrep(\locsymbconf)$.
+  {\it Interference Steps:} The step is caseud by Another thread $\thread_2$,
+  which may change the location of the observer (to $\ostate'$)
+  and the state of the heap.
+%%   such a way that makes it necessary to extend $\symbrep(\locsymbconf)$.
+  By assumption, there is a local symbolic configuration $\locsymbconf_2$
+  with $\tuple{\locsymbconf_2,\ostate} \in \domof{\symbrep}$ such that
+  $\sconf \satconf{\thread_2} \tuple{\locsymbconf_2,\ostate,\symbrep(\locsymbconf_2)}$.
+  We then compute a set $\fragset'$ of fragments such that
+  the resulting configuration ${\sconf}'$ satisfies
+  ${\sconf}' \satfragset{\thread} \fragset'$ and 
+  make sure that $\fragset' \in \symbrep(\tuple{\locsymbconf,\ostate'})$.
   To do this, we first combine the the local symbolic configurations
   $\locsymbconf$ and $\locsymbconf_2$ and the sets of fragments
   $\symbrep(\locsymbconf)$ and $\symbrep(\locsymbconf_2)$, using an
@@ -395,13 +426,14 @@ In the thread-modular approach, we must consider two cases:
 %%   the possible heaps whose projection onto $\thread_i$ satisfies
 %%   $\symbrep(\locsymbconf_i)$ for $i=1,2$.
 %% This is done by performing an
-  operation, called {\em intersection}, into
+  operation called {\em intersection}, into
   a joint local symbolic configuration of $\thread$ and $\thread_2$ and
   a set $\fragset_{1,2}$ of fragments that represents the cells accessible
   to either $\thread$ or $\thread_2$.
   We thereafter symbolically compute the postcondition of the statement
-  execution of $\thread_2$, as in the local case, finally project back the
-  set of fragments onto $\thread$ in the natural way, to obtain $\fragset'$.
+  execution by $\thread_2$, in the same was as for local steps,
+  and finally project the set of resulting fragments back onto $\thread$
+  in the natural way, to obtain $\fragset'$.
 \end{itemize}
 In the following, we first describe the symbolic postcondition computation for
 local steps, and thereafter the intersection operation.
@@ -414,8 +446,8 @@ For each statement that $\thread$ can execute in a configuration $\conf$
 with $\conf \satconf{\thread} \tuple{\locsymbconf,\symbrep(\locsymbconf)}$,
 we must compute a local symbolic configuration $\locsymbconf'$ and
 a set  $\fragset'$ of fragments such that
-such that the resulting configuration $\conf'$ satisfies
-  $\conf' \satconf{\thread} \tuple{\locsymbconf',\fragset'}$.
+such that the resulting configuration ${\sconf}'$ satisfies
+  ${\sconf}' \satconf{\thread} \tuple{\locsymbconf',\fragset'}$.
 This computation has do be done differently for
 each statement. For statements that do not affect the heap or pointer variables,
 this computation is standard, and affects only the local symbolic
