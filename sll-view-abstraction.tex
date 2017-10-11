@@ -440,65 +440,69 @@ local steps, and thereafter the intersection operation.
 
 
 \paragraph{Symbolic Postcondition Computation for Local Steps}
-Let $\thread$ be an arbitrary thread, and assume 
-that $\locsymbconf \in \domof{\symbrep}$ with
+Let $\thread$ be an arbitrary thread, and assume
+that $\tuple{\locsymbconf,\ostate} \in \domof{\symbrep}$.
 For each statement that $\thread$ can execute in a configuration $\conf$
-with $\conf \satconf{\thread} \tuple{\locsymbconf,\symbrep(\locsymbconf)}$,
-we must compute a local symbolic configuration $\locsymbconf'$ and
-a set  $\fragset'$ of fragments such that
+with $\sconf \satlocsymbconf{\thread} \tuple{\locsymbconf,\ostate}$ and
+$\sconf \satfragset{\thread} \symbrep(\tuple{\locsymbconf,\ostate})$,
+we must compute a local symbolic configuration $\locsymbconf'$, a new
+observer location $\ostate'$ and a set  $\fragset'$ of fragments such that
 such that the resulting configuration ${\sconf}'$ satisfies
-  ${\sconf}' \satconf{\thread} \tuple{\locsymbconf',\fragset'}$.
+  ${\sconf}' \satlocsymbconf{\thread} \tuple{\locsymbconf',\ostate'}$ and
+  ${\sconf}' \satfragset{\thread} \fragset'$.
 This computation has do be done differently for
 each statement. For statements that do not affect the heap or pointer variables,
 this computation is standard, and affects only the local symbolic
-configuration and data abstraction part of fragments.
+configuration, the observer location, and the $\vals$ component of
+tags.
 We therefore here describe how to compute the effect of statements that update
-pointer variables or the heap, since these are the most interesting cases.
+pointer variables or pointer fields of heap cells,
+since these are the most interesting cases.
 
-
-The main difficulty in the
-postcondition computation is to update the reachability information provided
-in the fields $\reachfrom$ and $\reachto$ in each tag of a 
-fragment. For instance, considerthat a statement $\gvarof{g} := \lvarof{p}$,
+Let us fist consider a statement of form $\gvarof{g} := \lvarof{p}$,
 which assigns the value of a local pointer variable $\lvarof{p}$ to a global
-pointer variable $\gvarof{g}$.
-In the postcondition computation, we must for each fragment
-determine how to update the field $\reachfrom$ in its tags, and in particular
-whether $\gvarof{g}$ should be in this set after the statement
-(the same problem occurs for the set $\reachto$),
-If $\lvarof{v}$ would have been a global variable, this information could
-be obtained by checking whether $\lvarof{v}$ is in the set before the operation.
-However, since the $\reachfrom$ field does not include local variables, we
-start the postcondition computation by computing a number of
-transitive-closure-like relations between fragments, which will allow
-to determine whether $\gvarof{g}$ should be in the $\reachfrom$ field after
-the statement with rather good accuracy. Note that if our procedure can not
-determine whether $\gvarof{g}$ should be in  a $\reachfrom$ field, then it
-generates fragments for both possibilities.
+pointer variable $\gvarof{g}$. It is easy to update the $\pvars$ field of
+tags to contain the variable $\gvarof{g}$ if and only if it contained the
+variable $\lvarof{p}$ before the statement. 
+The difficulty is to update the reachability information provided
+by the fields $\reachfrom$ and $\reachto$ in each tag of a 
+fragment, in particular whether $\gvarof{g}$ should be in such a
+set after the statement
+(if $\lvarof{p}$ would have been a global variable, the update would simply
+reflect that $\gvarof{g}$ and $\lvarof{p}$ are now aliases, just as
+in the update of $\pvars$).
+In order to compute the postcondition with sufficient precision, we
+%% However, since the $\reachfrom$ field does not include local variables, we
+therefore investigate whether the set $\symbrep(\tuple{\locsymbconf,\ostate})$
+of fragments allows to form a heap in which a $p$-cell can reach or be
+reached from each tag of a fragment. It also checks whether a heap can be formed
+in which a $p$-cell can not reach or be reached from such tags. For each
+case that succeeds, the set $\fragset'$ will contain fragment with
+corresponding content of $\reachto$ and $\reachfrom$ fields.
 
-First, we say that two tags
-$\atag = \tagtuple$ and $\atag' = \tagtupleprime$ are {\em consistent} if
-if there is some concrete valuation of non-pointer fields represented by both
-$\vals$ and $\vals'$, and if
-$\pvars = \pvars'$, $\reachfrom = \reachfrom'$, $\reachto = \reachto'$, and
-$\private = \private'$.
-Intuitively, $\atag$ and $\atag'$ are consistent if there can exist a cell
-$\cell$ accessible to $\thread$ with $\cell \satfrag{\thread}{\sconf} \atag$
+Our actual postcondition computation performs this investigation in a
+systematic manner, by computing a set of transitive closure-like relations
+between fragments.
+First, define two tags
+$\atag$ and $\atag'$ to be {\em consistent} if the concretizations of their
+$\vals$-fields overlap, and if the other fields agree.
+Thus, $\atag$ and $\atag'$ are consistent if there can exist a cell
+$\cell$ accessible to $\thread$ in some heap,
+with $\cell \satfrag{\thread}{\sconf} \atag$
 and $\cell \satfrag{\thread}{\sconf} \atag'$.
-\todo[inline]{To Quy: Can you really require that the data abstrations must
-  be the same?}
-
-Let $\frag_1$ and $\frag_2$ be two fragments in a set $\fragset$ of fragments.
+%% \todo[inline]{To Quy: Can you really require that the data abstrations must
+%%   be the same?}
+Then, for two fragments $\frag_1$ and $\frag_2$ in a set $\fragset$ of fragments,
 \begin{itemize}
-\item  Let $\frag_1 \hookrightarrow_{\fragset} \frag_2$ denote that $\outat{\frag_1}$   and $\inat{\frag_2}$ are consistent.
+\item let $\frag_1 \hookrightarrow_{\fragset} \frag_2$ denote that $\outat{\frag_1}$   and $\inat{\frag_2}$ are consistent, and
   %% \todo[inline]{Quy: PLEASE  you provide the precise definition of when
   %%   $\tagat{\outat{\frag_1}}$ and $\tagat{\inat{\frag_2}}$ are consistent?}
   %% \quycom{They are consistent if they have same $\reachfrom$, $\reachto$, $\pvars$, $\private$, $\data$. This is for local thread. When we check for consistent between two tags when doing intersection, we have to define differently.}  
-\item  Let $\frag_1 \leftrightarrow_{\fragset} \frag_2$ denote that $\outat{\frag_1} = \outat{\frag_2}$ are consistent, and that either
+\item let $\frag_1 \leftrightarrow_{\fragset} \frag_2$ denote that $\outat{\frag_1} = \outat{\frag_2}$ are consistent, and that either
   $\pvarsat{\inat{\frag_1}} \cap \pvarsat{\inat{\frag_2}} = \emptyset$ or that
   the global variables in  $\reachfromat{\inat{\frag_1}}$ are disjoint from
   those in $\reachfromat{\inat{\frag_2}}$.
-\todo[inline]{Question: Is this correct?}
+  \bjcom{Question: Is this correct?}
 %%   \quycom{$\reachfromat{\inat{\frag_1}} \cap \reachfromat{\inat{\frag_2}} = \emptyset$ here is not correct, we only need the global variables of reachfrom and reachto in this case}
 %% \quycom{In my definition, the consistent here is defined for two views in the same threads. With the view from other thread, I use the notion of intersection.}
 \end{itemize}
@@ -510,38 +514,38 @@ possible that
   $\mathtt{next}(\cell_1) = \mathtt{next}(\cell_2)$.
 for different cells  $\cell_1$ and $\cell_2$ with
   $\cell_1 \lhd \frag_1$ and  $\cell_2 \lhd \frag_2$.
-Note that the above definitions also work for the cases that the output tag is
+Note that the above definitions also work when some view(s) contain
 $\nullconst$ or $\dangconst$.
-
-We use the above relations to define several derived relations:
+We use these relations to define several derived relations:
 %% \bjcom{We could use a common pattern for these and save space in definitions.}
 \begin{itemize}
-\item Let $\overset{+}\hookrightarrow_{\fragset}$ denote the transitive closure of
-  $\hookrightarrow_{\fragset}$, and
+\item $\overset{+}\hookrightarrow_{\fragset}$ denotes the transitive closure
+%%   of   $\hookrightarrow_{\fragset}$,
+  and
    $\overset{*}\hookrightarrow_{\fragset}$ the reflexive transitive closure of
-$\hookrightarrow_{\fragset}$.
-\item Let $\frag_1  \overset{**}\leftrightarrow_{\fragset}  \frag_2$ denote that there are
-  $\frag_1',\frag_2' \in \fragset$ with $\frag_1' \leftrightarrow_{\fragset} \frag_2'$ such that
-  $\frag_1  \overset{*}\hookrightarrow_{\fragset} \frag_1'$ and $\frag_2  \overset{*}\hookrightarrow_{\fragset} \frag_2'$.
-\item Let $\frag_1  \overset{*+}\leftrightarrow_{\fragset}  \frag_2$ denote that there are
-  $\frag_1', \frag_2' \in \fragset$ with $\frag_1' \leftrightarrow_{\fragset} \frag_2'$ such that
-  $\frag_1  \overset{*}\hookrightarrow_{\fragset} \frag_1'$ and $\frag_2  \overset{+}\hookrightarrow_{\fragset} \frag_2'$.
-\item Let $\frag_1  \overset{*\circ}\leftrightarrow_{\fragset}  \frag_2$ denote that is a
-  $\frag_1' \in \fragset$ with $\frag_1' \leftrightarrow_{\fragset} \frag_2$ such that
-  $\frag_1  \overset{*}\hookrightarrow_{\fragset} \frag_1'$.
-\item Let $\frag_1  \overset{++}\leftrightarrow_{\fragset}  \frag_2$ denote that there are
-  $\frag_1',\frag_2' \in \fragset$ with $\frag_1' \leftrightarrow_{\fragset} \frag_2'$ such that
-  $\frag_1  \overset{+}\hookrightarrow_{\fragset} \frag_1'$ and $\frag_2  \overset{+}\hookrightarrow_{\fragset} \frag_2'$.
-\item Let $\frag_1  \overset{+*}\leftrightarrow_{\fragset}  \frag_2$ denote that there are
-  $\frag_1', \frag_2' \in \fragset$ with $\frag_1' \leftrightarrow_{\fragset} \frag_2'$ such that
-  $\frag_1  \overset{+}\hookrightarrow_{\fragset} \frag_1'$ and $\frag_2  \overset{*}\hookrightarrow_{\fragset} \frag_2'$.
-\item Let $\frag_1  \overset{+\circ}\leftrightarrow_{\fragset}  \frag_2$ denote that is a
-  $\frag_1' \in \fragset$ with $\frag_1' \leftrightarrow_{\fragset} \frag_2$ such that
-  $\frag_1  \overset{+}\hookrightarrow_{\fragset} \frag_1'$.
+  $\hookrightarrow_{\fragset}$,
+\item $\frag_1 \!  \overset{**}\leftrightarrow_{\fragset}  \! \frag_2$ denotes that 
+  $\exists \frag_1',\frag_2' \!\in\! \fragset$ with $\frag_1' \! \leftrightarrow_{\fragset} \! \frag_2'$ where
+  $\frag_1 \!  \overset{*}\hookrightarrow_{\fragset} \frag_1' \!$ and $\frag_2  \overset{*}\hookrightarrow_{\fragset} \! \frag_2'$,
+\item $\frag_1 \!  \overset{*+}\leftrightarrow_{\fragset}  \! \frag_2$ denotes that
+  $\exists \frag_1', \frag_2' \!\in\! \fragset$ with $\frag_1' \! \leftrightarrow_{\fragset} \! \frag_2'$ where
+  $\frag_1 \!  \overset{*}\hookrightarrow_{\fragset} \frag_1' \!$ and $\frag_2  \overset{+}\hookrightarrow_{\fragset} \! \frag_2'$,
+\item $\frag_1 \!  \overset{*\circ}\leftrightarrow_{\fragset}  \! \frag_2$ denotes that $\exists \frag_1' \in \fragset$ with $\frag_1' \! \leftrightarrow_{\fragset} \! \frag_2$ where
+  $\frag_1 \!  \overset{*}\hookrightarrow_{\fragset} \frag_1'$,
+\item $\frag_1 \!  \overset{++}\leftrightarrow_{\fragset}  \! \frag_2$ denotes that
+  $\exists \frag_1',\frag_2' \!\in\! \fragset$ with $\frag_1' \! \leftrightarrow_{\fragset} \! \frag_2'$ where
+  $\frag_1 \!  \overset{+}\hookrightarrow_{\fragset} \frag_1' \!$ and $\frag_2  \overset{+}\hookrightarrow_{\fragset} \! \frag_2'$,
+\item $\frag_1 \!  \overset{+*}\leftrightarrow_{\fragset}  \! \frag_2$ denotes that
+  $\exists \frag_1',\frag_2' \!\in\! \fragset$ with $\frag_1' \! \leftrightarrow_{\fragset} \! \frag_2'$ where
+  $\frag_1 \!  \overset{+}\hookrightarrow_{\fragset} \frag_1' \!$ and $\frag_2  \overset{*}\hookrightarrow_{\fragset} \! \frag_2'$,
+\item $\frag_1 \!  \overset{+\circ}\leftrightarrow_{\fragset}  \! \frag_2$ denotes that
+  $\exists \frag_1' \in \fragset$ with $\frag_1' \! \leftrightarrow_{\fragset} \! \frag_2$ where
+  $\frag_1 \!  \overset{+}\hookrightarrow_{\fragset} \frag_1'$.
 \end{itemize}
 We say that $\frag_1$ and $\frag_2$ are {\em compatible} if $\frag_x \overset{*}\hookrightarrow \frag_y$ or $\frag_y \overset{*}\hookrightarrow \frag_x$ or $\frag_x \overset{**}\leftrightarrow \frag_y$. Intuitively, this means that $\frag_1$ and
 $\frag_2$ can be satisfied by two cells in the same heap state.
 \input viewrelations
+\bjcom{Do we need to update the following example?}
 Figure~\ref{fig:viewrelations} illustrates the above relations for a heap state
 with $13$ heap cells. The figure shows 4 fragments that are satisfied by heap
 cells, as denoted by green boxes, and how the relationship between heap cells
@@ -555,7 +559,7 @@ ${\tt x := y}$, where $\mathtt{x}$ and $\mathtt{y}$ are global or local
 (to thread $\thread$) pointer variables. We must compute a set $\fragsetpost$ of
 fragments which are satisfied by the configuration after the statement.
 We must ensure that any cell $\cell$ which is accessible to $\thread$ after
-the statement satisfies some fragement in $\fragsetpost$.
+the statement satisfies some fragment in $\fragsetpost$.
 The cell $\cell$ must satisfy some
 fragment $\frag$ in $\fragset$, and must be in the same heap state as
 the cell pointed to by $\gvarof{y}$. 
