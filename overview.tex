@@ -517,8 +517,8 @@ Figure~\ref{sl-shape} shows an example state of the heap of the
 skiplist algorithm with three levels. Each heap cell is shown with the values of its fields. In addition,  
 each cell is labeled by the
 pointer variables that point to it. We use ${\tt lvar(i)}$ to denote the local
-variable ${\tt lvar}$ of thread $\thread_i$. In the heap state, thread $\thread_1$ is trying to add a new node with key $9$. It has done the first iteration of the for loop in it's $\tt find$ function. Thread $\thread_2$ is also doing the same thing as $\thread_1$ and it has done the second iteration. Thread $\thread_2$ is trying remove a node with key $9$ and it has done the third iteration. However, before $\thread_3$ removes the node with key $9$, the node is removed by another thread and a new node with key $10$ is also added to the list. One of the main properties of the algorithm is that 
-the $\tt pred$, in any level, never refers to an unmarked node whose key is greater than or equal to the target key. The $\tt pred$ variable arrives at the bottom-level list at a node before, and never after, the target node. If the node is physically removed before the $\tt find$ starts, then it will not be found.
+variable ${\tt lvar}$ of thread $\thread_i$. In the heap state, thread $\thread_1$ is trying remove a node with key $9$ and it has done the third iteration. However, before it removes the node with key $9$, the node is removed by another thread and a new node with key $10$ is also added to the list. thread $\thread_2$ is trying to add a new node with key $9$. It has done the first iteration of the for loop in it's $\tt find$ function. One of the main properties of the algorithm is that 
+the $\tt pred$, in any level, never refers to an unmarked node whose key is greater than or equal to the target key. If the node is physically removed before the $\tt find$ starts, then it will not be found.
 
 
 %The heap consists of a set of singly linked lists (SLLs), each of which
@@ -618,15 +618,10 @@ of fragments, which represents the heap that is accessible to $\thread$.
 \end{figure} 
 
 Figure~\ref{fig:skiplistabs} shows a set of fragments that is
-satisfied wrp.\ to $\thread_3$ by the configuration in Figure~\ref{sl-shape}.
-There are $7$ fragments, named $\frag_1$, \ldots , $\frag_7$. Two of
-these ($\frag_3$ and $\frag_7$) consist of a tag that points to $\dangconst$,
-and the other consist of a pair of pointer-connected tags.
-Consider the tag which occurs in fragment $\frag_7$; it is the bottom-rightmost
-tag. This tag is an abstraction of the
-bottom-rightmost heap cell in Figure~\ref{fig:tsshape}, using the same layout
-for fields as Figure~\ref{fig:tsshape}. The different non-pointer fields
-are represented as follows.
+satisfied wrp.\ to $\thread_1$ by the configuration in Figure~\ref{sl-shape} where the value of the observer register is $9$.
+There are $10$ fragments, named $\frag_1$, \ldots , $\frag_{10}$. Two of
+these ($\frag_5$ and $\frag_9$) consist of a tag that points to $\dangconst$,
+and the other consist of a pair of pointer-connected tags. The fragments $\frag_1$, \ldots , $\frag_{6}$ are abstracted from the level $1$, whereas the other fragments are abstracted from higher levels. As can be seen, the property where the $\tt pred$, in any level, never refers to an unmarked node whose key is greater than or equal to the target key is preserved by the abstraction. It is reflected in tags which occurs in fragments $\frag_1$, $\frag_2$, $\frag_4$, $\frag_7$, $\frag_8$, and $\frag_9$. The property where the node which is physically removed can not be found by $\find$ is also preserved.   
 \begin{itemize}
 \item The $\tt data$ field of the tag (to the left) abstracts the data value
   $2$ to the set of observer registers with that value: in this case
