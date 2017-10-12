@@ -85,14 +85,15 @@ each operation on the data structure can be considered as being
 performed atomically at some point (called the {\em linearization point (LP)})
 between its invocation and return~\cite{HeWi:linearizability}.
 
-We specify linearizability by extending of the technique of
-{\em observers}~\cite{AHHR:integrated}, which can be extended in different
-ways~\cite{BEEH:icalp15,HSV:concur13,Quy:sas16}.
-In the case of the skiplist algorithm,
+We specify linearizability by the technique of
+{\em observers}~\cite{AHHR:integrated}, also employing its subsequent
+extensions~\cite{BEEH:icalp15,HSV:concur13,Quy:sas16}.
+In the case of our skiplist algorithm,
 LPs can be associated to fixed statements in the code. The user then instruments
-these statements so that they also announce the corresponding operation on
-the data structure. For instance, The linearization point of the successful add is line 16 of the $\tt add$ method, whereas the linearization point of the unsuccessful add is line 7 of the $\tt add$ method.  %\bjcom{Quy: Please insert a text of
+these statements to announce the corresponding set operation
+For instance, the LP of a successful {\tt add} operation is at line 16 of the $\tt add$ method, whereas the linearization point of an unsuccessful {\tt add} operation is at line 7 of the $\tt add$ method.  %\bjcom{Quy: Please insert a text of
 %how some LP is inserted into the code of Figure~\ref{sl-code:fig}}.
+\bjcom{Put these LPs as dots in the code. Are these really the LPs?}
 Having instrumented methods at LPs, we
 then consider an arbitrary concurrent program consisting of
 an arbitrary collection of threads, each of which executes some method call.
@@ -176,6 +177,7 @@ node[right,pos=0.8] {\footnotesize${\tt ctn}(x,\false)$}
 \label{set:observer:fig}
 \end{figure}
 
+\todo[inline]{Maybe we should omit observers from this section?}
 {\em Observers} are
 finite automata extended with a finite set of {\em registers}
 that assume values in $\intgrs$, which are 
@@ -504,7 +506,7 @@ The verification must address the challenges of an unbounded domain of
 data values, an unbounded number of concurrently executing threads, and an
 unbounded heap.
 For this, we have developed a novel shape representation, called
-{\em fragment abstraction}, which can also be combined with
+{\em fragment abstraction}, which we combine with
 data abstraction and thread abstraction.
 Let us illustrate how fragment abstraction applies to the skiplist
 algorithm.
@@ -519,10 +521,14 @@ algorithm.
 %  writing}
 
 Figure~\ref{sl-shape} shows an example state of the heap of the
-skiplist algorithm with three levels. Each heap cell is shown with the values of its fields. In addition,  
-each cell is labeled by the
-pointer variables that point to it. We use ${\tt lvar(i)}$ to denote the local
-variable ${\tt lvar}$ of thread $\thread_i$. In the heap state, thread $\thread_1$ is trying to add a new node with key $9$. It has done the first iteration of the for loop in it's $\tt find$ function. Thread $\thread_2$ is also doing the same thing as $\thread_1$ and it has done the second iteration. Thread $\thread_2$ is trying remove a node with key $9$ and it has done the third iteration. However, before $\thread_3$ removes the node with key $9$, the node is removed by another thread and a new node with key $10$ is also added to the list. One of the main properties of the algorithm is that 
+skiplist algorithm with three levels. Each heap cell is shown with the values of its fields. \bjcom{Add a legend, showing the layout of fields, as in previous papers}
+In addition, each cell is labeled by the
+pointer variables that point to it; we use ${\tt lvar(i)}$ to denote the local
+variable ${\tt lvar}$ of thread $\thread_i$.
+In the heap state of Figure~\ref{sl-shape}, thread $\thread_1$ is trying to add a new node with key $9$. \bjcom{It may be better to say at which line in the code
+  they are executin}It has done the first iteration of the for loop in it's $\tt find$ function. Thread $\thread_2$ is also doing the same thing as $\thread_1$ and it has done the second iteration. Thread $\thread_2$ is trying remove a node with key $9$ and it has done the third iteration.
+\bjcom{But you do not show the code of remove?}
+However, before $\thread_3$ removes the node with key $9$, the node is removed by another thread and a new node with key $10$ is also added to the list. One of the main properties of the algorithm is that 
 the $\tt pred$, in any level, never refers to an unmarked node whose key is greater than or equal to the target key. The $\tt pred$ variable arrives at the bottom-level list at a node before, and never after, the target node. If the node is physically removed before the $\tt find$ starts, then it will not be found.
 
 
@@ -585,7 +591,7 @@ For each of these cells, the fragment represents
   (by following a chain of pointers) a finite set of {\em globally significant}
   heap cells. A cell is globally significant if it is pointed to by a
   global pointer variable or if it triggers some significant behavior in
-  a thread that reaches it: in the \bjcom{WHICH?}
+  a thread that reaches it: in our
   skiplist algorithm, this happens for nodes whose
   {\tt key} field has the  same value as the register of the set observer.
 \end{itemize}
