@@ -555,30 +555,26 @@ Our verification technique is based on a combination of a thread abstraction, a
 data  abstraction, and a shape abstraction.
 \begin{itemize}
   \item
-  Our thread abstraction adapts the thread-modular approach by representing only the view of single, but arbitrary, thread $\thread$. Such a view consists of
+Our {\em thread abstraction} adapts the thread-modular approach by representing only the view of single, but arbitrary, thread $\thread$. Such a view consists of
   \begin{inparaenum}[(i)]
   \item the local state of thread $\thread$,
   \item the part of the heap that is accessible to thread $\thread$ via its local pointer variables or via global pointer variables, and
   \item the state of the observer.
   \end{inparaenum}
 \item
-A natural data abstraction is applied to the non-pointer local
-variables of the thread, the non-pointer fields of each fragment, as well as
-the observer registers. For our
-skiplist algorithm, fields that range over small finite domains are represented
-with their concrete values, whereas the fields that range over the domain of
-data values, as well as the observer registers,
-are represented by constraints over their relative ordering
-(wrp.\ to the order $<$).
-\item
-The part of the heap that is accessible to a thread $\thread$ is represented by  
-a set of {\em fragments}. Each fragment is an abstraction of a pair of
-nodes in the heap that are connected by a pointer. The abstraction represents
+We use a novel {\em shape abstraction}, which represents the part of the heap
+that is accessible to $\thread$ by a set of {\em fragments}. 
+%% The part of the heap that is accessible to a thread $\thread$ is represented by  
+%% a set of {\em fragments}.
+A fragment consists of a pair of heap cells that are connected by a pointer.
+For each of these cells, the fragment represents
+%% Each fragment is an abstraction of a pair of
+%% nodes in the heap that are connected by a pointer. The abstraction represents
 \begin{itemize}
-\item the contents of the data fields in the pair of nodes (under the empoyed
-  data abstraction),
-\item which pointer variables (either global or local to $\thread$)
-  point  to the nodes, and
+\item the values of its data fields,
+%%  in the pair of nodes (under the empoyed  data abstraction),
+\item the pointer variables (either global or local to $\thread$)
+  that point  to it, and
 \item global reachability information, which expresses how
   each node in the pair can reach to and be reached from
   (by following a chain of pointers) a finite set of {\em globally significant}
@@ -596,9 +592,19 @@ Inuitively, a set of fragments describes the set of heaps that can be formed by
 be both locally consistent (appending only fragments that agree on their
 common node), and globally consistent (respecting the global reachability
 information).
+\item
+A natural data abstraction is applied to the non-pointer local
+variables of the thread, the non-pointer fields of each fragment, as well as
+the observer registers. For our
+skiplist algorithm, fields that range over small finite domains are represented
+with their concrete values, whereas the fields that range over the domain of
+data values, as well as the observer registers,
+are represented by constraints over their relative ordering
+(wrp.\ to the order $<$).
+\end{itemize}
 By construction, our fragment abstraction is finitary, since there is
 a bounded set of tags.
-\end{itemize}
+
 Let a {\em local symbolic configuration} be an abstraction of the program
 counter and local data variables of an arbitrary thread $\thread$.
 Our symbolic representation of a set of program configurations consists of

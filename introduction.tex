@@ -18,73 +18,72 @@ often employ fine-grained synchronization and avoid locking when
 possible. A number of bugs  in published
 algorithms have been reported~\cite{DDGJLMMSS:dcas,MiSc:correction}.
 Consequently, significant research efforts have been directed towards developing
-techniques to verify correctness of such algorithms, in particular
+techniques to verify correctness of such algorithms. One important use
+of such techniques is
 to verify that concurrent algorithms that implement standard data structure
 interfaces are {\em linearizable}, meaning that
 each method invocation can be considered to occur atomically at some point
 between its call and return.
-Many such techniques require significant {\em manual} effort for
-constructing a proof of correctness
+Many of the developed verification techniques require significant
+{\em manual} effort for constructing correctness proofs
 (e.g.,~\cite{LF:pldi13,Vafeiadis:Thesis}),
 in some cases with the support of an interactive theorem prover
 (e.g.,~\cite{Aaron:logical:linearizability,Colvin:Lazy-List,Derrick:fm14,SWD:cav12,SDW:tcl14}).
-Development of automated verification techniques is a difficult challenge.
+Development of automated verification techniques remains a difficult challenge.
 
-A major difficulty is that a successful verification technique must be
+A major challenge for the development of automated verification techniques
+is that such techniques must be
 able to reason about fine-grained concurrent algorithms that are infinite-state
-in many dimensions: 
+in many dimensions:
 they consist of an unbounded number of concurrent threads, which
 operate on an unbounded domain of data values, and use
 unbounded dynamically allocated memory. 
-Perhaps the hardest of these is the problem of handling
+Perhaps the hardest of these challenges is that of handling 
 dynamically allocated memory.
-Consequently, all existing techniques for automatically proving correctness
-of such concurrent algorithms restrict attention to the case where
+Consequently, existing techniques that can automatically prove correctness
+of such fine-grained concurrent algorithms restrict attention to the simple
+case where heap structures represent shared data by singly-linked 
 %% All automated approaches restrict attention to concurrent algorithms in which
-the heap represents shared data byp singly-linked
-lists~\cite{AHHR:integrated,meyer:vmcai16,Quy:sas16,Sagiv:correlation,Vafeiadis:cav10}. Many of these techniques impose additional restrictions on the considered problem, such as bounding the number of accessing
+lists~\cite{AHHR:integrated,meyer:vmcai16,Quy:sas16,Sagiv:correlation,Vafeiadis:cav10}. Furthermore, many of these techniques impose additional restrictions on the considered verification problem, such as bounding the number of accessing
 threads~\cite{Amit:comparisonAbstraction,Vechev:spin09,CernyRZCA:CAV10}.
 \bjcom{Add other restrictions}
-However, many concurrent data structure implementations employ more
-sophisticated structures, such as skip
-lists~\cite{Fomitchev:2004,ArtOfMpP,Sundell:2005}, trees, and arrays of
-of singly-linked lists~\cite{ts-stack}.  There are no
+However, in many concurrent data structure implementations the heap represents
+more sophisticated structures, such as skip
+lists~\cite{Fomitchev:2004,ArtOfMpP,Sundell:2005} and arrays of
+of singly-linked lists~\cite{ts-stack}. There are no
 techniques that have been applied to automatically verify concurrent algorithms
 that operate on such data structures.
-
 
 %% \cite{HSV:concur13,Vafeiadis:cav10},
 %% or requiring auxiliary lemmas
 %% \cite{OHearnlist,Poling}.}
-\todo[inline]{The last list and its description must be improved. We actually should be more precise about what previous work has achieved, in terms of which combinations of challenges have been overcome}
+\todo[inline]{The list of description of restrictions of SSL work must be improved. We actually should be more precise about what previous work has achieved, in terms of which combinations of challenges have been overcome}
 
 \paragraph{Contributions}
 In this paper, we present a technique for automatic verification of concurrent
 data structure implementations that operate on dynamically allocated
 heap structures which are more complex than just singly-linked lists.
 Our approach is the first framework that
-can automatically verify concurrent data structure implementations that employ
-skip lists, singly linked lists, as well as arrays of singly linked lists,
+can automatically verify concurrent data structure implementations that
+singly linked lists, skip lists~\cite{Fomitchev:2004,ArtOfMpP,Sundell:2005},
+as well as arrays of singly linked lists~\cite{ts-stack},
 at the same time as handling an unbounded
 number of concurrent threads, an unbounded domain of data values
 (including timestamps), and an unbounded shared heap.
 
 %% thereby abstracting away from the correlation between local states of different threads.
 Our technique is based on a novel shape abstraction,
-called {\em fragment abstraction}, which in a simple way is able to represent
-different kinds of unbounded heap structures, such as arrays of singly linked
-lists and skip lists.
-%% , for representing an unbounded heap.
-%% a novel {\em shape abstraction}, which is designed to cope with an unbounded
-%% heap (note that the heap visible to a single thread is still unbounded).
+called {\em fragment abstraction}, which in a simple and uniform way is able to
+represent different kinds of unbounded heap structures.
+%% such as skip lists and arrays of singly linked lists.
 Its main idea is to represent a set of heap states by a set of {\em fragments}.
-Each fragment is simply a pair of node types (called {\em tags}) that are
-connected by a pointer. A tag can be seen as a finitary abstraction of
-a heap node, which summarizes both local information about
-values of its data fields
-%% (applying suitable data abstraction),
-as well as global information about its position in the heap, including how
-it can reach to and be reached from (by following chains of pointers)
+A fragment consists of a pair of heap cells that are connected by a pointer field.
+For each of its cells, the fragment represents
+the values of its non-pointer
+fields as well as information about how it can be reached from pointer
+variables. The latter information is both {\em local}, saying which pointer
+variables point directly to the cell, and {\em global}, saying how the
+cell can reach to and be reached from (by following chains of pointers)
 other heap cells that are pointed to by global variables.
 A set of fragments represents the set of heap
 structures in which each pair of pointer-connected nodes are represented by some
@@ -94,22 +93,33 @@ Inuitively, a set of fragments describes the set of heaps that can be formed by
 be both locally consistent (appending only fragments that agree on their
 common node), and globally consistent (respecting the global reachability
 information).
-By construction, our fragment abstraction is finitary, since there is
-a bounded set of tags.
+The combination of local and global information in fragments allows the
+verification to reason about the sequence of cells that can be ``seen'' by
+threads as the traverse the heap by following pointer fields in cells and
+pointer variables, thereby enabling automatic verification of reachability
+properties. The local information captures which cell patterns may be
+seen while traversing the heap, whereas the global information also
+captures whether certain accesses (also by other threads) will be possible
+in the future. 
 
-Fragment abstraction can, in a natural way,
-be combined with other abstractions for
-handling unbounded data domains and for handling an unbounded number of threads.
-Our fragment abstraction technique copes with an unbounded data domain by
-letting the definition of tags incorporate
-a suitable data abstraction to the data fields in heap nodes.
+Fragment abstraction can and should be, in a natural way,
+be combined with data abstractions for
+handling unbounded data domains and with tread abstractions
+for handling an unbounded number of threads.
+For the latter we adapt
+the successful thread-modular approach~\cite{BLMRS:cav08}, which constructs
+a representation of the local state of a single, but arbitrary thread, together
+with part of the global state and heap that is accessible to that thread.
+Our combination of fragment abstraction, thread abstraction, and data
+abstraction results in a finite abstract domain, thereby guaranteeing
+termination of our analysis.
+
+%% Our fragment abstraction technique copes with an unbounded data domain by
+%% letting the definition of tags incorporate
+%% a suitable data abstraction to the data fields in heap nodes.
 %% For instance, timestamp fields can be handles by applying
 %% an abstraction which records the relation between a timestamp value and the values of global timestamp variables.
 %% \bjcom{The last sentence was not completely accurate}
-We cope with the challenge of an unbounded number of threads by incorporating
-the successful thread-modular approach~\cite{BLMRS:cav08}; this is done
-simply by letting each set of fragments represent only the heap cells that
-are accessible to an arbitrary single thread.
 
 %% representation of a particular heap is obtained as the set of pairs of nodes
 %% that are connected by a {\tt next pointer}. Conversely,
