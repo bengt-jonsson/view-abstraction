@@ -32,8 +32,8 @@ A skiplist has sentinel head and tail nodes with maximum heights key values $-\i
 %\label{sl}
 %\end{figure}
 
-\bjcom{Say which are the methods}
-Now, let us describe an important method $\tt add$ of the algorithm. The method is to add a new node into the list.  Figure~\ref{sl-code:fig} shows the codes of the method.
+%\bjcom{Say which are the methods}
+There are three main methods of the algorithm namely $\tt add$, $\tt contain$ and $\tt remove$. All methods are relied on a method called $\tt find$. In this section, we describe shortly about $\tt find$ and $\tt add$ of the algorithm. Figure~\ref{sl-code:fig} shows the codes of the method.
 %\bjcom{Start with the most important property of the method. What does it do?}
 \input slcode
 
@@ -41,9 +41,15 @@ Now, let us describe an important method $\tt add$ of the algorithm. The method 
 
 %\todo[inline]{To Quy: PLease update the below text asap}
 
-\bjcom{Say how the list looks, and the role of marked nodes}
+%\bjcom{Say how the list looks, and the role of marked nodes}
+Each node of the list has a key and a $\tt marked$ field which indicate whether it is in the list, or has been logically removed. 
+The $\tt find$ method traverses the skipList using two pointer variables $\tt pred$ and $\tt curr$ starting from the head and at the highest level. It then proceeds in each level down the list, filling in $\tt preds$ and $\tt succs$ nodes that are repeatedly advanced until $\tt pred$ points to a node with
+the largest value on that level that is smaller than the $\tt x$. The method repeatedly remove marked nodes from the
+given level(Lines 15 to 19) by using a $\tt compareAndSet$ statement. The $\tt compareAndSet$ statement has two arguments: an expected value and an update value. If the current register value is equal to the expected value, then it is replaced by the update value; otherwise the value is unchanged. The method call returns a Boolean indicating whether the value changed. Once an unmarked $\tt curr$ is found (Line 20), it is tested to see if its key is less than the target key. If so, $\tt pred$ is advanced to $\tt curr$. Otherwise, $\tt curr$'s key is greater than or equal to $\tt x$, so the current value
+of $\tt pred$ is the target node's immediate predecessor. The method breaks out of the current level search loop, saving the current values of $\tt pred$ and $\tt curr$. It proceeds by this way until reaching the bottom level. The $\tt add$ method for adding a node with the key $\tt k$ works as follows:
 
-The $\tt add$ method uses $\tt find$ method to check whether a node with key $\tt x$ is already in the list. If an unmarked node with key $\tt k$ \bjcom{Why not x?} is found in the bottom-level list, the $\tt add$ method returns $\tt false$. If no node is found, then the next step is to try to add the new node into the list. It is performed by linking it into the bottom-level list between the $\tt preds[0]$ and $\tt succs[0]$ nodes returned by $\tt find$. They use $\tt compareAndSet$ to set the reference while validating that these nodes still refer one to the other and have not been removed from the list (Line 16). If $\tt compareAndSet$ fails, the method call will restart. Otherwise, the node is added into the list. The method then links the node in at higher levels. The $\tt find$ method traverses the SkipList using two pointer variables $\tt pred$ and $\tt curr$ which start from the head and at the highest level. It then proceeds in each level down the list, filling in $\tt preds$ and $\tt succs$ nodes that are repeatedly advanced until $\tt pred$ points to a node with
+The $\tt add$ method uses $\tt find$ to check whether a node with key $\tt x$ is already in the list. If an unmarked node with key $\tt x$ is found in the bottom-level list, the $\tt add$ method returns $\tt false$. If no node is found, then the next step is to try to add the new node into the list. It is performed by linking it into the bottom-level list between the $\tt preds[0]$ and $\tt succs[0]$ nodes returned by $\tt find$. They use $\tt compareAndSet$ to set the reference while validating that these nodes still refer one to the other and have not been removed from the list (Line 16). If $\tt compareAndSet$ fails, the method call will restart. Otherwise, the node is added into the list. The method then links the node in at higher levels.  
+The $\tt find$ method traverses the SkipList using two pointer variables $\tt pred$ and $\tt curr$ which start from the head and at the highest level. It then proceeds in each level down the list, filling in $\tt preds$ and $\tt succs$ nodes that are repeatedly advanced until $\tt pred$ points to a node with
 the largest value on that level that is strictly less than the $\tt x$. The method repeatedly remove marked nodes from the
 given level as they are encountered (Lines 15 to 19) using a $\tt compareAndSet$ statement. Once an unmarked $\tt curr$ is found (Line 20), it is tested to see if its key is less than the target key. If so, $\tt pred$ is advanced to $\tt curr$. Otherwise, $\tt curr$'s key is greater than or equal to $\tt x$, so the current value
 of $\tt pred$ is the target node's immediate predecessor. The find method breaks out of the current level search loop, saving the current values of $\tt pred$ and $\tt curr$. It proceeds by this way until reaching the bottom level. The $\tt add$ method for adding a node with the key $\tt k$ works as follows: 
@@ -527,10 +533,7 @@ skiplist algorithm with three levels. Each heap cell is shown with the values of
 In addition, each cell is labeled by the
 pointer variables that point to it; we use ${\tt lvar(i)}$ to denote the local
 variable ${\tt lvar}$ of thread $\thread_i$.
-In the heap state of Figure~\ref{sl-shape}, thread $\thread_1$ is trying to add a new node with key $9$. \bjcom{It may be better to say at which line in the code
-  they are executing}It has done the first iteration of the for loop in it's $\tt find$ function. Thread $\thread_2$ is also doing the same thing as $\thread_1$ and it has done the second iteration. Thread $\thread_2$ is trying remove a node with key $9$ and it has done the third iteration.
-\bjcom{But you do not show the code of remove?}
-However, before $\thread_3$ removes the node with key $9$, the node is removed by another thread and a new node with key $10$ is also added to the list. One of the main properties of the algorithm is that 
+In the heap state of Figure~\ref{sl-shape}, thread $\thread_1$ is trying to add a new node with key $9$ and it is in the line $8$ of the code of $\tt add$.  Thread $\thread_2$ is also doing the same thing as $\thread_1$ and it has done its first iteration of the loop in $\tt find$ method in line $25$. One of the main properties of the algorithm is that 
 the $\tt pred$, in any level, never refers to an unmarked node whose key is greater than or equal to the target key. The $\tt pred$ variable arrives at the bottom-level list at a node before, and never after, the target node. If the node is physically removed before the $\tt find$ starts, then it will not be found.
 
 
@@ -639,7 +642,7 @@ Figure~\ref{fig:skiplistabs} shows a set of fragments that is
 satisfied wrp.\ to $\thread_1$ by the configuration in Figure~\ref{sl-shape} where the value of the observer register is $9$.
 There are $10$ fragments, named $\frag_1$, \ldots , $\frag_{10}$. Two of
 these ($\frag_5$ and $\frag_9$) consist of a tag that points to $\dangconst$,
-and the other consist of a pair of pointer-connected tags. The fragments $\frag_1$, \ldots , $\frag_{6}$ are abstracted from the level $1$, whereas the other fragments are abstracted from higher levels. As can be seen, the property where the $\tt pred$, in any level, never refers to an unmarked node whose key is greater than or equal to the target key is preserved by the abstraction. It is reflected in tags which occurs in fragments $\frag_1$, $\frag_2$, $\frag_4$, $\frag_7$, $\frag_8$, and $\frag_9$. The property where the node which is physically removed can not be found by $\tt find$ is also preserved.   
+and the other consist of a pair of pointer-connected tags. The fragments $\frag_1$, \ldots , $\frag_{6}$ are abstracted from the level $1$, whereas the other fragments are abstracted from higher levels. As can be seen, the property where the $\tt pred$, in any level, never refers to an unmarked node whose key is greater than or equal to $\tt x$ is preserved by the abstraction. The data fields of all tags which contains $\tt pred$ in fragments $\frag_1$, $\frag_2$, $\frag_4$, $\frag_7$, $\frag_8$, and $\frag_9$ are smaller than $\tt x$.  In addition, there is no tag whose marked field is $\tt true$ and contains $\tt x$ in its reach to information, it means that the abstraction preservers the property where the node which is physically removed can not be found by $\tt find$ method.   
 \begin{itemize}
 \item The $\tt data$ field of the tag (to the left) abstracts the data value
   $2$ to the set of observer registers with that value: in this case
