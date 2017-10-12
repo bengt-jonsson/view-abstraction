@@ -490,9 +490,9 @@ In addition, each cell is labeled by the
 pointer variables that point to it; we use ${\tt lvar(i)}$ to denote the local
 variable ${\tt lvar}$ of thread $\thread_i$.
 In the heap state of Figure~\ref{sl-shape}, thread $\thread_1$ is trying to add a new node with key $9$, and has reached line $8$ of the $\tt add$ method.  Thread $\thread_2$ is also doing the same thing as $\thread_1$ and it has done its first iteration of the loop in $\tt find$ method in line $25$.
-\bjcom{There are strange things: the Figure 2 has the variable $\tt curr$ as an
-  array (it is not), and does not show the arrays $\tt preds$ and $\tt succs$.
-  Could you please fix this?}
+%\bjcom{There are strange things: the Figure 2 has the variable $\tt curr$ as an
+%  array (it is not), and does not show the arrays $\tt preds$ and $\tt succs$.
+%  Could you please fix this?}
 
 One of the main properties of the algorithm is that 
 the variable $\tt pred$, in any level, never points to an unmarked node whose key is greater than or equal to $\tt x$. The $\tt pred$ variable arrives at the bottom-level list at a node before, and never after, the target node. If the node is physically removed before the $\tt find$ starts, then it will not be found.
