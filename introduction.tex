@@ -89,10 +89,11 @@ A set of fragments represents the set of heap
 structures in which each pair of pointer-connected nodes are represented by some
 fragment in the set.
 Inuitively, a set of fragments describes the set of heaps that can be formed by
-``pieced together'' fragments in the set. This ``piecing together'' must
-be both locally consistent (appending only fragments that agree on their
-common node), and globally consistent (respecting the global reachability
-information).
+``pieced together'' fragments in the set.
+%% This ``piecing together'' must
+%% be both locally consistent (appending only fragments that agree on their
+%% common node), and globally consistent (respecting the global reachability
+%% information).
 The combination of local and global information in fragments allows the
 verification to reason about the sequence of cells that can be ``seen'' by
 threads as the traverse the heap by following pointer fields in cells and

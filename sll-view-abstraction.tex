@@ -21,10 +21,6 @@ representation is also the basis for our representation for programs
 operating on skiplists, described in Subsection~\ref{subsect:skiplists}
 and programs operating on arrays of SLLs, in Subsection~\ref{subsect:skiplists}.
 
-\bjcom{Where to put this paragraph?}
-We consider a program with global variables $\glvarset$ and
-thread-local variables $\locvarset$.
-We assume that all global variables are pointer variables.
 %% We describe our fragment abstractions for three classes of heap structures:
 %% in the following subsection, we consider programs operating on singly-linked
 %% lists, in Subsection~\ref{subsect:skiplists}, we consider programs operating
@@ -46,13 +42,13 @@ We assume that all global variables are pointer variables.
 %% data values, an unbounded number of concurrently executing threads, and an
 %% unbounded heap. 
 
-\subsection{Fragment Abstraction for Singly-Linked List-Based Programs}
+\subsection{Symbolic Representations}
 
-\bjcom{Say that for now, we ignore timers?}
-\bjcom{Introduce notation for the set of local $\ddomain$-variables?.
-  Maybe define which threads we talk about?
-  For now, we skip timestamps.
-}
+%% \bjcom{Say that for now, we ignore timers?}
+%% \bjcom{Introduce notation for the set of local $\ddomain$-variables?.
+%%   Maybe define which threads we talk about?
+%%   For now, we skip timestamps.
+%% }
 
 %% We assume that we must analyze the product of a program and an observer.
 In this subsection, we present our fragment abstraction for programs that

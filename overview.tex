@@ -6,7 +6,7 @@ the sense of linearizability, of
 a concurrent data structure implementation which uses skiplists.
 We consider an implementation of a set data structure, which operates on
 a shared heap which represents a skiplist. Here, we consider the
-Lock-Free Concurrend Skiplist, described in~\cite[Section 14.4]{ArtOfMpP}.
+Lock-Free Concurrent Skiplist, described in~\cite[Section 14.4]{ArtOfMpP}.
 To the best of our knowledge, no existing automated verification technique
 has succeeded in verifying functional correctness of concurrent
 skiplist algorithms.
@@ -18,7 +18,6 @@ abstraction, as reported in Section~\ref{section:experiments}.
 %\todo[inline]{Comment from BJ to Quy: begin with context: Which algorithm are
 %  we showing? what does that algorithm do?}
   
-\bjcom{I rewrote only the first paragraph}
 To illustrate our approach, we use the lock-free concurrent lock-free skiplist algorithm~\cite[Section 14.4]{ArtOfMpP}. Informally, a skiplist consists of a collection of sorted linked lists, each of which is located at a {\em level}, ranging from $1$ up to a maximum value. Each skiplist node has a key value and participates in the lists at levels $1$ up to its {\em height}.
 The lowest-level list (at level $1$) constitutes an ordered list of all nodes
 in the skiplist. Higher-level lists are increasingly sparse sublist of the
@@ -46,8 +45,8 @@ Now, let us describe an important method $\tt add$ of the algorithm. The method 
 
 The $\tt add$ method uses $\tt find$ method to check whether a node with key $\tt x$ is already in the list. If an unmarked node with key $\tt k$ \bjcom{Why not x?} is found in the bottom-level list, the $\tt add$ method returns $\tt false$. If no node is found, then the next step is to try to add the new node into the list. It is performed by linking it into the bottom-level list between the $\tt preds[0]$ and $\tt succs[0]$ nodes returned by $\tt find$. They use $\tt compareAndSet$ to set the reference while validating that these nodes still refer one to the other and have not been removed from the list (Line 16). If $\tt compareAndSet$ fails, the method call will restart. Otherwise, the node is added into the list. The method then links the node in at higher levels. The $\tt find$ method traverses the SkipList using two pointer variables $\tt pred$ and $\tt curr$ which start from the head and at the highest level. It then proceeds in each level down the list, filling in $\tt preds$ and $\tt succs$ nodes that are repeatedly advanced until $\tt pred$ points to a node with
 the largest value on that level that is strictly less than the $\tt x$. The method repeatedly remove marked nodes from the
-given level as they are encountered (Lines 15 to 19) using a $\tt compareAndSet$ statement. Once an unmarked $\tt curr$ is found (Line 20), it is tested to see if its key is less than the target key. If so, $\tt pred$ is advanced to $\tt curr$. Otherwise, $\tt curr$'s key is greater than or equal to $\tt x$, so the current value
-of $\tt pred$ is the target nodeâs immediate predecessor. The find method breaks out of the current level search loop, saving the current values of $\tt pred$ and $\tt curr$. It proceeds by this way until reaching the bottom level. The $\tt add$ method for adding a node with the key $\tt k$ works as follows: 
+given level as they are encountered (Lines 15 to 19) using a $\tt compareAndSet$ statement. Once an unmarked $\tt curr$ is found (Line 20), it is tested to see if its key is less than the target key. If so, $\tt pred$ is advanced to $\tt curr$. Otherwise, $\tt curr$'s key is greater than or equal to $\tt x$, so the current value
+of $\tt pred$ is the target node's immediate predecessor. The find method breaks out of the current level search loop, saving the current values of $\tt pred$ and $\tt curr$. It proceeds by this way until reaching the bottom level. The $\tt add$ method for adding a node with the key $\tt k$ works as follows: 
  
 %The $\tt remove$ method also use $\tt find$ to determine whether an unmarked node with a matching key $\tt k$ is in the bottom-level list. If no node is found in the bottom-level list, or the node with a matching key is marked, the method returns false. If an unmarked node is found, then the method logically removes the associated key from the list, and prepares it for physical removal. First, starting from the topLevel, all links up to and not including the bottom-level link are marked . If the link is found to be marked the method moves on to the next-level link. Otherwise, the marking attempt must be repeated. Once all levels but the bottom one have been marked, the method marks the bottom levels next reference. Before returning true, the $\tt find$ method is called again. This call physically removes all links to the node it is searching for if that node is already logically removed.
 
@@ -86,11 +85,11 @@ performed atomically at some point (called the {\em linearization point (LP)})
 between its invocation and return~\cite{HeWi:linearizability}.
 
 We specify linearizability by the technique of
-{\em observers}~\cite{AHHR:integrated}, also employing its subsequent
+{\em observers}~\cite{AHHR:integrated}, including its subsequent
 extensions~\cite{BEEH:icalp15,HSV:concur13,Quy:sas16}.
 In the case of our skiplist algorithm,
 LPs can be associated to fixed statements in the code. The user then instruments
-these statements to announce the corresponding set operation
+these statements to announce the corresponding set operation.
 For instance, the LP of a successful {\tt add} operation is at line 16 of the $\tt add$ method, whereas the linearization point of an unsuccessful {\tt add} operation is at line 7 of the $\tt add$ method.  %\bjcom{Quy: Please insert a text of
 %how some LP is inserted into the code of Figure~\ref{sl-code:fig}}.
 \bjcom{Put these LPs as dots in the code. Are these really the LPs?}
@@ -102,8 +101,8 @@ We must check that the concurrent execution of such a program generates
 semantics of the set data structure. 
 This check is performed by an {\em observer}, which 
 monitors the sequence of operations that is announced by the
-instrumentation, and report when it violates the semantics of the set
-data structure.
+instrumentation, and reports when it violates the semantics of the set
+data structure by moving to an accepting ``error state''.
 
 
 %% typically by affixing
@@ -199,17 +198,22 @@ sequences of operations that do {\em not} conform to the semantics of a set
 data structure.
 
 To verify that no execution of the program may cause the observer to
-accept, we form as in the automata-theoretic approach~\cite{VW:modelchecking}
-(adapted in~\cite{AHHR:integrated}),
+accept, we form
+%% as in the automata-theoretic approach~\cite{VW:modelchecking}
+%% (adapted in~\cite{AHHR:integrated}),
 the cross-product of the program  and the corresponding
-observer, where the observer synchronizes with the program on the operations
+observer, in which the observer synchronizes with the program on the operations
 that are announced at LPs. This reduces the
 problem of checking linearizability to the problem of checking
 that, in the cross-product, the observer cannot reach an accepting state.
 
-We note that linearizability of stacks and queues can be verified without any
-user-supplied instrumentation. For stacks and queues,
-linearizability can be precisely specified by
+In conclusion, verifying linearizability for skiplist-based set implementations
+requires the user to associate linearization points with statements in the
+methods of the implementation: the remaining steps are then automated.
+We remark that this user annotation is not necessary when verifying
+linearizability of stack and queue implementation. 
+This is achieved by exploiting recent results saying that
+linearizability for stacks and queues can be precisely specified by
 observers that process the sequence of call and return actions of
 methods,  instead of the user-supplied LPs~\cite{BEEH:icalp15,HSV:concur13}.
 We use this technique for sets and stacks in Section XXX.
@@ -470,8 +474,6 @@ We use this technique for sets and stacks in Section XXX.
 %% We must verify that any execution of such a program satisfies the 
 %% constraints.
 
-\todo[inline]{We may have to say that we check the trivial conditions that
-  were checked by the monitor in SAS 16}
 %% Instrumentation to check conditions 
 %% (i) - (iii) is added automatically, reducing the verification to a
 %% reachability problem, i.e., to verify that no configuration that violates
@@ -521,13 +523,12 @@ algorithm.
 %  writing}
 
 Figure~\ref{sl-shape} shows an example state of the heap of the
-
 skiplist algorithm with three levels. Each heap cell is shown with the values of its fields. \bjcom{Add a legend, showing the layout of fields, as in previous papers}
 In addition, each cell is labeled by the
 pointer variables that point to it; we use ${\tt lvar(i)}$ to denote the local
 variable ${\tt lvar}$ of thread $\thread_i$.
 In the heap state of Figure~\ref{sl-shape}, thread $\thread_1$ is trying to add a new node with key $9$. \bjcom{It may be better to say at which line in the code
-  they are executin}It has done the first iteration of the for loop in it's $\tt find$ function. Thread $\thread_2$ is also doing the same thing as $\thread_1$ and it has done the second iteration. Thread $\thread_2$ is trying remove a node with key $9$ and it has done the third iteration.
+  they are executing}It has done the first iteration of the for loop in it's $\tt find$ function. Thread $\thread_2$ is also doing the same thing as $\thread_1$ and it has done the second iteration. Thread $\thread_2$ is trying remove a node with key $9$ and it has done the third iteration.
 \bjcom{But you do not show the code of remove?}
 However, before $\thread_3$ removes the node with key $9$, the node is removed by another thread and a new node with key $10$ is also added to the list. One of the main properties of the algorithm is that 
 the $\tt pred$, in any level, never refers to an unmarked node whose key is greater than or equal to the target key. The $\tt pred$ variable arrives at the bottom-level list at a node before, and never after, the target node. If the node is physically removed before the $\tt find$ starts, then it will not be found.
@@ -570,7 +571,7 @@ data  abstraction, and a shape abstraction.
 Our {\em thread abstraction} adapts the thread-modular approach by representing only the view of single, but arbitrary, thread $\thread$. Such a view consists of
   \begin{inparaenum}[(i)]
   \item the local state of thread $\thread$,
-  \item the part of the heap that is accessible to thread $\thread$ via its local pointer variables or via global pointer variables, and
+  \item the part of the heap that is accessible to thread $\thread$ via pointer variables (local to $\thread$ or global), and
   \item the state of the observer.
   \end{inparaenum}
 \item
@@ -582,24 +583,22 @@ A fragment consists of a pair of heap cells that are connected by a pointer.
 For each of these cells, the fragment represents
 %% Each fragment is an abstraction of a pair of
 %% nodes in the heap that are connected by a pointer. The abstraction represents
-\begin{itemize}
-\item the values of its data fields,
+\begin{inparaenum}[(i)]
+\item the values of its non-pointer fields,
 %%  in the pair of nodes (under the empoyed  data abstraction),
-\item the pointer variables (either global or local to $\thread$)
-  that point  to it, and
+\item the pointer variables (either local to $\thread$ or global)
+  that point to the cell, and
 \item global reachability information, which expresses how
   each node in the pair can reach to and be reached from
-  (by following a chain of pointers) a finite set of {\em globally significant}
+  (by following a chain of pointers) a finite set of globally significant
   heap cells. A cell is globally significant if it is pointed to by a
-  global pointer variable or if it triggers some significant behavior in
-  a thread that reaches it: in our
-  skiplist algorithm, this happens for nodes whose
-  {\tt key} field has the  same value as the register of the set observer.
-\end{itemize}
+  global pointer variable or if its 
+  {\tt data} field has the  same value as the register of the set observer.
+\end{inparaenum}
 In our fragment abstraction, a set of fragments represents the set of heap
 structures in which each pair of pointer-connected nodes is represented by some
 fragment in the set.
-Inuitively, a set of fragments describes the set of heaps that can be formed by
+Intuitively, a set of fragments describes the set of heaps that can be formed by
 ``piecing together'' fragments in the set. This ``piecing together'' must
 be both locally consistent (appending only fragments that agree on their
 common node), and globally consistent (respecting the global reachability
@@ -609,23 +608,24 @@ A natural data abstraction is applied to the non-pointer local
 variables of the thread, the non-pointer fields of each fragment, as well as
 the observer registers. For our
 skiplist algorithm, fields that range over small finite domains are represented
-with their concrete values, whereas the fields that range over the domain of
-data values, as well as the observer registers,
+by their concrete values, whereas the observer registers and fields that range over the domain of data values
+%% , as well as the observer registers,
 are represented by constraints over their relative ordering
 (wrp.\ to the order $<$).
 \end{itemize}
-By construction, our fragment abstraction is finitary, since there is
-a bounded set of tags.
+Our combination of fragment abstraction, thread abstraction, and data
+abstraction results in a finite abstract domain, thereby guaranteeing
+termination of our analysis.
 
-Let a {\em local symbolic configuration} be an abstraction of the program
-counter and local data variables of an arbitrary thread $\thread$.
-Our symbolic representation of a set of program configurations consists of
-a mapping from a set of local symbolic configurations,
-which maps each local symbolic configuration in its domain to a set of fragments.
-A global configuration satisfies a symbolic representation $\symbrep$
-if the view of each thread $\thread$ satisfies some local symbolic
-configuration in the domain of $\symbrep$, which is mapped to a set
-of fragments, which represents the heap that is accessible to $\thread$.
+%% Let a {\em local symbolic configuration} be an abstraction of the program
+%% counter and local data variables of an arbitrary thread $\thread$.
+%% Our symbolic representation of a set of program configurations consists of
+%% a mapping from a set of local symbolic configurations,
+%% which maps each local symbolic configuration in its domain to a set of fragments.
+%% A global configuration satisfies a symbolic representation $\symbrep$
+%% if the view of each thread $\thread$ satisfies some local symbolic
+%% configuration in the domain of $\symbrep$, which is mapped to a set
+%% of fragments, which represents the heap that is accessible to $\thread$.
 
 \todo[inline]{Quy: After this, you must provide a nice example}
 \begin{figure}
@@ -679,6 +679,7 @@ pointer-connected cells satisfies one of its fragments. For instance, the
 list pointed to by $\tt pools[3]$ is represented by the sequence of
 fragments $\frag_4 \frag_5 \frag_6 \frag_7$.
 
+\todo[inline]{Maybe we should omit the rest of this section?}
 In order to obtain a complete representation of reachable program configurations,
 we must also represent the local states of a thread. This is done in a standard
 manner, by applying the same data abstraction as for heap cells. For instance,
