@@ -19,12 +19,13 @@ abstraction, as reported in Section~\ref{section:experiments}.
 %  we showing? what does that algorithm do?}
   
 To illustrate our approach, we use the lock-free concurrent lock-free skiplist algorithm~\cite[Section 14.4]{ArtOfMpP}. Informally, a skiplist consists of a collection of sorted linked lists, each of which is located at a {\em level}, ranging from $1$ up to a maximum value. Each skiplist node has a key value and participates in the lists at levels $1$ up to its {\em height}.
+The skiplist has sentinel head and tail nodes with maximum heights and key values $-\infty$ and $+\infty$, respectively.
+%Figure~\ref{sl} shows a skiplist with maximum height of 3.
 The lowest-level list (at level $1$) constitutes an ordered list of all nodes
-in the skiplist. Higher-level lists are increasingly sparse sublist of the
+in the skiplist. Higher-level lists are increasingly sparse sublists of the
 lowest-level list, and serve as shortcuts into lower-level lists.
 %\bjcom{This does not hold in our case, so I think it may confuse. Start rather with the reason for higher-level (they are shortcuts). You might want to find some
 %  good text on this topic as inspiration}
-A skiplist has sentinel head and tail nodes with maximum heights key values $-\infty$ and $+\infty$, respectively. %Figure~\ref{sl} shows a skiplist with maximum height of 3.
 %\begin{figure}
 %\center  
 % \input skiplist
@@ -33,7 +34,8 @@ A skiplist has sentinel head and tail nodes with maximum heights key values $-\i
 %\end{figure}
 
 %\bjcom{Say which are the methods}
-There are three main methods of the algorithm namely $\tt add$, $\tt contain$ and $\tt remove$. All methods are relied on a method called $\tt find$. In this section, we describe shortly about $\tt find$ and $\tt add$ of the algorithm. Figure~\ref{sl-code:fig} shows the codes of the method.
+There are three main methods of the algorithm namely $\tt add$, $\tt contains$ and $\tt remove$. All methods rely on a method $\tt find$ to search for a given key. In this section, we shortly describe the $\tt find$ and $\tt add$ methods.
+Figure~\ref{sl-code:fig} shows code for these methods.
 %\bjcom{Start with the most important property of the method. What does it do?}
 \input slcode
 
@@ -42,17 +44,18 @@ There are three main methods of the algorithm namely $\tt add$, $\tt contain$ an
 %\todo[inline]{To Quy: PLease update the below text asap}
 
 %\bjcom{Say how the list looks, and the role of marked nodes}
-Each node of the list has a key and a $\tt marked$ field which indicate whether it is in the list, or has been logically removed. 
-The $\tt find$ method traverses the skipList using two pointer variables $\tt pred$ and $\tt curr$ starting from the head and at the highest level. It then proceeds in each level down the list, filling in $\tt preds$ and $\tt succs$ nodes that are repeatedly advanced until $\tt pred$ points to a node with
-the largest value on that level that is smaller than the $\tt x$. The method repeatedly remove marked nodes from the
-given level(Lines 15 to 19) by using a $\tt compareAndSet$ statement. The $\tt compareAndSet$ statement has two arguments: an expected value and an update value. If the current register value is equal to the expected value, then it is replaced by the update value; otherwise the value is unchanged. The method call returns a Boolean indicating whether the value changed. Once an unmarked $\tt curr$ is found (Line 20), it is tested to see if its key is less than the target key. If so, $\tt pred$ is advanced to $\tt curr$. Otherwise, $\tt curr$'s key is greater than or equal to $\tt x$, so the current value
-of $\tt pred$ is the target node's immediate predecessor. The method breaks out of the current level search loop, saving the current values of $\tt pred$ and $\tt curr$. It proceeds by this way until reaching the bottom level. The $\tt add$ method for adding a node with the key $\tt k$ works as follows:
+In addition to its {\tt key} field, each node has a $\tt marked$ field which is true if the node has been logically removed.
+The $\tt find$ method traverses the skiplist using two pointer variables $\tt pred$ and $\tt curr$. Starting from the maximum level, it traverses the list
+at each level, advancing $\tt pred$ and $\tt curr$ until $\tt pred$ points to a node with the largest key on that level smaller than $\tt x$, recording the
+obtained values of  $\tt pred$ and $\tt curr$ into the arrays
+$\tt preds$ and $\tt succs$ at the current level, and thereafter
+continuing one level below.
+During the traversal, the method removes marked nodes at the current level
+(lines 15 to 19) using a $\tt compareAndSet$ command. A  $\tt compareAndSet$ statement has two arguments: \bjcom{This needs fixing: I see 5 arguments} an expected value and an update value. If the current register value is equal to the expected value, then it is replaced by the update value; otherwise the value is unchanged. 
+The method call returns a Boolean indicating whether the value changed. Once an unmarked $\tt curr$ is found (line 20), it is tested to see if its key is less than the target key. If so, $\tt pred$ is advanced to $\tt curr$. Otherwise, $\tt curr$'s key is greater than or equal to $\tt x$, so the current value
+of $\tt pred$ is the target node's immediate predecessor. The method breaks out of the current level search loop, saving the current values of $\tt pred$ and $\tt curr$. It proceedsd int by this way until reaching the bottom level.
 
 The $\tt add$ method uses $\tt find$ to check whether a node with key $\tt x$ is already in the list. If an unmarked node with key $\tt x$ is found in the bottom-level list, the $\tt add$ method returns $\tt false$. If no node is found, then the next step is to try to add the new node into the list. It is performed by linking it into the bottom-level list between the $\tt preds[0]$ and $\tt succs[0]$ nodes returned by $\tt find$. They use $\tt compareAndSet$ to set the reference while validating that these nodes still refer one to the other and have not been removed from the list (Line 16). If $\tt compareAndSet$ fails, the method call will restart. Otherwise, the node is added into the list. The method then links the node in at higher levels.  
-The $\tt find$ method traverses the SkipList using two pointer variables $\tt pred$ and $\tt curr$ which start from the head and at the highest level. It then proceeds in each level down the list, filling in $\tt preds$ and $\tt succs$ nodes that are repeatedly advanced until $\tt pred$ points to a node with
-the largest value on that level that is strictly less than the $\tt x$. The method repeatedly remove marked nodes from the
-given level as they are encountered (Lines 15 to 19) using a $\tt compareAndSet$ statement. Once an unmarked $\tt curr$ is found (Line 20), it is tested to see if its key is less than the target key. If so, $\tt pred$ is advanced to $\tt curr$. Otherwise, $\tt curr$'s key is greater than or equal to $\tt x$, so the current value
-of $\tt pred$ is the target node's immediate predecessor. The find method breaks out of the current level search loop, saving the current values of $\tt pred$ and $\tt curr$. It proceeds by this way until reaching the bottom level. The $\tt add$ method for adding a node with the key $\tt k$ works as follows: 
  
 %The $\tt remove$ method also use $\tt find$ to determine whether an unmarked node with a matching key $\tt k$ is in the bottom-level list. If no node is found in the bottom-level list, or the node with a matching key is marked, the method returns false. If an unmarked node is found, then the method logically removes the associated key from the list, and prepares it for physical removal. First, starting from the topLevel, all links up to and not including the bottom-level link are marked . If the link is found to be marked the method moves on to the next-level link. Otherwise, the marking attempt must be repeated. Once all levels but the bottom one have been marked, the method marks the bottom levels next reference. Before returning true, the $\tt find$ method is called again. This call physically removes all links to the node it is searching for if that node is already logically removed.
 
@@ -98,7 +101,7 @@ LPs can be associated to fixed statements in the code. The user then instruments
 these statements to announce the corresponding set operation.
 For instance, the LP of a successful {\tt add} operation is at line 16 of the $\tt add$ method, whereas the linearization point of an unsuccessful {\tt add} operation is at line 7 of the $\tt add$ method.  %\bjcom{Quy: Please insert a text of
 %how some LP is inserted into the code of Figure~\ref{sl-code:fig}}.
-\bjcom{Put these LPs as dots in the code. Are these really the LPs?}
+\bjcom{Put these LPs as dots in the code}
 Having instrumented methods at LPs, we
 then consider an arbitrary concurrent program consisting of
 an arbitrary collection of threads, each of which executes some method call.
@@ -109,7 +112,7 @@ This check is performed by an {\em observer}, which
 monitors the sequence of operations that is announced by the
 instrumentation, and reports when it violates the semantics of the set
 data structure by moving to an accepting ``error state''.
-
+Observers are described in more detail in Section~\ref{subsect:observers}.
 
 %% typically by affixing
 %%   linearization points to particular statements, or in more complex cases by
@@ -136,72 +139,25 @@ data structure by moving to an accepting ``error state''.
 
 
 %% \begin{wrapfigure}{r}{.55\textwidth}
-\begin{figure}
-\begin{center}
-\begin{tikzpicture}[]
-
-\node(s0)[draw,line width=1pt,fill=blue!10,circle,text=black]
-{$s_0$};
-
-\node(s1)[draw,line width=1pt,fill=blue!10,circle,text=black,anchor=center]
-at ($(s0.center)+(80pt,0pt)$) {$s_1$};
-
-
-\node(s2)[draw,line width=1pt,fill=blue!10,circle,text=black,scale=0.9,anchor=center ]
-at ($(s0.center)+(40pt,-61pt)$) {$s_2$};
-
-\node[draw,line width=1pt,circle,text=black,anchor=center,minimum size=5mm]
-at ($(s0.center)+(40pt,-61pt)$) {};
-
-
-\draw[->,>=stealth,out=45,in=135,line width=1pt] (s0) to 
-node[above=-1pt,pos=0.5] {\footnotesize${\tt add}(x,\true)$} 
-(s1);
-
-\draw[->,>=stealth,out=225,in=315,line width=1pt] (s1) to node[above=0pt,pos=0.5] {\footnotesize${\tt rmv}(x,\true)$} 
-(s0);
-
-\draw [->,>=stealth,thick,out=270,in=180,line width=1pt] (s0) 
-to 
-node[left,pos=0.2] {\footnotesize${\tt add}(x,\false)$} 
-node[left,pos=0.45] {\footnotesize${\tt rmv}(x,\true)$} 
-node[left,pos=0.8] {\footnotesize${\tt ctn}(x,\true)$} 
- (s2);
-
-\draw [->,>=stealth,thick,out=270,in=0,line width=1pt] (s1) 
-to 
-node[right,pos=0.2] {\footnotesize${\tt add}(x,\true)$} 
-node[right,pos=0.45] {\footnotesize${\tt rmv}(x,\false)$} 
-node[right,pos=0.8] {\footnotesize${\tt ctn}(x,\false)$} 
- (s2);
-
-
-\end{tikzpicture}
-\end{center}
-\caption{Set observer.}
-\label{set:observer:fig}
-\end{figure}
-
-\todo[inline]{Maybe we should omit observers from this section?}
-{\em Observers} are
-finite automata extended with a finite set of {\em registers}
-that assume values in $\intgrs$, which are 
-nondeterministically initialized with arbitrary values, which never change
-during a run of the observer. 
-The observer accepts a trace if, for {\em some} initial values of the
-registers, the trace can  be processed in such a way that
-an accepting state is reached.
-In other words, the observer is defined in such a way that it accepts precisely those
-traces that do {\em not} belong to the behavior
-of the data structure.
-%% Observers can be used to give {\it exact} specifications of
-%% the behaviors of data structures such as sets, queues, and stacks.
-%
-%
-Fig.~\ref{set:observer:fig}
-depicts an observer that accepts the
-sequences of operations that do {\em not} conform to the semantics of a set
-data structure.
+%% {\em Observers} are
+%% finite automata extended with a finite set of {\em registers}
+%% that assume values in $\intgrs$, which are 
+%% nondeterministically initialized with arbitrary values, which never change
+%% during a run of the observer. 
+%% The observer accepts a trace if, for {\em some} initial values of the
+%% registers, the trace can  be processed in such a way that
+%% an accepting state is reached.
+%% In other words, the observer is defined in such a way that it accepts precisely those
+%% traces that do {\em not} belong to the behavior
+%% of the data structure.
+%% %% Observers can be used to give {\it exact} specifications of
+%% %% the behaviors of data structures such as sets, queues, and stacks.
+%% %
+%% %
+%% Fig.~\ref{set:observer:fig}
+%% depicts an observer that accepts the
+%% sequences of operations that do {\em not} conform to the semantics of a set
+%% data structure.
 
 To verify that no execution of the program may cause the observer to
 accept, we form
@@ -222,7 +178,7 @@ This is achieved by exploiting recent results saying that
 linearizability for stacks and queues can be precisely specified by
 observers that process the sequence of call and return actions of
 methods,  instead of the user-supplied LPs~\cite{BEEH:icalp15,HSV:concur13}.
-We use this technique for sets and stacks in Section XXX.
+We use this technique for stacks and queues in Section XXX.
 
 %% In more complex cases, we use
 %%   light-weight instrumentation using the approach of
@@ -533,9 +489,13 @@ skiplist algorithm with three levels. Each heap cell is shown with the values of
 In addition, each cell is labeled by the
 pointer variables that point to it; we use ${\tt lvar(i)}$ to denote the local
 variable ${\tt lvar}$ of thread $\thread_i$.
-In the heap state of Figure~\ref{sl-shape}, thread $\thread_1$ is trying to add a new node with key $9$ and it is in the line $8$ of the code of $\tt add$.  Thread $\thread_2$ is also doing the same thing as $\thread_1$ and it has done its first iteration of the loop in $\tt find$ method in line $25$. One of the main properties of the algorithm is that 
-the $\tt pred$, in any level, never refers to an unmarked node whose key is greater than or equal to the target key. The $\tt pred$ variable arrives at the bottom-level list at a node before, and never after, the target node. If the node is physically removed before the $\tt find$ starts, then it will not be found.
+In the heap state of Figure~\ref{sl-shape}, thread $\thread_1$ is trying to add a new node with key $9$, and has reached line $8$ of the $\tt add$ method.  Thread $\thread_2$ is also doing the same thing as $\thread_1$ and it has done its first iteration of the loop in $\tt find$ method in line $25$.
+\bjcom{There are strange things: the Figure 2 has the variable $\tt curr$ as an
+  array (it is not), and does not show the arrays $\tt preds$ and $\tt succs$.
+  Could you please fix this?}
 
+One of the main properties of the algorithm is that 
+the variable $\tt pred$, in any level, never points to an unmarked node whose key is greater than or equal to $\tt x$. The $\tt pred$ variable arrives at the bottom-level list at a node before, and never after, the target node. If the node is physically removed before the $\tt find$ starts, then it will not be found.
 
 %The heap consists of a set of singly linked lists (SLLs), each of which
 %is accessed from a pointer in the array ${\tt pools[maxThreads]}$
@@ -566,8 +526,8 @@ the $\tt pred$, in any level, never refers to an unmarked node whose key is grea
 %\label{sl-abs}
 %\end{figure}
 
-
-Our verification technique is based on a combination of a thread abstraction, a
+Our verification technique is based on a symbolic representation of program
+configurations, which combines a thread abstraction, a
 data  abstraction, and a shape abstraction.
 \begin{itemize}
   \item
@@ -630,7 +590,6 @@ termination of our analysis.
 %% configuration in the domain of $\symbrep$, which is mapped to a set
 %% of fragments, which represents the heap that is accessible to $\thread$.
 
-\todo[inline]{Quy: After this, you must provide a nice example}
 \begin{figure}
 \center
 	\input skiplistabs
@@ -638,11 +597,14 @@ termination of our analysis.
 \label{fig:skiplistabs}
 \end{figure} 
 
-Figure~\ref{fig:skiplistabs} shows a set of fragments that is
-satisfied wrp.\ to $\thread_1$ by the configuration in Figure~\ref{sl-shape} where the value of the observer register is $9$.
+Figure~\ref{fig:skiplistabs} shows a set of fragments that represents the
+part of the heag that is accessible to
+$\thread_1$ in the configuration in Figure~\ref{sl-shape}. We assume that
+the value of the observer register is $9$. 
 There are $10$ fragments, named $\frag_1$, \ldots , $\frag_{10}$. Two of
 these ($\frag_5$ and $\frag_9$) consist of a tag that points to $\dangconst$,
 and the other consist of a pair of pointer-connected tags. The fragments $\frag_1$, \ldots , $\frag_{6}$ are abstracted from the level $1$, whereas the other fragments are abstracted from higher levels. As can be seen, the property where the $\tt pred$, in any level, never refers to an unmarked node whose key is greater than or equal to $\tt x$ is preserved by the abstraction. The data fields of all tags which contains $\tt pred$ in fragments $\frag_1$, $\frag_2$, $\frag_4$, $\frag_7$, $\frag_8$, and $\frag_9$ are smaller than $\tt x$.  In addition, there is no tag whose marked field is $\tt true$ and contains $\tt x$ in its reach to information, it means that the abstraction preservers the property where the node which is physically removed can not be found by $\tt find$ method.   
+\bjcom{The below if for TS Stack. Should it be replaced or removed?}
 \begin{itemize}
 \item The $\tt data$ field of the tag (to the left) abstracts the data value
   $2$ to the set of observer registers with that value: in this case
