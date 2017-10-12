@@ -255,6 +255,7 @@ of call and return actions is {\em linearizable} wrt.\ $\dstruct$.
 %% \end{figure}
 
 \subsection{Specification by Observers}
+\label{subsect:observers}
 %% \todo[inline]{Should we mention LP method:
 %% The most common technique is to annotate methods with LPs. More precisely,
 %% each method is instrumented to announce precisely when the linearization point
@@ -336,6 +337,52 @@ data structure.
 %% monitors the sequence of operations that is announced by the
 %% instrumentation, and reports when it violates the semantics of the set
 %% data structure.
+
+\begin{figure}
+\begin{center}
+\begin{tikzpicture}[]
+
+\node(s0)[draw,line width=1pt,fill=blue!10,circle,text=black]
+{$s_0$};
+
+\node(s1)[draw,line width=1pt,fill=blue!10,circle,text=black,anchor=center]
+at ($(s0.center)+(80pt,0pt)$) {$s_1$};
+
+
+\node(s2)[draw,line width=1pt,fill=blue!10,circle,text=black,scale=0.9,anchor=center ]
+at ($(s0.center)+(40pt,-61pt)$) {$s_2$};
+
+\node[draw,line width=1pt,circle,text=black,anchor=center,minimum size=5mm]
+at ($(s0.center)+(40pt,-61pt)$) {};
+
+
+\draw[->,>=stealth,out=45,in=135,line width=1pt] (s0) to 
+node[above=-1pt,pos=0.5] {\footnotesize${\tt add}(x,\true)$} 
+(s1);
+
+\draw[->,>=stealth,out=225,in=315,line width=1pt] (s1) to node[above=0pt,pos=0.5] {\footnotesize${\tt rmv}(x,\true)$} 
+(s0);
+
+\draw [->,>=stealth,thick,out=270,in=180,line width=1pt] (s0) 
+to 
+node[left,pos=0.2] {\footnotesize${\tt add}(x,\false)$} 
+node[left,pos=0.45] {\footnotesize${\tt rmv}(x,\true)$} 
+node[left,pos=0.8] {\footnotesize${\tt ctn}(x,\true)$} 
+ (s2);
+
+\draw [->,>=stealth,thick,out=270,in=0,line width=1pt] (s1) 
+to 
+node[right,pos=0.2] {\footnotesize${\tt add}(x,\true)$} 
+node[right,pos=0.45] {\footnotesize${\tt rmv}(x,\false)$} 
+node[right,pos=0.8] {\footnotesize${\tt ctn}(x,\false)$} 
+ (s2);
+
+
+\end{tikzpicture}
+\end{center}
+\caption{Set observer.}
+\label{set:observer:fig}
+\end{figure}
 
 Formally, an observer $\observer$ is a tuple
 $\otuple$ where $\ostateset$ is a finite set 
