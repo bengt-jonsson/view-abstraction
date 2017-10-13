@@ -52,7 +52,7 @@ obtained values of  $\tt pred$ and $\tt curr$ into the arrays
 $\tt preds$ and $\tt succs$ at the current level, and thereafter
 continuing one level below.
 During the traversal, the method removes marked nodes at the current level
-(lines 15 to 19) using a $\tt compareAndSet$ command. A  $\tt compareAndSet$ command has two arguments: \bjcom{This needs fixing: I see 5 arguments} an expected value and an update value. If the current register value is equal to the expected value, then it is replaced by the update value; otherwise the value is unchanged. 
+(lines 15 to 19) using a $\tt compareAndSet$ command. The $\tt compareAndSet$ statement tests the expected reference and mark values, and if both tests succeed, replaces them with updated reference and mark values.  
 The $\tt compareAndSet$ command returns a Boolean indicating whether the value changed.
 %% Once an unmarked $\tt curr$ is found (line 20), it is tested to see if its key is less than the target key. If so, $\tt pred$ is advanced to $\tt curr$. Otherwise, $\tt curr$'s key is greater than or equal to $\tt x$, so the current value
 %% of $\tt pred$ is the target node's immediate predecessor. The method breaks out of the current level search loop, saving the current values of $\tt pred$ and $\tt curr$. It proceedsd int by this way until reaching the bottom level.
@@ -492,13 +492,12 @@ In addition, each cell is labeled by the
 pointer variables that point to it; we use ${\tt lvar(i)}$ to denote the local
 variable ${\tt lvar}$ of thread $\thread_i$.
 In the heap state of Figure~\ref{sl-shape}, thread $\thread_1$ is trying to add a new node with key $9$, and has reached line $8$ of the $\tt add$ method.  Thread $\thread_2$ is also doing the same thing as $\thread_1$ and it has done its first iteration of the loop in $\tt find$ method in line $25$.
-\bjcom{Where is $\thread_2$'s new node?}
+%\bjcom{Where is $\thread_2$'s new node?}
 %\bjcom{There are strange things: the Figure 2 has the variable $\tt curr$ as an
 %  array (it is not), and does not show the arrays $\tt preds$ and $\tt succs$.
 %  Could you please fix this?}
 
-One of the main properties of the algorithm is that 
-the variable $\tt pred$, in any level, never points to an unmarked node whose key is greater than or equal to $\tt x$. The $\tt pred$ variable arrives at the bottom-level list at a node before, and never after, the target node. If the node is physically removed before the $\tt find$ starts, then it will not be found.
+One of the main properties of the algorithm is that the $\tt pred$ variable arrives at the bottom-level list at a node before, and never after, the target node. If the node is physically removed before the $\tt find$ starts, then it will not be found.
 
 %The heap consists of a set of singly linked lists (SLLs), each of which
 %is accessed from a pointer in the array ${\tt pools[maxThreads]}$
@@ -606,7 +605,7 @@ $\thread_1$ in the configuration in Figure~\ref{sl-shape}. We assume that
 the value of the observer register is $9$. 
 There are $10$ fragments, named $\frag_1$, \ldots , $\frag_{10}$. Two of
 these ($\frag_5$ and $\frag_9$) consist of a tag that points to $\dangconst$,
-and the other consist of a pair of pointer-connected tags. The fragments $\frag_1$, \ldots , $\frag_{6}$ are abstracted from the level $1$, whereas the other fragments are abstracted from higher levels. As can be seen, the property where the $\tt pred$, in any level, never refers to an unmarked node whose key is greater than or equal to $\tt x$ is preserved by the abstraction. The data fields of all tags which contains $\tt pred$ in fragments $\frag_1$, $\frag_2$, $\frag_4$, $\frag_7$, $\frag_8$, and $\frag_9$ are smaller than $\tt x$.  In addition, there is no tag whose marked field is $\tt true$ and contains $\tt x$ in its reach to information, it means that the abstraction preservers the property where the node which is physically removed can not be found by $\tt find$ method.   
+and the other consist of a pair of pointer-connected tags. The fragments $\frag_1$, \ldots , $\frag_{6}$ are abstracted from the level $1$, whereas the other fragments are abstracted from higher levels. As can be seen, the property where the $\tt pred$, in bottom level, never refers to an unmarked node whose key is greater than or equal to $\tt x$ is preserved by the abstraction. The data field of the tag which contains $\tt pred$ in fragments $\frag_9$ is smaller than $\tt x$.  In addition, there is no tag whose marked field is $\tt true$ and contains $\tt x$ in its reach to information, it means that the abstraction preservers the property where the node which is physically removed can not be found by $\tt find$ method.   
 \bjcom{The below if for TS Stack. Should it be replaced or removed?}
 \begin{itemize}
 \item The $\tt data$ field of the tag (to the left) abstracts the data value
