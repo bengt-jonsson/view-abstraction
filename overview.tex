@@ -34,8 +34,9 @@ lowest-level list, and serve as shortcuts into lower-level lists.
 %\end{figure}
 
 %\bjcom{Say which are the methods}
-There are three main methods of the algorithm namely $\tt add$, $\tt contains$ and $\tt remove$. All methods rely on a method $\tt find$ to search for a given key. In this section, we shortly describe the $\tt find$ and $\tt add$ methods.
-Figure~\ref{sl-code:fig} shows code for these methods.
+There are three main methods of the algorithm namely $\tt add$, $\tt contains$ and $\tt remove$. All methods rely on a method $\tt find$ to search for a given key, $\tt add(x)$ adds $\tt x$ to the set and returns true iff $\tt x$ was not already in the set; $\tt remove(x)$ removes $\tt x$ from the set and returns true iff v was in the set; and $\tt contains(x)$
+returns true iff $\tt x$ is in the set. In this section, we shortly describe the $\tt find$ and $\tt add$ methods.
+Figure~\ref{sl-code:fig} shows code for these two methods.
 %\bjcom{Start with the most important property of the method. What does it do?}
 \input slcode
 
@@ -47,17 +48,18 @@ Figure~\ref{sl-code:fig} shows code for these methods.
 Each heap cell has a {\tt key} field, a $\tt marked$ field which is true if the node has been logically removed, and an array of {\tt next} pointers, indexed from
 $1$ upto its {\tt height}.
 The $\tt find$ method traverses the list at decreasing levels, starting from
-the maximum level. During the traversal, the two pointer variables $\tt pred$ and $\tt curr$ are advanced until $\tt pred$ points to a node with the largest key on that level smaller than $\tt x$, recording the
+the maximum level(line 7). During the traversal, the two pointer variables $\tt pred$ and $\tt curr$ are advanced until $\tt pred$ points to a node with the largest key on that level smaller than $\tt x$ (line 19), recording the
 obtained values of  $\tt pred$ and $\tt curr$ into the arrays
-$\tt preds$ and $\tt succs$ at the current level, and thereafter
+$\tt preds$ and $\tt succs$ at the current level (line 20,21), and thereafter
 continuing one level below.
 During the traversal, the method removes marked nodes at the current level
-(lines 15 to 19) using a $\tt compareAndSet$ command. The $\tt compareAndSet$ statement tests the expected reference and mark values, and if both tests succeed, replaces them with updated reference and mark values.  
-The $\tt compareAndSet$ command returns a Boolean indicating whether the value changed.
+(lines 15 to 19) using a $\tt compareAndSet$ command. The $\tt compareAndSet$ command tests the expected reference and mark values, and if both tests succeed, replaces them with updated reference and mark values.  
+The $\tt compareAndSet$ command returns a boolean indicating whether the value changed.
 %% Once an unmarked $\tt curr$ is found (line 20), it is tested to see if its key is less than the target key. If so, $\tt pred$ is advanced to $\tt curr$. Otherwise, $\tt curr$'s key is greater than or equal to $\tt x$, so the current value
 %% of $\tt pred$ is the target node's immediate predecessor. The method breaks out of the current level search loop, saving the current values of $\tt pred$ and $\tt curr$. It proceedsd int by this way until reaching the bottom level.
 
-The $\tt add$ method uses $\tt find$ to check whether a node with key $\tt x$ is already in the list. If an unmarked node with key $\tt x$ is found in the bottom-level list, the $\tt add$ method returns $\tt false$. If no node is found, then the next step is to try to add the new node into the list. It is performed by linking it into the bottom-level list between the $\tt preds[0]$ and $\tt succs[0]$ nodes returned by $\tt find$. using a $\tt compareAndSet$ to set the reference while validating that these nodes still refer one to the other and have not been removed from the list (line 16). If $\tt compareAndSet$ fails, the method call will restart. Otherwise, the node is added into the list. Thereafter, the $\tt add$ proceeds with linking the new node into increasingly higher levels.
+The $\tt add$ method uses $\tt find$ to check whether a node with key $\tt x$ is already in the list. It returns $\tt false$ if an unmarked node with key $\tt x$ is found in the bottom-level list. If no node is found, then  A new node is prepared with randomly chosen level $\tt h$ (line 7) and its next reference is directed to the potential
+successor $\tt succ$ (line 10). The the next step is to add the new node into the list. It is performed by linking it into the bottom-level list between the $\tt preds[1]$ and $\tt succs[1]$ nodes returned by $\tt find$ by using a $\tt compareAndSet$ to set the reference while validating that these nodes still refer one to the other and have not been removed from the list (line 14). If $\tt compareAndSet$ fails, the method call will restart. Otherwise, the node is added into the list. Thereafter, the $\tt add$ proceeds with linking the new node into increasingly higher levels.
  
 %The $\tt remove$ method also use $\tt find$ to determine whether an unmarked node with a matching key $\tt k$ is in the bottom-level list. If no node is found in the bottom-level list, or the node with a matching key is marked, the method returns false. If an unmarked node is found, then the method logically removes the associated key from the list, and prepares it for physical removal. First, starting from the topLevel, all links up to and not including the bottom-level link are marked . If the link is found to be marked the method moves on to the next-level link. Otherwise, the marking attempt must be repeated. Once all levels but the bottom one have been marked, the method marks the bottom levels next reference. Before returning true, the $\tt find$ method is called again. This call physically removes all links to the node it is searching for if that node is already logically removed.
 
@@ -478,8 +480,8 @@ Let us illustrate how fragment abstraction applies to the skiplist
 algorithm.
 \begin{figure}
 \center  
- \input skiplistshape  
- \caption{A concrete shape of 3-level skiplist with three threads}
+ \includegraphics[width=1.2\textwidth, trim={7cm 8cm 0.5cm 7.3cm}, clip]{skipshape.pdf}  
+ \caption{A concrete shape of 3-level skiplist with two threads}
 \label{sl-shape}
 \end{figure}
 
@@ -489,15 +491,23 @@ algorithm.
 Figure~\ref{sl-shape} shows an example state of the heap of the
 skiplist algorithm with three levels. Each heap cell is shown with the values of its fields. \bjcom{Add a legend, showing the layout of fields, as in previous papers}
 In addition, each cell is labeled by the
-pointer variables that point to it; we use ${\tt lvar(i)}$ to denote the local
-variable ${\tt lvar}$ of thread $\thread_i$.
-In the heap state of Figure~\ref{sl-shape}, thread $\thread_1$ is trying to add a new node with key $9$, and has reached line $8$ of the $\tt add$ method.  Thread $\thread_2$ is also doing the same thing as $\thread_1$ and it has done its first iteration of the loop in $\tt find$ method in line $25$.
+pointer variables that point to it; we use ${\tt pred(i)}$ to denote the local
+variable ${\tt pred}$ of thread $\thread_i$, and its same for other local variables.
+In the heap state of Figure~\ref{sl-shape}, thread $\thread_1$ is trying to add a new node with key $9$, and has reached line $6$ of the $\tt add$ method.  Thread $\thread_2$ is also doing the same thing as $\thread_1$ and it has done its first iteration of the loop in $\tt find$ method in line $19$.
 %\bjcom{Where is $\thread_2$'s new node?}
 %\bjcom{There are strange things: the Figure 2 has the variable $\tt curr$ as an
 %  array (it is not), and does not show the arrays $\tt preds$ and $\tt succs$.
 %  Could you please fix this?}
 
-One of the main properties of the algorithm is that the $\tt pred$ variable arrives at the bottom-level list at a node before, and never after, the target node. If the node is physically removed before the $\tt find$ starts, then it will not be found.
+Here is the list of several properties of the algorithm: 
+\begin{itemize}
+	\item It never traverses a marked link. Instead, it removes the node referred to by a
+marked link from the list at that level.
+\item Every preds[] reference is to a node with a key strictly less than the target.
+\item If the node is physically removed before the $\tt find$ starts, then it will not be found
+\item Key value of a cell is strictly smaller than the key value of its successor
+\end{itemize}
+
 
 %The heap consists of a set of singly linked lists (SLLs), each of which
 %is accessed from a pointer in the array ${\tt pools[maxThreads]}$
