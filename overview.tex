@@ -1,24 +1,14 @@
 \section{Overview}
 \label{sec:overview}
 
-  In this section, we illustrate our technique by using it to prove correctness, in
-the sense of linearizability, of
-a concurrent data structure implementation which uses skiplists.
-We consider an implementation of a set data structure, which operates on
-a shared heap which represents a skiplist. Here, we consider the
-Lock-Free Concurrent Skiplist, described in~\cite[Section 14.4]{ArtOfMpP}.
-To the best of our knowledge, no existing automated verification technique
-has succeeded in verifying functional correctness of concurrent
-skiplist algorithms.
-We have automatically verified both lock-based and lock-free skiplist-based algorithms using fragment
-abstraction, as reported in Section~\ref{section:experiments}.
+In this section, we illustrate our technique on our verification of 
+correctness, in the sense of linearizability, of
+concurrent set data structure based on skiplists.
+Here, we consider the
+Lock-Free Concurrent Skiplist from~\cite[Section 14.4]{ArtOfMpP}.
 
-
-\subsection{The Skiplist Algorithm}
-%\todo[inline]{Comment from BJ to Quy: begin with context: Which algorithm are
-%  we showing? what does that algorithm do?}
-  
-To illustrate our approach, we use the lock-free concurrent lock-free skiplist algorithm~\cite[Section 14.4]{ArtOfMpP}. Informally, a skiplist consists of a collection of sorted linked lists, each of which is located at a {\em level}, ranging from $1$ up to a maximum value. Each skiplist node has a key value and participates in the lists at levels $1$ up to its {\em height}.
+\bjcom{Quy: I assume you will take care of this section}
+Informally, a skiplist consists of a collection of sorted linked lists, each of which is located at a {\em level}, ranging from $1$ up to a maximum value. Each skiplist node has a key value and participates in the lists at levels $1$ up to its {\em height}.
 The skiplist has sentinel head and tail nodes with maximum heights and key values $-\infty$ and $+\infty$, respectively.
 %Figure~\ref{sl} shows a skiplist with maximum height of 3.
 The lowest-level list (at level $1$) constitutes an ordered list of all nodes
@@ -87,36 +77,44 @@ successor $\tt succ$ (line 10). The the next step is to add the new node into th
 %%\todo[inline]{Comments by Bengt: How can you return empty? Also, I think you
 %% need to explain the extra removal of marked cells better} \quycom{this code is a simplified version without emptiness checking. If we add emptiness part, the code will be longer and more complicated}
 
+To prepare for verification, we add a specification which expresses that
+the skiplist algorithm of Figure~\ref{sl-code:fig} is a
+linearizable implementation of a set data structure, using
+the technique of
+{\em observers}~\cite{AHHR:integrated,BEEH:icalp15,HSV:concur13,Quy:sas16}.
+For our skiplist algorithm, the user first instruments statements in each
+method that correspond to linearization points, so that their execution
+announces the corresponding atomic set operation.
+In Figure~\ref{sl-code:fig}, the LP of a successful {\tt add} operation is at line 16 of the $\tt add$ method (denoted by a blue dot), whereas the linearization point of an unsuccessful {\tt add} operation is at line 7 of the $\tt add$
+method (denoted by a red dot).
+We must now verify that in any concurrent
+execution of a collection of method calls, the sequence of announced
+operations satisfies the semantics of the set data structure.
+This check is performed by an {\em observer}, which
+monitors the sequence of announced operations. The observer for the set
+data structure utilizes a register, which is initialized with
+a single, arbitrary {\tt key} value.
+It checks that operations on this particular value follow set semantics,
+i.e., that successful {\tt add} and {\tt remove} operations alternate and that
+{\tt contains} are consistent with them.
+We form %% as in the automata-theoretic approach~\cite{VW:modelchecking}
+%% (adapted in~\cite{AHHR:integrated}),
+the cross-product of the program  and the observer, synchronizing on
+operation announcements. This reduces the
+problem of checking linearizability to the problem of checking that
+in this cross-product, the observer cannot reach a state where
+the semantics of the set data structure has been violated.
 
-\subsection{Specifying the Correctness Criterion of Linearizability}
-In our verification, we establish that the skiplist algorithm of
-Figure~\ref{sl-code:fig} is correct in the sense that it is a
-linearizable implementation of a set data structure.
-Linearizability intuitively states that
-each operation on the data structure can be considered as being
-performed atomically at some point (called the {\em linearization point (LP)})
-between its invocation and return~\cite{HeWi:linearizability}.
-% 
-We specify linearizability by the technique of
-{\em observers}~\cite{AHHR:integrated}, including its subsequent
-extensions~\cite{BEEH:icalp15,HSV:concur13,Quy:sas16}.
-In the case of our skiplist algorithm,
-LPs can be associated to fixed statements in the code. The user then instruments
-these statements to announce the corresponding set operation.
-For instance, the LP of a successful {\tt add} operation is at line 16 of the $\tt add$ method, whereas the linearization point of an unsuccessful {\tt add} operation is at line 7 of the $\tt add$ method.  %\bjcom{Quy: Please insert a text of
-%how some LP is inserted into the code of Figure~\ref{sl-code:fig}}.
-\bjcom{Put these LPs as dots in the code}
-Having instrumented methods at LPs, we
-then consider an arbitrary concurrent program consisting of
-an arbitrary collection of threads, each of which executes some method call.
-We must check that the concurrent execution of such a program generates
-(through its instrumentation) a sequence of operations which satisfies the
-semantics of the set data structure. 
-This check is performed by an {\em observer}, which 
-monitors the sequence of operations that is announced by the
-instrumentation, and reports when it violates the semantics of the set
-data structure by moving to an accepting ``error state''.
-Observers are described in more detail in Section~\ref{subsect:observers}.
+%% In conclusion, verifying linearizability for skiplist-based set implementations
+%% requires the user to associate linearization points with statements in the
+%% methods of the implementation: the remaining steps are then automated.
+%% We remark that this user annotation is not necessary when verifying
+%% linearizability of stack and queue implementation. 
+%% This is achieved by exploiting recent results saying that
+%% linearizability for stacks and queues can be precisely specified by
+%% observers that process the sequence of call and return actions of
+%% methods,  instead of the user-supplied LPs~\cite{BEEH:icalp15,HSV:concur13}.
+%% We use this technique for stacks and queues in Section XXX.
 
 %% typically by affixing
 %%   linearization points to particular statements, or in more complex cases by
@@ -163,26 +161,6 @@ Observers are described in more detail in Section~\ref{subsect:observers}.
 %% sequences of operations that do {\em not} conform to the semantics of a set
 %% data structure.
 
-To verify that no execution of the program may cause the observer to
-accept, we form
-%% as in the automata-theoretic approach~\cite{VW:modelchecking}
-%% (adapted in~\cite{AHHR:integrated}),
-the cross-product of the program  and the corresponding
-observer, in which the observer synchronizes with the program on the operations
-that are announced at LPs. This reduces the
-problem of checking linearizability to a reachability problem: checking
-that, in the cross-product, the observer cannot reach an accepting state.
-
-In conclusion, verifying linearizability for skiplist-based set implementations
-requires the user to associate linearization points with statements in the
-methods of the implementation: the remaining steps are then automated.
-We remark that this user annotation is not necessary when verifying
-linearizability of stack and queue implementation. 
-This is achieved by exploiting recent results saying that
-linearizability for stacks and queues can be precisely specified by
-observers that process the sequence of call and return actions of
-methods,  instead of the user-supplied LPs~\cite{BEEH:icalp15,HSV:concur13}.
-We use this technique for stacks and queues in Section XXX.
 
 %% In more complex cases, we use
 %%   light-weight instrumentation using the approach of
@@ -465,17 +443,51 @@ We use this technique for stacks and queues in Section XXX.
 %% the standard way, and verify condition (iv) by checking that the observer cannot
 %% reach an accepting state.
 
-\subsection{Verification by Fragment Abstraction}
-
-In the actual verification, we must compute a symbolic representation
+To verify that that the observer cannot reach a state where a violation
+is reported, we compute a symbolic representation
 of an invariant that is satisfied by all reachable configurations of
-the cross-product of the program  and an observer.
-The verification must address the challenges of an unbounded domain of
-data values, an unbounded number of concurrently executing threads, and an
-unbounded heap.
-For this, we have developed a novel shape representation, called
-{\em fragment abstraction}, which we combine with
-data abstraction and thread abstraction.
+the cross-product of a program  and an observer.
+%% The verification must address the challenges of an unbounded domain of
+%% data values, an unbounded number of concurrently executing threads, and an
+%% unbounded heap.
+This symbolic representation combines thread abstraction, data abstraction
+and our novel {\em fragment abstraction} to represent the heap state.
+Our {\em thread abstraction} adapts the thread-modular approach by representing only the view of single, but arbitrary, thread $\thread$. Such a view consists of
+the local state of thread $\thread$, including the value of the program counter,
+the state of the observer, and
+the part of the heap that is accessible to thread $\thread$ via pointer variables (local to $\thread$ or global).
+Our {\em data abstraction} represents variables and cell
+fields that range over small finite domains by their concrete values,
+whereas variables and fields that range over the same domain as $\tt key$
+fields are abstracted to constraints over their relative ordering (wrp.\ to $<$).
+
+In our {\em fragment abstraction}, we represent the part of the heap
+that is accessible to thread $\thread$ by a set of {\em fragments}. 
+A fragment represents a pair of heap cells (accessible to $\thread$)
+that are connected by a pointer field.
+The fragment contains both
+\begin{itemize}
+  \item {\em local} information, representing the cells'
+  non-pointer fields (under the applied data abstraction) and 
+  the pointer variables (either local to $\thread$ or global)
+  that point to each of the cells, as well as
+\item {\em global} information, representing whether
+  each node in the pair can reach to and be reached from
+  (by following a chain of pointers) a small set of globally significant
+  heap cells. Here, a cell is globally significant if it is pointed to by a
+  global pointer variable or if its 
+  {\tt key} field has the  same value as the register of the set observer.
+\end{itemize}
+A set of fragments represents the set of heap
+structures in which each pair of pointer-connected nodes is represented by some
+fragment in the set.
+Put differently, a set of fragments describes the set of heaps that can be formed by
+``piecing together'' fragments in the set.
+%% This ``piecing together'' must
+%% be both locally consistent (appending only fragments that agree on their
+%% common node), and globally consistent (respecting the global reachability
+%% information).
+
 Let us illustrate how fragment abstraction applies to the skiplist
 algorithm.
 \begin{figure}
@@ -499,15 +511,41 @@ In the heap state of Figure~\ref{sl-shape}, thread $\thread_1$ is trying to add 
 %  array (it is not), and does not show the arrays $\tt preds$ and $\tt succs$.
 %  Could you please fix this?}
 
-Here is the list of several properties of the algorithm: 
+\begin{figure}
+\center
+	\input skiplistabs
+\caption{Fragment abstraction of skiplist algorithm}
+\label{fig:skiplistabs}
+\end{figure} 
+
+\todo[inline]{Here first explain how fragments are extracted from the picture.
+  You should structure into lowest-level and higher-level. Explain a couple
+  of representative cases}
+
+A verification of linearizability of the algorithm must represent several key
+invariants. These include:
 \begin{itemize}
-	\item It never traverses a marked link. Instead, it removes the node referred to by a
-marked link from the list at that level.
+	\item The algorithm never traverses a marked link. Instead, it removes the node referred to by a
+          marked link from the list at that level.
+          \bjcom{Are you sure? I feel that the algorithm could work even without this property. Or am I wrong?}
 \item Every preds[] reference is to a node with a key strictly less than the target.
-\item If the node is physically removed before the $\tt find$ starts, then it will not be found
+\item If the node is physically removed before the $\tt find$ starts, then it will not be found \bjcom{Is this correct? Some concurrent {\tt add} may be very fast and insert quickly}
 \item Key value of a cell is strictly smaller than the key value of its successor
 \end{itemize}
+\bjcom{
+  A suggestion for a ``better'' list of properties could be like (please polish)
+\begin{itemize}
+\item Bottom-list is sorted. Two unmarked nodes cannot have the same value.
+\item Higher-level lists are shortcuts
+\item unreachable nodes are marked
+\item the variables pred, curr, preds, currs reflect the position of the
+  cell with {\tt key}
+\end{itemize}
+You can find some improvement of this list
+}
 
+\todo[inline]{Here, explain how the fragments express these key invariants,
+maybe by picking some representative example(s)}
 
 %The heap consists of a set of singly linked lists (SLLs), each of which
 %is accessed from a pointer in the array ${\tt pools[maxThreads]}$
@@ -538,59 +576,6 @@ marked link from the list at that level.
 %\label{sl-abs}
 %\end{figure}
 
-Our verification technique is based on a symbolic representation of program
-configurations, which combines a thread abstraction, a
-data  abstraction, and a shape abstraction.
-\begin{itemize}
-  \item
-Our {\em thread abstraction} adapts the thread-modular approach by representing only the view of single, but arbitrary, thread $\thread$. Such a view consists of
-  \begin{inparaenum}[(i)]
-  \item the local state of thread $\thread$,
-  \item the part of the heap that is accessible to thread $\thread$ via pointer variables (local to $\thread$ or global), and
-  \item the state of the observer.
-  \end{inparaenum}
-\item
-We use a novel {\em shape abstraction}, which represents the part of the heap
-that is accessible to $\thread$ by a set of {\em fragments}. 
-%% The part of the heap that is accessible to a thread $\thread$ is represented by  
-%% a set of {\em fragments}.
-A fragment consists of a pair of heap cells that are connected by a pointer.
-For each of these cells, the fragment represents
-%% Each fragment is an abstraction of a pair of
-%% nodes in the heap that are connected by a pointer. The abstraction represents
-\begin{inparaenum}[(i)]
-\item the values of its non-pointer fields,
-%%  in the pair of nodes (under the empoyed  data abstraction),
-\item the pointer variables (either local to $\thread$ or global)
-  that point to the cell, and
-\item global reachability information, which expresses how
-  each node in the pair can reach to and be reached from
-  (by following a chain of pointers) a finite set of globally significant
-  heap cells. A cell is globally significant if it is pointed to by a
-  global pointer variable or if its 
-  {\tt data} field has the  same value as the register of the set observer.
-\end{inparaenum}
-In our fragment abstraction, a set of fragments represents the set of heap
-structures in which each pair of pointer-connected nodes is represented by some
-fragment in the set.
-Intuitively, a set of fragments describes the set of heaps that can be formed by
-``piecing together'' fragments in the set. This ``piecing together'' must
-be both locally consistent (appending only fragments that agree on their
-common node), and globally consistent (respecting the global reachability
-information).
-\item
-A natural data abstraction is applied to the non-pointer local
-variables of the thread, the non-pointer fields of each fragment, as well as
-the observer registers. For our
-skiplist algorithm, fields that range over small finite domains are represented
-by their concrete values, whereas the observer registers and fields that range over the domain of data values
-%% , as well as the observer registers,
-are represented by constraints over their relative ordering
-(wrp.\ to the order $<$).
-\end{itemize}
-Our combination of fragment abstraction, thread abstraction, and data
-abstraction results in a finite abstract domain, thereby guaranteeing
-termination of our analysis.
 
 %% Let a {\em local symbolic configuration} be an abstraction of the program
 %% counter and local data variables of an arbitrary thread $\thread$.
@@ -602,13 +587,6 @@ termination of our analysis.
 %% configuration in the domain of $\symbrep$, which is mapped to a set
 %% of fragments, which represents the heap that is accessible to $\thread$.
 
-\begin{figure}
-\center
-	\input skiplistabs
-\caption{Fragment abstraction of skiplist algorithm}
-\label{fig:skiplistabs}
-\end{figure} 
-
 Figure~\ref{fig:skiplistabs} shows a set of fragments that represents the
 part of the heap that is accessible to
 $\thread_1$ in the configuration in Figure~\ref{sl-shape}. We assume that
@@ -616,7 +594,7 @@ the value of the observer register is $9$.
 There are $10$ fragments, named $\frag_1$, \ldots , $\frag_{10}$. Two of
 these ($\frag_5$ and $\frag_9$) consist of a tag that points to $\dangconst$,
 and the other consist of a pair of pointer-connected tags. The fragments $\frag_1$, \ldots , $\frag_{6}$ are abstracted from the level $1$, whereas the other fragments are abstracted from higher levels. As can be seen, the property where the $\tt pred$, in bottom level, never refers to an unmarked node whose key is greater than or equal to $\tt x$ is preserved by the abstraction. The data field of the tag which contains $\tt pred$ in fragments $\frag_9$ is smaller than $\tt x$.  In addition, there is no tag whose marked field is $\tt true$ and contains $\tt x$ in its reach to information, it means that the abstraction preservers the property where the node which is physically removed can not be found by $\tt find$ method.   
-\bjcom{The below if for TS Stack. Should it be replaced or removed?}
+\todo[inline]{The below is for TS Stack. To be rmeoved and replaced}
 \begin{itemize}
 \item The $\tt data$ field of the tag (to the left) abstracts the data value
   $2$ to the set of observer registers with that value: in this case

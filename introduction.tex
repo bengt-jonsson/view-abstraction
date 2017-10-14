@@ -96,7 +96,7 @@ Inuitively, a set of fragments describes the set of heaps that can be formed by
 %% information).
 The combination of local and global information in fragments allows the
 verification to reason about the sequence of cells that can be ``seen'' by
-threads as the traverse the heap by following pointer fields in cells and
+threads as they traverse the heap by following pointer fields in cells and
 pointer variables, thereby enabling automatic verification of reachability
 properties. The local information captures which cell patterns may be
 seen while traversing the heap, whereas the global information also
@@ -105,7 +105,7 @@ in the future.
 
 Fragment abstraction can and should be, in a natural way,
 be combined with data abstractions for
-handling unbounded data domains and with tread abstractions
+handling unbounded data domains and with thread abstractions
 for handling an unbounded number of threads.
 For the latter we adapt
 the successful thread-modular approach~\cite{BLMRS:cav08}, which constructs
@@ -168,7 +168,8 @@ the literature on concurrent data structures.
 
 For this verification, we we specify linearizability
 using the simple and powerful technique of
-{\em observers}~\cite{AHHR:integrated}, which can be seen as monitors that
+{\em observers}~\cite{AHHR:integrated,BEEH:icalp15,HSV:concur13,Quy:sas16},
+which can be seen as monitors that
 report violations of the linearizability criterion. Observers synchronize with
 the monitored concurrent programs at designated actions. This can be done in
 two ways.
