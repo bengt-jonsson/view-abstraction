@@ -54,20 +54,20 @@
 \node[linecode] at ($(locate13.east)+(14pt,0pt)$) {\scriptsize  \textbf{while} ({true})};
 
 \node(locate140)[linenum] at ($(locate13.east)+(2pt,-10pt)$) {\scriptsize 10};
-\node(code140)[linecode] at ($(locate140.east)+(19pt,0pt)$) {\scriptsize \textbf{atomic} \{ succ = curr.next[i];};
+\node(code140)[linecode] at ($(locate140.east)+(19pt,0pt)$) {\scriptsize  <succ, marked[i]> = };
 
 \node(locate14)[linenum] at ($(locate140.east)+(0pt,-10pt)$) {};
-\node(code14)[linecode] at ($(locate14.east)+(52pt,0pt)$) {\scriptsize marked[i] = curr.marked[i];\}};
+\node(code14)[linecode] at ($(locate14.east)+(42pt,0pt)$) {\scriptsize <curr.next[i], curr.marked[i]>;};
 
 
 \node(locate15)[linenum] at ($(locate14.east)+(0pt,-10pt)$) {\scriptsize 11};
 \node[linecode] at ($(locate15.east)+(19pt,0pt)$) {\scriptsize  \textbf{while} (marked[0])};
 
 \node(locate16)[linenum] at ($(locate15.east)+(0pt,-10pt)$) {\scriptsize 12};
-\node(code16)[linecode] at ($(locate16.east)+(24pt,0pt)$) {\scriptsize s{=}CAS(pred.next[i],curr,succ,{false}};
+\node(code16)[linecode] at ($(locate16.east)+(24pt,0pt)$) {\scriptsize s{=}CAS(<pred.next[i],pred.marked[i]>,};
 
 \node(locate161)[linenum] at ($(locate16.east)+(0pt,-10pt)$) {};
-\node(code161)[linecode] at ($(locate161.east)+(134pt,0pt)$) {\scriptsize false);};
+\node(code161)[linecode] at ($(locate161.east)+(57pt,0pt)$) {\scriptsize <curr,false>,<succ,false>);};
 
 
 \node(locate17)[linenum] at ($(locate161.east)+(0pt,-10pt)$) {\scriptsize 13};
@@ -78,10 +78,10 @@
 
 
 \node(locate190)[linenum] at ($(locate18.east)+(0pt,-10pt)$) {\scriptsize 15};
-\node[linecode] at ($(locate190.east)+(24pt,0pt)$) {\scriptsize \textbf{atomic} \{ succ {=} curr.next[i];};
+\node[linecode] at ($(locate190.east)+(24pt,0pt)$) {\scriptsize <succ, marked[i] {=} };
 
 \node(locate19)[linenum] at ($(locate190.east)+(0pt,-10pt)$) {};
-\node[linecode] at ($(locate19.east)+(45pt,0pt)$) {\scriptsize marked[i] {=} curr.marked[i];\}};
+\node[linecode] at ($(locate19.east)+(30pt,0pt)$) {\scriptsize   <curr.next[i], curr.marked[i]>;\}};
 
 
 
@@ -159,10 +159,10 @@
 \node[linecode] at ($(locate12.east)+(19pt,0pt)$) {\scriptsize Node* succ = succs[i];};
 
 \node(locate131)[linenum] at ($(locate12.east)+(0pt,-10pt)$) {\scriptsize 10};
-\node[linecode] at ($(locate131.east)+(19pt,0pt)$) {\scriptsize  \textbf{atomic} \{ new.next[i] = succ;};
+\node[linecode] at ($(locate131.east)+(19pt,0pt)$) {\scriptsize <new.next[i], new.marked[i] = };
 
 \node(locate13)[linenum] at ($(locate131.east)+(0pt,-10pt)$) {};
-\node[linecode] at ($(locate13.east)+(53pt,0pt)$) {\scriptsize  new.marked[i] = false; \}};
+\node[linecode] at ($(locate13.east)+(53pt,0pt)$) {\scriptsize  <succ, false>;};
 
 \node(locate14)[linenum] at ($(locate13.east)+(0pt,-10pt)$) {\scriptsize 11};
 \node(code14)[linecode] at ($(locate14.east)+(14pt,0pt)$) {\scriptsize Node* pred = preds[1];};
@@ -170,23 +170,23 @@
 \node(locate15)[linenum] at ($(locate14.east)+(0pt,-10pt)$) {\scriptsize 12};
 \node[linecode] at ($(locate15.east)+(14pt,0pt)$) {\scriptsize  Node* succ {=} succs[1];};
 
-\node(locate161)[linenum] at ($(locate15.east)+(0pt,-10pt)$) {\scriptsize 13};
-\node(code161)[linecode] at ($(locate161.east)+(14pt,0pt)$) {\scriptsize \textbf{atomic} \{ new.next[1] = succ;};
+\node(locate162)[linenum] at ($(locate15.east)+(0pt,-10pt)$) {\scriptsize 13};
+\node(code162)[linecode] at ($(locate162.east)+(14pt,0pt)$) {\scriptsize <new.next[1],new.marked[1]> = <succ, false>};
 
 
-\node(locate16)[linenum] at ($(locate161.east)+(0pt,-10pt)$) {};
-\node(code16)[linecode] at ($(locate16.east)+(48pt,0pt)$) {\scriptsize new.marked[1] = false;\}};
+%\node(locate16)[linenum] at ($(locate161.east)+(0pt,-10pt)$) {};
+%\node(code16)[linecode] at ($(locate16.east)+(48pt,0pt)$) {\scriptsize  = <succ, false>;};
 
 
 
-\node(locate161)[linenum] at ($(locate16.east)+(0pt,-10pt)$) {\scriptsize 14};
-\node(code161)[linecode] at ($(locate161.east)+(14pt,0pt)$) {\scriptsize \textbf{if} {!}CAS(pred.next[1],succ,n,false,false)};
+\node(locate161)[linenum] at ($(locate162.east)+(0pt,-10pt)$) {\scriptsize 14};
+\node(code161)[linecode] at ($(locate161.east)+(14pt,0pt)$) {\scriptsize \textbf{if} {!}CAS(<pred.next[1], pred.marked[1]>,};
 
-%\node(locate1610)[linenum] at ($(locate161.east)+(0pt,-10pt)$) {};
-%\node(code161)[linecode] at ($(locate1610.east)+(14pt,0pt)$) {\scriptsize ,false,false));};
+\node(locate1610)[linenum] at ($(locate161.east)+(0pt,-10pt)$) {};
+\node(code161)[linecode] at ($(locate1610.east)+(14pt,0pt)$) {\scriptsize <succ,false>, <n,false>);};
 
 
-\node(locate17)[linenum] at ($(locate161.east)+(0pt,-10pt)$) {\scriptsize 15};
+\node(locate17)[linenum] at ($(locate1610.east)+(0pt,-10pt)$) {\scriptsize 15};
 \node[linecode] at ($(locate17.east)+(19pt,0pt)$) {\scriptsize \textbf{goto} 5;};
 
 \node(locate171)[linenum] at ($(locate17.east)+(0pt,-10pt)$) {\scriptsize 16};
@@ -231,7 +231,7 @@
 
 \node(bot)[linecode] at ($(locate25.east)+(0pt,-10pt)$) {};
 \begin{pgfonlayer}{background}
- \node[code-bg,fit=(locate-head) (code3) (locate14) (code22) (bot) (code16) (code23) (A) ]{};
+ \node[code-bg,fit=(locate-head) (code3) (locate14) (code22) (bot) (code161) (code23) (A) ]{};
  \end{pgfonlayer}
 
 
