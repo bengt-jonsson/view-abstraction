@@ -1,10 +1,9 @@
 \section{Overview}
 \label{sec:overview}
 
-In this section, we illustrate our technique on our verification of 
+In this section, we illustrate our technique on the verification of 
 correctness, in the sense of linearizability, of
-concurrent set data structure based on skiplists.
-Here, we consider the
+a concurrent set data structure based on skiplists, namely the
 Lock-Free Concurrent Skiplist from~\cite[Section 14.4]{ArtOfMpP}.
 
 \bjcom{Quy: I assume you will take care of this section}
@@ -24,8 +23,10 @@ lowest-level list, and serve as shortcuts into lower-level lists.
 %\end{figure}
 
 %\bjcom{Say which are the methods}
-There are three main methods of the algorithm namely $\tt add$, $\tt contains$ and $\tt remove$. All methods rely on a method $\tt find$ to search for a given key, $\tt add(x)$ adds $\tt x$ to the set and returns true iff $\tt x$ was not already in the set; $\tt remove(x)$ removes $\tt x$ from the set and returns true iff v was in the set; and $\tt contains(x)$
-returns true iff $\tt x$ is in the set. In this section, we shortly describe the $\tt find$ and $\tt add$ methods.
+There are three main methods of the algorithm namely $\tt add$, $\tt contains$ and $\tt remove$. The method $\tt add(x)$ adds $\tt x$ to the set and returns true iff $\tt x$ was not already in the set; $\tt remove(x)$ removes $\tt x$ from the set and returns true iff v was in the set; and $\tt contains(x)$
+returns true iff $\tt x$ is in the set.
+All methods rely on a method $\tt find$ to search for a given key. 
+In this section, we shortly describe the $\tt find$ and $\tt add$ methods.
 Figure~\ref{sl-code:fig} shows code for these two methods.
 %\bjcom{Start with the most important property of the method. What does it do?}
 \input slcode
