@@ -1,10 +1,10 @@
-\begin{center}
-\begin{figure}
-\input{sll-lazy-list-shape}
-\caption{Example of Fragment Abstraction}
-\label{lazylist}
-\end{figure}
-\end{center}
+%% \begin{center}
+%% \begin{figure}
+%% \input{sll-lazy-list-shape}
+%% \caption{Example of Fragment Abstraction}
+%% \label{lazylist}
+%% \end{figure}
+%% \end{center}
 \section{Fragment Abstraction: Singly Linked Lists}
 \label{sec:fragment-abstraction}
 In the previous section, we reduced the problem of verifying linearizability
@@ -14,12 +14,12 @@ the observer cannot reach an accepting state.
 In this section, we describe our technique for performing this verification.
 The main novel contribution is our fragment abstraction for
 representing the possible heap configurations of a concurrent program.
-In the following subsection, we describe our symbolic representation and
-verification technique, using fragment
-abstraction, for programs that operate on singly-linked lists (SLLs). This
+In this section, we describe this symbolic representation and our
+verification technique
+for programs that operate on singly-linked lists (SLLs). This
 representation is also the basis for our representation for programs
-operating on skiplists, described in Subsection~\ref{subsect:skiplists}
-and programs operating on arrays of SLLs, in Subsection~\ref{subsect:skiplists}.
+operating on skiplists, described in Section~\ref{subsect:skiplists}
+and programs operating on arrays of SLLs, in Section~\ref{subsect:skiplists}.
 
 %% We describe our fragment abstractions for three classes of heap structures:
 %% in the following subsection, we consider programs operating on singly-linked
@@ -51,12 +51,12 @@ and programs operating on arrays of SLLs, in Subsection~\ref{subsect:skiplists}.
 %% }
 
 %% We assume that we must analyze the product of a program and an observer.
-In this subsection, we present our fragment abstraction for programs that
+In this subsection, we present our symbolic representation for programs that
 operate on singly-linked lists. This means that
 each cell has exactly one pointer field, named {\tt next}.
 In order to simplify the presentation in this section, we assume that
 each heap cell has at most one $\ddomain$-field, named  {\tt data}.
-Our verification technique is based on a combination of a thread abstraction, a
+Our symbolic representation is based on a combination of a thread abstraction, a
 shape  abstraction, and a data abstraction.
 
 Assume a configuration $\sconf$ of $\system=\prog\compose\observer$
@@ -71,10 +71,10 @@ For a pointer variable $p$, let a $p$-cell be the cell to which $p$ points.
 For an observer register $\reg_i$,  define a
 {\em $\reg_i$-cell} to be a heap cell whose
 ${\tt data}$ field has the same value as $\reg_i$.
-\bjcom{Maybe skip the following}
-A heap cell is {\em globally significant} if it is either a $p$-cell for
-a global pointer variable $p$, or a $\reg_i$-cell for some
-observer register $\reg_i$.
+%% \bjcom{Maybe skip the following}
+%% A heap cell is {\em globally significant} if it is either a $p$-cell for
+%% a global pointer variable $p$, or a $\reg_i$-cell for some
+%% observer register $\reg_i$.
 \begin{itemize}
   \item
 Our {\em thread abstraction}
@@ -90,10 +90,10 @@ adapts the thread-modular approach by representing only the view of a single, bu
 \item
 We use a novel {\em shape abstraction}, which represents the part of the heap
 that is accessible to $\thread$ by a set of {\em fragments}. 
-A fragment consists of a pair of heap cells that are connected by a pointer.
-For each of these cells, the fragment represents
+A fragment consists of two of heap cells that are connected by a pointer.
+For each of its cells, the fragment represents
 \begin{inparaenum}[(i)]
-\item the values of its data fields,
+\item the values of its non-pointer fields,
 \item the pointer variables (either local to $\thread$ or global) that point
   to it, and
 \item global pointer variables $p$ and observer registers $\reg_i$ such that
@@ -115,7 +115,7 @@ state of the observer, and to each fragment. This abstraction
 represents small finite domains exactly, and abstracts a set of
 data values in $\ddomain$ by their relative ordering.
 \end{itemize}
-Let us now describe our symbolic representation in concrete detail.
+Let us describe the concrete structure of our symbolic representation.
 Our data abstraction is conveniently represented by defining an
 abstract domain for each concrete domain of data values.
 %% For each thread-local variable, and each non-pointer cell field, which ranges
@@ -136,8 +136,8 @@ abstract domain for each concrete domain of data values.
   if it maps each local variable and observer register with a value ${\tt d'} \in \ddomain$
   to a set which includes a relation $\sim$ such that $\tt d \sim \tt d'$.
 \end{itemize}
-In our shape abstration, we represent each fragment by a pair of
-{\em tags}. A {\em tag} is a tuple $\atag = \tagtuple$, where
+Next, we describe our shape abstraction. Let a
+{\em tag} be a tuple $\atag = \tagtuple$, where
 \begin{itemize}
 \item
   $\vals$ is a mapping from non-pointer fields to their corresponding abstract
@@ -150,7 +150,7 @@ In our shape abstration, we represent each fragment by a pair of
 \end{itemize}
 For a heap cell $\cell$ that is accessible to thread $\thread$ 
 in a configuration $\sconf$, and a tag
-$\atag = \tagtuple$, we write $\cell \satfrag{\thread}{\sconf} \atag$ to denote that
+$\atag = \tagtuple$, we let $\cell \satfrag{\thread}{\sconf} \atag$ denote that
 \begin{itemize}
 \item
   $\vals$ is an abstraction of the concrete values of the non-pointer fields of $\cell$,
@@ -216,25 +216,27 @@ where $\inat{\frag}$ and $\outat{\frag}$ are tags
 For a cell $\cell$ which is accessible to thread $\thread$, and a fragment
 $\frag$ of form $\fragtupleat{\frag}$, let $\cell \satfrag{\thread}{\sconf}\frag$ denote that
 the ${\tt next}$ field of $\cell$ points to a cell $\cell'$ such that
-\begin{inparaenum}[(i)]
-\item
+%% \begin{inparaenum}[(i)]
+%% \item
   $\cell \satfrag{\thread}{\sconf} \inat{\frag}$,
-\item
-$\cell' \satfrag{\thread}{\sconf} \outat{\frag}$, and
-\item $\cell.\mathtt{data} \sim \cell'.\mathtt{data}$ for some $\sim \in \datarelat{\frag}$.
-\end{inparaenum}
+and
+%% \item
+$\cell' \satfrag{\thread}{\sconf} \outat{\frag}$, and 
+%% \item
+  $\cell.\mathtt{data} \sim \cell'.\mathtt{data}$ for some $\sim \in \datarelat{\frag}$.
+%% \end{inparaenum}
 For a fragment of form $\frag = \tuple{\inat{\frag},\nullconst}$, let
-$\cell \lhd \frag$ denote that
-$\cell \lhd \inat{\frag}$ and $\mathtt{next}(\cell) = \nullconst$.
-Define $\cell \lhd \frag$ for $\frag$ of form $\tuple{\inat{\frag},\dangconst}$
+$\cell \satfrag{\thread}{\sconf} \frag$ denote that
+$\cell \satfrag{\thread}{\sconf} \inat{\frag}$ and $\mathtt{next}(\cell) = \nullconst$.
+Define $\cell \satfrag{\thread}{\sconf} \frag$ for $\frag$ of form $\tuple{\inat{\frag},\dangconst}$
 analogously.
 %% For $\tuple{\inat{\frag},\dangconst}$, the definition is adapted in the obvious way.
 
 Let $\fragset$ be a set of fragments.
 A global configuration $\sconf$ satisfies a set $\fragset$ of fragments
 wrp.\ to $\thread$, denoted  $\sconf \satfragset{\thread} \fragset$,
-if
-for any cell $\cell$ that is accessible to $\thread$, there is a fragment
+if for any cell $\cell$ 
+that is accessible to $\thread$ (different from $\null$ and $\bot$), there is a fragment
 $\frag \in \fragset$ such that $\cell \satfrag{{\thread}}{\sconf} \frag$.
 
 
@@ -264,7 +266,7 @@ $\frag \in \fragset$ such that $\cell \satfrag{{\thread}}{\sconf} \frag$.
 %% \item the local configuration of $\thread$ satisfies $\locsymbconf$, in the
 %%   natural way, and
 %% \item for each $\cell$ that is accessible from $\thread$, there is
-%%   a fragment $\frag$ such that $\cell \lhd_{\thread} \frag$.
+%%   a fragment $\frag$ such that $\cell \satfrag{\thread}{\sconf}_{\thread} \frag$.
 %% \end{itemize}
 We are now ready to define our abstract symbolic representation, which
 is defined as a partial mapping from combinations of abstract observer

@@ -29,19 +29,9 @@ A {\it trace} of $\dstruct$ is a sequence of operations.
 The (sequential) semantics of a data structure $\dstruct$ is given by
 a set $\denotationof\dstruct$ of allowed traces.
 %% called the {\it legal} traces of $\dstruct$.
-
-\todo[inline]{Quy: replace the below by an example of a set trace.}
-
-For example, for the {\tt Stack} data structure, the method names
-are $\tt push$ and $\tt pop$.
-%
-The operation ${\tt push(3)}$, where $\tt 3$ is an input value, pushes
-the value $3$, whereas ${\tt pop(4)}$, where $\tt 4$ is an output value,
-pops the value $4$.
-
-%
-%% We often identify $\dstruct$ with its behavior $\denotationof\dstruct$.
-
+For example, a {\tt Set} data structure has method names
+$\tt add$, $\tt remove$, and $\tt contains$. An example of an allowed trace
+is ${\tt add(3,true)\ contains(4,false)\ contains(3,true) \ remove(3,true)}$.
 %
 %(see Appendix~\ref{dstruct:sepcs:section} for a formal specification
 %of $\denotationof{\tt Set}$, $\denotationof{\tt Queue}$, and $\denotationof{\tt Stack}$.)
@@ -54,7 +44,7 @@ pops the value $4$.
 
 A {\em concurrent data structure implementation} operates on a shared
 state consisting of shared global variables and a shared heap.
-It assigns, to each method name, a method which performs operations
+It assigns, to each method name,  a method which performs operations
 %% In this section, we introduce programs that consist
 %% of arbitrary numbers of concurrently executing threads
 %% that access a concurrent data structure.
@@ -62,9 +52,8 @@ It assigns, to each method name, a method which performs operations
 %the language syntax used in our tool).
 %
 %% Each thread executes a method that performs an operation
-on the shared state.
-Each data structure implementation also comes with an initialization method,
-named {\tt init}, which initializes its shared state.
+on the shared state. It
+also comes with a method named {\tt init}, which initializes its shared state.
 
 We assume that all global variables are pointer variables.
 Heap cells have a fixed set $\fieldset$ of fields, namely
@@ -130,10 +119,10 @@ ABA problem (e.g.,~\cite{MS:QueueAlgorithms}).
 We define a {\em program} (over a concurrent data structure) to consist 
 of an arbitrary number of concurrently executing threads, each of which
 executes a method that performs an operation on the data structure.
+The shared state is initialized
+by the {\tt init} method prior to the start of program execution.
 We assume concurrent execution according to sequentially consistent memory
 model.
-We assume that the data structure has been initialized
-by the {\tt init} method prior to the start of program execution.
 
 \subsection{Linearizability}
 In a concurrent
@@ -254,8 +243,8 @@ of call and return actions is {\em linearizable} wrt.\ $\dstruct$.
 %% \label{set:observer:fig}
 %% \end{figure}
 
-\subsection{Specification by Observers}
-\label{subsect:observers}
+%% \subsection{Specification by Observers}
+%% \label{subsect:observers}
 %% \todo[inline]{Should we mention LP method:
 %% The most common technique is to annotate methods with LPs. More precisely,
 %% each method is instrumented to announce precisely when the linearization point
@@ -265,26 +254,42 @@ of call and return actions is {\em linearizable} wrt.\ $\dstruct$.
 %% checking that the occurrence of linearization points is allowed by the
 %% sequential semantics of the particular data structure that is implemented.}
 
-To verify correctness of a data structure implementation,
-we must verify that any history, i.e., sequence of call and return actions,
-of any program execution satisfies the linearizability criterion.
-This is equivalent to
-requiring that each operation on the data structure can be considered as being
-performed atomically at some point (called the {\em linearization point (LP)})
-between its invocation and return.
-To check linearizability of set implementations, the user
-first instruments each method so that it generates
-a corresponding operation precisely when the method executes its LP, using
+We specify linearizability using the technique of
+{\em observers}~\cite{AHHR:integrated,BEEH:icalp15,HSV:concur13,Quy:sas16}.
+Depending on the data structure, we apply it in two different ways.
+\begin{itemize}
+    \item For set implementations,
+%% To verify correctness of a data structure implementation,
+%% we must verify that any history, i.e., sequence of call and return actions,
+%% of any program execution satisfies the linearizability criterion.
+%% This is equivalent to
+%% requiring that each operation on the data structure can be considered as being
+%% performed atomically at some point (called the {\em linearization point (LP)})
+%% between its invocation and return.
+%% To check linearizability of set implementations,
+the user instruments each method so that it generates
+a corresponding operation precisely when the method executes its LP, either
+directly or with lightweight instrumentation using
 the technique of linearization policies~\cite{Quy:sas16}. 
-In the case of the skiplist algorithm, this instrumentation simply consists
-of associating LPs to fixed statements in the code.
-\bjcom{Quy: Please illustrate here how this is done for the skiplist}
-Thereafter, it should be checked that the concurrent execution of any
-program generates (through its instrumentation) a sequence of operations which satisfies the semantics of the data structure. 
-This check is performed by an {\em observer}, which 
+Therafter, an {\em observer} is constructed, which
+%% Thereafter, it should be checked that the concurrent execution of any
+%% program generates (through its instrumentation) a sequence of operations which satisfies the semantics of the data structure. 
+%% This check is performed by an {\em observer}, which 
 monitors the sequence of operations that is announced by the
-instrumentation, and report when it violates the semantics of the set
-data structure.
+instrumentation; it reports (by moving to an accepting error state)
+whenever this sequence violates the semantics of the set data structure.
+\item
+  For stacks and queues, we use a recent result
+~\cite{BEEH:icalp15,HSV:concur13} that the set of linearizable histories,
+i.e., sequences of call and return actions,
+can be exactly specified by an observer.
+Thus, linearizability can be specified without
+any user-supplied instrumentation, by using an observer which monitors
+the the sequences of call and return actions and reports violations of
+linearizability.
+We illustrate this in Section XXX.
+\end{itemize}
+
 
 %% {\em Observers} are
 %% finite automata extended with a finite set of {\em registers}
@@ -394,7 +399,8 @@ of {\it registers}, and $\otransitionset$ is a finite
 set of {\it transitions}.
 %
 %
-Transitions are of the form 
+For observers that monitor sequences of operations,
+transitions are of the form 
 $\tuple{\ostate_1,\mname(\indata,\outdata),\ostate_2}$,
 $\mname\in\malphabet$ is a method name and 
 $\inxvar$ and $\outxvar$ are either registers or constants, i.e.,
@@ -415,14 +421,6 @@ sequences that are {\em not} in $\denotationof{\dstruct}$.
 Fig.~\ref{set:observer:fig}
 depicts an observer for the set data structure.
 
-For stacks and queues, it was recently established
-~\cite{BEEH:icalp15,HSV:concur13} that the set of linearizable histories,
-i.e., sequences of call and return actions,
-can be exactly specified by an observer.
-Thus, we check linearizability for queue and stack implementations without
-any user-supplied instrumentation, by using an observer which accepts
-precisely the complement of the set of linearizable histories.
-We illustrate this in Section XXX.
 
 
 %% a small number of simple ordering constraints of the following form
@@ -497,10 +495,10 @@ A {\it heap (state)} consists of a finite set
 $\cellset$ of cells, including the two special cells
 $\nullconst$ and $\dangconst$ (dangling).
 We represent each named field of the cell type by a function from the set of
-nontrivial cells $\mcellset \cellset\setminus\set{\nullconst,\dangconst}$ to
+nontrivial cells $\mcellset = \cellset\setminus\set{\nullconst,\dangconst}$ to
 the appropriate domain, e.g., $\cellset$ in the case of pointer fields.
-Thus, the values of {\tt next}-fields is represented by a function
-${\tt next}: \mcellset\mapsto\cellset$.
+%% Thus, the values of {\tt next}-fields is represented by a function
+%% ${\tt next}: \mcellset\mapsto\cellset$.
 
 \paragraph{Threads.}
 A {\it local state} $\lstate$ of a thread $\thread$
