@@ -183,7 +183,7 @@
 \node(code161)[linecode] at ($(locate161.east)+(14pt,0pt)$) {\scriptsize \textbf{if} {!}CAS(<pred.next[1], pred.marked[1]>,};
 
 \node(locate1610)[linenum] at ($(locate161.east)+(0pt,-10pt)$) {};
-\node(code161)[linecode] at ($(locate1610.east)+(14pt,0pt)$) {\scriptsize <succ,false>, <n,false>);};
+\node(code161)[linecode] at ($(locate1610.east)+(44pt,0pt)$) {\scriptsize <succ,false>, <n,false>);};
 
 
 \node(locate17)[linenum] at ($(locate1610.east)+(0pt,-10pt)$) {\scriptsize 15};
@@ -205,8 +205,11 @@
 \node(locate22)[linenum] at ($(locate21.east)+(0pt,-10pt)$) {\scriptsize 20};
 \node(code22)[linecode] at ($(locate22.east)+(27pt,0pt)$) {\scriptsize succ {=} succs[i];};
 %
-\node(locate23)[linenum] at ($(locate22.east)+(0pt,-10pt)$) {\scriptsize 21};
-\node(code23)[linecode] at ($(locate23.east)+(27pt,0pt)$) {\scriptsize \textbf{if} CAS(pred.next[i],succ,n,false,false)};
+\node(locate230)[linenum] at ($(locate22.east)+(0pt,-10pt)$) {\scriptsize 21};
+\node(code23)[linecode] at ($(locate230.east)+(27pt,0pt)$) {\scriptsize \textbf{if} CAS(<pred.next[i],pred.marked[i]>};
+
+\node(locate23)[linenum] at ($(locate230.east)+(0pt,-10pt)$) {};
+\node(code23)[linecode] at ($(locate23.east)+(27pt,0pt)$) {\scriptsize <succ,n>,<false,false>)};
 
 %\node(locate231)[linenum] at ($(locate23.east)+(0pt,-10pt)$) {\scriptsize 22};
 %\node[linecode] at ($(locate231.east)+(24pt,0pt)$) {\scriptsize ,false,false));};
@@ -231,7 +234,7 @@
 
 \node(bot)[linecode] at ($(locate25.east)+(0pt,-10pt)$) {};
 \begin{pgfonlayer}{background}
- \node[code-bg,fit=(locate-head) (code3) (locate14) (code22) (bot) (code161) (code23) (A) ]{};
+ \node[code-bg,fit=(locate-head) (code3) (locate14) (code22)  (code162) (bot) (code161) (code23) (A) ]{};
  \end{pgfonlayer}
 
 
