@@ -64,8 +64,8 @@ In this paper, we present a technique for automatic verification of concurrent
 data structure implementations that operate on dynamically allocated
 heap structures which are more complex than just singly-linked lists.
 Our approach is the first framework that
-can automatically verify concurrent data structure implementations that
-singly linked lists, skip lists~\cite{Fomitchev:2004,ArtOfMpP,Sundell:2005},
+can automatically verify concurrent data structure implementations that employ
+singly linked lists, skiplists~\cite{Fomitchev:2004,ArtOfMpP,Sundell:2005},
 as well as arrays of singly linked lists~\cite{ts-stack},
 at the same time as handling an unbounded
 number of concurrent threads, an unbounded domain of data values
@@ -74,34 +74,41 @@ number of concurrent threads, an unbounded domain of data values
 %% thereby abstracting away from the correlation between local states of different threads.
 Our technique is based on a novel shape abstraction,
 called {\em fragment abstraction}, which in a simple and uniform way is able to
-represent different kinds of unbounded heap structures.
-%% such as skip lists and arrays of singly linked lists.
+represent several different classes of unbounded heap structures.
+%% such as skiplists and arrays of singly linked lists.
 Its main idea is to represent a set of heap states by a set of {\em fragments}.
-A fragment consists of a pair of heap cells that are connected by a pointer field.
-For each of its cells, the fragment represents
-the values of its non-pointer
-fields as well as information about how it can be reached from pointer
-variables. The latter information is both {\em local}, saying which pointer
-variables point directly to the cell, and {\em global}, saying how the
-cell can reach to and be reached from (by following chains of pointers)
-other heap cells that are pointed to by global variables.
-A set of fragments represents the set of heap
-structures in which each pair of pointer-connected nodes are represented by some
+A fragment represents two heap cells that are connected by a pointer field.
+For each of its cells, 
+the fragment represents the contents of its non-pointer fields, together with
+information about how the cell can be reached from the program's pointer
+variables. The latter information consists of both:
+\begin{inparaenum}[(i)]
+  \item {\em local} information, saying which pointer variables
+    point directly to them, and
+    \item {\em global} information, saying how the cell
+      can reach to and be reached from (by following chains of pointers) other
+      heap cells that are significant from a global perspective, typically
+      since they are pointed to by global variables.
+\end{inparaenum}
+A set of fragments represents the set of heap states
+in which any two pointer-connected nodes is represented by some
 fragment in the set.
-Inuitively, a set of fragments describes the set of heaps that can be formed by
+Thus, a set of fragments describes the set of heaps that can be formed by
 ``pieced together'' fragments in the set.
 %% This ``piecing together'' must
 %% be both locally consistent (appending only fragments that agree on their
 %% common node), and globally consistent (respecting the global reachability
 %% information).
-The combination of local and global information in fragments allows the
-verification to reason about the sequence of cells that can be ``seen'' by
-threads as they traverse the heap by following pointer fields in cells and
-pointer variables, thereby enabling automatic verification of reachability
-properties. The local information captures which cell patterns may be
-seen while traversing the heap, whereas the global information also
-captures whether certain accesses (also by other threads) will be possible
-in the future. 
+The combination of local and global information in fragments supports
+precise reasoning about the sequence of cells that can be accessed by
+threads that traverse the heap by following pointer fields in cells and
+pointer variables.
+The local information captures properties of the cell fields that can
+be accessed as a thread dereferences a pointer variable or a pointer field;
+the global information also captures whether certain significant accesses
+will at all be possible by following a sequence of pointer fields.
+This support for reasoning about patterns of cell accesses enables
+automated verification of reachability and other functional properties.
 
 Fragment abstraction can and should be, in a natural way,
 be combined with data abstractions for
@@ -159,32 +166,36 @@ termination of our analysis.
 
 We have implemented our approach and applied it to automatically verify
 correctness, in the sense of linearizability, of a large number of
-concurrent data structure algorithms.
+concurrent data structure algorithms, described in a C-like language.
 More specifically, we have automatically verified linearizability of 
 most linearizable concurrent implementations
-of sets, stacks, and queues, which emply singly-linked lists, skip lists, or
+of sets, stacks, and queues, which emply singly-linked lists, skiplists, or
 arrays of timestamped singly-linked lists, which are known to us in
 the literature on concurrent data structures.
-
-For this verification, we we specify linearizability
+For this verification, we specify linearizability
 using the simple and powerful technique of
 {\em observers}~\cite{AHHR:integrated,BEEH:icalp15,HSV:concur13,Quy:sas16},
-which can be seen as monitors that
-report violations of the linearizability criterion. Observers synchronize with
-the monitored concurrent programs at designated actions. This can be done in
-two ways.
-\begin{inparaenum}[(1)]
-\item
-  For concurrent implementations of stacks and queues,
-  linearizability can be precisely specified by
-  observers that synchronize on call and return actions of
-  methods, as shown by~\cite{BEEH:icalp15,HSV:concur13}; this is done without
- any user annotation.
-\item
-  For sets, the verification requires the user to annotate how linearization
-  points are placed in each method; in most cases this is a small burden for
-  the verifier. The observer then synchronizeson these 
-  linearization points.
+which reduces the criterion of linearizability to a simple reachability
+property. To verify implementations of stacks and queues, 
+the application of observers can be done completely automatically without
+any manual steps, whereas for implementations of sets, the verification relies
+on user annotation of how linearization points are placed in each method, which
+is a small burden for the verifier.
+%% report violations of the linearizability criterion. Observers synchronize with
+%% the monitored concurrent programs at designated actions. This can be done in
+%% two ways.
+%% \begin{inparaenum}[(1)]
+%% \item
+%%   For concurrent implementations of stacks and queues,
+%%   linearizability can be precisely specified by
+%%   observers that synchronize on call and return actions of
+%%   methods, as shown by~\cite{BEEH:icalp15,HSV:concur13}; this is done without
+%%  any user annotation.
+%% \item
+%%   For sets, the verification requires the user to annotate how linearization
+%%   points are placed in each method; in most cases this is a small burden for
+%%   the verifier. The observer then synchronizeson these 
+%%   linearization points.
 %% typically by affixing
 %%   linearization points to particular statements, or in more complex cases by
 %%   light-weight instrumentation using the approach of
@@ -195,9 +206,9 @@ two ways.
 %%   linearization points to particular statements, or in more complex cases by
 %%   light-weight instrumentation using the approach of
 %%   controllers~\cite{Quy:sas16}.
-\end{inparaenum}
-Our implementation then automatically checks, using our novel technique based on
-fragment abstraction, that a supplied C-like description of a concurrent data structure is a correct linearizable implementation of a stack, queue, or set.
+%% \end{inparaenum}
+%% Our implementation then automatically checks, using our novel technique based on
+%% fragment abstraction, that a supplied C-like description of a concurrent data structure is a correct linearizable implementation of a stack, queue, or set.
 
 The fact that our fragment abstraction has been able to automatically verify all
 suppplied concurrent algorithms, also those that employ skiplists or
@@ -207,4 +218,17 @@ that is necessary for verifying correctness, in particular for
 concurrent algorithms where an unbounded number of threads interact
 via a shared heap.
 
-\todo[inline]{Here goes the outline}
+\paragraph{Outline}
+In the next section, we intuitively illustrate our fragment abstraction on the
+verification of a skiplist-based concurrent set implementation.
+In Section~\ref{programs:section} we introduce our model for programs,
+and of observers for specifying linearizability. The fragment abstraction
+is described for singly-linked in Section~\ref{sec:fragment-abstraction},
+for skiplists in Section~\ref{sect:skiplists}, and for arrays of
+singly-linked lists in Section~\ref{sect:ts}. Our implementation and
+experiments are reported in Section~\ref{section:experiments}, followed
+by conclusions in Section~\ref{section:conclusions}.
+
+
+
+
