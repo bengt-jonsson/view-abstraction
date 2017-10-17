@@ -541,7 +541,7 @@ skiplist algorithm with three levels. Each heap cell is shown with the values of
 In addition, each cell is labeled by the
 pointer variables that point to it; we use ${\tt preds(j)[i]}$ to denote the local
 variable ${\tt preds[i]}$ of thread $\thread_j$, and the same for other local variables.
-In the heap state of Figure~\ref{sl-shape}, thread $\thread_1$ is trying to add a new node with key $9$, and has reached line $8$ of the $\tt add$ method.  Thread $\thread_2$ is also doing the same thing as $\thread_1$ \bjcom{Quy: what does this mean?} and it has done its first iteration of the loop in $\tt find$ method in line $19$. We assume that the value of the observer register is $9$
+In the heap state of Figure~\ref{sl-shape}, thread $\thread_1$ is trying to add a new node with key $9$, and has reached line $8$ of the $\tt add$ method. Thread $\thread_2$ is trying to add a new node with key $20$ and it has done its first iteration of the loop in $\tt find$ method in line $19$. We assume that the value of the observer register is $9$
 
 
 %You can find some improvement of this list
@@ -649,7 +649,7 @@ Let us illustrate how such invariants are capture by our fragment abstraction.
 \item
   This is verified by inspecting each tag: $\frag_{3}$ contains the only unreachable tag, and it is also marked.
 \item
-  The fragments express this property inthe case where the value of $\tt key$ is
+  The fragments express this property in the case where the value of $\tt key$ is
   the same as the value of the observer register $\tt x$ \bjcom{Quy: is it really shown
     here?}. Since the invariant holds for any value of $\tt x$, this property
   is sufficiently represented for the verification
