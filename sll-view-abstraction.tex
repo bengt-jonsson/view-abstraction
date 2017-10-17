@@ -640,13 +640,18 @@ in $\fragset$ is related to some pair of compatible fragments $\frag_x$, $\frag_
 Thus, for each pair of compatible fragments $\frag_x$, $\frag_y$ in $\fragset$ such that $\lvarof{x} \in \pvarsat{\inat{\frag_x}}$ and $\tt y \in \pvarsat{\inat{\frag_y}}$,  we let $\fragsetpost$ contain
 the fragments obtained by the following transformations on fragments in
 $\fragset$.
+\bjcom{What about detecting cycles?}
 \begin{enumerate}
   \item
     First, let $\fragsetpost$ contain a new fragment $\frag_{new}$, representing
     the new pair of neighbours formed by the statement, of form
     $\fragtupleat{\frag_{new}}$ such that
-    $\tagat{\inat{\frag_{new}}} = \tagat{\inat{\frag_x}}$ and $\tagat{\outat{\frag_{new}}} = \tagat{\inat{\frag_y}}$ except that $\reachfromat{\outat{\frag_{new}}} = \reachfromat{\inat{\frag_y}} \cup \reachfromat{\inat{\frag_x}}$,
-    and $\datarelat{\frag_{new}} = \set{<,=,>}$.
+    $\tagat{\inat{\frag_{new}}} = \tagat{\inat{\frag_x}}$ and
+    $\tagat{\outat{\frag_{new}}} = \tagat{\inat{\frag_y}}$ except that
+    $\reachfromat{\outat{\frag_{new}}} = \reachfromat{\inat{\frag_y}} \cup \reachfromat{\inat{\frag_x}}$ and
+    $\reachtoat{\inat{\frag_{new}}} = \reachtoat{\inat{\frag_y}} \cup \pvarsat{\inat{\frag_x}}$, and
+    $\datarelat{\frag_{new}} = \set{<,=,>}$.
+    \bjcom{Check this last thing}
 Thereafter, we add all possible fragments that can result from a transformation
 of some fragment $\frag$ which is in $\frag$. This is done by an exhaustive
 case analysis on the possible
