@@ -637,10 +637,12 @@ ${\tt x.next:= y}$.
 This is the most difficult statement, since it is a destructive update of the heap. It affects reachability relations for both $\gvarof{x}$ and $\gvarof{y}$.
 The postcondition computation makes a case analysis on how a fragment
 in $\fragset$ is related to some pair of compatible fragments $\frag_x$, $\frag_y$ in $\fragset$ such that $\lvarof{x} \in \pvarsat{\inat{\frag_x}}$, $\tt y \in \pvarsat{\inat{\frag_y}}$. 
-Thus, for each pair of compatible fragments $\frag_x$, $\frag_y$ in $\fragset$ such that $\lvarof{x} \in \pvarsat{\inat{\frag_x}}$ and $\tt y \in \pvarsat{\inat{\frag_y}}$,  we let $\fragsetpost$ contain
+Thus, for each pair of compatible fragments $\frag_x$, $\frag_y$ in $\fragset$ such that $\lvarof{x} \in \pvarsat{\inat{\frag_x}}$ and $\tt y \in \pvarsat{\inat{\frag_y}}$, it is first checked whether the statement may form
+a cycle in the heap. This may happen if
+$\frag_y \overset{*}\hookrightarrow_{\fragset}\frag_x$, in which case the postcondition reports a potential cycle.
+Otherwise, we let $\fragsetpost$ contain
 the fragments obtained by the following transformations on fragments in
 $\fragset$.
-\bjcom{What about detecting cycles?}
 \begin{enumerate}
   \item
     First, let $\fragsetpost$ contain a new fragment $\frag_{new}$, representing
@@ -651,8 +653,9 @@ $\fragset$.
     $\reachfromat{\outat{\frag_{new}}} = \reachfromat{\inat{\frag_y}} \cup \reachfromat{\inat{\frag_x}}$ and
     $\reachtoat{\inat{\frag_{new}}} = \reachtoat{\inat{\frag_y}} \cup \pvarsat{\inat{\frag_x}}$, and
     $\datarelat{\frag_{new}} = \set{<,=,>}$.
-    \bjcom{Check this last thing}
-Thereafter, we add all possible fragments that can result from a transformation
+    \bjcom{This last thing needs fixing}
+  \item
+    Thereafter, we add all possible fragments that can result from a transformation
 of some fragment $\frag$ which is in $\frag$. This is done by an exhaustive
 case analysis on the possible
 relationship between $\frag$, $\frag_x$ and $\frag_y$.
@@ -673,16 +676,20 @@ $\frag''$ which is same as $\frag'$, except that $\reachfromat{\outat{\frag''}} 
   Quy, could you produce one?}
 
 \paragraph{Symbolic Postcondition Computation for Interference Steps.} 
-The key step in this computation is
-to form the intersection of two sets of fragments
-$\fragset_1$ and $\fragset_2$, such that for the configuration $\conf$
-we have $\conf \satfragset{\thread_i} \fragset_i$ for $i=1,2$.
+Here, the key step is the {\em intersection} operation, which
+takes two sets of fragments
+$\fragset_1$ and $\fragset_2$, and produces a set of joint fragments
+$\fragset_{1,2}$, such that
+$\sconf \satfragset{\thread_1,\thread_2} \fragset_{1,2}$ for any configuration
+such that
+$\sconf \satfragset{\thread_i} \fragset_i$ for $i=1,2$.
+This means that for each heap cell accessible to either
+$\thread_1$ or $\thread_2$, the set $\fragset_{1,2}$ 
+contains a fragment $\frag$ with $\cell \satfrag{\{\thread_1,\thread_2\}}{\sconf} \frag$ (generalizing the notation  $\satfrag{\thread}{\sconf}$ to several
+threads).
 In order to distinguish
-between local variables of $\thread_1$ and $\thread_2$, we assume that local variable $\lvarof{x}$ of thread $\thread_i$ is named as $\lvarof{x[i]}$.
-We must compute a set $\fragset$ which for each
-heap cell accessible to either $\thread_1$ or $\thread_2$, the set $\fragset$ must
-contain a fragment $\frag$ with $\cell \satfrag{1,2}{\sconf} \frag$.
-\bjcom{This notation to be defined}
+between local variables of $\thread_1$ and $\thread_2$, we use the notation
+$\lvarof{x[i]}$ for a local variable $\lvarof{x}$ of thread $\thread_i$.
 There are  here two possibilities.
 \begin{itemize}
 \item If $\cell$ is accessible to both $\thread_1$ and $\thread_2$, then
@@ -694,7 +701,7 @@ There are  here two possibilities.
 \item If $\cell$ is accessible to only one of $\thread_1$ and $\thread_2$,
   say $\thread_1$, then $\fragset$ should contain some fragment
   $\frag_1 \in \fragset_1$ with $\cell \satfrag{1,2}{\sconf} \frag_1$
-  \bjcom{Check that we need not change $\frag_1$}
+  \bjcom{Maybe we need to change $\frag_1$, e.g., if we are at a cutpoint?}
 \end{itemize}
 For a fragment $\frag$, define
 $\greachfromat{\inat{\frag}}$ as the set of global variables in
