@@ -1,10 +1,10 @@
-\begin{center}
-\begin{figure}
-\input{sll-lazy-list-shape}
-\caption{Example of Fragment Abstraction}
-\label{lazylist}
-\end{figure}
-\end{center}
+%% \begin{center}
+%% \begin{figure}
+%% \input{sll-lazy-list-shape}
+%% \caption{Example of Fragment Abstraction}
+%% \label{lazylist}
+%% \end{figure}
+%% \end{center}
 \section{Fragment Abstraction: Singly Linked Lists}
 \label{sec:fragment-abstraction}
 In the previous section, we reduced the problem of verifying linearizability
@@ -14,12 +14,12 @@ the observer cannot reach an accepting state.
 In this section, we describe our technique for performing this verification.
 The main novel contribution is our fragment abstraction for
 representing the possible heap configurations of a concurrent program.
-In the following subsection, we describe our symbolic representation and
-verification technique, using fragment
-abstraction, for programs that operate on singly-linked lists (SLLs). This
+In this section, we describe this symbolic representation and our
+verification technique
+for programs that operate on singly-linked lists (SLLs). This
 representation is also the basis for our representation for programs
-operating on skiplists, described in Subsection~\ref{subsect:skiplists}
-and programs operating on arrays of SLLs, in Subsection~\ref{subsect:skiplists}.
+operating on skiplists, described in Section~\ref{subsect:skiplists}
+and programs operating on arrays of SLLs, in Section~\ref{subsect:skiplists}.
 
 %% We describe our fragment abstractions for three classes of heap structures:
 %% in the following subsection, we consider programs operating on singly-linked
@@ -51,12 +51,12 @@ and programs operating on arrays of SLLs, in Subsection~\ref{subsect:skiplists}.
 %% }
 
 %% We assume that we must analyze the product of a program and an observer.
-In this subsection, we present our fragment abstraction for programs that
+In this subsection, we present our symbolic representation for programs that
 operate on singly-linked lists. This means that
 each cell has exactly one pointer field, named {\tt next}.
 In order to simplify the presentation in this section, we assume that
 each heap cell has at most one $\ddomain$-field, named  {\tt data}.
-Our verification technique is based on a combination of a thread abstraction, a
+Our symbolic representation is based on a combination of a thread abstraction, a
 shape  abstraction, and a data abstraction.
 
 Assume a configuration $\sconf$ of $\system=\prog\compose\observer$
@@ -71,10 +71,10 @@ For a pointer variable $p$, let a $p$-cell be the cell to which $p$ points.
 For an observer register $\reg_i$,  define a
 {\em $\reg_i$-cell} to be a heap cell whose
 ${\tt data}$ field has the same value as $\reg_i$.
-\bjcom{Maybe skip the following}
-A heap cell is {\em globally significant} if it is either a $p$-cell for
-a global pointer variable $p$, or a $\reg_i$-cell for some
-observer register $\reg_i$.
+%% \bjcom{Maybe skip the following}
+%% A heap cell is {\em globally significant} if it is either a $p$-cell for
+%% a global pointer variable $p$, or a $\reg_i$-cell for some
+%% observer register $\reg_i$.
 \begin{itemize}
   \item
 Our {\em thread abstraction}
@@ -90,10 +90,10 @@ adapts the thread-modular approach by representing only the view of a single, bu
 \item
 We use a novel {\em shape abstraction}, which represents the part of the heap
 that is accessible to $\thread$ by a set of {\em fragments}. 
-A fragment consists of a pair of heap cells that are connected by a pointer.
-For each of these cells, the fragment represents
+A fragment consists of two of heap cells that are connected by a pointer.
+For each of its cells, the fragment represents
 \begin{inparaenum}[(i)]
-\item the values of its data fields,
+\item the values of its non-pointer fields,
 \item the pointer variables (either local to $\thread$ or global) that point
   to it, and
 \item global pointer variables $p$ and observer registers $\reg_i$ such that
@@ -115,7 +115,7 @@ state of the observer, and to each fragment. This abstraction
 represents small finite domains exactly, and abstracts a set of
 data values in $\ddomain$ by their relative ordering.
 \end{itemize}
-Let us now describe our symbolic representation in concrete detail.
+Let us describe the concrete structure of our symbolic representation.
 Our data abstraction is conveniently represented by defining an
 abstract domain for each concrete domain of data values.
 %% For each thread-local variable, and each non-pointer cell field, which ranges
@@ -136,8 +136,23 @@ abstract domain for each concrete domain of data values.
   if it maps each local variable and observer register with a value ${\tt d'} \in \ddomain$
   to a set which includes a relation $\sim$ such that $\tt d \sim \tt d'$.
 \end{itemize}
-In our shape abstration, we represent each fragment by a pair of
-{\em tags}. A {\em tag} is a tuple $\atag = \tagtuple$, where
+Define a {\em local symbolic configuration} $\locsymbconf$ to be
+a mapping from local
+variables (including the program counter) to their corresponding abstract
+domains.
+We let $\sconf \satlocsymbconf{\thread} \locsymbconf$ denote that in the
+global configuration $\sconf$, the
+local configuration of thread $\thread$ satisfies the local symbolic
+configuration $\locsymbconf$, defined in the natural way. Let an augmented
+local symbolic configuration be a pair
+$\auglocsymbconf = \tuple{\locsymbconf,\ostate}$ consisting of
+a local symbolic configuration $\locsymbconf$ and an observer location $\ostate$.
+We let $\sconf \satlocsymbconf{\thread} \tuple{\locsymbconf,\ostate}$ denote
+that $\sconf \satlocsymbconf{\thread} \locsymbconf$
+and that the observer location of $\sconf$ is $\ostate$.
+
+Next, we describe our shape abstraction. Let a
+{\em tag} be a tuple $\atag = \tagtuple$, where
 \begin{itemize}
 \item
   $\vals$ is a mapping from non-pointer fields to their corresponding abstract
@@ -150,7 +165,7 @@ In our shape abstration, we represent each fragment by a pair of
 \end{itemize}
 For a heap cell $\cell$ that is accessible to thread $\thread$ 
 in a configuration $\sconf$, and a tag
-$\atag = \tagtuple$, we write $\cell \satfrag{\thread}{\sconf} \atag$ to denote that
+$\atag = \tagtuple$, we let $\cell \satfrag{\thread}{\sconf} \atag$ denote that
 \begin{itemize}
 \item
   $\vals$ is an abstraction of the concrete values of the non-pointer fields of $\cell$,
@@ -212,29 +227,32 @@ $\tuple{\inat{\frag},\dangconst}$,
 where $\inat{\frag}$ and $\outat{\frag}$ are tags
     and $\datarelat{\frag}$ is a subset of $\set{<, =, >}$.
 \end{definition}
+\bjcom{Should we really have this dot notation? It is a bit hard to read}
 
 For a cell $\cell$ which is accessible to thread $\thread$, and a fragment
 $\frag$ of form $\fragtupleat{\frag}$, let $\cell \satfrag{\thread}{\sconf}\frag$ denote that
 the ${\tt next}$ field of $\cell$ points to a cell $\cell'$ such that
-\begin{inparaenum}[(i)]
-\item
+%% \begin{inparaenum}[(i)]
+%% \item
   $\cell \satfrag{\thread}{\sconf} \inat{\frag}$,
-\item
-$\cell' \satfrag{\thread}{\sconf} \outat{\frag}$, and
-\item $\cell.\mathtt{data} \sim \cell'.\mathtt{data}$ for some $\sim \in \datarelat{\frag}$.
-\end{inparaenum}
+and
+%% \item
+$\cell' \satfrag{\thread}{\sconf} \outat{\frag}$, and 
+%% \item
+  $\cell.\mathtt{data} \sim \cell'.\mathtt{data}$ for some $\sim \in \datarelat{\frag}$.
+%% \end{inparaenum}
 For a fragment of form $\frag = \tuple{\inat{\frag},\nullconst}$, let
-$\cell \lhd \frag$ denote that
-$\cell \lhd \inat{\frag}$ and $\mathtt{next}(\cell) = \nullconst$.
-Define $\cell \lhd \frag$ for $\frag$ of form $\tuple{\inat{\frag},\dangconst}$
+$\cell \satfrag{\thread}{\sconf} \frag$ denote that
+$\cell \satfrag{\thread}{\sconf} \inat{\frag}$ and $\mathtt{next}(\cell) = \nullconst$.
+Define $\cell \satfrag{\thread}{\sconf} \frag$ for $\frag$ of form $\tuple{\inat{\frag},\dangconst}$
 analogously.
 %% For $\tuple{\inat{\frag},\dangconst}$, the definition is adapted in the obvious way.
 
 Let $\fragset$ be a set of fragments.
 A global configuration $\sconf$ satisfies a set $\fragset$ of fragments
 wrp.\ to $\thread$, denoted  $\sconf \satfragset{\thread} \fragset$,
-if
-for any cell $\cell$ that is accessible to $\thread$, there is a fragment
+if for any cell $\cell$ 
+that is accessible to $\thread$ (different from $\null$ and $\bot$), there is a fragment
 $\frag \in \fragset$ such that $\cell \satfrag{{\thread}}{\sconf} \frag$.
 
 
@@ -264,38 +282,27 @@ $\frag \in \fragset$ such that $\cell \satfrag{{\thread}}{\sconf} \frag$.
 %% \item the local configuration of $\thread$ satisfies $\locsymbconf$, in the
 %%   natural way, and
 %% \item for each $\cell$ that is accessible from $\thread$, there is
-%%   a fragment $\frag$ such that $\cell \lhd_{\thread} \frag$.
+%%   a fragment $\frag$ such that $\cell \satfrag{\thread}{\sconf}_{\thread} \frag$.
 %% \end{itemize}
 We are now ready to define our abstract symbolic representation, which
-is defined as a partial mapping from combinations of abstract observer
-and local thread states to sets of fragments. 
+is defined as a partial mapping from augmented local symbolic
+configurations to sets of fragments. 
 
-Define a {\em local symbolic configuration} as a mapping from local
-variables (including the program counter) to their corresponding abstract
-domains.
-We let $\sconf \satlocsymbconf{\thread} \locsymbconf$ denote that in the
-global configuration $\sconf$, the
-local configuration of thread $\thread$ satisfies the local symbolic
-configuration $\locsymbconf$, defined in the natural way.
-For an observer location $\ostate$,
-we let $\sconf \satlocsymbconf{\thread} \tuple{\locsymbconf,\ostate}$ denote
-that $\sconf \satlocsymbconf{\thread} \locsymbconf$
-and that the observer location of $\sconf$ is $\ostate$.
 
 \begin{definition}
   \label{def:symbrep}
     A {\em symbolic representation} $\symbrep$ is a partial mapping from
-pairs of local symbolic configurations and observer locations
+augmented local symbolic configurations
 to sets of fragments.
 A system configuration $\sconf$ satisfies a symbolic representation $\symbrep$,
 denoted $\sconf \satsymbrep \symbrep$,
 if for each thread $\thread$, 
-the domain of $\symbrep$ contains a pair
-$\tuple{\locsymbconf,\ostate}$ such that
+the domain of $\symbrep$ contains an augmented local symbolic configuration
+$\auglocsymbconf$ such that
 \begin{inparaenum}[(i)]
-\item $\sconf \satlocsymbconf{\thread} \tuple{\locsymbconf,\ostate}$, and
+\item $\sconf \satlocsymbconf{\thread} \auglocsymbconf$, and
 %%   \item the observer is in location $\ostate$, and
-\item  $\sconf \satfragset{\thread} \symbrep(\tuple{\locsymbconf,\ostate})$.
+\item  $\sconf \satfragset{\thread} \symbrep(\auglocsymbconf)$.
 \end{inparaenum}
 \end{definition}
 %% For a local symbolic  configuration $\locsymbconf$ and set $\fragset$ of
@@ -307,11 +314,9 @@ $\tuple{\locsymbconf,\ostate}$ such that
 
 
 
-\todo[inline]{Do we need an example here?}
+\todo[inline]{What to replace the below example with?}
 \paragraph{Example:} Let us show an example of how a singly linked list (SLL) is split into a set of fragments. Fig.~\ref{lazylist}(a) shows an example of a concrete shape of a singly linked list. Each cell contains the values of $\tt val$, $\tt mark$, and $\tt lock$ from top to bottom, where \tick \; denotes $\tt true$, and \cross \; denotes $\tt false$ (or $\tt free$ for $\tt lock$) and the value of $\tt val$ is denoted by a pair of the observer register $\tt z$ and a subset of $\set{<, =, >}$. There are two threads $1$ and $2$ with two local variables $\tt c_1$ and $\tt c_2$. There are two global variables $\tt H$ and $\tt T$ pointing to the head and tail of the list. The observer register $\tt z$ has value 8. Fig.~\ref{lazylist}(b) shows the result of splitting the list in Fig.~\ref{lazylist}(a) into fragments where each heap fragment is a small list of two nodes. Fig.~\ref{lazylist}(c) shows the abstraction of fragments in Fig.~\ref{lazylist}(b) where for each cell $\cell$, the value of $val$ is abstracted to a subset in $\tt \{<z, =z, >z\}$, the reachability relation between $\cell$ and global variables and observer registers is abstracted to the predicate $\tt X \mapsto \tt Y$ where $\tt X$, $\tt Y$ are sets of global variables and observer registers, $\tt i$ or $\tt o$ states that $\cell$ is an input or output cell.
 
-\todo[inline]{We ust always say that we consider the cross-product of a program
-  and an observer}
 
 \subsubsection{Symbolic Postcondition Computation}
 \label{subsect:postcond}
@@ -325,7 +330,7 @@ from a representation of the set of initial configurations, and
 thereafter repeatedly performs postcondition computations that extend the
 symbolic representation by the effect of any execution step of the program,
 until convergence.
-In this subsection, we describe the symbolic postcondition computation.
+We will now describe the symbolic postcondition computation.
 %% \bjcom{The following should be included more smoothly, if really needed}
 %% Let $\tt gtag(v,i)$ be the tuple $\tt \tuple{\tt gvars(i), gdata(i),{\tt greachfrom}(\tt i), {\tt reachto}(\tt i), private(i )}$ where $\tt gvars(i)$ is the set of global variables in $\tt vars(i)$ and $\tt greachfrom(i)$ is the set of global variables in $\tt reachfrom(i)$.
 
@@ -354,29 +359,27 @@ In this subsection, we describe the symbolic postcondition computation.
 %
 %% We use $\confsetof\prog$ to denote the set of configurations
 
-\todo[inline]{Polish the inclusion of the observer!}
-
 The symbolic postcondition computation must ensure that the symbolic
 representation
 of the reachable configurations of a program is closed under execution of a
-statement by some thread.
-So, assume a symbolic representation $\symbrep$. The symbolic
-postcondition operation on $\symbrep$ produces an extension $\symbrep'$
-of $\symbrep$, such that whenever $\sconf$ is a configuration with
-$\sconf \satsymbrep \symbrep$, then any step from $\sconf$ must
-lead to a configuration ${\sconf}'$ with ${\sconf}' \satsymbrep \symbrep'$.
+statement by some thread. That is, 
+the symbolic postcondition operation applied to a symbolic representation
+$\symbrep$ must produce an extension $\symbrep'$
+of $\symbrep$, such that whenever $\sconf \satsymbrep \symbrep$
+and $\sconf\movesto{\system}{}\sconf'$ then
+${\sconf}' \satsymbrep \symbrep'$.
 Let $\thread$ be an arbitrary thread. Then $\sconf \satsymbrep \symbrep$
-implies that $\domof{\symbrep}$ contains a pair
-$\tuple{\locsymbconf,\ostate}$ such that
-$\sconf \satlocsymbconf{\thread} \tuple{\locsymbconf,\ostate}$ and
-$\sconf \satfragset{\thread} \symbrep(\tuple{\locsymbconf,\ostate})$. Our
+implies that $\domof{\symbrep}$ contains some
+$\auglocsymbconf$ with
+$\sconf \satlocsymbconf{\thread} \auglocsymbconf$ and
+$\sconf \satfragset{\thread} \symbrep(\auglocsymbconf)$. Our
 symbolic postcondition computation must ensure that
 %% this property still holds after any execution of a
 %% statement by some thread, i.e., that
 $\domof{\symbrep'}$ contains a pair
-$\tuple{\locsymbconf',\ostate'}$ such that
-${\sconf}' \satlocsymbconf{\thread} \tuple{\locsymbconf',\ostate'}$ and
-${\sconf}' \satfragset{\thread} \symbrep(\tuple{\locsymbconf',\ostate'})$.
+$\auglocsymbconf' = \tuple{\locsymbconf',\ostate'}$ such that
+${\sconf}' \satlocsymbconf{\thread} \auglocsymbconf'$ and
+${\sconf}' \satfragset{\thread} \symbrep(\auglocsymbconf')$.
 %% from which a step $\sconf \movesto{\system} {\sconf}'$, then ${\sconf}' \satsymbrep \symbrep'$.
 %% More precisely, assume that a global configuration $\conf$ satisfies
 %% a symbolic representation $\symbrep$. Let $\thread$ be an arbitrary thread.
@@ -404,7 +407,7 @@ on which thread causes the step from $\sconf$ to ${\sconf}'$.
   $\tuple{\locsymbconf',\ostate'} \in \domof{\symbrep}$ and
   $\fragset' \subseteq \symbrep(\tuple{\locsymbconf',\ostate'})$.
 \item
-  {\it Interference Steps:} The step is caseud by Another thread $\thread_2$,
+  {\it Interference Steps:} The step is caused by another thread $\thread_2$,
   which may change the location of the observer (to $\ostate'$)
   and the state of the heap.
 %%   such a way that makes it necessary to extend $\symbrep(\locsymbconf)$.
@@ -414,7 +417,8 @@ on which thread causes the step from $\sconf$ to ${\sconf}'$.
   We then compute a set $\fragset'$ of fragments such that
   the resulting configuration ${\sconf}'$ satisfies
   ${\sconf}' \satfragset{\thread} \fragset'$ and 
-  make sure that $\fragset' \in \symbrep(\tuple{\locsymbconf,\ostate'})$.
+  make sure that $\tuple{\locsymbconf,\ostate'} \in \domof{\symbrep}$ and
+  $\fragset' \in \symbrep(\tuple{\locsymbconf,\ostate'})$.
   To do this, we first combine the the local symbolic configurations
   $\locsymbconf$ and $\locsymbconf_2$ and the sets of fragments
   $\symbrep(\locsymbconf)$ and $\symbrep(\locsymbconf_2)$, using an
@@ -437,10 +441,10 @@ local steps, and thereafter the intersection operation.
 
 \paragraph{Symbolic Postcondition Computation for Local Steps}
 Let $\thread$ be an arbitrary thread, and assume
-that $\tuple{\locsymbconf,\ostate} \in \domof{\symbrep}$.
+that $\auglocsymbconf \in \domof{\symbrep}$.
 For each statement that $\thread$ can execute in a configuration $\conf$
-with $\sconf \satlocsymbconf{\thread} \tuple{\locsymbconf,\ostate}$ and
-$\sconf \satfragset{\thread} \symbrep(\tuple{\locsymbconf,\ostate})$,
+with $\sconf \satlocsymbconf{\thread} \auglocsymbconf$ and
+$\sconf \satfragset{\thread} \symbrep(\auglocsymbconf)$,
 we must compute a local symbolic configuration $\locsymbconf'$, a new
 observer location $\ostate'$ and a set  $\fragset'$ of fragments such that
 such that the resulting configuration ${\sconf}'$ satisfies
@@ -469,7 +473,7 @@ reflect that $\gvarof{g}$ and $\lvarof{p}$ are now aliases, just as
 in the update of $\pvars$).
 In order to compute the postcondition with sufficient precision, we
 %% However, since the $\reachfrom$ field does not include local variables, we
-therefore investigate whether the set $\symbrep(\tuple{\locsymbconf,\ostate})$
+therefore investigate whether the set $\symbrep(\auglocsymbconf)$
 of fragments allows to form a heap in which a $p$-cell can reach or be
 reached from each tag of a fragment. It also checks whether a heap can be formed
 in which a $p$-cell can not reach or be reached from such tags. For each

@@ -93,6 +93,7 @@
 \newcommand\event{e}
 \newcommand{\senderevent}{\event_s}
 \newcommand{\locsymbconf}{\sigma}
+\newcommand{\auglocsymbconf}{\hat{\locsymbconf}}
 \newcommand{\symbrep}{\Psi}
 \newcommand{\abstrconf}{\Phi}
 \newcommand{\ac}{\abstrconf}
@@ -101,7 +102,7 @@
 \newcommand{\satlocsymbconf}[1]{\models_{#1}^{\mathit{loc}}}
 \newcommand{\satfragset}[1]{\models_{#1}^{\mathit{heap}}}
 \newcommand{\satconf}[1]{\models_{#1}}
-\newcommand{\satsymbrep}{\mbox{sat }}
+\newcommand{\satsymbrep}{\mbox{ sat \ }}
 %% \newcommand{\actuple}{\tuple{\tvarset,\he,\constr}}
 %% \newcommand{\actupleprime}{\tuple{\tvarset,\he',\constr'}}
 \newcommand{\actuple}{\tuple{\indices,\globmap,\nrglobloc,\pexpglobloc,\dmap,\ordconstr}}
@@ -450,10 +451,10 @@
 
 \newcommand\restr[2]{\ensuremath{\left.#1\right|_{#2}}}
  
-\newcommand{\pconf}{\conf^{\prog}}
+\newcommand{\pconf}{\conf_{\prog}}
 \newcommand\mconf{\conf^\monitor}
-\newcommand\augconf{\conf^\augprog}
-\newcommand\sconf{\conf^\system}
+\newcommand\augconf{\conf_\augprog}
+\newcommand\sconf{\conf_\system}
 \newcommand\taconf{\conf^{ta}}
 \newcommand\taconftuple{\tuple{\taconf,\private}}
  
