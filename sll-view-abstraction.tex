@@ -143,8 +143,8 @@ domains.
 We let $\sconf \satlocsymbconf{\thread} \locsymbconf$ denote that in the
 global configuration $\sconf$, the
 local configuration of thread $\thread$ satisfies the local symbolic
-configuration $\locsymbconf$, defined in the natural way. Let an augmented
-local symbolic configuration be a pair
+configuration $\locsymbconf$, defined in the natural way. Let an {\em augmented
+local symbolic configuration} be a pair
 $\auglocsymbconf = \tuple{\locsymbconf,\ostate}$ consisting of
 a local symbolic configuration $\locsymbconf$ and an observer location $\ostate$.
 We let $\sconf \satlocsymbconf{\thread} \tuple{\locsymbconf,\ostate}$ denote
@@ -413,15 +413,18 @@ on which thread causes the step from $\sconf$ to ${\sconf}'$.
 %%   such a way that makes it necessary to extend $\symbrep(\locsymbconf)$.
   By assumption, there is a local symbolic configuration $\locsymbconf_2$
   with $\tuple{\locsymbconf_2,\ostate} \in \domof{\symbrep}$ such that
-  $\sconf \satconf{\thread_2} \tuple{\locsymbconf_2,\ostate,\symbrep(\locsymbconf_2)}$.
-  We then compute a set $\fragset'$ of fragments such that
+  $\sconf \satlocsymbconf{\thread_2} \tuple{\locsymbconf_2,\ostate}$ and
+  $\sconf' \satfragset{\thread_2} \symbrep(\tuple{\locsymbconf_2,\ostate})$.
+  For any such $\locsymbconf_2$ and statement of $\thread_2$,
+  we must compute a set $\fragset'$ of fragments such that
   the resulting configuration ${\sconf}'$ satisfies
-  ${\sconf}' \satfragset{\thread} \fragset'$ and 
+  $\sconf' \satfragset{\thread} \fragset'$ and 
   make sure that $\tuple{\locsymbconf,\ostate'} \in \domof{\symbrep}$ and
-  $\fragset' \in \symbrep(\tuple{\locsymbconf,\ostate'})$.
+  $\fragset' \subseteq \symbrep(\tuple{\locsymbconf,\ostate'})$.
   To do this, we first combine the the local symbolic configurations
   $\locsymbconf$ and $\locsymbconf_2$ and the sets of fragments
-  $\symbrep(\locsymbconf)$ and $\symbrep(\locsymbconf_2)$, using an
+  $\symbrep(\tuple{\locsymbconf,\ostate})$ and
+  $\symbrep(\tuple{\locsymbconf_2,\ostate})$, using an
 %%   of $\thread_1$ and $\thread_2$ and then compute a representation of the
 %%   the possible heaps whose projection onto $\thread_i$ satisfies
 %%   $\symbrep(\locsymbconf_i)$ for $i=1,2$.
@@ -431,9 +434,9 @@ on which thread causes the step from $\sconf$ to ${\sconf}'$.
   a set $\fragset_{1,2}$ of fragments that represents the cells accessible
   to either $\thread$ or $\thread_2$.
   We thereafter symbolically compute the postcondition of the statement
-  execution by $\thread_2$, in the same was as for local steps,
+  executed by $\thread_2$, in the same was as for local steps,
   and finally project the set of resulting fragments back onto $\thread$
-  in the natural way, to obtain $\fragset'$.
+  to obtain $\fragset'$.
 \end{itemize}
 In the following, we first describe the symbolic postcondition computation for
 local steps, and thereafter the intersection operation.
@@ -442,7 +445,7 @@ local steps, and thereafter the intersection operation.
 \paragraph{Symbolic Postcondition Computation for Local Steps}
 Let $\thread$ be an arbitrary thread, and assume
 that $\auglocsymbconf \in \domof{\symbrep}$.
-For each statement that $\thread$ can execute in a configuration $\conf$
+For each statement that $\thread$ can execute in a configuration $\sconf$
 with $\sconf \satlocsymbconf{\thread} \auglocsymbconf$ and
 $\sconf \satfragset{\thread} \symbrep(\auglocsymbconf)$,
 we must compute a local symbolic configuration $\locsymbconf'$, a new
@@ -450,7 +453,7 @@ observer location $\ostate'$ and a set  $\fragset'$ of fragments such that
 such that the resulting configuration ${\sconf}'$ satisfies
   ${\sconf}' \satlocsymbconf{\thread} \tuple{\locsymbconf',\ostate'}$ and
   ${\sconf}' \satfragset{\thread} \fragset'$.
-This computation has do be done differently for
+This computation is done differently for
 each statement. For statements that do not affect the heap or pointer variables,
 this computation is standard, and affects only the local symbolic
 configuration, the observer location, and the $\vals$ component of
@@ -461,30 +464,35 @@ since these are the most interesting cases.
 
 Let us fist consider a statement of form $\gvarof{g} := \lvarof{p}$,
 which assigns the value of a local pointer variable $\lvarof{p}$ to a global
-pointer variable $\gvarof{g}$. It is easy to update the $\pvars$ field of
-tags to contain the variable $\gvarof{g}$ if and only if it contained the
-variable $\lvarof{p}$ before the statement. 
-The difficulty is to update the reachability information provided
-by the fields $\reachfrom$ and $\reachto$ in each tag of a 
-fragment, in particular whether $\gvarof{g}$ should be in such a
+pointer variable $\gvarof{g}$. The set $\fragset'$ of fragments is obtained by
+modifying each fragment in $\symbrep(\auglocsymbconf)$ to reflect the effect
+of the assignment. For any tag in a fragment, the $\vals$ field is not affected.
+The $\pvars$ field  is updated to contain the variable $\gvarof{g}$ if and only if it contained the variable $\lvarof{p}$ before the statement. 
+The difficulty is to update the reachability information represented
+by the fields $\reachfrom$ and $\reachto$,
+and in particular to determine whether $\gvarof{g}$ should be in such a
 set after the statement
-(if $\lvarof{p}$ would have been a global variable, the update would simply
-reflect that $\gvarof{g}$ and $\lvarof{p}$ are now aliases, just as
+(note that if $\lvarof{p}$ were a global variable, then the corresponding
+reachability information for $\lvarof{p}$ would be in the fields
+$\reachfrom$ and $\reachto$, and the update would be simple: just
+reflecting that $\gvarof{g}$ and $\lvarof{p}$ are now aliases, just as
 in the update of $\pvars$).
 In order to compute the postcondition with sufficient precision, we
 %% However, since the $\reachfrom$ field does not include local variables, we
-therefore investigate whether the set $\symbrep(\auglocsymbconf)$
-of fragments allows to form a heap in which a $p$-cell can reach or be
-reached from each tag of a fragment. It also checks whether a heap can be formed
-in which a $p$-cell can not reach or be reached from such tags. For each
+therefore investigate whether the set of fragments $\symbrep(\auglocsymbconf)$
+allows to form a heap in which a $p$-cell can reach or be
+reached from a particular tag of a fragment.
+It also checks whether a heap can be formed
+in which a $p$-cell can {\em not} reach or be reached from a particular tag.
+For each
 case that succeeds, the set $\fragset'$ will contain fragment with
 corresponding content of $\reachto$ and $\reachfrom$ fields.
 
-Our actual postcondition computation performs this investigation in a
+Our postcondition computation performs this investigation in a
 systematic manner, by computing a set of transitive closure-like relations
 between fragments.
-First, define two tags
-$\atag$ and $\atag'$ to be {\em consistent} if the concretizations of their
+First, say that two tags
+$\atag$ and $\atag'$ are {\em consistent} if the concretizations of their
 $\vals$-fields overlap, and if the other fields agree.
 Thus, $\atag$ and $\atag'$ are consistent if there can exist a cell
 $\cell$ accessible to $\thread$ in some heap,
@@ -511,18 +519,18 @@ possible that  $\mathtt{next}(\cell_1) = \cell_2$ for some cells with
   $\cell_1 \lhd \frag_1$ and  $\cell_2 \lhd \frag_2$.
 Intuitively, $\frag_1 \leftrightarrow_{\fragset} \frag_2$ denotes that it is
 possible that
-  $\mathtt{next}(\cell_1) = \mathtt{next}(\cell_2)$.
+  $\mathtt{next}(\cell_1) = \mathtt{next}(\cell_2)$
 for different cells  $\cell_1$ and $\cell_2$ with
-  $\cell_1 \lhd \frag_1$ and  $\cell_2 \lhd \frag_2$.
-Note that the above definitions also work when some view(s) contain
-$\nullconst$ or $\dangconst$.
+  $\cell_1 \lhd \frag_1$ and  $\cell_2 \lhd \frag_2$
+(Note that these definitions also work for views containing
+$\nullconst$ or $\dangconst$).
 We use these relations to define several derived relations:
 %% \bjcom{We could use a common pattern for these and save space in definitions.}
 \begin{itemize}
-\item $\overset{+}\hookrightarrow_{\fragset}$ denotes the transitive closure
+\item $\overset{+}\hookrightarrow_{\fragset}$ denotes the transitive closure,
 %%   of   $\hookrightarrow_{\fragset}$,
   and
-   $\overset{*}\hookrightarrow_{\fragset}$ the reflexive transitive closure of
+   $\overset{*}\hookrightarrow_{\fragset}$ the reflexive transitive closure, of
   $\hookrightarrow_{\fragset}$,
 \item $\frag_1 \!  \overset{**}\leftrightarrow_{\fragset}  \! \frag_2$ denotes that 
   $\exists \frag_1',\frag_2' \!\in\! \fragset$ with $\frag_1' \! \leftrightarrow_{\fragset} \! \frag_2'$ where
@@ -542,8 +550,8 @@ We use these relations to define several derived relations:
   $\exists \frag_1' \in \fragset$ with $\frag_1' \! \leftrightarrow_{\fragset} \! \frag_2$ where
   $\frag_1 \!  \overset{+}\hookrightarrow_{\fragset} \frag_1'$.
 \end{itemize}
-We say that $\frag_1$ and $\frag_2$ are {\em compatible} if $\frag_x \overset{*}\hookrightarrow \frag_y$ or $\frag_y \overset{*}\hookrightarrow \frag_x$ or $\frag_x \overset{**}\leftrightarrow \frag_y$. Intuitively, if $\frag_1$ and
-$\frag_2$ are satisfied by two cells in the same heap state, then they must
+We say that $\frag_1$ and $\frag_2$ are {\em compatible} if $\frag_x \overset{*}\hookrightarrow \frag_y$, or $\frag_y \overset{*}\hookrightarrow \frag_x$, or $\frag_x \overset{**}\leftrightarrow \frag_y$. Intuitively, if $\frag_1$ and
+$\frag_2$ are satisfied by two cells in the same heap state, then they are
 be compatible.
 \input viewrelations
 \bjcom{Do we need to update the following example?}
@@ -552,29 +560,31 @@ with $13$ heap cells. The figure shows 4 fragments that are satisfied by heap
 cells, as denoted by green boxes, and how the relationship between heap cells
 is reflect by relations between the corresponding fragments.
 
-We can now describe how to perform the symbolic postcondition computations for
-statements that assign to a pointer variable.
+We can now describe the symbolic postcondition computations for
+statements that affect pointer variables or pointer fields.
 
-Consider a statement of form
-${\tt x := y}$, where $\mathtt{x}$ and $\mathtt{y}$ are global or local
-(to thread $\thread$) pointer variables. We must compute a set $\fragsetpost$ of
-fragments which are satisfied by the configuration after the statement, implying
-that any cell $\cell$ which is accessible to $\thread$ after
-the statement satisfies some fragment in $\fragsetpost$.
-The cell $\cell$ must satisfy some
-fragment $\frag$ in $\fragset$ before the statement,
-and must be in the same heap state as the cell pointed to by $\gvarof{y}$. 
+First, consider a statement of form
+${\tt x := y}$, where $\mathtt{x}$ and $\mathtt{y}$ are local
+(to thread $\thread$) or global pointer variables.
+We must compute a set $\fragsetpost$ of
+fragments which are satisfied by the configuration after the statement. This
+means that for any cell $\cell$ which is accessible to $\thread$ after
+the statement, there must be some fragment $\frag'$ in $\fragsetpost$
+with $\cell \satfrag{\thread}{\sconf} \frag'$
+By assumption, $\cell$ satisfies some fragment $\frag$ in $\fragset$
+before the statement, and is in the same heap state as the cell pointed to by
+$\gvarof{y}$.
 This implies that $\frag$ must be compatible with some
 fragment $\frag_y\in\fragset$ such that $\mathtt{y} \in \pvarsat{\inat{\frag_y}}$. This means that we can make a case analysis on the possible relationships
 between $\frag$ and any such $\frag_y$.
 Thus, for each fragment $\frag_y\in\fragset$ such that
 $\mathtt{y} \in \pvarsat{\inat{\frag_y}}$ we let $\fragsetpost$ contain
-the fragments obtained by the following transformations on fragments in
+the fragments obtained by any of the following transformations on any fragment in
 $\fragset$.
 \begin{enumerate}
-  \item
+\item
 First, for the fragment $\frag_y$ itself, we let $\fragsetpost$ contain
-$\frag'$, which is the same as $\frag_y$, except that
+$\frag_y'$, which is the same as $\frag_y$, except that
 %% Let $\tt kill(x,v)$ be the procedure to remove $\tt x$ if it exists from
 %% $\reachfromat{\inat{\frag}}$,
 %% $\reachfromat{\outat{\frag}}$,
@@ -583,16 +593,16 @@ $\frag'$, which is the same as $\frag_y$, except that
 %% $\pvarsat{\inat{\frag}}$, and
 %% $\pvarsat{\outat{\frag}}$.
 \begin{itemize}
-\item $\pvarsat{\inat{\frag'}} = \pvarsat{\inat{\frag_y}} \cup \set{x}$ and
-  $\pvarsat{\outat{\frag'}} = \pvarsat{\outat{\frag}} \setminus \set{x}$
+\item $\pvarsat{\inat{\frag_y'}} = \pvarsat{\inat{\frag_y}} \cup \set{x}$ and
+  $\pvarsat{\outat{\frag_y'}} = \pvarsat{\outat{\frag}} \setminus \set{x}$
 \end{itemize}
 and furthermore, if $\gvarof{x}$ is a global variable, then
 {\small
   \begin{itemize}
-\item $\reachtoat{\inat{\frag'}} = \reachtoat{\inat{\frag}} \cup \set{x}$ and
-$\reachfromat{\inat{\frag'}} = \reachfromat{\inat{\frag}} \cup \set{x}$,
-\item $\reachfromat{\outat{\frag'}} = \reachfromat{\outat{\frag}} \cup \set{x}$ and
-$\reachtoat{\outat{\frag'}} = \reachtoat{\outat{\frag}} \setminus \set{x}$.
+\item $\reachtoat{\inat{\frag_y'}} = \reachtoat{\inat{\frag_y}} \cup \set{x}$ and
+$\reachfromat{\inat{\frag_y'}} = \reachfromat{\inat{\frag_y}} \cup \set{x}$,
+\item $\reachfromat{\outat{\frag_y'}} = \reachfromat{\outat{\frag_y}} \cup \set{x}$ and
+$\reachtoat{\outat{\frag_y'}} = \reachtoat{\outat{\frag_y}} \setminus \set{x}$.
 \end{itemize}
 }
 \item  for each fragment $\frag$ with $\frag \hookrightarrow_{\fragset} \frag_y$, let $\fragsetpost$ contain $\frag'$ which is same as $\frag$ except that
@@ -620,20 +630,21 @@ $\reachtoat{\outat{\frag'}} = \reachtoat{\outat{\frag}} \setminus \set{x}$.
 \item $\reachtoat{\outat{\frag'}} = \reachtoat{\outat{\frag}} \setminus \set{x}$ if $\tt x$ is a global variable,
 \end{itemize}
 \end{enumerate}
-The statement ${\tt x := y.next}$ is handled rather similarly to the preceding
-case. Let us therefore describe the computation for statements of the form
+The statement ${\tt x := y.next}$ is handled rather similarly to the 
+case ${\tt x := y}$.
+Let us therefore describe the postcondition computation for statements of the form
 ${\tt x.next:= y}$.
-This is the most difficult statement, since it is a destructive update of the heap. The statement affects reachability relations for both $\gvarof{x}$ and
-$\gvarof{y}$. This means that we can make a case analysis on how a fragment
+This is the most difficult statement, since it is a destructive update of the heap. It affects reachability relations for both $\gvarof{x}$ and $\gvarof{y}$.
+The postcondition computation makes a case analysis on how a fragment
 in $\fragset$ is related to some pair of compatible fragments $\frag_x$, $\frag_y$ in $\fragset$ such that $\lvarof{x} \in \pvarsat{\inat{\frag_x}}$, $\tt y \in \pvarsat{\inat{\frag_y}}$. 
-Thus, for each pair of compatible fragments $\frag_x$, $\frag_y$ in $\fragset$ such that $\lvarof{x} \in \pvarsat{\inat{\frag_x}}$, $\tt y \in \pvarsat{\inat{\frag_y}}$, 
-we let $\fragsetpost$ contain
+Thus, for each pair of compatible fragments $\frag_x$, $\frag_y$ in $\fragset$ such that $\lvarof{x} \in \pvarsat{\inat{\frag_x}}$ and $\tt y \in \pvarsat{\inat{\frag_y}}$,  we let $\fragsetpost$ contain
 the fragments obtained by the following transformations on fragments in
 $\fragset$.
 \begin{enumerate}
   \item
-    First, let $\fragsetpost$ containt a new fragment $\frag_{new}$ of form
-    $\fragtupleat{\frag_{new}}$
+    First, let $\fragsetpost$ contain a new fragment $\frag_{new}$, representing
+    the new pair of neighbours formed by the statement, of form
+    $\fragtupleat{\frag_{new}}$ such that
     $\tagat{\inat{\frag_{new}}} = \tagat{\inat{\frag_x}}$ and $\tagat{\outat{\frag_{new}}} = \tagat{\inat{\frag_y}}$ except that $\reachfromat{\outat{\frag_{new}}} = \reachfromat{\inat{\frag_y}} \cup \reachfromat{\inat{\frag_x}}$,
     and $\datarelat{\frag_{new}} = \set{<,=,>}$.
 Thereafter, we add all possible fragments that can result from a transformation
