@@ -624,22 +624,37 @@ The pair consisting of the two sentinel cells (with keys $\tt -\infty$ and $\tt 
 \caption{Fragment abstraction of skiplist algorithm}
 \label{fig:skiplistabs}
 \end{figure} 
-Figure~\ref{fig:skiplistabs} shows fragments that represents the
-part of the heap that is accessible to
+Figure~\ref{fig:skiplistabs} shows a set of fragments that is sufficient to
+represents the part of the heap that is accessible to
 $\thread_1$ in the configuration in Figure~\ref{sl-shape}. There are $11$ fragments, named $\frag_1$, \ldots , $\frag_{11}$. Two of
-these ($\frag_6$, $\frag_7$ and $\frag_{11}$) consist of a tag that points to $\dangconst$. Whereas, the other fragments consist of a pair of pointer-connected tags. The fragments $\frag_1$, \ldots , $\frag_{6}$ are abstracted from the level $1$, they represent pairs of heap cells that are connected by a pointer field appearing at level 1. Whereas, the other fragments are abstracted from higher levels. The private value of the input tag of $\frag_7$ is {\tt true}. Whereas, the private values of other tags of other fragments are {\tt false}. A verification of linearizability of the algorithm must represent several key
-invariants. These include:
+these ($\frag_6$, $\frag_7$ and $\frag_{11}$) consist of a tag that points to $\dangconst$. All other fragments consist of a pair of pointer-connected tags. The fragments $\frag_1$, \ldots , $\frag_{6}$ are  level-1-fragments, whereas $\frag_7$, \ldots , $\frag_{11}$ are higher level-fragments. The {\tt private} field of the input tag of $\frag_7$ is {\tt true}, whereas the {\tt private} field of other tags of other fragments are {\tt false}.
 
-\begin{itemize}
-\item The bottom-list is sorted in $\tt key$ order. Two unmarked nodes cannot have the same $\tt key$.
+To verify linearizability of the algorithm in Figure~\ref{sl-code:fig},
+we must represent several key invariants of the heap. These include (among others)
+\begin{enumerate}
+\item The bottom-level list is sorted in $\tt key$ order. Two unmarked nodes cannot have the same $\tt key$.
 \item Higher-level lists serve as shortcuts into lower-level lists.
 \item All nodes which are unreachable from the head of the list are marked.
 \item The variables $\tt pred$, $\tt curr$, $\tt preds$, $\tt currs$ reflect the position of the
   cell with {\tt key}
-\end{itemize}
-
-As can be seen, all fragments are strictly sorted, therefore they present the first invariant. The second invariant is expressed by the fact that, all fragments in higher level are reachable from the global variable $\tt H$. The frag $\frag_{3}$ expresses the third invariant because it presents a marked node which is not reachable from the variable $\tt H$. Finally, the last invariant is expressed by the fact that $\tt x$ is larger than data fields of all tags containing $\tt pred$,$\tt preds$, and $\tt x$ is smaller than or equal to data fields of all tags containing $\tt curr$,$\tt currs$.     
-
+\end{enumerate}
+Let us illustrate how such invariants are capture by our fragment abstraction.
+\begin{inparaenum}[1)]
+\item
+  All level-1 fragments are strictly sorted, implying that the bottom-level list is strictly sorted.
+\item
+  The second tag of each higher-level fragment is reachable from the
+  head node pointed to by $\tt H$, which implies that it is reachable from the first
+  by a sequence of $\tt next[1]$-pointers.
+\item
+  This is verified by inspecting each tag: $\frag_{3}$ contains the only unreachable tag, and it is also marked.
+\item
+  The fragments express this property inthe case where the value of $\tt key$ is
+  the same as the value of the observer register $\tt x$ \bjcom{Quy: is it really shown
+    here?}. Since the invariant holds for any value of $\tt x$, this property
+  is sufficiently represented for the verification
+%% Finally, the last invariant is expressed by the fact that $\tt x$ is larger than data fields of all tags containing $\tt pred$,$\tt preds$, and $\tt x$ is smaller than or equal to data fields of all tags containing $\tt curr$,$\tt currs$.     
+\end{inparaenum}
 
 %\todo[inline]{The below is for TS Stack. To be rmeoved and replaced}
 %\begin{itemize}
