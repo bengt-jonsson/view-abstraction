@@ -590,9 +590,15 @@ In the heap state of Figure~\ref{sl-shape}, thread $\thread_1$ is trying to add 
 %% configuration in the domain of $\symbrep$, which is mapped to a set
 %% of fragments, which represents the heap that is accessible to $\thread$.
 
-Our fragment abstraction for skiplists uses two types of fragments to represent a set of heaps like the one in Figure~\ref{sl-shape}: {\em level 1-fragments} for
+Our fragment abstraction for skiplists uses two types of fragments: {\em level 1-fragments} for
 cells connected by a $\tt next[1]$-pointer, and {\em higher level-fragments} for
-cells connected by a higher level pointer. For example, the first pair of heap cells with keys $\tt -\infty$ and $5$ in the bottom-level list is represented by $\frag_1$ where the variable $\tt preds(1)[3]$ is represented by $\tt preds[higher]$. The pair of heap cells with keys $\tt -\infty$ and $\tt +\infty$ in the level 3 is represented by $\frag_9$. In each fragment, $\vals$ is represented inside each tag node of the fragment. The $\datarelat{\frag}$ is above the arrow between two tags. The first row under each tag is $\reachfrom$, whereas the second row is $\reachto$. Above each tag node is $\pvars$.
+cells connected by a higher level pointer. This means that we abstract all levels
+higher than 2 by the abstract element $\tt higher$.
+For example, in the view of thread $\thread_1$, the two left-most cells
+in Figure~\ref{sl-shape} are represent by the level 1-fragment $\frag_1$ in
+Figure~\ref{fig:skiplistabs}. Here, the variable $\tt preds(1)[3]$ is represented by $\tt preds[higher]$. The two left-most cells are also represented by
+a higher-level fragment, viz.\ $v_8$.
+The pair consisting of the two sentinel cells (with keys $\tt -\infty$ and $\tt +\infty$) are represented by the higher-level fragment $v_9$. In each fragment, the abstraction $\vals$ of non-pointer fields are shown represented inside each tag of the fragment. The $\datarelat{\frag}$ is shown as a abel on the  arrow between two tags. Above each tag is $\pvars$. The first row under each tag is $\reachfrom$, whereas the second row is $\reachto$.
 
  
 
