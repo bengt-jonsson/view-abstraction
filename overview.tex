@@ -459,47 +459,58 @@ fields are abstracted to constraints over their relative ordering (wrp.\ to $<$)
 In our {\em fragment abstraction}, we represent the part of the heap
 that is accessible to thread $\thread$ by a set of {\em fragments}. 
 A fragment represents a pair of heap cells (accessible to $\thread$)
-that are connected by a pointer field.
-The fragment contains both
-\begin{itemize}
-  \item {\em local} information, representing the cells'
-  non-pointer fields (under the applied data abstraction) and 
-  the pointer variables (either local to $\thread$ or global)
-  that point to each of the cells, as well as
-\item {\em global} information, representing whether
-  each node in the pair can reach to and be reached from
-  (by following a chain of pointers) a small set of globally significant
-  heap cells. Here, a cell is globally significant if it is pointed to by a
-  global pointer variable or if its 
-  {\tt key} field has the  same value as the register of the set observer.
-\end{itemize}
-Formally, A fragment $\frag$ is a triple of form
-$\fragtupleat{\frag}$, of form
-$\tuple{\inat{\frag},\nullconst}$, or of form
-$\tuple{\inat{\frag},\dangconst}$,
-where $\inat{\frag}$ and $\outat{\frag}$ are tags and $\datarelat{\frag}$ is a subset of $\set{<, =, >}$ that describes ordering information between two cells. A {\em tag} is a tuple $\atag = \tagtuple$, where
+that are connected by a pointer field, under the applied data abstraction.
+Our representation of a fragment has the form of a  triple of form
+$\fragtupleat{\frag}$,
+%% of form $\tuple{\inat{\frag},\nullconst}$,
+%% or of form $\tuple{\inat{\frag},\dangconst}$,
+where $\inat{\frag}$ and $\outat{\frag}$ are {\em tags} that represent the two cells, and $\datarelat{\frag}$
+is a subset of $\set{<, =, >}$ which constrains the order between the data fields
+of the cells. Each of the two tags is a tuple $\atag = \tagtuple$, where
 \begin{itemize}
 \item
-  $\vals$ is a mapping from non-pointer fields to their corresponding abstract
-  domains,
+  $\vals$ represents the non-pointer fields of the cell under the applied
+  data abstraction,
 \item
-  $\pvars$ is a set of (global or local) pointer variables,
+  $\pvars$ is the set of (local to $\thread$ or global) pointer variables that
+  point to the cell,
  \item
-   $\reachfrom$ and $\reachto$ are sets of global pointer variables and observer registers,
-  \item $\private$ is a boolean value.
+  $\reachfrom$ is the set of
+  \begin{inparaenum}[(i)]
+  \item global pointer variables
+    %% and local pointer variables of $\thread$
+    from which the cell represented by the tag is reachable via a (possibly empty)
+    sequence of {\tt next} pointers, and
+  \item observer registers $\reg_i$ such that the cell is reachable from
+    some cell whose data value equals that of $\reg_i$,
+  \end{inparaenum}
+\item
+  $\reachto$ is the corresponding information, but now considering cells that
+  are reachable from the cell represented by the tag.
+  \item $\private$ is $\true$ only if $\cell$ is private to $\thread$.
 \end{itemize}
-
-
+Thus, the fragment contains both
+\begin{inparaenum}[(i)]
+\item {\em local} information about the cell's fields and variables that
+  point to it, as well as
+\item {\em global} information, representing how
+  each cell in the pair can reach to and be reached from
+  (by following a chain of pointers) a small set of globally significant
+  heap cells.
+ %% Here, a cell is globally significant if it is pointed to by a
+ %%  global pointer variable or if its 
+ %%  {\tt key} field has the  same value as the register of the set observer.
+\end{inparaenum}
 
 A set of fragments represents the set of heap
 structures in which each pair of pointer-connected nodes is represented by some
 fragment in the set.
 Put differently, a set of fragments describes the set of heaps that can be formed by
 ``piecing together'' fragments in the set.
-%% This ``piecing together'' must
-%% be both locally consistent (appending only fragments that agree on their
-%% common node), and globally consistent (respecting the global reachability
-%% information).
+This ``piecing together'' must
+be both locally consistent (appending only fragments that agree on their
+common node), and globally consistent (respecting the global reachability
+information).
 
 Let us illustrate how fragment abstraction applies to the skiplist
 algorithm.
@@ -509,12 +520,10 @@ algorithm.
  \caption{A concrete shape of 3-level skiplist with two threads}
 \label{sl-shape}
 \end{figure}
-
 %\todo[inline]{Quy: you must provide example heaps, etc. before I can continue
 %  writing}
-
-Figure~\ref{sl-shape} shows an example state of the heap of the
-skiplist algorithm with three levels. Each heap cell is shown with the values of its fields as descried in the Figure~\ref{skipcell}. %\bjcom{Add a legend, showing the layout of fields, as in previous papers}
+Figure~\ref{sl-shape} shows an example heap state of the
+skiplist algorithm with three levels. Each heap cell is shown with the values of its fields as described in Figure~\ref{skipcell}. %\bjcom{Add a legend, showing the layout of fields, as in previous papers}
 
 
 \begin{wrapfigure}{r}{0.5\textwidth} 
@@ -531,8 +540,8 @@ skiplist algorithm with three levels. Each heap cell is shown with the values of
 
 In addition, each cell is labeled by the
 pointer variables that point to it; we use ${\tt preds(j)[i]}$ to denote the local
-variable ${\tt preds[i]}$ of thread $\thread_j$, and its same for other local variables.
-In the heap state of Figure~\ref{sl-shape}, thread $\thread_1$ is trying to add a new node with key $9$, and has reached line $8$ of the $\tt add$ method.  Thread $\thread_2$ is also doing the same thing as $\thread_1$ and it has done its first iteration of the loop in $\tt find$ method in line $19$. We assume that the value of the observer register is $9$
+variable ${\tt preds[i]}$ of thread $\thread_j$, and the same for other local variables.
+In the heap state of Figure~\ref{sl-shape}, thread $\thread_1$ is trying to add a new node with key $9$, and has reached line $8$ of the $\tt add$ method.  Thread $\thread_2$ is also doing the same thing as $\thread_1$ \bjcom{Quy: what does this mean?} and it has done its first iteration of the loop in $\tt find$ method in line $19$. We assume that the value of the observer register is $9$
 
 
 %You can find some improvement of this list
@@ -581,7 +590,9 @@ In the heap state of Figure~\ref{sl-shape}, thread $\thread_1$ is trying to add 
 %% configuration in the domain of $\symbrep$, which is mapped to a set
 %% of fragments, which represents the heap that is accessible to $\thread$.
 
-Our abstraction includes two kinds of fragments representing the heap in Figure ~\ref{sl-shape} in the view of $\thread_1$, one is for level 1 and the other is for higher levels. For example, the first pair of heap cells with keys $\tt -\infty$ and $5$ in the bottom-level list is represented by $\frag_1$ where the variable $\tt preds(1)[3]$ is represented by $\tt preds[higher]$. The pair of heap cells with keys $\tt -\infty$ and $\tt +\infty$ in the level 3 is represented by $\frag_9$. In each fragment, $\vals$ is represented inside each tag node of the fragment. The $\datarelat{\frag}$ is above the arrow between two tags. The first row under each tag is $\reachfrom$, whereas the second row is $\reachto$. Above each tag node is $\pvars$.
+Our fragment abstraction for skiplists uses two types of fragments to represent a set of heaps like the one in Figure~\ref{sl-shape}: {\em level 1-fragments} for
+cells connected by a $\tt next[1]$-pointer, and {\em higher level-fragments} for
+cells connected by a higher level pointer. For example, the first pair of heap cells with keys $\tt -\infty$ and $5$ in the bottom-level list is represented by $\frag_1$ where the variable $\tt preds(1)[3]$ is represented by $\tt preds[higher]$. The pair of heap cells with keys $\tt -\infty$ and $\tt +\infty$ in the level 3 is represented by $\frag_9$. In each fragment, $\vals$ is represented inside each tag node of the fragment. The $\datarelat{\frag}$ is above the arrow between two tags. The first row under each tag is $\reachfrom$, whereas the second row is $\reachto$. Above each tag node is $\pvars$.
 
  
 
