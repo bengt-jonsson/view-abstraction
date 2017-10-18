@@ -5,21 +5,34 @@
 %% \label{lazylist}
 %% \end{figure}
 %% \end{center}
-\section{Fragment Abstraction: Singly Linked Lists}
+\section{Fragment Abstraction for Skiplists}
 \label{sec:fragment-abstraction}
 In the previous section, we reduced the problem of verifying linearizability
 to the problem of verifying
 that, in any execution of the cross-product of a program and an observer, 
 the observer cannot reach an accepting state.
-In this section, we describe our technique for performing this verification.
-The main novel contribution is our fragment abstraction for
-representing the possible heap configurations of a concurrent program.
-In this section, we describe this symbolic representation and our
-verification technique
-for programs that operate on singly-linked lists (SLLs). This
-representation is also the basis for our representation for programs
-operating on skiplists, described in Section~\ref{subsect:skiplists}
-and programs operating on arrays of SLLs, in Section~\ref{subsect:skiplists}.
+We perform this verification by  computing a symbolic representation
+of an invariant that is satisfied by all reachable program configurations,
+using an abstract-interpretation-based
+fixpoint procedure, which starts
+from a representation of the set of initial configurations.
+thereafter repeatedly performs
+symbolic postcondition computations that extend the
+symbolic representation by the effect of any execution step of the program,
+until convergence.
+In this section, we first define in more detail the representation,
+focusing in particular on the use of fragment abstraction, and thereafter
+describe the symbolic postcondition computation. 
+
+
+%% The main novel contribution is our fragment abstraction for
+%% representing the possible heap configurations of a concurrent program.
+%% In this section, we describe this symbolic representation and our
+%% verification technique
+%% for programs that operate on singly-linked lists (SLLs). This
+%% representation is also the basis for our representation for programs
+%% operating on skiplists, described in Section~\ref{subsect:skiplists}
+%% and programs operating on arrays of SLLs, in Section~\ref{subsect:skiplists}.
 
 %% We describe our fragment abstractions for three classes of heap structures:
 %% in the following subsection, we consider programs operating on singly-linked
@@ -42,20 +55,56 @@ and programs operating on arrays of SLLs, in Section~\ref{subsect:skiplists}.
 %% data values, an unbounded number of concurrently executing threads, and an
 %% unbounded heap. 
 
-\subsection{Symbolic Representations}
-
+\subsubsection*{Symbolic Representations}
 %% \bjcom{Say that for now, we ignore timers?}
 %% \bjcom{Introduce notation for the set of local $\ddomain$-variables?.
 %%   Maybe define which threads we talk about?
 %%   For now, we skip timestamps.
 %% }
-
 %% We assume that we must analyze the product of a program and an observer.
-In this subsection, we present our symbolic representation for programs that
-operate on singly-linked lists. This means that
-each cell has exactly one pointer field, named {\tt next}.
-In order to simplify the presentation in this section, we assume that
-each heap cell has at most one $\ddomain$-field, named  {\tt data}.
+Let us describe our symbolic representation for programs that
+operate on skiplists, as introduced in Section~\ref{sec:overview}.
+We assume that each heap cell has at most one $\ddomain$-field, named {\tt data}.
+The representation is parameterized on a suitable data abstraction.
+This data abstraction is conveniently represented by defining an
+abstract domain for each concrete domain of data values, as follows.
+%% For each thread-local variable, and each non-pointer cell field, which ranges
+%% over some concrete domain, we define a corresponding abstract domain,
+%% as follows.
+\begin{itemize}
+\item For small concrete domains (including that of the program counter, and
+  of the observer location),
+  the abstract domain is the same as the concrete one.
+\item
+  For locks, the abstract domain is $\set{\mathit{me},\mathit{other},\mathit{free}}$,
+  mening that the lock is held by $\thread$,  held by some other thread, or is
+  free, respectively.
+\item For the concrete domain $\ddomain$ of data values, the abstract domain
+  is the set of mappings from observer registers and local variables
+  ranging over $\ddomain$ to subsets of $\set{<,=,>}$.
+  An element in this abstract domain represents a concrete data value $\tt d$
+  if it maps each local variable and observer register with a value ${\tt d'} \in \ddomain$
+  to a set which includes a relation $\sim$ such that $\tt d \sim \tt d'$.
+\end{itemize}
+Define a {\em local symbolic configuration} $\locsymbconf$ to be
+a mapping from local non-pointer
+variables (including the program counter) to their corresponding abstract
+domains.
+We let $\sconf \satlocsymbconf{\thread} \locsymbconf$ denote that in the
+global configuration $\sconf$, the
+local configuration of thread $\thread$ satisfies the local symbolic
+configuration $\locsymbconf$, defined in the natural way.
+
+
+
+Let an {\em augmented
+local symbolic configuration} be a pair
+$\auglocsymbconf = \tuple{\locsymbconf,\ostate}$ consisting of
+a local symbolic configuration $\locsymbconf$ and an observer location $\ostate$.
+We let $\sconf \satlocsymbconf{\thread} \tuple{\locsymbconf,\ostate}$ denote
+that $\sconf \satlocsymbconf{\thread} \locsymbconf$
+and that the observer location of $\sconf$ is $\ostate$.
+
 Our symbolic representation is based on a combination of a thread abstraction, a
 shape  abstraction, and a data abstraction.
 
@@ -115,41 +164,6 @@ state of the observer, and to each fragment. This abstraction
 represents small finite domains exactly, and abstracts a set of
 data values in $\ddomain$ by their relative ordering.
 \end{itemize}
-Let us describe the concrete structure of our symbolic representation.
-Our data abstraction is conveniently represented by defining an
-abstract domain for each concrete domain of data values.
-%% For each thread-local variable, and each non-pointer cell field, which ranges
-%% over some concrete domain, we define a corresponding abstract domain,
-%% as follows.
-\begin{itemize}
-\item For small concrete domains (including that of the program counter, and
-  of the observer location),
-  the abstract domain is the same as the concrete one.
-\item
-  For locks, the abstract domain is $\set{\mathit{me},\mathit{other},\mathit{free}}$,
-  mening that the lock is held by $\thread$,  held by some other thread, or is
-  free, respectively.
-\item For the concrete domain $\ddomain$ of data values, the abstract domain
-  is the set of mappings from observer registers and local variables
-  ranging over $\ddomain$ to subsets of $\set{<,=,>}$.
-  An element in this abstract domain represents a concrete data value $\tt d$
-  if it maps each local variable and observer register with a value ${\tt d'} \in \ddomain$
-  to a set which includes a relation $\sim$ such that $\tt d \sim \tt d'$.
-\end{itemize}
-Define a {\em local symbolic configuration} $\locsymbconf$ to be
-a mapping from local
-variables (including the program counter) to their corresponding abstract
-domains.
-We let $\sconf \satlocsymbconf{\thread} \locsymbconf$ denote that in the
-global configuration $\sconf$, the
-local configuration of thread $\thread$ satisfies the local symbolic
-configuration $\locsymbconf$, defined in the natural way. Let an {\em augmented
-local symbolic configuration} be a pair
-$\auglocsymbconf = \tuple{\locsymbconf,\ostate}$ consisting of
-a local symbolic configuration $\locsymbconf$ and an observer location $\ostate$.
-We let $\sconf \satlocsymbconf{\thread} \tuple{\locsymbconf,\ostate}$ denote
-that $\sconf \satlocsymbconf{\thread} \locsymbconf$
-and that the observer location of $\sconf$ is $\ostate$.
 
 Next, we describe our shape abstraction. Let a
 {\em tag} be a tuple $\atag = \tagtuple$, where

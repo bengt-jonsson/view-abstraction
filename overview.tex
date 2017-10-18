@@ -506,11 +506,19 @@ A set of fragments represents the set of heap
 structures in which each pair of pointer-connected nodes is represented by some
 fragment in the set.
 Put differently, a set of fragments describes the set of heaps that can be formed by
-``piecing together'' fragments in the set.
-This ``piecing together'' must
+``piecing together'' pairs of pointer-connected nodes that are represented
+by some fragment in the set. This ``piecing together'' must
 be both locally consistent (appending only fragments that agree on their
 common node), and globally consistent (respecting the global reachability
 information).
+
+When applying fragment abstraction to skiplists, we  use two types of fragments:
+{\em level 1-fragments} for
+nodes connected by a $\tt next[1]$-pointer, and {\em higher level-fragments} for
+nodes connected by a higher level pointer. This means that we abstract all levels
+higher than 2 by the abstract element $\tt higher$. Thus, a pointer or
+non-pointer variable of form $\tt v[i]$, indexed by a level ${\tt i} \geq 2$, is
+abstracted to as the variable $\tt v[higher]$.
 
 Let us illustrate how fragment abstraction applies to the skiplist
 algorithm.
@@ -524,8 +532,6 @@ algorithm.
 %  writing}
 Figure~\ref{sl-shape} shows an example heap state of the
 skiplist algorithm with three levels. Each heap cell is shown with the values of its fields as described in Figure~\ref{skipcell}. %\bjcom{Add a legend, showing the layout of fields, as in previous papers}
-
-
 \begin{wrapfigure}{r}{0.5\textwidth} 
 \vspace{-50pt}
   \begin{center}
@@ -536,8 +542,6 @@ skiplist algorithm with three levels. Each heap cell is shown with the values of
   \vspace{-40pt}
   \vspace{1pt}
 \end{wrapfigure}
-
-
 In addition, each cell is labeled by the
 pointer variables that point to it; we use ${\tt preds(j)[i]}$ to denote the local
 variable ${\tt preds[i]}$ of thread $\thread_j$, and the same for other local variables.
@@ -590,11 +594,13 @@ In the heap state of Figure~\ref{sl-shape}, thread $\thread_1$ is trying to add 
 %% configuration in the domain of $\symbrep$, which is mapped to a set
 %% of fragments, which represents the heap that is accessible to $\thread$.
 
-Our fragment abstraction for skiplists uses two types of fragments: {\em level 1-fragments} for
-cells connected by a $\tt next[1]$-pointer, and {\em higher level-fragments} for
-cells connected by a higher level pointer. This means that we abstract all levels
-higher than 2 by the abstract element $\tt higher$.
-For example, in the view of thread $\thread_1$, the two left-most cells
+%% Our fragment abstraction for skiplists uses two types of fragments: {\em level 1-fragments} for
+%% cells connected by a $\tt next[1]$-pointer, and {\em higher level-fragments} for
+%% cells connected by a higher level pointer. This means that we abstract all levels
+%% higher than 2 by the abstract element $\tt higher$.
+\todo[inline]{Fix the wrapfigure!!}
+Let us illustrate how pairs of heap nodes can be represented by fragments.
+As a first example, in the view of thread $\thread_1$, the two left-most cells
 in Figure~\ref{sl-shape} are represent by the level 1-fragment $\frag_1$ in
 Figure~\ref{fig:skiplistabs}. Here, the variable $\tt preds(1)[3]$ is represented by $\tt preds[higher]$. The two left-most cells are also represented by
 a higher-level fragment, viz.\ $v_8$.
