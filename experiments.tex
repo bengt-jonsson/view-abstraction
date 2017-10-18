@@ -5,17 +5,22 @@
 \newcommand{\emm}{(emm)}
 %\begin{wrapfigure}{r}[0pt]{0.5\textwidth}
 %\vspace{5mm}
+
+ Based on our framework, we have implemented a tool in OCaml, and used
+it for verifying various kinds of concurrent algorithms (both lock-based and lock-free)
+including timestamps stack and queue, skip-list sets and priority queues as well as singly-linked lists algorithms (stacks, queues, sets). The experiments were performed on a desktop 2.8 GHz processor with 8GB memory. The results are presented in Fig.~\ref{Experiments:fig}, where running times are given in seconds. In our experiment, we run the tool together with observer in \cite{AHHR:integrated:rep}, \cite{BEEH:icalp15} and controller in~\cite{Quy:sas16} to verify linearization properties of the algorithms. All experiments start from the initial heap,  
+and end either when the analysis reaches the fixed point or when a violation of safety properties or linearizability is detected. 
+
 \begin{figure}[]
 %% \vspace*{-1cm}
-\center
 
-
-
-\begin{tabular}{|c | c | c | c |}
+\begin{tabular}{|c | c || c | c |}
   \hline
    \textsf{{\textbf{Algorithms}}} &  \textsf{{\textbf{Time (s)}}} & \textsf{{\textbf{Algorithms}}} &  \textsf{{\textbf{Time (s)}}}  \\
 
 \hline
+\hline
+
 \textsf{TS stack  ~\cite{MS:QueueAlgorithms}}  & \textsf{176} & \textsf{DGLM queue  ~\cite{Doherty:lockfree}}&  \textsf {16} \\
 \hline
 
@@ -24,13 +29,13 @@
 \textsf{Lock-free skip-list   ~\cite{ArtOfMpP}}& \textsf{1992} & \textsf{Vechev-DCAS set  ~\cite{Vechev:list}}   & \textsf{16} \\
 \hline
 
-\textsf{Optimistic skip-list ~\cite{MS:QueueAlgorithms}}& \textsf{500} & \textsf{Michael lock-free set ~\cite{Michael:list}}  & \textsf{178} \\
+\textsf{Lock-based skip-list ~\cite{lockskiplist}}& \textsf{500} & \textsf{Michael lock-free set ~\cite{Michael:list}}  & \textsf{178} \\
 \hline
  
 \textsf{Priority queue skip-list 1 ~\cite{Shavit:ElimQueue}}  &  \textsf{1320} & \textsf{Pessimistic set  ~\cite{ArtOfMpP}}&\textsf{30}\\
 \hline
 
-\textsf{Priority queue skip-list 2~\cite{Shavit:ElimQueue}}  &  \textsf{599} &\textsf{Optimistic set ~\cite{ArtOfMpP}}& \textsf{25}\\
+\textsf{Priority queue skip-list 2~\cite{Linden:opodis13}}  &  \textsf{599} &\textsf{Optimistic set ~\cite{ArtOfMpP}}& \textsf{25}\\
 \hline
 \textsf{Treiber stack  ~\cite{Treiber:stack}} & \textsf {18} & \textsf{Lazy set ~\cite{Lazyset}  }  & \textsf {34}\\
 \hline
@@ -49,11 +54,11 @@
 \label{Experiments:fig}
 \end{figure}
 %\vspace{-0.2cm}
-Based on our framework, we have implemented a tool in OCaml, and used
-it for verifying concurrent algorithms (both lock-based and lock-free)
-including timestamps stack and queue, skip-list sets and priority queues as well as singly-linked lists algorithms (stacks, queues, sets). The experiments were performed on a desktop 2.8 GHz processor with 8GB memory. The results are presented in Fig.~\ref{Experiments:fig}, where running times are given in seconds. 
-All experiments start from the initial heap,  
-and end either when the analysis reaches the fixed point or when a violation of safety properties or linearizability is detected. 
+\paragraph{Singly-linked list benchmarks:} In our experiments we are able to verify singly linked list algorithms which already verified in our previous work in ~\cite{Quy:sas16} by applying our new fragment abstraction.
+\paragraph{Timestamp benchmarks:} We consider two challenging timestamp algorithms, the timestamp stack uses an array of singly-linked lists (SLLs), one for each thread, accessed via the thread-indexed array ${\tt pools[maxThreads]}$ of pointers to the first cell of each list. Each list cell contains a data value, a timestamp value, a ${\tt next}$ pointer, and a boolean flag ${\tt mark}$ which indicates whether the node is logically removed from the stack. The $\tt push$ method of a thread push an to ``its own'' list, and can $\tt pop$ method pop the youngest element from any list. The timestamp queue use the same data structure as timestamp stack, and it also push a its element to its list. However, the its dequeue method removes the oldest element from any list. There are two challenges problems of verifying these algorithm, the fist challenge is how to deal with unbounded number of SLLs and the second challenge is that the lineatization points of the algorithms are not fixed, they are depended on the future behaviours of the algorithms. By using our fragment abstraction and observers for stack and queue in ~\cite{BEEH:icalp15}. Our tool is the first one which verifies these two algorithms automatically.
+
+\paragraph{Skiplist benchmarks:} We consider four skiplist algorithms including one lock-based skiplist set~\cite{MS:QueueAlgorithms}, one lock-free skiplist ~\cite{ArtOfMpP} set which is described in section 2, and two skip-list based priority queues. The challenge for verifying these algorithms is to deal with the problem of unbounded number of levels in these skiplists. In addition, in the lock-free skiplist ~\cite{ArtOfMpP}, the skiplist shape is not well formed, it means that each higher level list is not allways a sub-list of lower level lists. This make the verification of this algorithm became extremely difficult, this algorithm has not been formally verified by any previous work. By applying our fragment abstraction,  to the best of our knowledge, we are the first one who is able to verify these concurrent skiplist automatically. 
+
 
 %
 %\paragraph{Helping.}
@@ -134,6 +139,9 @@ and end either when the analysis reaches the fixed point or when a violation of 
 %the time reported in Fig.~\ref{Experiments:fig} is the sum of the 
 %times taken to show linearizability and all the properties mentioned above.
 %
+
+
+
 \paragraph{Running Times.}
 As can be seen from the table, the running times
 vary in the different examples.
