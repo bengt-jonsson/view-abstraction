@@ -11,50 +11,34 @@
 
 
 
-\begin{tabular}{|c | c | }
+\begin{tabular}{|c | c | c | c |}
   \hline
-   \textsf{{\textbf{Algorithms}}} &  \textsf{{\textbf{Time (s)}}} \\
-\hline
-\textsf{{\textit{TIMESTAMPS}}} & \\
-\hline
-%\textsf{TS stack  ~\cite{MS:QueueAlgorithms}}\;\;\;\;\;\;  & \textsf{76.02} \\
-\textsf{TS stack  ~\cite{MS:QueueAlgorithms}}  & \textsf{176} \\
-%\textsf{TS queue  ~\cite{MS:QueueAlgorithms}}& \textsf{11.07} \\
-\textsf{TS queue  ~\cite{MS:QueueAlgorithms}}& \textsf{101} \\
-\hline
- \textsf{{\textit{SKIP-LISTS}}} &   \\
-\hline
-\textsf{Lock-free skip-list   ~\cite{ArtOfMpP}}& \textsf{1992} \\
+   \textsf{{\textbf{Algorithms}}} &  \textsf{{\textbf{Time (s)}}} & \textsf{{\textbf{Algorithms}}} &  \textsf{{\textbf{Time (s)}}}  \\
 
-\textsf{Optimistic skip-list ~\cite{MS:QueueAlgorithms}}& \textsf{500} \\
+\hline
+\textsf{TS stack  ~\cite{MS:QueueAlgorithms}}  & \textsf{176} & \textsf{DGLM queue  ~\cite{Doherty:lockfree}}&  \textsf {16} \\
+\hline
+
+\textsf{TS queue  ~\cite{MS:QueueAlgorithms}}& \textsf{101} & \textsf{Vechev-CAS set  ~\cite{Vechev:list}}  & \textsf{86} \\
+\hline
+\textsf{Lock-free skip-list   ~\cite{ArtOfMpP}}& \textsf{1992} & \textsf{Vechev-DCAS set  ~\cite{Vechev:list}}   & \textsf{16} \\
+\hline
+
+\textsf{Optimistic skip-list ~\cite{MS:QueueAlgorithms}}& \textsf{500} & \textsf{Michael lock-free set ~\cite{Michael:list}}  & \textsf{178} \\
+\hline
  
-\textsf{Priority queue skip-list 1 ~\cite{Shavit:ElimQueue}}  &  \textsf{1320} \\
-
-\textsf{Priority queue skip-list 2~\cite{Shavit:ElimQueue}}  &  \textsf{599} \\
+\textsf{Priority queue skip-list 1 ~\cite{Shavit:ElimQueue}}  &  \textsf{1320} & \textsf{Pessimistic set  ~\cite{ArtOfMpP}}&\textsf{30}\\
 \hline
-   \textsf{{\textit{SINGLY-LINKED LISTS}}} &   \\
+
+\textsf{Priority queue skip-list 2~\cite{Shavit:ElimQueue}}  &  \textsf{599} &\textsf{Optimistic set ~\cite{ArtOfMpP}}& \textsf{25}\\
 \hline
-\textsf{Treiber stack  ~\cite{Treiber:stack}} & \textsf {18} \\
+\textsf{Treiber stack  ~\cite{Treiber:stack}} & \textsf {18} & \textsf{Lazy set ~\cite{Lazyset}  }  & \textsf {34}\\
+\hline
 
-\textsf{MS lock-free queue  ~\cite{MS:QueueAlgorithms}}& \textsf{21} \\
+\textsf{MS lock-free queue  ~\cite{MS:QueueAlgorithms}}& \textsf{21} & \textsf {O$\textquotesingle $Hearn set  ~\cite{OHearnlist}} & \textsf{88}\\
+\hline
 
-\textsf{DGLM queue  ~\cite{Doherty:lockfree}}&  \textsf {16} \\
-
-\textsf{Vechev-CAS set  ~\cite{Vechev:list}}  & \textsf{86} \\
-
-\textsf{Vechev-DCAS set  ~\cite{Vechev:list}}   & \textsf{16}  \\
-
-\textsf{Michael lock-free set ~\cite{Michael:list}}  & \textsf{178}  \\
-
-\textsf{Pessimistic set  ~\cite{ArtOfMpP}}&\textsf{30} \\
-
-\textsf{Optimistic set ~\cite{ArtOfMpP}}& \textsf{25} \\
-
-\textsf{Lazy set ~\cite{Lazyset}  }  & \textsf {34} \\
-
-\textsf {O$\textquotesingle $Hearn set  ~\cite{OHearnlist}}     & \textsf{88} \\
-
-\textsf{HM lock-free set  ~\cite{ArtOfMpP} } & \textsf{120} \\
+&   & \textsf{HM lock-free set  ~\cite{ArtOfMpP} } & \textsf{120}\\
 \hline
 \end{tabular}
 
@@ -65,10 +49,8 @@
 \label{Experiments:fig}
 \end{figure}
 %\vspace{-0.2cm}
-\todo[inline]{I am working here}
 Based on our framework, we have implemented a tool in OCaml, and used
-it for
-verifying concurrent algorithms (both lock-based and lock-free)
+it for verifying concurrent algorithms (both lock-based and lock-free)
 including timestamps stack and queue, skip-list sets and priority queues as well as singly-linked lists algorithms (stacks, queues, sets). The experiments were performed on a desktop 2.8 GHz processor with 8GB memory. The results are presented in Fig.~\ref{Experiments:fig}, where running times are given in seconds. 
 All experiments start from the initial heap,  
 and end either when the analysis reaches the fixed point or when a violation of safety properties or linearizability is detected. 
