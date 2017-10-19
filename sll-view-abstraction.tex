@@ -5,7 +5,7 @@
 %% \label{lazylist}
 %% \end{figure}
 %% \end{center}
-\section{Fragment Abstraction for Skiplists}
+\section{Verification using Fragment Abstraction for Skiplists}
 \label{sec:fragment-abstraction}
 In the previous section, we reduced the problem of verifying linearizability
 to the problem of verifying
@@ -20,8 +20,10 @@ thereafter repeatedly performs
 symbolic postcondition computations that extend the
 symbolic representation by the effect of any execution step of the program,
 until convergence.
-In this section, we first define in more detail the representation,
+In this section, we first (in Section~\ref{subsect:symbrep})
+define in more detail the representation,
 focusing in particular on the use of fragment abstraction, and thereafter
+(in Section~\ref{subsect:postcond})
 describe the symbolic postcondition computation. 
 
 
@@ -55,16 +57,21 @@ describe the symbolic postcondition computation.
 %% data values, an unbounded number of concurrently executing threads, and an
 %% unbounded heap. 
 
-\subsubsection*{Symbolic Representations}
+\subsection{Symbolic Representations}
+\label{subsect:symbrep}
 %% \bjcom{Say that for now, we ignore timers?}
 %% \bjcom{Introduce notation for the set of local $\ddomain$-variables?.
 %%   Maybe define which threads we talk about?
 %%   For now, we skip timestamps.
 %% }
 %% We assume that we must analyze the product of a program and an observer.
-Let us describe our symbolic representation for programs that
-operate on skiplists, as introduced in Section~\ref{sec:overview}.
-%% The representation is parameterized on a suitable data abstraction.
+Let us here in more detail describe our symbolic representation for programs that
+operate on skiplists, which was introduced in Section~\ref{sec:overview}.
+We do this by first giving a more precise description of the data abstraction,
+thereafter of the fragment abstraction, and finally how these are combined
+into a symbolic representation.
+
+\subsubsection{Data Abstraction}
 We first define more precisely our data abstraction by defining an
 abstract domain for each concrete domain of data values, as follows.
 We assume that each heap cell has at most one $\ddomain$-field, named {\tt data}.
@@ -88,20 +95,14 @@ ${\tt data}$ field has the same value as $\reg_i$.
   if it maps each local variable and observer register with a value ${\tt d'} \in \ddomain$
   to a set which includes a relation $\sim$ such that $\tt d \sim \tt d'$.
 \end{itemize}
-Define a {\em local symbolic configuration} $\locsymbconf$ to be
-a mapping from local non-pointer
-variables (including the program counter) to their corresponding abstract
-domains.
-We let $\sconf \satlocsymbconf{\thread} \locsymbconf$ denote that in the
-global configuration $\sconf$, the
-local configuration of thread $\thread$ satisfies the local symbolic
-configuration $\locsymbconf$, defined in the natural way.
 
+\subsubsection{Fragment Abstraction}
 Let us now define our fragment abstraction for skiplists more precisely.
 Let $\klevel$ be a level.
 Define the abstraction of a pointer variable of form $\tt p[k]$,
 denoted $\abstrof{\mathtt{p[k]}}$,
-to be $\tt p[1]$ if ${\tt k} = 1$, otherwise $\tt p[higher]$.
+to be $\tt p[1]$ if $\klevel = 1$, and to be  $\tt p[higher]$
+if $\klevel \geq 2$.
 That is, this abstraction does not distinguish different higher levels.
 A {\em tag} is a tuple $\atag = \tagtuple$, where
 \begin{inparaenum}[(i)]
@@ -227,9 +228,20 @@ $k$,
 a $\tt next[k]$ pointer for some $\klevel \geq 2$, representing their
 array fields only at index $k$.
 
+\subsubsection{Symbolic Representation}
 We are now ready to define our abstract symbolic representation, which
 is defined as a partial mapping from augmented local symbolic
-configurations to sets of fragments. For a local symbolic configuration
+configurations to sets of fragments. 
+
+Define a {\em local symbolic configuration} $\locsymbconf$ to be
+a mapping from local non-pointer
+variables (including the program counter) to their corresponding abstract
+domains.
+We let $\sconf \satlocsymbconf{\thread} \locsymbconf$ denote that in the
+global configuration $\sconf$, the
+local configuration of thread $\thread$ satisfies the local symbolic
+configuration $\locsymbconf$, defined in the natural way.
+For a local symbolic configuration
 $\locsymbconf$, an observer location $\ostate$, a pair
 $\fragset$ of fragments and a thread $\thread$, we write
 $\sconf \satconf{\thread}
@@ -302,7 +314,7 @@ $\sconf \satconf{\thread}
 \paragraph{Example:} Let us show an example of how a singly linked list (SLL) is split into a set of fragments. Fig.~\ref{lazylist}(a) shows an example of a concrete shape of a singly linked list. Each cell contains the values of $\tt val$, $\tt mark$, and $\tt lock$ from top to bottom, where \tick \; denotes $\tt true$, and \cross \; denotes $\tt false$ (or $\tt free$ for $\tt lock$) and the value of $\tt val$ is denoted by a pair of the observer register $\tt z$ and a subset of $\set{<, =, >}$. There are two threads $1$ and $2$ with two local variables $\tt c_1$ and $\tt c_2$. There are two global variables $\tt H$ and $\tt T$ pointing to the head and tail of the list. The observer register $\tt z$ has value 8. Fig.~\ref{lazylist}(b) shows the result of splitting the list in Fig.~\ref{lazylist}(a) into fragments where each heap fragment is a small list of two nodes. Fig.~\ref{lazylist}(c) shows the abstraction of fragments in Fig.~\ref{lazylist}(b) where for each cell $\cell$, the value of $val$ is abstracted to a subset in $\tt \{<z, =z, >z\}$, the reachability relation between $\cell$ and global variables and observer registers is abstracted to the predicate $\tt X \mapsto \tt Y$ where $\tt X$, $\tt Y$ are sets of global variables and observer registers, $\tt i$ or $\tt o$ states that $\cell$ is an input or output cell.
 
 
-\subsubsection{Symbolic Postcondition Computation}
+\subsection{Symbolic Postcondition Computation}
 \label{subsect:postcond}
 In the  verification, we must compute an invariant in the form
 of a symbolic representation
@@ -422,11 +434,12 @@ In the following, we first describe the symbolic postcondition computation for
 local steps, and thereafter the intersection operation.
 
 
-\paragraph{Symbolic Postcondition Computation for Local Steps}
+\subsubsection{Symbolic Postcondition Computation for Local Steps}
 Let $\thread$ be an arbitrary thread, and assume
 that $\tuple{\locsymbconf,\ostate} \in \domof{\symbrep}$.
+Let $\fragset = \symbrep(\tuple{\locsymbconf,\ostate})$
 For each statement that $\thread$ can execute in a configuration $\sconf$
-with $\sconf \satconf{\thread} \tuple{\locsymbconf,\ostate,\symbrep(\tuple{\locsymbconf,\ostate})}$,
+with $\sconf \satconf{\thread} \tuple{\locsymbconf,\ostate,\fragset}$,
 we must compute a local symbolic configuration $\locsymbconf'$, a new
 observer location $\ostate'$ and a set  $\fragset'$ of fragments such that
 such that the resulting configuration ${\sconf}'$ satisfies
@@ -442,21 +455,21 @@ since these are the most interesting cases.
 In this computation, the set $\fragset'$ is constructed in two steps:
 \begin{inparaenum}[(1)]
 \item First, the level-1 fragments of $\fragset'$ are computed, based on
-  the level-1 fragments in $\symbrep(\tuple{\locsymbconf,\ostate})$.
+  the level-1 fragments in $\fragset$.
 \item
   Thereafter, the higher-level fragments of $\fragset'$ are computed, based
-  on the higher-level fragments in $\symbrep(\tuple{\locsymbconf,\ostate})$ and
-  how fragments in $\symbrep(\tuple{\locsymbconf,\ostate})$ are transformed
+  on the higher-level fragments in $\fragset$ and
+  how fragments in $\fragset$ are transformed
   when entered in to $\fragset'$.
 \end{inparaenum}
 We first describe the construction of level-1 fragments, and thereafter the
 construction of higher-level fragments.
 
-\paragraph{Construction of level-1 fragments}
+\paragraph{{\bf Construction of level-1 fragments}}
 Let us first consider a statement of form $\gvarof{g} := \lvarof{p}$,
 which assigns the value of a local pointer variable $\lvarof{p}$ to a global
 pointer variable $\gvarof{g}$. The set $\fragset'$ of fragments is obtained by
-modifying fragments in $\symbrep(\tuple{\locsymbconf,\ostate})$ to reflect the effect of the assignment. 
+modifying fragments in $\fragset$ to reflect the effect of the assignment. 
 For any tag in a fragment, the $\vals$ field is not affected.
 The $\pvars$ field  is updated to contain the variable $\gvarof{g}$ if and only if it contained the variable $\lvarof{p}$ before the statement. 
 The difficulty is to update the reachability information represented
@@ -470,7 +483,7 @@ reflecting that $\gvarof{g}$ and $\lvarof{p}$ are now aliases, just as
 in the update of $\pvars$).
 In order to compute the postcondition with sufficient precision, we
 %% However, since the $\reachfrom$ field does not include local variables, we
-therefore investigate whether the set of fragments $\symbrep(\tuple{\locsymbconf,\ostate})$
+therefore investigate whether the set of fragments $\fragset$
 allows to form a heap in which a $p$-cell can reach or be
 reached from (by a sequence of $\tt next[1]$ pointers)
 a particular tag of a fragment.
@@ -614,6 +627,9 @@ $\reachtoat{\outof{\frag_y'}} = \reachtoat{\outof{\frag_y}} \setminus \set{\abst
  \item $\reachfromat{\outof{\frag'}} = \reachfromat{\outof{\frag}} \cup \set{\abstrof{\mathtt{x}}}$ if $\tt x$ is a global variable,
 \item $\reachtoat{\outof{\frag'}} = \reachtoat{\outof{\frag}} \cup \set{\abstrof{\mathtt{x}}}$ if $\tt x$ is a global variable,
 \end{itemize}
+  (Recall that $\abstrof{\mathtt{x}}$ is the abstraction of $\mathtt{x}$, which
+  in the case that $\mathtt{x}$ is an array element
+  maps higher levels to the same   abstract index $\tt higher$.)
 \item We perform analogous inclusions for fragments $\frag$ with
   $\frag \overset{+}\hookrightarrow_{\fragset} \frag_y$,
   $\frag_y \overset{*}\hookrightarrow_{\fragset} \frag$,
@@ -651,9 +667,10 @@ $\fragset$.
     $\tagat{\inof{\frag_{new}}} = \tagat{\inof{\frag_x}}$ and
     $\tagat{\outof{\frag_{new}}} = \tagat{\inof{\frag_y}}$ except that
     $\reachfromat{\outof{\frag_{new}}} = \reachfromat{\inof{\frag_y}} \cup \reachfromat{\inof{\frag_x}}$ and
-    $\reachtoat{\inof{\frag_{new}}} = \reachtoat{\inof{\frag_y}} \cup \pvarsat{\inof{\frag_x}}$, and
-    $\datarelof{\frag_{new}} = \set{<,=,>}$.
-    \bjcom{This last thing needs fixing}
+    $\reachtoat{\inof{\frag_{new}}} = \reachtoat{\inof{\frag_y}} \cup \pvarsat{\inof{\frag_x}}$.
+    The possible relations in $\datarelof{\frag_{new}}$ are obtained by
+    considering the possible transitive closure-relations between
+    $\frag_x$ and $\frag_y$.
   \item
     Thereafter, we add all possible fragments that can result from a transformation
 of some fragment $\frag$ which is in $\frag$. This is done by an exhaustive
@@ -675,7 +692,7 @@ $\frag''$ which is same as $\frag'$, except that $\reachfromat{\outof{\frag''}} 
 \todo[inline]{We should include an argument why the last case above is correct.
   Quy, could you produce one?}
 
-\paragraph{Construction of higher-level fragments}
+\paragraph{{\bf Construction of higher-level fragments}}
 Based on this construction of level-1 fragments, higher-level fragments are
    conststructed as follows.
      For each higher level-fragment $\frag \in \fragset$, let
@@ -696,7 +713,7 @@ Based on this construction of level-1 fragments, higher-level fragments are
 \end{itemize}
 
 
-\paragraph{Symbolic Postcondition Computation for Interference Steps.} 
+\subsubsection{Symbolic Postcondition Computation for Interference Steps} 
 Here, the key step is the {\em intersection} operation, which
 takes two sets of fragments
 $\fragset_1$ and $\fragset_2$, and produces a set of joint fragments
@@ -709,12 +726,13 @@ $\thread_1$ or $\thread_2$, the set $\fragset_{1,2}$
 contains a fragment $\frag$ with $\cell \lsatfrag{\klevel}{\{\thread_1,\thread_2\}}{\sconf} \frag$ for each $\klevel$ which is at most the height of $\cell$
 (generalizing the notation  $\lsatfrag{\klevel}{\thread}{\sconf}$ to several
 threads).
-Here, we describe the intersection operation on level-1 fragments. The
-intersection operation is completely analogous for higher-level fragments.
-\bjcom{The following sentence must be adapted}
-In order to distinguish
-between local variables of $\thread_1$ and $\thread_2$, we use the notation
+Note that a joint fragments represents local pointer variables of
+both $\thread_1$ and $\thread_2$. In order to distinguish
+between local variables of $\thread_1$ and $\thread_2$, one can, e.g.,
+use a notation of form
 $\lvarof{x[i]}$ for a local variable $\lvarof{x}$ of thread $\thread_i$.
+Here, we describe the intersection operation for level-1 fragments. The
+intersection operation is completely analogous for higher-level fragments.
 
 For a fragment $\frag$, define
 $\greachfromat{\inof{\frag}}$ as the set of global variables in
@@ -728,9 +746,9 @@ analogously.
 Define $\gtagat{\inof{\frag}}$ as the tuple
 $\tuple{\valsat{\inof{\frag}},\gpvarsat{\inof{\frag}},\greachfromat{\inof{\frag}},\greachtoat{\inof{\frag}}}$, and define
 $\gtagat{\outof{\frag}}$ analogously.
-\todo[inline]{Question to Quy: You have also used the notation
-  $\gvalsat{\inof{\frag}}$. Will you need it, and if so what does it mean?} \quycom{Because in the data, I add data constraint between data fields and local data variable. When we do intersection, we do not need to care about this constraint because its local constraint}
-We must distinguish three possibilities.
+%% \todo[inline]{Question to Quy: You have also used the notation
+%%   $\gvalsat{\inof{\frag}}$. Will you need it, and if so what does it mean?} \quycom{Because in the data, I add data constraint between data fields and local data variable. When we do intersection, we do not need to care about this constraint because its local constraint}
+We must distinguish the following possibilities.
 \begin{itemize}
 \item If $\cell$ is accessible to both $\thread_1$ and $\thread_2$, then
   there are fragments $\frag_1 \in \fragset_1$ and $\frag_2 \in \fragset_2$
@@ -756,7 +774,7 @@ We must distinguish three possibilities.
   such that $\cell \lsatfrag{\klevel}{\thread_1}{\sconf} \frag_1$ and
   $\cell.{\tt next[1]} \lsatfrag{\klevel}{\thread_2}{\sconf} \outof{\frag_2}$.
   This can happen only if
-  $\greachfromat{\inof{\frag_1}} =  \greachfromat{\inof{\frag_2}} = \emptyset$,
+  $\greachfromat{\inof{\frag_1}} =  \emptyset$,
   and $\gtagat{\outof{\frag_1}} = \gtagat{\outof{\frag_2}}$,
   and $\privateat{\outof{\frag_1}} = \privateat{\outof{\frag_2}} = \false$.
   Thus, for any such pair of fragments
@@ -776,6 +794,9 @@ We must distinguish three possibilities.
   $\greachfromat{\outof{\frag_1}} = \emptyset$,
   in which case we let  $\fragset_{1,2}$ contain the fragment
   $\frag_1$.
+\item
+  For each of the two last cases, there is also a symmetric case with the
+  roles of $\thread_1$ and $\thread_2$ reversed.
 \end{itemize}
 
 
