@@ -7,15 +7,15 @@ In this section, we show several important algorithms including timestamp stack 
 %%%%%%%%%%% struct %%%%%%%%%%%%%%%%
 \node[linecode,anchor=south west](struct) at ($(top-head.east)+(-30pt,0pt)$) { \scriptsize struct Node \scriptsize \{};
 %{struct Node(bool lock; int val; Node *next; bool mark);};
-\node(struct1)[linecode] at ($(top-head.west)+(10pt,-5pt)$) {\scriptsize int data;\;\;\;\;\;\;};
-\node(struct2)[linecode] at ($(top-head.west)+(10pt,-15pt)$) {\scriptsize Timestamp ts;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;};
+\node(struct1)[linecode] at ($(top-head.west)+(10pt,-5pt)$) {\scriptsize int data;\;\;};
+\node(struct2)[linecode] at ($(top-head.west)+(10pt,-15pt)$) {\scriptsize Timestamp ts;};
 \node(struct3)[linecode] at ($(top-head.west)+(10pt,-26pt)$) {\scriptsize Node* next;};
 \node(struct4)[linecode] at ($(top-head.west)+(10pt,-37pt)$) {\scriptsize bool mark;};
 \node(struct5)[linecode] at ($(top-head.west)+(0pt,-47pt)$) {\scriptsize \}};
 \node(struct6)[linecode] at ($(top-head.west)+(0pt,-52pt)$) {}; 
-%\begin{pgfonlayer}{background}
-% \node[code-bg,fit=(struct) (struct6) (struct1) (struct2)] {};
-%\end{pgfonlayer}
+\begin{pgfonlayer}{background}
+ \node[code-bg,fit=(struct) (struct6) (struct1) (struct2)] {};
+\end{pgfonlayer}
 
 
 \node(locate-head)[linecode] at ($(top-head.east)+(143pt,8pt)$) {\scriptsize int pop(Timestamp ts):};
@@ -120,10 +120,10 @@ In this section, we show several important algorithms including timestamp stack 
 
 
 
-%\node(bot)[linecode] at ($(locate25.east)+(0pt,-10pt)$) {};
-%\begin{pgfonlayer}{background}
-% \node[code-bg,fit=(locate-head) (code3) (locate14) (code22) (bot) ]{};
-% \end{pgfonlayer}
+\node(bot)[linecode] at ($(locate25.east)+(0pt,-10pt)$) {};
+\begin{pgfonlayer}{background}
+ \node[code-bg,fit=(locate-head) (code3) (locate14) (code22) (bot) ]{};
+ \end{pgfonlayer}
 
 %%%%%%%%%% pop %%%%%%%%%%
 
@@ -178,9 +178,9 @@ In this section, we show several important algorithms including timestamp stack 
 
 %\node(bot)[linecode] at ($(pop10.east)+(0pt,-18pt)$) {};
 
-%\begin{pgfonlayer}{background}
-%\node[code-bg,fit=(pop-head) (linecode1) (pop1) (bot)]{};
-%\end{pgfonlayer}
+\begin{pgfonlayer}{background}
+\node[code-bg,fit=(pop-head) (linecode1) (pop1) (pop10)]{};
+\end{pgfonlayer}
  
  
  
@@ -188,14 +188,14 @@ In this section, we show several important algorithms including timestamp stack 
 \node[linecode,anchor=south west](init) at ($(top-head.east)+(-30pt,-75pt)$) {\scriptsize init() :};
 %{struct Node(bool lock; int val; Node *next; bool mark);};
 \node(init1)[linecode] at ($(top-head.east)+(-30pt,-80pt)$) {\scriptsize \;\;\;Node* pools[maxThreads];};
-\node(init2)[linecode] at ($(top-head.east)+(-30pt,-90pt)$) {\scriptsize \;\;\;for(int i=0; i<maxThreads; i++)\;\;\;\;\;\;};
+\node(init2)[linecode] at ($(top-head.east)+(-30pt,-90pt)$) {\scriptsize \;\;\;for(int i=0; i<maxThreads; i++)};
 \node(init4)[linecode] at ($(top-head.east)+(-30pt,-100pt)$) {\scriptsize \;\;\;\;\;\;\;pools[i].next = null;};
 
 %\node(bot)[linecode] at ($(init4.east)+(0pt,-4pt)$) {};
 
-%\begin{pgfonlayer}{background}
-% \node[code-bg,fit=(init) (init4) (init2) (bot)] {};
-%\end{pgfonlayer}
+\begin{pgfonlayer}{background}
+ \node[code-bg,fit= (init) (init1) (init4) (init2)] {};
+\end{pgfonlayer}
 
 
 
@@ -203,10 +203,10 @@ In this section, we show several important algorithms including timestamp stack 
 
 
 %\node[linecode](ctn) at ($(rmv.east)+(105pt,-50pt)$) {};
-\node(pop-head)[linecode][font={\scriptsize \tt},anchor=west] at  ($(top-head.east)+(-30pt,-272pt)$) {\scriptsize Node remove(Node* pt, Node* t, Node* n)};
+\node(pop-head1)[linecode][font={\scriptsize \tt},anchor=west] at  ($(top-head.east)+(-30pt,-242pt)$) {\scriptsize Node remove(Node* pt, Node* t, Node* n)};
 
 
-\node(locate14)[linenum] at ($(pop-head.west)+(10pt,-10pt)$) {};
+\node(locate14)[linenum] at ($(pop-head1.west)+(10pt,-10pt)$) {};
 \node(code14)[linecode] at ($(locate14.east)+(0pt,0pt)$) {\scriptsize bool s = CAS(n.mark,false,true);};
 
 \node(locate15)[linenum] at ($(locate14.east)+(0pt,-10pt)$) {};
@@ -229,7 +229,7 @@ In this section, we show several important algorithms including timestamp stack 
 \node[linecode] at ($(locate21.east)+(14pt,0pt)$) {\scriptsize Node* next=n.next};
 
 \node(locate22)[linenum] at ($(locate21.east)+(0pt,-10pt)$) {};
-\node(code22)[linecode] at ($(locate22.east)+(14pt,0pt)$) {\scriptsize while (next.next != next \&\& next.mark);};
+\node(code22)[linecode] at ($(locate22.east)+(14pt,0pt)$) {\scriptsize while (next.next!=next\&\&next.mark);};
 
 \node(locate23)[linenum] at ($(locate22.east)+(0pt,-10pt)$) {};
 \node[linecode] at ($(locate23.east)+(21pt,0pt)$) {\scriptsize next = next.next;};
@@ -244,9 +244,9 @@ In this section, we show several important algorithms including timestamp stack 
 
 \node(bot)[linecode] at ($(pop10.east)+(0pt,-18pt)$) {};
 
-%\begin{pgfonlayer}{background}
-%\node[code-bg,fit=(pop-head) (locate14) (pop1) (bot)]{};
-%\end{pgfonlayer}
+\begin{pgfonlayer}{background}
+\node[code-bg,fit=(pop-head1) (locate24) (code14) (code22)]{};
+\end{pgfonlayer}
  
 
 
@@ -265,19 +265,19 @@ In this section, we show several important algorithms including timestamp stack 
 \node[linecode,anchor=south west](struct) at ($(top-head.east)+(-30pt,0pt)$) { \scriptsize struct Node \scriptsize \{};
 %{struct Node(bool lock; int val; Node *next; bool mark);};
 \node(struct1)[linecode] at ($(top-head.west)+(10pt,-5pt)$) {\scriptsize int data;\;\;\;\;\;\;};
-\node(struct2)[linecode] at ($(top-head.west)+(10pt,-15pt)$) {\scriptsize Timestamp ts;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;};
+\node(struct2)[linecode] at ($(top-head.west)+(10pt,-15pt)$) {\scriptsize Timestamp ts;};
 \node(struct3)[linecode] at ($(top-head.west)+(10pt,-26pt)$) {\scriptsize Node* next;};
 \node(struct4)[linecode] at ($(top-head.west)+(10pt,-37pt)$) {\scriptsize bool mark;};
 \node(struct5)[linecode] at ($(top-head.west)+(0pt,-47pt)$) {\scriptsize \}};
 \node(struct6)[linecode] at ($(top-head.west)+(0pt,-52pt)$) {}; 
-%\begin{pgfonlayer}{background}
-% \node[code-bg,fit=(struct) (struct6) (struct1) (struct2)] {};
-%\end{pgfonlayer}
+\begin{pgfonlayer}{background}
+ \node[code-bg,fit=(struct) (struct6) (struct1) (struct2)] {};
+\end{pgfonlayer}
 
 
-\node(locate-head)[linecode] at ($(top-head.east)+(143pt,8pt)$) {\scriptsize int deq(Timestamp ts):};
+\node(locate-head1)[linecode] at ($(top-head.east)+(143pt,8pt)$) {\scriptsize int deq(Timestamp ts):};
 
-\node(locate1)[linenum,anchor=west] at ($(locate-head.west)+(0pt,-10pt)$) {};
+\node(locate1)[linenum,anchor=west] at ($(locate-head1.west)+(0pt,-10pt)$) {};
 \node[linecode] at ($(locate1.east)+(0pt,0pt)$) {\scriptsize boolean success = false;};
 
 \node(locate2)[linenum] at ($(locate1.east)+(0pt,-10pt)$) {};
@@ -315,16 +315,6 @@ In this section, we show several important algorithms including timestamp stack 
 \node(locate8c)[linenum] at ($(locate8b.east)+(0pt,-10pt)$) {};
 \node[linecode] at ($(locate8c.east)+(21pt,0pt)$) {\scriptsize continue;};
 
-%\node(locate9a)[linenum] at ($(locate8c.east)+(0pt,-10pt)$) {\scriptsize 13};
-%\node[linecode] at ($(locate9a.east)+(14pt,0pt)$) {\scriptsize if(st < n.ts)};
-%
-%\node(locate9b)[linenum] at ($(locate9a.east)+(0pt,-10pt)$) {\scriptsize 14};
-%\node[linecode] at ($(locate9b.east)+(21pt,0pt)$) {\scriptsize r = remove(pools[i], top, n);};
-%
-%\node(locate9c)[linenum] at ($(locate9b.east)+(0pt,-10pt)$) {\scriptsize 15};
-%\node[linecode] at ($(locate9c.east)+(21pt,0pt)$) {\scriptsize return n.data);};
-
-
 \node(locate9)[linenum] at ($(locate8c.east)+(0pt,-10pt)$) {};
 \node[linecode] at ($(locate9.east)+(14pt,0pt)$) {\scriptsize if(maxTS > n.ts)};
 
@@ -359,28 +349,16 @@ In this section, we show several important algorithms including timestamp stack 
 \node(locate19)[linenum] at ($(locate18.east)+(0pt,-10pt)$) {};
 \node[linecode] at ($(locate19.east)+(14pt,0pt)$) {\scriptsize return Empty;};
 
-%\node(locate21)[linenum] at ($(locate19.east)+(0pt,-10pt)$) {\scriptsize 21};
-%\node[linecode] at ($(locate21.east)+(28pt,0pt)$) {\scriptsize Node* next=youngest.next};
-%
-%\node(locate22)[linenum] at ($(locate21.east)+(0pt,-10pt)$) {\scriptsize 22};
-%\node(code22)[linecode] at ($(locate22.east)+(28pt,0pt)$) {\scriptsize while (next.next != next $\&$ next.mark);};
-%
-%\node(locate23)[linenum] at ($(locate22.east)+(0pt,-10pt)$) {\scriptsize 23};
-%\node[linecode] at ($(locate23.east)+(35pt,0pt)$) {\scriptsize next = next.next;};
-%
-%\node(locate24)[linenum] at ($(locate23.east)+(0pt,-10pt)$) {\scriptsize 24};
-%\node[linecode] at ($(locate24.east)+(28pt,0pt)$) {\scriptsize youngest.next = next;};
-%
 \node(locate25)[linenum] at ($(locate19.east)+(0pt,-10pt)$) {};
 \node[linecode] at ($(locate25.east)+(7pt,0pt)$) {\scriptsize return youngest.data;};
 
 
 
 
-%\node(bot)[linecode] at ($(locate25.east)+(0pt,-10pt)$) {};
-%\begin{pgfonlayer}{background}
-% \node[code-bg,fit=(locate-head) (code3) (locate14) (code22) (bot) ]{};
-% \end{pgfonlayer}
+\node(bot)[linecode] at ($(locate25.east)+(0pt,-10pt)$) {};
+\begin{pgfonlayer}{background}
+ \node[code-bg,fit=(locate-head1)  (code8)  (bot) ]{};
+ \end{pgfonlayer}
 
 %%%%%%%%%% pop %%%%%%%%%%
 
@@ -433,11 +411,11 @@ In this section, we show several important algorithms including timestamp stack 
 
 
 
-%\node(bot)[linecode] at ($(pop10.east)+(0pt,-18pt)$) {};
+\node(bot)[linecode] at ($(pop10.east)+(0pt,-18pt)$) {};
 
-%\begin{pgfonlayer}{background}
-%\node[code-bg,fit=(pop-head) (linecode1) (pop1) (bot)]{};
-%\end{pgfonlayer}
+\begin{pgfonlayer}{background}
+\node[code-bg,fit=(pop-head) (linecode1) (pop1) (bot)]{};
+\end{pgfonlayer}
  
  
  
@@ -448,11 +426,11 @@ In this section, we show several important algorithms including timestamp stack 
 \node(init2)[linecode] at ($(top-head.east)+(-30pt,-90pt)$) {\scriptsize \;\;\;for(int i=0; i<maxThreads; i++)\;\;\;\;\;\;};
 \node(init4)[linecode] at ($(top-head.east)+(-30pt,-100pt)$) {\scriptsize \;\;\;\;\;\;\;pools[i].next = null;};
 
-%\node(bot)[linecode] at ($(init4.east)+(0pt,-4pt)$) {};
+\node(bot)[linecode] at ($(init4.east)+(0pt,-4pt)$) {};
 
-%\begin{pgfonlayer}{background}
-% \node[code-bg,fit=(init) (init4) (init2) (bot)] {};
-%\end{pgfonlayer}
+\begin{pgfonlayer}{background}
+ \node[code-bg,fit=(init) (init4) (init2) (bot)] {};
+\end{pgfonlayer}
 
 
 
@@ -460,10 +438,10 @@ In this section, we show several important algorithms including timestamp stack 
 
 
 %\node[linecode](ctn) at ($(rmv.east)+(105pt,-50pt)$) {};
-\node(pop-head)[linecode][font={\scriptsize \tt},anchor=west] at  ($(top-head.east)+(-30pt,-272pt)$) {\scriptsize Node remove(Node* pt, Node* t, Node* n)};
+\node(pop-head11)[linecode][font={\scriptsize \tt},anchor=west] at  ($(top-head.east)+(-25pt,-272pt)$) {\scriptsize Node remove(Node* pt, Node* t, Node* n)};
 
 
-\node(locate14)[linenum] at ($(pop-head.west)+(10pt,-10pt)$) {};
+\node(locate14)[linenum] at ($(pop-head11.west)+(10pt,-10pt)$) {};
 \node(code14)[linecode] at ($(locate14.east)+(0pt,0pt)$) {\scriptsize bool s = CAS(n.mark,false,true);};
 
 \node(locate15)[linenum] at ($(locate14.east)+(0pt,-10pt)$) {};
@@ -495,15 +473,15 @@ In this section, we show several important algorithms including timestamp stack 
 \node[linecode] at ($(locate24.east)+(14pt,0pt)$) {\scriptsize n.next = next;};
 
 \node(locate24)[linenum] at ($(locate24.east)+(0pt,-10pt)$) {};
-\node[linecode] at ($(locate24.east)+(14pt,0pt)$) {\scriptsize return s;};
+\node(code111)[linecode] at ($(locate24.east)+(14pt,0pt)$) {\scriptsize return s;};
 
 
 
-\node(bot)[linecode] at ($(pop10.east)+(0pt,-18pt)$) {};
+\node(bot1)[linecode] at ($(pop10.east)+(0pt,-18pt)$) {};
 
-%\begin{pgfonlayer}{background}
-%\node[code-bg,fit=(pop-head) (locate14) (pop1) (bot)]{};
-%\end{pgfonlayer}
+\begin{pgfonlayer}{background}
+\node[code-bg,fit=(pop-head11) (code14) (code111) (code22)]{};
+\end{pgfonlayer}
  
 
 
@@ -581,9 +559,9 @@ In this section, we show several important algorithms including timestamp stack 
 \node[linecode] at ($(locate14.east)+(20pt,0pt)$) {\scriptsize unlock(curr);};
 
 
-%\begin{pgfonlayer}{background}
-% \node[code-bg,fit=(locate-head) (code4) (locate14) ]{};
-% \end{pgfonlayer}
+\begin{pgfonlayer}{background}
+ \node[code-bg,fit=(locate-head) (code4) (locate14) ]{};
+ \end{pgfonlayer}
 
 
 
@@ -633,9 +611,9 @@ r := false;};
 \node(add9)[linenum] at ($(add8.east)+(0pt,-10pt)$) {};
 \node[linecode] at ($(add9.east)+(0pt,0pt)$) {\scriptsize return r;};
 
-%\begin{pgfonlayer}{background}
-% \node[code-bg,fit=(add-head) (code3a) (add9) ]{};
-% \end{pgfonlayer}
+\begin{pgfonlayer}{background}
+ \node[code-bg,fit=(add-head) (code3a) (add9) ]{};
+ \end{pgfonlayer}
 
 %%%%%%%%%% rmv %%%%%%%%%%
 
@@ -646,8 +624,8 @@ r := false;};
 \node(rmv-local)[linecode] at 
 ($(rmv-head.west)+(0pt,-10pt)$) {\scriptsize local pred, curr, n, r};
 
-\node(rmv1)[linenum,anchor=west] at ($(rmv-local.west)+(0pt,-10pt)$) {1};
-\node[linecode] at ($(rmv1.east)+(0pt,0pt)$) {\scriptsize (pred,curr) = locate(d);};
+\node(rmv1)[linenum,anchor=west] at ($(rmv-local.west)+(0pt,-10pt)$) {};
+\node(code200)[linecode] at ($(rmv1.east)+(0pt,0pt)$) {\scriptsize (pred,curr) = locate(d);};
 
 \node(rmv2)[linenum] at ($(rmv1.east)+(0pt,-10pt)$) {};
 \node[linecode] at ($(rmv2.east)+(0pt,0pt)$) {\scriptsize if (curr.val = d)};
@@ -679,9 +657,9 @@ r := false;};
 \node(rmv10)[linenum] at ($(rmv9.east)+(0pt,-10pt)$) {};
 \node[linecode] at ($(rmv10.east)+(0pt,0pt)$) {\scriptsize return r;};
 
-%\begin{pgfonlayer}{background}
-% \node[code-bg,fit=(rmv-head) (code3) (rmv10) ]{};
-% \end{pgfonlayer}
+\begin{pgfonlayer}{background}
+ \node[code-bg,fit=(rmv-head) (code3) (rmv10) (code200) ]{};
+ \end{pgfonlayer}
 
 
 %%%%%%%%%% ctn %%%%%%%%%%
@@ -724,9 +702,9 @@ r := false;};
 
 
 
-%\begin{pgfonlayer}{background}
-% \node[code-bg,fit=(ctn-head) (code5) (ctn7)]{};
-% \end{pgfonlayer}
+\begin{pgfonlayer}{background}
+ \node[code-bg,fit=(ctn-head) (code5) (ctn7)]{};
+ \end{pgfonlayer}
 
 
 %%%%%%%%%%% struct %%%%%%%%%%%%%%%%
@@ -735,9 +713,9 @@ r := false;};
 {\scriptsize struct Node(bool lock; int val; Node *next; bool mark);};
 
 
-%\begin{pgfonlayer}{background}
-% \node[code-bg,fit=(struct)]{};
-% \end{pgfonlayer}
+\begin{pgfonlayer}{background}
+ \node[code-bg,fit=(struct)]{};
+ \end{pgfonlayer}
 
 
 \end{tikzpicture}
@@ -757,10 +735,10 @@ r := false;};
 
 %%%%%%%%%% locate %%%%%%%%%%
 \node(locate){};
-\node(locate-head)[linecode] at ($(locate.east)+(-120pt,0pt)$) {\scriptsize locate(int v,Node* preds[], Node* succs[]):};
+\node(locate-head1)[linecode] at ($(locate.east)+(-120pt,0pt)$) {\scriptsize locate(int v,Node* preds[], Node* succs[]):};
 
 \node(locate-local)[linecode] at 
-($(locate-head.west)+(10pt,-10pt)$) {\scriptsize local lfound, pred, curr;};
+($(locate-head1.west)+(10pt,-10pt)$) {\scriptsize local lfound, pred, curr;};
 
 \node(locate1)[linenum,anchor=west] at ($(locate-local.west)+(0pt,-10pt)$) {};
 \node[linecode] at ($(locate1.east)+(0pt,0pt)$) {\scriptsize pred = H; lfound = -1};
@@ -772,7 +750,7 @@ r := false;};
 \node[linecode] at ($(locate3.east)+(10pt,0pt)$) {\scriptsize curr = pred.next[i]; };
 
 \node(locate4)[linenum] at ($(locate3.east)+(0pt,-10pt)$) {};
-\node(code4)[linecode] at ($(locate4.east)+(10pt,0pt)$) {\scriptsize while (curr.val < v) };
+\node(code1499)[linecode] at ($(locate4.east)+(10pt,0pt)$) {\scriptsize while (curr.val < v) };
 
 \node(locate5)[linenum] at ($(locate4.east)+(0pt,-10pt)$) {};
 \node[linecode] at ($(locate5.east)+(20pt,0pt)$) {\scriptsize pred = curr; };
@@ -784,7 +762,7 @@ r := false;};
 \node[linecode] at ($(locate7.east)+(10pt,0pt)$) {\scriptsize if (lfound = 1 \&\& curr.val = v)};
 
 \node(locate8)[linenum] at ($(locate7.east)+(0pt,-10pt)$) {};
-\node(code8)[linecode] at ($(locate8.east)+(20pt,0pt)$) {\scriptsize lfound = i};
+\node(code888)[linecode] at ($(locate8.east)+(20pt,0pt)$) {\scriptsize lfound = i};
 
 \node(locate9)[linenum] at ($(locate8.east)+(0pt,-10pt)$) {};
 \node[linecode] at ($(locate9.east)+(10pt,0pt)$) {\scriptsize preds[i] = pred;};
@@ -806,7 +784,7 @@ r := false;};
 %
 
 %\begin{pgfonlayer}{background}
-% \node[code-bg,fit=(locate-head) (code4) (locate14) ]{};
+% \node[code-bg,fit=(locate-head1) (code1499) (code888)]{};
 % \end{pgfonlayer}
 
 
@@ -894,9 +872,9 @@ r := false;};
 {\scriptsize \&\&  !candidate.marked);};
 
 
-%\begin{pgfonlayer}{background}
-% \node[code-bg,fit=(ctn-head) (code5) (ctn7)]{};
-% \end{pgfonlayer}
+\begin{pgfonlayer}{background}
+ \node[code-bg,fit=(ctn-head) (code5) (ctn7)]{};
+ \end{pgfonlayer}
 
 
 %%%%%%%%%%% struct %%%%%%%%%%%%%%%%
@@ -905,9 +883,9 @@ r := false;};
 {\scriptsize struct Node(int key; int topLayer; Node *next[]; bool marked; fullylinked;Lock lock);};
 
 
-%\begin{pgfonlayer}{background}
-% \node[code-bg,fit=(struct)]{};
-% \end{pgfonlayer}
+\begin{pgfonlayer}{background}
+ \node[code-bg,fit=(struct)]{};
+ \end{pgfonlayer}
 
 
 \end{tikzpicture}
