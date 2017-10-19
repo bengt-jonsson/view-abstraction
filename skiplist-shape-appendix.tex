@@ -1,0 +1,590 @@
+\section{Symbolic Postcondition Computation for Skiplists}
+
+ \todo[inline]{The rest is old stuff, which could go into appendix}
+ First, a symbolic postcondition computation is performed for 
+Let us show how to perform the abstract transformer for skip-list programs on the set of fragments $\fragset$ depending on the particular statement.
+%% We consider fragments of size $2$ where $\tt I_{inp} = \{i\}$, $\tt I_{out} = \{{o}\}$, and $\tt next(i) = {o}$ and fragments of size $1$ where $\tt I_{inp} = \{i\}$, $\tt I_{out} = \emptyset$, and $\tt next(i) = null$ or $\tt next(i) = \bot$.
+For each fragment $\tt v$, let $\tt v.level \in \{1,2\}$ be the level of $\tt v$.
+
+\paragraph{Local Abstract Transformers:} First, let us show the abstract transformer on the set of fragment $\fragset$ in the fragment of the concurrent thread. Let $\fragset_1$ be set of fragments of level 1 in $\fragset$, $\fragset_2$ be set of fragments of level 2 in $\fragset$. For each program statement, let $\fragset_{post}$ be the set of fragments after executing the statement. Let $\fragset_{post}$ be initialized as the empty set.  Let $\tt R$ be the set of pairs of fragments. Intuitively, in each element in $\tt R$, the second fragment is the transformation of the first fragment. Let $\tt R$ be initialized as the empty set.
+\begin{itemize}
+\item ${\tt x := y}$: The transformer is performed as follows:  For each fragment $\tt \frag_y \in \fragset_1$ where $\tt y \in\pvarsat{\inof{ \frag_y}}$, 
+%\begin{itemize}
+\begin{enumerate}
+\item  for each fragment $\tt v \in \fragset_1$ where $\tt v \hookrightarrow_{\fragset} \frag_y$, create $\tt v'$ which is same as $\tt v$ except that
+\begin{itemize}
+\item $\pvarsat{\inof{\frag'}} = \pvarsat{\inof{\frag}} \setminus \set{x}$,
+\item $\pvarsat{\outof{\frag'}} = \pvarsat{\outof{\frag}} \cup \set{x}$,
+\item if $\gvarof{x}$ is a global variable
+\begin{itemize}
+\item $\reachfromat{\inof{\frag'}} = \reachfromat{\inof{\frag}} \setminus \set{x}$,
+\item $\reachtoat{\inof{\frag'}} = \reachtoat{\inof{\frag}} \cup \set{x}$,
+ \item $\reachfromat{\outof{\frag'}} = \reachfromat{\outof{\frag}} \cup \set{x}$,
+\item $\reachtoat{\outof{\frag'}} = \reachtoat{\outof{\frag}} \cup \set{x}$,
+\end{itemize}
+\end{itemize}
+then add $\tt v'$ to $\fragset_{post}$, and $\tt (v,v')$ to $\tt R$
+\item for each fragment $\tt v \in \fragset_1$ where $\tt v \overset{+}\hookrightarrow_{\fragset} \frag_y$, create $\tt v'$ which is same as $\tt v$ except that
+\begin{itemize}
+\item $\pvarsat{\inof{\frag'}} = \pvarsat{\inof{\frag}} \setminus \set{x}$,
+\item $\pvarsat{\outof{\frag'}} = \pvarsat{\outof{\frag}} \setminus \set{x}$,
+\item if $\gvarof{x}$ is a global variable
+\begin{itemize}
+\item $\reachfromat{\inof{\frag'}} = \reachfromat{\inof{\frag}} \setminus \set{x}$,
+\item $\reachtoat{\inof{\frag'}} = \reachtoat{\inof{\frag}} \cup \set{x}$,
+\item $\reachfromat{\outof{\frag'}} = \reachfromat{\outof{\frag}} \setminus \set{x}$,
+\item $\reachtoat{\outof{\frag'}} = \reachtoat{\outof{\frag}} \cup \set{x}$,
+\end{itemize}
+\end{itemize}
+then add $\tt v'$ to $\fragset_{post}$, and $\tt (v,v')$ to $\tt R$
+\item for each fragment $\tt v \in \fragset_1$ where $\tt \frag_y \overset{*}\hookrightarrow_{\fragset} v$, create $\tt v'$ which is same as $\tt v$ except that
+\begin{itemize}
+\item $\pvarsat{\inof{\frag'}} = \pvarsat{\inof{\frag}} \setminus \set{x}$,
+\item $\pvarsat{\outof{\frag'}} = \pvarsat{\outof{\frag}} \setminus \set{x}$,
+\item if $\gvarof{x}$ is a global variable
+\begin{itemize}
+\item $\reachfromat{\inof{\frag'}} = \reachfromat{\inof{\frag}} \cup \set{x}$,
+\item $\reachtoat{\inof{\frag'}} = \reachtoat{\inof{\frag}} \setminus \set{x}$,
+ \item $\reachfromat{\outof{\frag'}} = \reachfromat{\outof{\frag}} \cup \set{x}$,
+ \item $\reachtoat{\outof{\frag'}} = \reachtoat{\outof{\frag}} \setminus \set{x}$,
+\end{itemize}
+\end{itemize}
+then add $\tt v'$ to $\fragset_{post}$, and $\tt (v,v')$ to $\fragset'$
+\item for each fragment $\tt v$ where $\tt \frag_y \overset{*+}\leftrightarrow_{\fragset} v$, create $\tt v'$ which is same as $\tt v$ except that
+\begin{itemize}
+\item $\pvarsat{\inof{\frag'}} = \pvarsat{\inof{\frag}} \setminus \set{x}$,
+\item $\pvarsat{\outof{\frag'}} = \pvarsat{\outof{\frag}} \setminus \set{x}$,
+\item if $\gvarof{x}$ is a global variable
+\begin{itemize}
+\item $\reachfromat{\inof{\frag'}} = \reachfromat{\inof{\frag}} \setminus \set{x}$,
+\item $\reachtoat{\inof{\frag'}} = \reachtoat{\inof{\frag}} \setminus \set{x}$,
+\item $\reachfromat{\outof{\frag'}} = \reachfromat{\outof{\frag}} \setminus \set{x}$,
+\item $\reachtoat{\outof{\frag'}} = \reachtoat{\outof{\frag}} \setminus \set{x}$,
+\end{itemize}
+\end{itemize}
+then add $\tt v'$ to $\fragset_{post}$, and $\tt (v,v')$ to $\fragset'$
+\item for each fragment $\tt v \in \fragset_1$ where $\tt \frag_y \overset{*\circ}\leftrightarrow_{\fragset} v$, create $\tt v'$ which is same as $\tt v$ except that
+\begin{itemize}
+\item $\pvarsat{\inof{\frag'}} = \pvarsat{\inof{\frag}} \setminus \set{x}$,
+\item $\pvarsat{\outof{\frag'}} = \pvarsat{\outof{\frag}} \setminus \set{x}$,
+\item if $\gvarof{x}$ is a global variable
+\begin{itemize}
+\item $\reachfromat{\inof{\frag'}} = \reachfromat{\inof{\frag}} \setminus \set{x}$,
+\item $\reachtoat{\inof{\frag'}} = \reachtoat{\inof{\frag}} \setminus \set{x}$,
+\item $\reachfromat{\outof{\frag'}} = \reachfromat{\outof{\frag}} \cup \set{x}$,
+\item $\reachtoat{\outof{\frag'}} = \reachtoat{\outof{\frag}} \setminus \set{x}$,
+\end{itemize}
+\end{itemize}
+then add $\tt v'$ to $\fragset_{post}$, and $\tt (v,v')$ to $\fragset'$
+\item create $\tt v'$ which is same as $\tt \frag_y$ except that
+\begin{itemize}
+\item $\pvarsat{\inof{\frag'}} = \pvarsat{\inof{\frag}} \cup \set{x}$,
+\item $\pvarsat{\outof{\frag'}} = \pvarsat{\outof{\frag}} \setminus \set{x}$,
+\item if $\gvarof{x}$ is a global variable
+\begin{itemize}
+\item $\reachtoat{\inof{\frag'}} = \reachtoat{\inof{\frag}} \cup \set{x}$,
+ \item $\reachfromat{\inof{\frag'}} = \reachfromat{\inof{\frag}} \cup \set{x}$,
+\item $\reachfromat{\outof{\frag'}} = \reachfromat{\outof{\frag}} \cup \set{x}$,
+\item $\reachtoat{\outof{\frag'}} = \reachtoat{\outof{\frag}} \setminus \set{x}$,
+\end{itemize}
+\end{itemize}
+then add $\tt v'$ to $\fragset_{post}$, and $\tt (v,v')$ to $\fragset'$
+%\item for each fragment $\tt v'$ in $\fragset_{post}$, assign $\tt v'.data.(i).(y.d)$ to $\tt v'.data.(i).(x.d)$ for $\tt i \in \{i, o\}$.
+\item for each fragment $\frag \in \fragset_2$ we do as follows. For each $(\frag_1,\frag_1')$ and $(\frag_2,\frag_2') \in R$, for each pair of indices $\tt i_1$, $\tt i_2$ such that $\tt i_1 \in \{\frag_1.i, \frag_1.o\}$, $\tt i_2 \in \{\frag_2.i, \frag_2.o\}$, $\tt tag(v,i) = tag(\frag_1, i_1)$, and $\tt tag(v,o) = tag(\frag_2, i_2)$.
+  \bjcom{This needs revising}
+ Create $\tt v'$ which is same as $\tt v$ except that 
+\begin{itemize}
+\item $\pvarsat{\inof{\frag'}} = \pvarsat{\inoneof{\frag_1'}}$,
+\item $\pvarsat{\outof{\frag'}} = \pvarsat{\intwoof{\frag_2'}}$,
+\item $\reachfromat{\inof{\frag'}} = \reachfromat{\inoneof{\frag_1'}}$,
+\item $\reachfromat{\outof{\frag'}} = \reachfromat{\intwoof{\frag_2'}}$,
+\item $\reachtoat{\inof{\frag'}} = \reachtoat{\inoneof{\frag_1'}}$,
+\item $\reachtoat{\outof{\frag'}} =  \reachtoat{\intwoof{\frag_2'}}$,
+\end{itemize} then add $\tt v'$ to $\fragset_{post}$. 
+\end{enumerate}
+%\item If there does not exist such $\tt \frag_y$ in $\fragset_1$
+%\end{itemize}
+%\begin{enumerate}
+%%1%
+%\item  for each fragment $\tt v$ where 
+%\begin{itemize}
+%	\item $\tt tag(v,o) = tag(\frag_y,i)$,
+%	\item $\tt tag(v,i) = tag(\frag_1,i)$ where $\tt \frag_1 \overset{*}\hookrightarrow_{\fragset} \frag_y$,
+%\end{itemize}
+%
+%%\begin{itemize}
+%%\item $\pvarsat{\inof{\frag'}} = \pvarsat{\inof{\frag}} \setminus \set{x}$,
+%%\item $\pvarsat{\outof{\frag'}} = \pvarsat{\outof{\frag}} \cup \set{x}$,
+%%\item if $\tt x$ is a global variable
+%%\begin{itemize}
+%%\item $\reachfromat{\inof{\frag'}} = \reachfromat{\inof{\frag}} \setminus \set{x}$,
+%%\item $\reachtoat{\inof{\frag'}} = \reachtoat{\inof{\frag}} \cup \set{x}$,
+%% \item $\reachfromat{\outof{\frag'}} = \reachfromat{\outof{\frag}} \cup \set{x}$,
+%%\item $\reachtoat{\outof{\frag'}} = \reachtoat{\outof{\frag}} \cup \set{x}$,
+%%\end{itemize}
+%%\end{itemize}
+%%and add $\tt v'$ to $\fragset_{post}$,
+%%2%
+%\item  for each fragment $\tt v$ where
+%\begin{itemize}
+%	\item $\tt tag(v,o) = tag(\frag_y,i)$,
+%	\item $\tt tag(v,i) = tag(\frag_1,i)$ where $\tt \frag_y \overset{*+}\leftrightarrow_{\fragset} \frag_1$ or $\tt \frag_1 \overset{*\circ}\leftrightarrow_{\fragset} \frag_y$
+%\end{itemize}
+%%\begin{itemize}
+%%\item $\pvarsat{\inof{\frag'}} = \pvarsat{\inof{\frag}} \setminus \set{x}$,
+%%\item $\pvarsat{\outof{\frag'}} = \pvarsat{\outof{\frag}} \cup \set{x}$,
+%%\item if $\tt x$ is a global variable
+%%\begin{itemize}
+%%\item $\reachfromat{\inof{\frag'}} = \reachfromat{\inof{\frag}} \setminus \set{x}$,
+%%\item $\reachtoat{\inof{\frag'}} = \reachtoat{\inof{\frag}} \setminus \set{x}$,
+%% \item $\reachfromat{\outof{\frag'}} = \reachfromat{\outof{\frag}} \cup \set{x}$,
+%%\item $\reachtoat{\outof{\frag'}} = \reachtoat{\outof{\frag}} \cup \set{x}$,
+%%\end{itemize}
+%%\end{itemize}
+%%and add $\tt v'$ to $\fragset_{post}$,
+%
+%%3%
+%\item  for each fragment $\tt v$ where
+%\begin{itemize}
+%	\item $\tt tag(v,o) = tag(\frag_y,i)$,
+%	\item $\tt tag(v,i) = tag(\frag_1,i)$ where $\tt \frag_y \overset{*}\hookrightarrow_{\fragset} \frag_1$ 
+%\end{itemize}
+%
+%%4%
+%
+%\item  for each fragment $\tt v$ where 
+%\begin{itemize}
+%	\item $\tt tag(v,o) = tag(\frag_1,i)$ where $\tt \frag_1 \overset{*}\hookrightarrow_{\fragset} \frag_y$,
+%	\item $\tt tag(v,i) = tag(\frag_2,i)$ where $\tt \frag_2 \overset{*}\hookrightarrow_{\fragset} \frag_y$,
+%\end{itemize}
+%
+%
+%%5%
+%\item  for each fragment $\tt v$ where
+%\begin{itemize}
+%	\item $\tt tag(v,o) = tag(\frag_1,i)$ where $\tt \frag_1 \overset{*}\hookrightarrow_{\fragset} \frag_y$,
+%	\item $\tt tag(v,i) = tag(\frag_2,i)$ where $\tt \frag_y \overset{*+}\leftrightarrow_{\fragset} \frag_2$ or $\tt \frag_2 \overset{*\circ}\leftrightarrow_{\fragset} \frag_y$
+%\end{itemize}
+%
+%
+%%6%
+%\item  for each fragment $\tt v$ where
+%\begin{itemize}
+%	\item $\tt tag(v,o) = tag(\frag_1,i)$ where $\tt \frag_1 \overset{*}\hookrightarrow_{\fragset} \frag_y$,
+%	\item $\tt tag(v,i) = tag(\frag_2,i)$ where $\tt \frag_y \overset{*}\hookrightarrow_{\fragset} \frag_2$ 
+%\end{itemize}
+%
+%
+%%7%
+%
+%\item  for each fragment $\tt v$ where 
+%\begin{itemize}
+%	\item $\tt tag(v,o) = tag(\frag_1,i)$ where $\tt \frag_y \overset{*}\hookrightarrow_{\fragset} \frag_1$,
+%	\item $\tt tag(v,i) = tag(\frag_2,i)$ where $\tt \frag_2 \overset{*}\hookrightarrow_{\fragset} \frag_y$,
+%\end{itemize}
+%
+%
+%%8%
+%\item  for each fragment $\tt v$ where
+%\begin{itemize}
+%	\item $\tt tag(v,o) = tag(\frag_1,i)$ where $\tt \frag_y \overset{*}\hookrightarrow_{\fragset} \frag_1$,
+%	\item $\tt tag(v,i) = tag(\frag_2,i)$ where $\tt \frag_y \overset{*+}\leftrightarrow_{\fragset} \frag_2$ or $\tt \frag_2 \overset{*\circ}\leftrightarrow_{\fragset} \frag_y$
+%\end{itemize}
+%
+%
+%%9%
+%\item  for each fragment $\tt v$ where
+%\begin{itemize}
+%	\item $\tt tag(v,o) = tag(\frag_1,i)$ where $\tt \frag_y \overset{*}\hookrightarrow_{\fragset} \frag_1$,
+%	\item $\tt tag(v,i) = tag(\frag_2,i)$ where $\tt \frag_y \overset{*}\hookrightarrow_{\fragset} \frag_2$ 
+%\end{itemize}
+%
+%
+%%10%
+%
+%\item  for each fragment $\tt v$ where 
+%\begin{itemize}
+%	\item $\tt tag(v,o) = tag(\frag_1,i)$ where $\tt \frag_y \overset{*+}\leftrightarrow_{\fragset} \frag_1$ or $\tt \frag_1 \overset{*\circ} \leftrightarrow_{\fragset} \frag_y$,
+%	\item $\tt tag(v,i) = tag(\frag_2,i)$ where $\tt \frag_2 \overset{*}\hookrightarrow_{\fragset} \frag_y$,
+%\end{itemize}
+%
+%
+%%11%
+%\item  for each fragment $\tt v$ where
+%\begin{itemize}
+%	\item $\tt tag(v,o) = tag(\frag_1,i)$ where $\tt \frag_y \overset{*+}\leftrightarrow_{\fragset} \frag_1$ or $\tt \frag_1 \overset{*\circ} \leftrightarrow_{\fragset} \frag_y$,
+%	\item $\tt tag(v,i) = tag(\frag_2,i)$ where $\tt \frag_y \overset{*+}\leftrightarrow_{\fragset} \frag_2$ or $\tt \frag_2 \overset{*\circ}\leftrightarrow_{\fragset} \frag_y$
+%\end{itemize}
+%
+%
+%%12%
+%\item  for each fragment $\tt v$ where
+%\begin{itemize}
+%	\item $\tt tag(v,o) = tag(\frag_1,i)$ where $\tt \frag_y \overset{*+}\leftrightarrow_{\fragset} \frag_1$ or $\tt \frag_1 \overset{*\circ} \leftrightarrow_{\fragset} \frag_y$,
+%	\item $\tt tag(v,i) = tag(\frag_2,i)$ where $\tt \frag_y \overset{*}\hookrightarrow_{\fragset} \frag_2$ 
+%\end{itemize}
+%
+%\end{enumerate}
+	
+	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% X := Y.NEXT1 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\item ${\tt x := y.next[1]}$: The local abstract transformer is quite similar to the previous case with slightly differences. For each fragment $\tt \frag_y \in S$ where $\tt y \in {\tt vars}(\tt i)$,
+%\begin{enumerate}
+%
+%%1%
+%\item  for each fragment $\tt v$ where 
+%\begin{itemize}
+%	\item $\tt tag(v,o) = tag(\frag_y,o)$,
+%	\item $\tt tag(v,i) = tag(\frag_1,i)$ where $\tt \frag_1 \overset{*}\hookrightarrow_{\fragset} \frag_y$ or $\tt \frag_1 = \frag_y$,
+%\end{itemize}
+%
+%%2%
+%\item  for each fragment $\tt v$ where
+%\begin{itemize}
+%	\item $\tt tag(v,o) = tag(\frag_y,o)$,
+%	\item $\tt tag(v,i) = tag(\frag_1,i)$ where $\tt \frag_y \overset{*+}\leftrightarrow_{\fragset} \frag_1$ or $\tt \frag_1 \overset{*\circ}\leftrightarrow_{\fragset} \frag_y$
+%\end{itemize}
+%
+%%3%
+%\item  for each fragment $\tt v$ where
+%\begin{itemize}
+%	\item $\tt tag(v,o) = tag(\frag_y,o)$,
+%	\item $\tt tag(v,i) = tag(\frag_1,i)$ where $\tt \frag_y \overset{+}\hookrightarrow_{\fragset} \frag_1$ 
+%\end{itemize}
+%
+%%-------------------------------------------4------------------------------------------%
+%
+%\item  for each fragment $\tt v$ where 
+%\begin{itemize}
+%	\item $\tt tag(v,o) = tag(\frag_1,i)$ where $\tt \frag_1 \overset{*}\hookrightarrow_{\fragset} \frag_y$ or $\tt \frag_1 = \frag_y$,
+%	\item $\tt tag(v,i) = tag(\frag_2,i)$ where $\tt \frag_2 \overset{*}\hookrightarrow_{\fragset} \frag_y$,
+%\end{itemize}
+%
+%
+%%-------------------------------------------5------------------------------------------%
+%\item  for each fragment $\tt v$ where
+%\begin{itemize}
+%	\item $\tt tag(v,o) = tag(\frag_1,i)$ where $\tt \frag_1 \overset{*}\hookrightarrow_{\fragset} \frag_y$ or $\tt \frag_1 = \frag_y$,
+%	\item $\tt tag(v,i) = tag(\frag_2,i)$ where $\tt \frag_y \overset{*+}\leftrightarrow_{\fragset} \frag_2$ or $\tt \frag_2 \overset{*\circ}\leftrightarrow_{\fragset} \frag_y$
+%\end{itemize}
+%
+%
+%%-------------------------------------------6------------------------------------------%
+%\item  for each fragment $\tt v$ where
+%\begin{itemize}
+%	\item $\tt tag(v,o) = tag(\frag_1,i)$ where $\tt \frag_1 \overset{*}\hookrightarrow_{\fragset} \frag_y$ or $\tt \frag_1 = \frag_y$,
+%	\item $\tt tag(v,i) = tag(\frag_2,i)$ where $\tt \frag_y \overset{*}\hookrightarrow_{\fragset} \frag_2$ 
+%\end{itemize}
+%
+%
+%%-------------------------------------------7-------------------------------------------%
+%
+%\item  for each fragment $\tt v$ where 
+%\begin{itemize}
+%	\item $\tt tag(v,o) = tag(\frag_1,i)$ where $\tt \frag_y \overset{*+}\leftrightarrow_{\fragset} \frag_1$ or $\tt \frag_1 \overset{*\circ}\leftrightarrow_{\fragset} \frag_y$,
+%	\item $\tt tag(v,i) = tag(\frag_2,i)$ where $\tt \frag_2 \overset{*}\hookrightarrow_{\fragset} \frag_y$,
+%\end{itemize}
+%
+%
+%%------------------------------------------8-------------------------------------------%
+%\item  for each fragment $\tt v$ where
+%\begin{itemize}
+%	\item $\tt tag(v,o) = tag(\frag_1,i)$ where $\tt \frag_y \overset{*+}\leftrightarrow_{\fragset} \frag_1$ or $\tt \frag_1 \overset{*\circ}\leftrightarrow_{\fragset} \frag_y$,
+%	\item $\tt tag(v,i) = tag(\frag_2,i)$ where $\tt \frag_y \overset{*+}\leftrightarrow_{\fragset} \frag_2$ or $\tt \frag_2 \overset{*\circ}\leftrightarrow_{\fragset} \frag_y$
+%\end{itemize}
+%
+%
+%%-----------------------------------------9-------------------------------------------%
+%\item  for each fragment $\tt v$ where
+%\begin{itemize}
+%	\item $\tt tag(v,o) = tag(\frag_1,i)$ where $\tt \frag_y \overset{*+}\leftrightarrow_{\fragset} \frag_1$ or $\tt \frag_1 \overset{*\circ}\leftrightarrow_{\fragset} \frag_y$,
+%	\item $\tt tag(v,i) = tag(\frag_2,i)$ where $\tt \frag_y \overset{*}\hookrightarrow_{\fragset} \frag_2$ 
+%\end{itemize}
+%
+%
+%%-----------------------------------------10-------------------------------------------%
+%
+%\item  for each fragment $\tt v$ where 
+%\begin{itemize}
+%	\item $\tt tag(v,o) = tag(\frag_1,i)$ where $\tt \frag_y \overset{*}\hookrightarrow_{\fragset} \frag_1$,
+%	\item $\tt tag(v,i) = tag(\frag_2,i)$ where $\tt \frag_2 \overset{*}\hookrightarrow_{\fragset} \frag_y$,
+%\end{itemize}
+%
+%
+%%-----------------------------------------11-------------------------------------------%
+%\item  for each fragment $\tt v$ where
+%\begin{itemize}
+%	\item $\tt tag(v,o) = tag(\frag_1,i)$  where $\tt \frag_y \overset{*}\hookrightarrow_{\fragset} \frag_1$,
+%	\item $\tt tag(v,i) = tag(\frag_2,i)$ where $\tt \frag_y \overset{*+}\leftrightarrow_{\fragset} \frag_2$ or $\tt \frag_2 \overset{*\circ}\leftrightarrow_{\fragset} \frag_y$
+%\end{itemize}
+%
+%
+%%-----------------------------------------12-------------------------------------------%
+%\item  for each fragment $\tt v$ where
+%\begin{itemize}
+%	\item $\tt tag(v,o) = tag(\frag_1,i)$ where $\tt \frag_1y\overset{*}\hookrightarrow_{\fragset} \frag_1$,
+%	\item $\tt tag(v,i) = tag(\frag_2,i)$ where $\tt \frag_y \overset{*}\hookrightarrow_{\fragset} \frag_2$ 
+%\end{itemize}
+%
+%
+%\end{enumerate}
+
+
+
+
+\begin{enumerate}
+\item  for each fragment $\tt v \in \fragset_1$ where $\tt v \overset{*}\hookrightarrow_{\fragset} \frag_y$, create $\tt v'$ which is same as $\tt v$ except that
+\begin{itemize}
+\item $\pvarsat{\inof{\frag'}} = \pvarsat{\inof{\frag}} \setminus \set{x}$,
+\item $\pvarsat{\outof{\frag'}} = \pvarsat{\outof{\frag}} \setminus \set{x}$,
+\item if $\tt x$ is a global variable
+\begin{itemize}
+\item $\reachfromat{\inof{\frag'}} = \reachfromat{\inof{\frag}} \setminus \set{x}$,
+\item $\reachtoat{\inof{\frag'}} = \reachtoat{\inof{\frag}} \cup \set{x}$,
+\item $\reachfromat{\outof{\frag'}} = \reachfromat{\outof{\frag}} \setminus \set{x}$,
+\item $\reachtoat{\outof{\frag'}} = \reachtoat{\outof{\frag}} \cup \set{x}$,
+\end{itemize}
+\end{itemize}
+then add $\tt v'$ to $\fragset_{post}$, and $\tt (v,v')$ to $\tt R$
+\item for each fragment $\tt v \in \fragset_1$ where $\tt \frag_y \hookrightarrow_{\fragset} v$, create $\tt v'$ which is same as $\tt v$ then
+\begin{itemize}
+\item $\pvarsat{\inof{\frag'}} = \pvarsat{\inof{\frag}} \cup \set{x}$,
+\item $\pvarsat{\outof{\frag'}} = \pvarsat{\outof{\frag}} \setminus \set{x}$,
+\item if $\tt x$ is a global variable
+\begin{itemize}
+\item $\reachfromat{\inof{\frag'}} = \reachfromat{\inof{\frag}} \cup \set{x}$,
+ \item $\reachtoat{\outof{\frag'}} = \reachtoat{\outof{\frag}} \cup \set{x}$,
+ \item $\reachfromat{\outof{\frag'}} = \reachfromat{\outof{\frag}} \cup \set{x}$,
+ \item $\reachtoat{\outof{\frag'}} = \reachtoat{\outof{\frag}} \setminus \set{x}$,
+\end{itemize}
+\end{itemize}
+then add $\tt v'$ to $\fragset_{post}$, and $\tt (v,v')$ to $\tt R$
+\item for each fragment $\tt v \in \fragset_1$ where $\tt \frag_y \leftrightarrow_{\fragset} v$, create $\tt v'$ which is same as $\tt v$ except that
+\begin{itemize} 
+\item $\pvarsat{\inof{\frag'}} = \pvarsat{\inof{\frag}} \setminus \set{x}$,
+\item $\pvarsat{\outof{\frag'}} = \pvarsat{\outof{\frag}} \cup \set{x}$,
+\item if $\tt x$ is a global variable
+\begin{itemize}
+\item $\reachfromat{\inof{\frag'}} = \reachfromat{\inof{\frag}} \setminus \set{x}$,
+\item $\reachtoat{\inof{\frag'}} = \reachtoat{\inof{\frag}} \cup \set{x}$,
+ \item $\reachfromat{\outof{\frag'}} = \reachfromat{\outof{\frag}} \cup \set{x}$,
+ \item $\reachtoat{\outof{\frag'}} = \reachtoat{\outof{\frag}} \cup \set{x}$,
+\end{itemize}
+\end{itemize}
+then add $\tt v'$ to $\fragset_{post}$, and $\tt (v,v')$ to $\tt R$
+
+\item for each fragment $\tt v \in \fragset_1$ where $\tt \frag_y \overset{+}\hookrightarrow_{\fragset} v$, create $\tt v'$ which is same as $\tt v$ except that
+\begin{itemize}
+\item $\pvarsat{\inof{\frag'}} = \pvarsat{\inof{\frag}} \setminus \set{x}$,
+\item $\pvarsat{\outof{\frag'}} = \pvarsat{\outof{\frag}} \setminus \set{x}$,
+\item if $\tt x$ is a global variable
+\begin{itemize}
+\item $\reachfromat{\inof{\frag'}} = \reachfromat{\inof{\frag}} \cup \set{x}$,
+\item $\reachtoat{\inof{\frag'}} = \reachtoat{\inof{\frag}} \setminus \set{x}$,
+ \item $\reachfromat{\outof{\frag'}} = \reachfromat{\outof{\frag}} \cup \set{x}$,
+ \item $\reachtoat{\outof{\frag'}} = \reachtoat{\outof{\frag}} \setminus \set{x}$,
+\end{itemize}
+\end{itemize}
+then add $\tt v'$ to $\fragset_{post}$, and $\tt (v,v')$ to $\tt R$
+\item for each fragment $\tt v \in \fragset_1$ where $\tt \frag_y \overset{*\circ}\leftrightarrow_{\fragset} v$, create $\tt v'$ which is same as $\tt v$ except that
+\begin{itemize}
+\item $\pvarsat{\inof{\frag'}} = \pvarsat{\inof{\frag}} \setminus \set{x}$,
+\item $\pvarsat{\outof{\frag'}} = \pvarsat{\outof{\frag}} \setminus \set{x}$,
+\item if $\tt x$ is a global variable
+\begin{itemize}
+\item $\reachfromat{\inof{\frag'}} = \reachfromat{\inof{\frag}} \setminus \set{x}$,
+\item $\reachtoat{\inof{\frag'}} = \reachtoat{\inof{\frag}} \setminus \set{x}$,
+\item $\reachfromat{\outof{\frag'}} = \reachfromat{\outof{\frag}} \cup \set{x}$,
+\item $\reachtoat{\outof{\frag'}} = \reachtoat{\outof{\frag}} \setminus \set{x}$,
+\end{itemize}
+\end{itemize}
+then add $\tt v'$ to $\fragset_{post}$, and $\tt (v,v')$ to $\tt R$
+\item for each fragment $\tt v \in \fragset_1$ where $\tt \frag_y \overset{*+}\leftrightarrow_{\fragset} v$, create $\tt v'$ which is same as $\tt v$ except that 
+\begin{itemize}
+\item $\pvarsat{\inof{\frag'}} = \pvarsat{\inof{\frag}} \setminus \{x\{$,
+\item $\pvarsat{\outof{\frag'}} = \pvarsat{\outof{\frag}} \setminus \set{x}$,
+\item if $\tt x$ is a global variable
+\begin{itemize}
+\item $\reachfromat{\inof{\frag'}} = \reachfromat{\inof{\frag}} \setminus \set{x}$ ,
+\item $\reachtoat{\inof{\frag'}} = \reachtoat{\inof{\frag}} \setminus \set{x}$,
+\item $\reachfromat{\outof{\frag'}} = \reachfromat{\outof{\frag}} \setminus \set{x}$,
+\item $\reachtoat{\outof{\frag'}} = \reachtoat{\outof{\frag}} \setminus \set{x}$,
+\end{itemize}
+\end{itemize}
+then add $\tt v'$ to $\fragset_{post}$, and $\tt (v,v')$ to $\tt R$
+\item for each fragment $\tt v \in \fragset_1$ where $\tt v \overset{+\circ}\leftrightarrow_{\fragset} \frag_y$, create $\tt v'$ which is same as $\tt v$ except that 
+\begin{itemize}
+\item $\pvarsat{\inof{\frag'}} = \pvarsat{\inof{\frag}} \setminus \set{x}$,
+\item $\pvarsat{\outof{\frag'}} = \pvarsat{\outof{\frag}} \setminus \set{x}$,
+\item if $\tt x$ is a global variable
+\begin{itemize}
+\item $\reachfromat{\inof{\frag'}} = \reachfromat{\inof{\frag}} \setminus \set{x}$,
+\item $\reachtoat{\inof{\frag'}} = \reachtoat{\inof{\frag}} \cup \set{x}$,
+ \item $\reachfromat{\outof{\frag'}} = \reachfromat{\outof{\frag}} \setminus \set{x}$,
+ \item $\reachtoat{\outof{\frag'}} = \reachtoat{\outof{\frag}} \cup \set{x}$,
+\end{itemize}
+\end{itemize}
+then add $\tt v'$ to $\fragset_{post}$, and $\tt (v,v')$ to $\tt R$
+
+\item create $\tt v'$ which is same as $\tt \frag_y$ except that
+\begin{itemize}
+\item $\pvarsat{\inof{\frag'}} = \pvarsat{\inof{\frag}} \setminus \set{x}$,
+\item $\pvarsat{\outof{\frag'}} = \pvarsat{\outof{\frag}} \cup \set{x}$,
+\item if $\tt x$ is a global variable
+\begin{itemize}
+\item $\reachfromat{\inof{\frag'}} = \reachfromat{\inof{\frag}} \setminus \set{x}$,
+\item $\reachtoat{\inof{\frag'}} = \reachtoat{\inof{\frag}} \cup \set{x}$,
+ \item $\reachfromat{\outof{\frag'}} = \reachfromat{\outof{\frag}} \cup \set{x}$,
+ \item $\reachtoat{\outof{\frag'}} = \reachtoat{\outof{\frag}} \cup \set{x}$,
+\end{itemize}
+\end{itemize}
+then add $\tt v'$ to $\fragset_{post}$, and $\tt (v,v')$ to $\tt R$
+%\item for each fragment $\tt v'$ in $\fragset_o$, assign $\tt v'.data.(i).(y.d)$ to $\tt v'.data.(i).(x.d)$ for $\tt i \in \{i, o\}$.
+%
+
+\item for each fragment $\tt v \in \fragset_2$ we do as follows. For each $\tt (\frag_1,\frag_1')$, $\tt (\frag_2,\frag_2') \in R$, for each pair of indices $\tt i_1$, $\tt i_2$ such that $\tt i_1 \in \{\frag_1.i, \frag_1.o\}$, $\tt i_2 \in \{\frag_2.i, \frag_2.o\}$, $\tt tag(v,i) = tag(\frag_1, i_1)$, and $\tt tag(v,o) = tag(\frag_2, i_2)$. Create $\tt v'$ which is same as $\tt v$ except that 
+\begin{itemize}
+\item $\pvarsat{\inof{\frag'}} = \pvarsat{\inoneof{\frag_1'}}$,
+\item $\pvarsat{\outof{\frag'}} = \pvarsat{\intwoof{\frag_2'}}$,
+\item $\reachfromat{\inof{\frag'}} = \reachfromat{\inoneof{\frag_1'}}$,
+\item $\reachfromat{\outof{\frag'}} = \reachfromat{\intwoof{\frag_2'}}$,
+\item $\reachtoat{\inof{\frag'}} = \reachtoat{\inoneof{\frag_1'}}$,
+\item $\reachtoat{\outof{\frag'}} =  \reachtoat{\intwoof{\frag_2'}}$,
+\end{itemize} then add $\tt v'$ to $\fragset_{post}$. 
+\end{enumerate}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% X.NEXT1 := Y %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\item  ${\tt x.next[1]:= y}$: The local abstract transformer is performed by several steps as follows: For each pair of fragments $\frag_x$, $\tt \frag_y$ in $\fragset_1$ where $\tt x \pvarsat{\inof{\in \frag_x}}$, $\tt y \in\pvarsat{\inof{ \frag_y}}$, and $\frag_x \overset{*}\hookrightarrow \frag_y$ or $\tt \frag_y \overset{*}\hookrightarrow \frag_x$ or $\frag_x \overset{**}\leftrightarrow \frag_y$, let $\tt R_1$, $\tt R_2$, $\tt R_3$, $\tt R_4$, $\tt R_5$, $\tt R_6$ be initialized as $\tt R$,  
+\begin{enumerate}
+\item let $\tt \frag_{new}$ be the fragment of size 2 and of level 1 where $\tt tag(\frag_{new},i) = tag(\frag_x, i)$ and $\tt tag(\frag_{new},o) = tag(\frag_y,i)$ except that $\tt \reachfromat{\outof{\frag_{new}}} = \reachfromat{\inof{\frag_y}} \cup \reachfromat{\inof{\frag_x}}$,
+\item  for each fragment $\tt v \in \fragset_1$ where $\tt v \overset{*}\hookrightarrow_{\fragset} \frag_x$, we do as follows: For each subset $\regset$ of observer registers in $\reachtoat{\inof{\frag}} \cap \reachfromat{\inof{\frag_x}}$
+
+
+\begin{itemize}
+\item create $\tt v'$ which is same as $\tt v$, except that
+\begin{itemize}
+\item $\reachtoat{\inof{\frag'}} = (\tt \reachtoat{\inof{\frag}} \cap \reachfromat{\inof{\frag_x}}) \cup \reachto{\inof{\frag_y}} \cup \regset$.
+\item $\reachtoat{\outof{\frag'}} = (\tt \reachtoat{\outof{\frag}} \cap \reachfromat{\inof{\frag_x}}) \cup \reachto{\inof{\frag_y}} \cup \regset$.
+\end{itemize}
+\item add $\tt v'$ to $\fragset_{post}$ 
+\item add $\tt (v,v')$ to $\tt R_1$
+\end{itemize}
+
+\item for each fragment $\tt v \in \fragset_1$ where $\tt \frag_y \overset{*}\hookrightarrow_{\fragset} v$ or $\tt \frag_y = v$, 
+\begin{itemize}
+	\item create  $\tt v'$ which is same as $\tt v$ except that
+\begin{itemize}
+ \item $\tt \reachfromat{\inof{\frag'}} = \reachfromat{\inof{\frag_x}} \cup \tt \reachfromat{\inof{\frag}}$, 
+\item $\tt \reachfromat{\outof{\frag'}} = \reachfromat{\inof{\frag_x}} \cup \tt \reachfromat{\outof{\frag}}$, 
+\end{itemize}
+\item add $\tt v'$ to $\fragset_{post}$,
+\item add $\tt (v,v')$ to $\tt R_2$
+\end{itemize}
+\item for each fragment $\tt v \in \fragset_1$ where $\frag_x \overset{**}\leftrightarrow_{\fragset} v$ and either $\tt v \hookrightarrow_{\fragset} \frag_y$ or $\tt \frag_y \overset{*o}\leftrightarrow_{\fragset} v$, 
+\begin{itemize}
+\item  create $\tt v'$ which is same as $\tt v$ except that $\tt \reachfromat{\outof{\frag'}} = \reachfromat{\inof{\frag_x}} \cup \tt \reachfromat{\outof{\frag}}$, 
+ \item add $\tt v'$ to $\fragset_{post}$, 
+ \item add $\tt (v,v')$ to $\tt R_3$
+
+\end{itemize}
+
+
+\item for each fragment $\tt v \in \fragset_1$ where $\frag_x \overset{*}\hookrightarrow_{\fragset} v$ and either $\tt v \hookrightarrow_{\fragset} \frag_y$ or $\tt \frag_y \overset{*o}\leftrightarrow_{\fragset} v$,  
+\begin{itemize}
+\item create $\tt v'$ which is same as $\tt v$ then except that $\tt \reachfromat{\outof{\frag'}} = \reachfromat{\inof{\frag_x}} \cup \tt \reachfromat{\outof{\frag}}$, 
+\item for each subset $\regset$ of observer registers in $\reachfromat{\inof{\frag'}} \cap \reachfromat{\inof{\frag_x}}$
+\begin{itemize}
+\item create $\tt v''$ which is same as $\tt v'$, except that $\reachfromat{\inof{\frag''}} = (\reachfromat{\inof{\frag'}} \setminus \reachfromat{\inof{\frag_x}}) \cup \regset$.
+\item add $\tt v''$ to $\fragset_{post}$,
+\item add $\tt (v,v'')$ to $\tt R_4$
+\end{itemize}
+\end{itemize}
+
+\item for each fragment $\tt v \in \fragset_1$ where $\frag_x \overset{**}\leftrightarrow_{\fragset} v$ and either $\tt v \overset{+}\hookrightarrow_{\fragset} \frag_y$ or $\tt v \overset{*+}\leftrightarrow_{\fragset} \frag_y$, 
+\begin{itemize}
+\item create $\tt v'$ which is same as $\tt v$
+\item  add $\tt v'$ to $\fragset_{post}$,
+\item add $\tt (v,v')$ to $\tt R_5$
+
+\end{itemize}
+
+
+\item for each fragment $\tt v \in \fragset_1$ where $\frag_x \overset{*}\hookrightarrow_{\fragset} v$ and either $\tt v \overset{+}\hookrightarrow_{\fragset} \frag_y$ or $\tt \frag_y \overset{*+}\leftrightarrow v$, then for each subset $\regset$ of observer registers in $\tt \reachfromat{\inof{\frag}} \cap \reachfromat{\inof{\frag_x}}$, 
+\begin{itemize}
+\item create $\tt v'$ which is same as $\tt v$, except that $\reachfromat{\inof{\frag'}} = (\tt \reachfromat{\inof{\frag}} \setminus \reachfromat{\inof{\frag_x}}) \cup \regset$. 
+ \item for each set $\regset'$ of observer registers in $\reachfromat{\outof{\frag'}} \cap \reachfromat{\inof{\frag_x}}$,  
+\begin{itemize}
+\item create $\frag''$ which is same as $\frag'$, except that $\reachfromat{\outof{\frag''}} = (\reachfromat{\outof{\frag'}} \setminus \reachfromat{\inof{\frag_x}}) \cup \regset'$. 
+\item add $\frag''$ to $\fragset_{post}$
+\item add $\tt (v,v'')$ to $\tt R_6$
+\end{itemize}
+\end{itemize}
+\item add $\tt \frag_{new}$ to $\fragset_{post}$ 
+\end{enumerate}
+
+\item for each fragment $\frag \in \fragset_2$ then we do as follows. for each $\tt (\frag_1,\frag_1') \in R_i$, $\tt (\frag_2,\frag_2') \in R_j$ where $\tt i \neq j$ and $\tt 1 \leq i,j \leq 6$. For each pair of indices $\tt i_1$, $\tt i_2$ such that $\tt i_1 \in \{\frag_1.i, \frag_1.o\}$, $\tt i_2 \in \{\frag_2.i, \frag_2.o\}$, $\tt tag(v,i) = tag(\frag_1, i_1)$, $\tt tag(v,o) = tag(\frag_2, i_2)$. Create $\frag'$ which is same as $\frag$ except that 
+\begin{itemize}
+\item $\pvarsat{\inof{\frag'}} = \pvarsat{\inoneof{\frag_1'}}$,
+\item $\pvarsat{\outof{\frag'}} = \pvarsat{\intwoof{\frag_2'}}$,
+\item $\reachfromat{\inof{\frag'}} = \reachfromat{\inoneof{\frag_1'}}$,
+\item $\reachfromat{\outof{\frag'}} = \reachfromat{\intwoof{\frag_2'}}$,
+\item $\reachtoat{\inof{\frag'}} = \reachtoat{\inoneof{\frag_1'}}$,
+\item $\reachtoat{\outof{\frag'}} =  \reachtoat{\intwoof{\frag_2'}}$,
+\end{itemize}
+then add $\tt v'$ to $\fragset_{post}$. 
+
+
+\newpage
+ \end{itemize}
+ 
+ \paragraph{Fragment Intersection:} Let us describe the intersection of two fragments $\tt \frag_1 \in \fragset_1$ and $\tt \frag_2 \in \fragset_2$ denoted as $\tt \frag_1 \sqcap \frag_2$. Firstly, we consider the case where both $\tt \frag_1$ and $\tt \frag_2$ have size 2.
+ \begin{itemize}
+ \item if $\tt \frag_1.greachfrom(i,\{1,2\}) \neq \emptyset$ and $\tt \frag_2.greachfrom(i,\{1,2\}) \neq \emptyset$ then 
+  \begin{itemize}
+  \item if $\tt gtag(\frag_1, i) = gtag(\frag_2, i)$ and $\tt gtag(\frag_1, o) = gtag(\frag_2, o)$ then $\tt \frag_1 \sqcap \frag_2 = \{\frag_{12}\}$ where $\tt \frag_{12}$ is same as $\tt \frag_1$ except that, for all $\tt l \in \{1,2 \{1,2\}\}$ 
+  \begin{itemize}
+  \item $\tt \frag_{12}.vars(i) = \frag_1.vars(i) \cup \frag_2.vars(i)$ 
+  \item  $\tt \pvarsat{\outat{\frag_{12}}} = \pvarsat{\outat{\frag_1}} \cup \pvarsat{\outat{\frag_2}}$
+  \item $\tt \frag_{12}.reachfrom(i,l) = \frag_{1}.reachfrom(i,l) \cup \frag_{2}.reachfrom(i,l)$
+   \item $\tt \frag_{12}.reachfrom(i,l) = \frag_{1}.reachfrom(o,l) \cup \frag_{2}.reachfrom(o,l)$
+    \end{itemize}
+ \end{itemize}
+
+ \item if $\tt \frag_1.greachfrom(i,\{1,2\}) = \emptyset$, $\tt \frag_2.greachfrom(i,\{1,2\}) = \emptyset$, $\tt \frag_1.greachfrom(o,\{1,2\}) \neq \emptyset$ and $\tt \frag_2.greachfrom(o,\{1,2\}) \neq \emptyset$ then 
+  \begin{itemize}
+  \item if $\tt gtag(\frag_1, o) = gtag(\frag_2, o)$, $\tt \frag_1.private(i) = \false$ and $\tt \frag_2.private(i) = \false$ then $\tt \frag_1 \sqcap \frag_2 = \{\frag_1', \frag_2', \frag_{12}\}$ where %$\tt \frag_{12}$ is same as $\tt \frag_1$ except that 
+  $\tt \frag_1'$ is same as $\tt \frag_1$ except that, for all $\tt l \in \{1,2 \{1,2\}\}$
+    \begin{itemize}
+  \item  $\tt \pvarsat{\outat{\frag_1'}} = \pvarsat{\outat{\frag_1}} \cup \pvarsat{\outat{\frag_2}}$
+  \item $\tt \frag_1'.reachfrom(o,l) = \frag_{1}.reachfrom(o,l) \cup \frag_{2}.reachfrom(o,l)$
+    \end{itemize}
+   and $\tt \frag_2'$ is same as $\tt \frag_2$ except that 
+    \begin{itemize}
+  \item  $\tt \pvarsat{\outat{\frag_2'}} = \pvarsat{\outat{\frag_1}} \cup \pvarsat{\outat{\frag_2}}$
+  \item $\tt \frag_2'.reachfrom(o,l) = \frag_{1}.reachfrom(o,l) \cup \frag_{2}.reachfrom(o,l)$
+    \end{itemize}
+     \item if $\tt gtag(\frag_1, o) = gtag(\frag_2, o)$ and ($\tt \frag_1.private(i) = \true$ or $\tt \frag_2.private(i) = \true$) then $\tt \frag_1 \sqcap \frag_2 = \{\frag_1', \frag_2'\}$ 
+ \end{itemize}
+ 
+ 
+  \item if $\tt \frag_1.greachfrom(i,\{1,2\}) = \emptyset$, $\tt \frag_2.greachfrom(i,\{1,2\}) = \emptyset$, $\tt \frag_1.greachfrom(o,\{1,2\}) = \emptyset$ and $\tt \frag_2.greachfrom(o,\{1,2\}) = \emptyset$ then 
+ \begin{itemize}
+ 
+ 
+ \item if $\tt gtag(\frag_1, o) = gtag(\frag_2, o)$, $\tt \frag_1.private(i) = \false$, $\tt \privateat{\outat{\frag_1}} = \false$, $\tt \privateat{\outat{\frag_1}} = \false$ and $\tt \privateat{\outat{\frag_2}} = \false$ then  $\tt \frag_1 \sqcap \frag_2 = \{\frag_1,\frag_2,\frag_1',\frag_2',\frag_{12}\}$ %where $\tt \frag_{12}$ is same as $\tt \frag_1$ except that 
+    \item if $\tt gtag(\frag_1, o) = gtag(\frag_2, o)$, ($\tt \frag_1.private(i) = true$ or $\tt \frag_2.private(i) = true$) and $\tt \privateat{\outat{\frag_1}} = \false$ and $\tt \privateat{\outat{\frag_2}} = \false$ then  $\tt \frag_1 \sqcap \frag_2 = \{\frag_1,\frag_2,\frag_1',\frag_2'\}$  
+
+  \item if $\tt gtag(\frag_1, o) = gtag(\frag_2, o)$ and ($\tt \privateat{\outat{\frag_1}} = true$ or $\tt \privateat{\outat{\frag_1}} = true$) then  $\tt \frag_1 \sqcap \frag_2 = \{\frag_1,\frag_2\}$ 
+
+    \item if $\tt gtag(\frag_1, o) \neq gtag(\frag_2, o)$ then $\tt \frag_1 \sqcap \frag_2 = \{\frag_1,\frag_2\}$
+ \end{itemize}
+ 
+ \end{itemize}
+
+
+
+%
