@@ -5,7 +5,7 @@
 %% \label{lazylist}
 %% \end{figure}
 %% \end{center}
-\section{Fragment Abstraction for Skiplists}
+\section{Verification using Fragment Abstraction for Skiplists}
 \label{sec:fragment-abstraction}
 In the previous section, we reduced the problem of verifying linearizability
 to the problem of verifying
@@ -20,8 +20,10 @@ thereafter repeatedly performs
 symbolic postcondition computations that extend the
 symbolic representation by the effect of any execution step of the program,
 until convergence.
-In this section, we first define in more detail the representation,
+In this section, we first (in Section~\ref{subsect:symbrep})
+define in more detail the representation,
 focusing in particular on the use of fragment abstraction, and thereafter
+(in Section~\ref{subsect:postcond})
 describe the symbolic postcondition computation. 
 
 
@@ -55,16 +57,21 @@ describe the symbolic postcondition computation.
 %% data values, an unbounded number of concurrently executing threads, and an
 %% unbounded heap. 
 
-\subsubsection*{Symbolic Representations}
+\subsection{Symbolic Representations}
+\label{subsect:symbrep}
 %% \bjcom{Say that for now, we ignore timers?}
 %% \bjcom{Introduce notation for the set of local $\ddomain$-variables?.
 %%   Maybe define which threads we talk about?
 %%   For now, we skip timestamps.
 %% }
 %% We assume that we must analyze the product of a program and an observer.
-Let us describe our symbolic representation for programs that
-operate on skiplists, as introduced in Section~\ref{sec:overview}.
-%% The representation is parameterized on a suitable data abstraction.
+Let us here in more detail describe our symbolic representation for programs that
+operate on skiplists, which was introduced in Section~\ref{sec:overview}.
+We do this by first giving a more precise description of the data abstraction,
+thereafter of the fragment abstraction, and finally how these are combined
+into a symbolic representation.
+
+\subsubsection{Data Abstraction}
 We first define more precisely our data abstraction by defining an
 abstract domain for each concrete domain of data values, as follows.
 We assume that each heap cell has at most one $\ddomain$-field, named {\tt data}.
@@ -88,20 +95,14 @@ ${\tt data}$ field has the same value as $\reg_i$.
   if it maps each local variable and observer register with a value ${\tt d'} \in \ddomain$
   to a set which includes a relation $\sim$ such that $\tt d \sim \tt d'$.
 \end{itemize}
-Define a {\em local symbolic configuration} $\locsymbconf$ to be
-a mapping from local non-pointer
-variables (including the program counter) to their corresponding abstract
-domains.
-We let $\sconf \satlocsymbconf{\thread} \locsymbconf$ denote that in the
-global configuration $\sconf$, the
-local configuration of thread $\thread$ satisfies the local symbolic
-configuration $\locsymbconf$, defined in the natural way.
 
+\subsubsection{Fragment Abstraction}
 Let us now define our fragment abstraction for skiplists more precisely.
 Let $\klevel$ be a level.
 Define the abstraction of a pointer variable of form $\tt p[k]$,
 denoted $\abstrof{\mathtt{p[k]}}$,
-to be $\tt p[k]$ if ${\tt k} = 1$, otherwise $\tt p[higher]$.
+to be $\tt p[1]$ if $\klevel = 1$, and to be  $\tt p[higher]$
+if $\klevel \geq 2$.
 That is, this abstraction does not distinguish different higher levels.
 A {\em tag} is a tuple $\atag = \tagtuple$, where
 \begin{inparaenum}[(i)]
@@ -118,7 +119,8 @@ A {\em tag} is a tuple $\atag = \tagtuple$, where
 
 For a heap cell $\cell$ that is accessible to thread $\thread$ 
 in a configuration $\sconf$, and a tag $\atag = \tagtuple$,
-we let $\cell \lsatfrag{\klevel}{\thread}{\sconf} \atag$ denote that
+we let $\cell \lsatfrag{\klevel}{\thread}{\sconf} \atag$ denote that the
+$\cell$ satisfies the tag $\atag$ ``at level $\klevel$, or more precisely that
 \begin{itemize}
 \item
   $\vals$ is an abstraction of the concrete values of the non-pointer fields of $\cell$ (for array fields $\tt f$ we use the concrete value $\tt f[k]$),
@@ -168,10 +170,9 @@ not accessible to any other thread than $\thread$.
   %% $\private$ is $\true$ if
   %%  $\cell$ has never been published (by assigning a heap pointer-field or global pointer variable) by its creating thread $\thread$.
 \end{itemize}
-Note that the parameter $\klevel$ in the relation
-$\lsatfrag{\klevel}{\thread}{\sconf}$
-determines the element of non-pointer arrays that is represented by $\vals$. 
-
+Intuitively, $\cell \lsatfrag{\klevel}{\thread}{\sconf} \atag$ denotes that
+$\cell$ satisfies $\atag$ ``at level $\klevel$'' in the sense that
+array fields of $\cell$ are considered at index $\klevel$.
 
 %% \begin{definition}[SLL-fragment]
 %% \label{def:sll-fragment}
@@ -182,7 +183,8 @@ $\tuple{\inat{\frag},\nullconst}$, or of form
 $\tuple{\inat{\frag},\dangconst}$,
 where $\inat{\frag}$ and $\outat{\frag}$ are tags
     and $\datarelat{\frag}$ is a subset of $\set{<, =, >}$.
-Each skiplist fragment also has a {\em level}, which is either $1$ or $\tt higher$.
+    Each skiplist fragment is either a {\em level-1 fragment} or
+    a {\em higher-level fragment}.
 For a cell $\cell$ which is accessible to thread $\thread$, and a fragment
 $\frag$ of form $\fragtupleat{\frag}$, let $\cell \lsatfrag{\klevel}{\thread}{\sconf}\frag$ denote that
 the ${\tt next[k]}$ field of $\cell$ points to a cell $\cell'$ such that
@@ -226,9 +228,20 @@ $k$,
 a $\tt next[k]$ pointer for some $\klevel \geq 2$, representing their
 array fields only at index $k$.
 
+\subsubsection{Symbolic Representation}
 We are now ready to define our abstract symbolic representation, which
 is defined as a partial mapping from augmented local symbolic
-configurations to sets of fragments. For a local symbolic configuration
+configurations to sets of fragments. 
+
+Define a {\em local symbolic configuration} $\locsymbconf$ to be
+a mapping from local non-pointer
+variables (including the program counter) to their corresponding abstract
+domains.
+We let $\sconf \satlocsymbconf{\thread} \locsymbconf$ denote that in the
+global configuration $\sconf$, the
+local configuration of thread $\thread$ satisfies the local symbolic
+configuration $\locsymbconf$, defined in the natural way.
+For a local symbolic configuration
 $\locsymbconf$, an observer location $\ostate$, a pair
 $\fragset$ of fragments and a thread $\thread$, we write
 $\sconf \satconf{\thread}
@@ -241,7 +254,7 @@ $\sconf \satconf{\thread}
 \begin{definition}
   \label{def:symbrep}
     A {\em symbolic representation} $\symbrep$ is a partial mapping from
-pairs of local symbolic configurations and observer locations
+pairs of local symbolic configurations and observer locations to
 sets of fragments.
 A system configuration $\sconf$ satisfies a symbolic representation $\symbrep$,
 denoted $\sconf \satsymbrep \symbrep$,
@@ -301,7 +314,7 @@ $\sconf \satconf{\thread}
 \paragraph{Example:} Let us show an example of how a singly linked list (SLL) is split into a set of fragments. Fig.~\ref{lazylist}(a) shows an example of a concrete shape of a singly linked list. Each cell contains the values of $\tt val$, $\tt mark$, and $\tt lock$ from top to bottom, where \tick \; denotes $\tt true$, and \cross \; denotes $\tt false$ (or $\tt free$ for $\tt lock$) and the value of $\tt val$ is denoted by a pair of the observer register $\tt z$ and a subset of $\set{<, =, >}$. There are two threads $1$ and $2$ with two local variables $\tt c_1$ and $\tt c_2$. There are two global variables $\tt H$ and $\tt T$ pointing to the head and tail of the list. The observer register $\tt z$ has value 8. Fig.~\ref{lazylist}(b) shows the result of splitting the list in Fig.~\ref{lazylist}(a) into fragments where each heap fragment is a small list of two nodes. Fig.~\ref{lazylist}(c) shows the abstraction of fragments in Fig.~\ref{lazylist}(b) where for each cell $\cell$, the value of $val$ is abstracted to a subset in $\tt \{<z, =z, >z\}$, the reachability relation between $\cell$ and global variables and observer registers is abstracted to the predicate $\tt X \mapsto \tt Y$ where $\tt X$, $\tt Y$ are sets of global variables and observer registers, $\tt i$ or $\tt o$ states that $\cell$ is an input or output cell.
 
 
-\subsubsection{Symbolic Postcondition Computation}
+\subsection{Symbolic Postcondition Computation}
 \label{subsect:postcond}
 In the  verification, we must compute an invariant in the form
 of a symbolic representation
@@ -421,11 +434,12 @@ In the following, we first describe the symbolic postcondition computation for
 local steps, and thereafter the intersection operation.
 
 
-\paragraph{Symbolic Postcondition Computation for Local Steps}
+\subsubsection{Symbolic Postcondition Computation for Local Steps}
 Let $\thread$ be an arbitrary thread, and assume
 that $\tuple{\locsymbconf,\ostate} \in \domof{\symbrep}$.
+Let $\fragset = \symbrep(\tuple{\locsymbconf,\ostate})$
 For each statement that $\thread$ can execute in a configuration $\sconf$
-with $\sconf \satconf{\thread} \tuple{\locsymbconf,\ostate,\symbrep(\tuple{\locsymbconf,\ostate})}$,
+with $\sconf \satconf{\thread} \tuple{\locsymbconf,\ostate,\fragset}$,
 we must compute a local symbolic configuration $\locsymbconf'$, a new
 observer location $\ostate'$ and a set  $\fragset'$ of fragments such that
 such that the resulting configuration ${\sconf}'$ satisfies
@@ -438,11 +452,24 @@ tags.
 We therefore here describe how to compute the effect of statements that update
 pointer variables or pointer fields of heap cells,
 since these are the most interesting cases.
+In this computation, the set $\fragset'$ is constructed in two steps:
+\begin{inparaenum}[(1)]
+\item First, the level-1 fragments of $\fragset'$ are computed, based on
+  the level-1 fragments in $\fragset$.
+\item
+  Thereafter, the higher-level fragments of $\fragset'$ are computed, based
+  on the higher-level fragments in $\fragset$ and
+  how fragments in $\fragset$ are transformed
+  when entered in to $\fragset'$.
+\end{inparaenum}
+We first describe the construction of level-1 fragments, and thereafter the
+construction of higher-level fragments.
 
+\paragraph{{\bf Construction of level-1 fragments}}
 Let us first consider a statement of form $\gvarof{g} := \lvarof{p}$,
 which assigns the value of a local pointer variable $\lvarof{p}$ to a global
 pointer variable $\gvarof{g}$. The set $\fragset'$ of fragments is obtained by
-modifying fragments in $\symbrep(\tuple{\locsymbconf,\ostate})$ to reflect the effect of the assignment. 
+modifying fragments in $\fragset$ to reflect the effect of the assignment. 
 For any tag in a fragment, the $\vals$ field is not affected.
 The $\pvars$ field  is updated to contain the variable $\gvarof{g}$ if and only if it contained the variable $\lvarof{p}$ before the statement. 
 The difficulty is to update the reachability information represented
@@ -456,7 +483,7 @@ reflecting that $\gvarof{g}$ and $\lvarof{p}$ are now aliases, just as
 in the update of $\pvars$).
 In order to compute the postcondition with sufficient precision, we
 %% However, since the $\reachfrom$ field does not include local variables, we
-therefore investigate whether the set of fragments $\symbrep(\tuple{\locsymbconf,\ostate})$
+therefore investigate whether the set of fragments $\fragset$
 allows to form a heap in which a $p$-cell can reach or be
 reached from (by a sequence of $\tt next[1]$ pointers)
 a particular tag of a fragment.
@@ -600,6 +627,9 @@ $\reachtoat{\outof{\frag_y'}} = \reachtoat{\outof{\frag_y}} \setminus \set{\abst
  \item $\reachfromat{\outof{\frag'}} = \reachfromat{\outof{\frag}} \cup \set{\abstrof{\mathtt{x}}}$ if $\tt x$ is a global variable,
 \item $\reachtoat{\outof{\frag'}} = \reachtoat{\outof{\frag}} \cup \set{\abstrof{\mathtt{x}}}$ if $\tt x$ is a global variable,
 \end{itemize}
+  (Recall that $\abstrof{\mathtt{x}}$ is the abstraction of $\mathtt{x}$, which
+  in the case that $\mathtt{x}$ is an array element
+  maps higher levels to the same   abstract index $\tt higher$.)
 \item We perform analogous inclusions for fragments $\frag$ with
   $\frag \overset{+}\hookrightarrow_{\fragset} \frag_y$,
   $\frag_y \overset{*}\hookrightarrow_{\fragset} \frag$,
@@ -637,9 +667,10 @@ $\fragset$.
     $\tagat{\inof{\frag_{new}}} = \tagat{\inof{\frag_x}}$ and
     $\tagat{\outof{\frag_{new}}} = \tagat{\inof{\frag_y}}$ except that
     $\reachfromat{\outof{\frag_{new}}} = \reachfromat{\inof{\frag_y}} \cup \reachfromat{\inof{\frag_x}}$ and
-    $\reachtoat{\inof{\frag_{new}}} = \reachtoat{\inof{\frag_y}} \cup \pvarsat{\inof{\frag_x}}$, and
-    $\datarelof{\frag_{new}} = \set{<,=,>}$.
-    \bjcom{This last thing needs fixing}
+    $\reachtoat{\inof{\frag_{new}}} = \reachtoat{\inof{\frag_y}} \cup \pvarsat{\inof{\frag_x}}$.
+    The possible relations in $\datarelof{\frag_{new}}$ are obtained by
+    considering the possible transitive closure-relations between
+    $\frag_x$ and $\frag_y$.
   \item
     Thereafter, we add all possible fragments that can result from a transformation
 of some fragment $\frag$ which is in $\frag$. This is done by an exhaustive
@@ -661,193 +692,16 @@ $\frag''$ which is same as $\frag'$, except that $\reachfromat{\outof{\frag''}} 
 \todo[inline]{We should include an argument why the last case above is correct.
   Quy, could you produce one?}
 
-\todo[inline]{Continuing here with update of higher-level fragments}
-
-
-\paragraph{Symbolic Postcondition Computation for Interference Steps.} 
-Here, the key step is the {\em intersection} operation, which
-takes two sets of fragments
-$\fragset_1$ and $\fragset_2$, and produces a set of joint fragments
-$\fragset_{1,2}$, such that
-$\sconf \satfragset{\thread_1,\thread_2} \fragset_{1,2}$ for any configuration
-such that
-$\sconf \satfragset{\thread_i} \fragset_i$ for $i=1,2$.
-This means that for each heap cell accessible to either
-$\thread_1$ or $\thread_2$, the set $\fragset_{1,2}$ 
-contains a fragment $\frag$ with $\cell \satfrag{\{\thread_1,\thread_2\}}{\sconf} \frag$ (generalizing the notation  $\satfrag{\thread}{\sconf}$ to several
-threads).
-In order to distinguish
-between local variables of $\thread_1$ and $\thread_2$, we use the notation
-$\lvarof{x[i]}$ for a local variable $\lvarof{x}$ of thread $\thread_i$.
-There are  here two possibilities.
-\begin{itemize}
-\item If $\cell$ is accessible to both $\thread_1$ and $\thread_2$, then
-  there are fragments $\frag_1 \in \fragset_1$ and $\frag_2 \in \fragset_2$
-  such that $\cell \satfrag{\thread_1}{\sconf} \frag_1$ and $\cell \satfrag{\thread_2}{\sconf} \frag_2$.
-  We use the notation $\frag_1 \sqcap \frag_2$ to denote a set of views such that
-  whenever $\cell \satfrag{\thread_1}{\sconf} \frag_1$ and $\cell \satfrag{\thread_2}{\sconf} \frag_2$ then
-  $\cell \satfrag{\{\thread_1,\thread_2\}}{\sconf} \frag$ for some $\frag \in (\frag_1 \sqcap \frag_2)$.
-\item If $\cell$ is accessible to only one thread,
-  %% of $\thread_1$ and $\thread_2$,
-  say $\thread_1$, then $\fragset$ should contain some fragment
-  $\frag_1 \in \fragset_1$ with $\cell \satfrag{\set{\thread_1,\thread_2}}{\sconf} \frag_1$
-  \bjcom{Maybe we need to change $\frag_1$, e.g., if we are at a cutpoint?}
-\end{itemize}
-For a fragment $\frag$, define
-$\greachfromat{\inof{\frag}}$ as the set of global variables in
-$\reachfromat{\inof{\frag}}$. Define
-$\greachtoat{\inof{\frag}}$,
-$\greachfromat{\outof{\frag}}$,
-$\greachtoat{\outof{\frag}}$,
-$\gpvarsat{\inof{\frag}}$, and
-$\gpvarsat{\outof{\frag}}$
-analogously.
-Define $\gtagat{\outof{\frag}}$ as the tuple
-$\tuple{\valsat{\outof{\frag}},\gpvarsat{\outof{\frag}},\greachfromat{\outof{\frag}},\greachtoat{\outof{\frag}},\privateat{\outof{\frag}}}$.
-\todo[inline]{Question to Quy: Should we also define $\gtagat{\inof{\frag}}$,
-  since it is used below?}
-
-\todo[inline]{Question to Quy: You have also used the notation
-  $\gvalsat{\inof{\frag}}$. Will you need it, and if so what does it mean?} \quycom{Because in the data, I add data constraint between data fields and local data variable. When we do intersection, we do not need to care about this constraint because its local constraint}
-
-Let us now describe how to compute  $\frag_1 \sqcap \frag_2$ for
-two views $\frag_1 \in \fragset_1$ and $\frag_2 \in \fragset_2$.
-%% Firstly, we consider the case where both $\frag_1$ and $\frag_2$ have size 2.
-We observe that if a cell $\cell$ satisfies
-$\cell \satfrag{\thread_1}{\sconf} \frag_1$ and $\cell \satfrag{\thread_2}{\sconf} \frag_2$, then
-the information about global variables in $\frag_1$ and $\frag_2$ must coincide.
-This leads to the following cases.
- \begin{itemize}
- \item if $\greachfromat{\inof{\frag_1}} \neq \emptyset$ and $\greachfromat{\inof{\frag_2}} \neq \emptyset$ then the global information in $\frag_1$ and $\frag_2$ must coincide. We hence obtain:
-  \begin{itemize}
-  \item if $\gtagat{\inof{\frag_1}} = \gtagat{\inof{\frag_2}}$ and $\gtagat{\outof{\frag_1}} = \gtagat{\outof{\frag_2}}$ then $\frag_1 \sqcap v_2 = \set{\frag_{12}}$ where $\frag_{12}$ is identical to $\frag_1$ except that
-    \bjcom{Quy: It is strange that {\tt private} is included. Please check!!!}
-  \begin{itemize}
-  \item $\pvarsat{\inof{\frag_{12}}} = \pvarsat{\inof{\frag_1}} \cup \pvarsat{\inof{\frag_2}}$ 
-  \item  $\pvarsat{\outof{\frag_{12}}} = \pvarsat{\outof{\frag_1}} \cup \pvarsat{\outof{\frag_2}}$
-  \item $\reachfromat{\inof{\frag_{12}}} = \reachfromat{\inof{\frag_{1}}} \cup \reachfromat{\inof{\frag_{2}}}$
-   \item $\reachfromat{\outof{\frag_{12}}} = \reachfromat{\outof{\frag_{1}}} \cup \reachfromat{\outof{\frag_{2}}}$
-     \todo[inline]{Question to Quy: Why do this union only for $\pvars$ and $\reachfrom$, and not for $\reachto$ and $\vals$?}\quycom{we fixed this in the disscussion}
-    \end{itemize}
-  \todo[inline]{Question to Quy: Should we not have an ``else'' here, with
-    $\frag_1 \sqcap \frag_2 = \emptyset$?}\quycom{we fixed this in the disscussion}
- \end{itemize}
-
- \item if $\greachfromat{\inof{\frag_1}} = \emptyset$, $\greachfromat{\inof{\frag_2}} = \emptyset$, $\greachfromat{\outof{\frag_1}} \neq \emptyset$ and $\greachfromat{\outof{\frag_2}} \neq \emptyset$ then 
-  \begin{itemize}
-  \item if $\gtagat{\outof{\frag_1}} = \gtagat{\outof{\frag_2}}$, $\privateat{\inof{\frag_1}} = \false$ and $\privateat{\inof{\frag_2}} = \false$ then $\frag_1 \sqcap \frag_2 = \set{\frag_1', \frag_2', \frag_{12}}$ where
-      %$\frag_{12}$ is same as $\frag_1$ except that 
-%    \begin{itemize}
-%  \item $\pvarsat{\inof{\frag_{12}}} = \pvarsat{\inof{\frag_1}} \cup \pvarsat{\inof{\frag_2}}$ 
-%  \item  $\pvarsat{\outof{\frag_{12}}} = \pvarsat{\outof{\frag_1}} \cup \pvarsat{\outof{\frag_2}}$
-%  \item $\reachfromat{\inof{\frag_{12}}} = \reachfromat{\inof{\frag_{1}}} \cup \reachfromat{\inof{\frag_{2}}}$
-%   \item $\reachfromat{\outof{\frag_{12}}} = \reachfromat{\outof{\frag_{1}}} \cup \reachfromat{\outof{\frag_{2}}}$
-%    \end{itemize} and
-      \begin{itemize}
-      \item
-        $\frag_1'$ is same as $\frag_1$ except that 
-    \begin{itemize}
-  \item  $\pvarsat{\outof{\frag_1'}} = \pvarsat{\outof{\frag_1}} \cup \pvarsat{\outof{\frag_2}}$
-  \item $\reachfromat{\outof{\frag_1'}} = \reachfromat{\outof{\frag_{1}}} \cup \reachfromat{\outof{\frag_{2}}}$
-    \end{itemize}
-  \item
-    $\frag_2'$ is same as $\frag_2$ except that 
-    \begin{itemize}
-  \item  $\pvarsat{\outof{\frag_2'}} = \pvarsat{\outof{\frag_1}} \cup \pvarsat{\outof{\frag_2}}$
-  \item $\reachfromat{\outof{\frag_2'}} = \reachfromat{\outof{\frag_{1}}} \cup \reachfromat{\outof{\frag_{2}}}$
-    \end{itemize}
-  \item
-    $\frag_{12}$ is as in the previous case.
-    \bjcom{to Quy: I added this, is it correct?}
-      \end{itemize}
-    \item if $\gtagat{\outof{\frag_1}} = \gtagat{\outof{\frag_2}}$ and $\privateat{\inof{\frag_1}} = \true$ or $\privateat{\inof{\frag_2}} = \true$ then $\frag_1 \sqcap \frag_2 = \set{\frag_1', \frag_2'}$ where
-$\frag_1'$ and $\frag_2'$ are as above.
- \end{itemize}
- 
- \item if $\greachfromat{\inof{\frag_1}} = \emptyset$, $\greachfromat{\inof{\frag_2}} = \emptyset$, $\greachfromat{\outof{\frag_1}} = \emptyset$ and $\greachfromat{\outof{\frag_2}} = \emptyset$ then 
- \begin{itemize}
- \item if $\tt gtag(\frag_1, o) = gtag(\frag_2, o)$, $\privateat{\inof{\frag_1}} = false$, $\privateat{\outof{\frag_1}} = false$, $\privateat{\outof{\frag_1}} = false$ and $\privateat{\outof{\frag_2}} = false$ then  $\frag_1 \sqcap \frag_2 = \{\frag_1,\frag_2,\frag_1',\frag_2',\frag_{12}\}$ %where $\frag_{12}$ is same as $\frag_1$ except that 
-   % \begin{itemize}
- % \item $\pvarsat{\inof{\frag_{12}}} = \pvarsat{\inof{\frag_1}} \cup \pvarsat{\inof{\frag_2}}$ 
- % \item  $\pvarsat{\outof{\frag_{12}}} = \pvarsat{\outof{\frag_1}} \cup \pvarsat{\outof{\frag_2}}$
- % \item $\reachfromat{\inof{\frag_{12}}} = \reachfromat{\inof{\frag_{1}}} \cup \reachfromat{\inof{\frag_{2}}}$
- %  \item $\reachfromat{\outof{\frag_{12}}} = \reachfromat{\outof{\frag_{1}}} \cup \reachfromat{\outof{\frag_{2}}}$
- %   \end{itemize} and 
- %   $\frag_{1'}$ is same as $\frag_1$ except that 
- %   \begin{itemize}
- % \item  $\pvarsat{\outof{\frag_1'}} = \pvarsat{\outof{\frag_1}} \cup \frag_2.vars(j_o)$
- % \item $\reachfromat{\outof{\frag_1'}} = \reachfromat{\outof{\frag_{1}}} \cup \reachfromat{\outof{\frag_{2}}}$
- %   \end{itemize}
- %  and $\frag_2'$ is same as $\frag_2$ except that 
- %   \begin{itemize}
- % \item  $\pvarsat{\outof{\frag_2'}} = \pvarsat{\outof{\frag_1}} \cup \frag_2.vars(j_o)$
- % \item $\reachfromat{\outof{\frag_2'}} = \reachfromat{\outof{\frag_{1}}} \cup \reachfromat{\outof{\frag_{2}}}$
- %   \end{itemize}
-    
-    
-   \item if $\tt gtag(\frag_1, o) = gtag(\frag_2, o)$, ($\privateat{\inof{\frag_1}} = true$ or $\privateat{\inof{\frag_2}} = true$) and $\privateat{\outof{\frag_1}} = false$ and $\privateat{\outof{\frag_2}} = false$ then  $\frag_1 \sqcap \frag_2 = \{\frag_1,\frag_2,\frag_1',\frag_2'\}$  
-
-  \item if $\tt gtag(\frag_1, o) = gtag(\frag_2, o)$ and ($\privateat{\outof{\frag_1}} = true$ or $\privateat{\outof{\frag_1}} = true$) then  $\frag_1 \sqcap \frag_2 = \{\frag_1,\frag_2\}$ 
-
-    \item if $\tt gtag(\frag_1, o) \neq gtag(\frag_2, o)$ then $\frag_1 \sqcap \frag_2 = \{\frag_1,\frag_2\}$
- \end{itemize}
- 
- \end{itemize}
-
-
- \section{Fragment Abstraction for  Skiplists}
-\label{sect:skiplists}
-Our fragment abstraction for skiplist extends the fragment abstraction for
-singly-linked lists in several ways:
-\begin{itemize}
-\item
-We abstract all occurrences of levels
-higher than 2 by the single abstract element $\tt higher$, i.e., 
-we do not distinguish between different higher levels.
-  A pointer or non-pointer variable indexed by a level,
-  of form $\tt v[i]$ with ${\tt i} \geq 2$, is
-  abstracted to the variable $\tt v[higher]$.
-\bjcom{Does it imply something more?}
-\item
-  We use two types of fragments: {\em level 1-fragments} to represent pairs of
-cells connected by a $\tt next[1]$-pointer, and {\em higher level-fragments} for
-representing pairs of cells connected by a higher level pointer.
-\item
-  The fields $\reachfrom$ and $\reachto$ in tags represent reachability information with respect to sequences of lowest-level {\tt next[1]} pointers, in
-  both level 1-fragments and higher level-fragments. Thus, the fragments do
-  not explicitly represent such reachability relations with respect to
-  {\tt next[i]} pointers for ${\tt i} \geq 2$.
-\item
-  \bjcom{There are several more fine distinctions that must be made.
-    A discussion is needed. For instance, how do we represent
-  arrays of {\tt marked} fields?}
-\end{itemize}
- \begin{figure}  
- \input skiplistshape  
- \caption{A concrete shape of 3-level skipl-list with two threads}
-\end{figure}
-
- \begin{figure}  
- \input skiplistabs
- \caption{skipl-list fragments \quycom{i am working with this figure}}
-\end{figure}
-
- \paragraph{Symbolic Postcondition Computation for Skiplists}
- The symbolic postcondition computation for skiplists is an extension of that
- for singly-linked lists. Thus, for statements that
-do not affect higher-level $\tt next$ fields,
-   the postcondition computation is performed for the augmented local
-   symbolic configuration and the level 1-fragments in the same way as
-   for singly-linked lists.
-   Based on this postcondition computation, higher-level fragments are
-   updated as follows.
+\paragraph{{\bf Construction of higher-level fragments}}
+Based on this construction of level-1 fragments, higher-level fragments are
+   conststructed as follows.
      For each higher level-fragment $\frag \in \fragset$, let
      $\frag_1$ and $\frag_2$ be level 1-fragments such that
      $\tagat{\inof{\frag_1}} = \tagat{\inof{\frag}}$ and
      $\tagat{\inof{\frag_2}} = \tagat{\outof{\frag}}$.
      For any fragments $\frag_1'$ and $\frag_2'$ that are derived from
      $\frag_1$ and $\frag_2$, respectively, we add a higher-level
-     fragment $\frag'$ to $\fragset_{posst}$
+     fragment $\frag'$ to $\fragset_{post}$
      which is the same as $\frag$ except that 
 \begin{itemize}
 \item $\pvarsat{\inof{\frag'}} = \pvarsat{\inoneof{\frag_1'}}$,
@@ -859,591 +713,91 @@ do not affect higher-level $\tt next$ fields,
 \end{itemize}
 
 
- \todo[inline]{The rest is old stuff, which could go into appendix}
- First, a symbolic postcondition computation is performed for 
-Let us show how to perform the abstract transformer for skip-list programs on the set of fragments $\fragset$ depending on the particular statement.
-%% We consider fragments of size $2$ where $\tt I_{inp} = \{i\}$, $\tt I_{out} = \{{o}\}$, and $\tt next(i) = {o}$ and fragments of size $1$ where $\tt I_{inp} = \{i\}$, $\tt I_{out} = \emptyset$, and $\tt next(i) = null$ or $\tt next(i) = \bot$.
-For each fragment $\tt v$, let $\tt v.level \in \{1,2\}$ be the level of $\tt v$.
+\subsubsection{Symbolic Postcondition Computation for Interference Steps} 
+Here, the key step is the {\em intersection} operation, which
+takes two sets of fragments
+$\fragset_1$ and $\fragset_2$, and produces a set of joint fragments
+$\fragset_{1,2}$, such that
+$\sconf \satfragset{\thread_1,\thread_2} \fragset_{1,2}$ for any configuration
+such that
+$\sconf \satfragset{\thread_i} \fragset_i$ for $i=1,2$.
+This means that for each heap cell accessible to either
+$\thread_1$ or $\thread_2$, the set $\fragset_{1,2}$ 
+contains a fragment $\frag$ with $\cell \lsatfrag{\klevel}{\{\thread_1,\thread_2\}}{\sconf} \frag$ for each $\klevel$ which is at most the height of $\cell$
+(generalizing the notation  $\lsatfrag{\klevel}{\thread}{\sconf}$ to several
+threads).
+Note that a joint fragments represents local pointer variables of
+both $\thread_1$ and $\thread_2$. In order to distinguish
+between local variables of $\thread_1$ and $\thread_2$, one can, e.g.,
+use a notation of form
+$\lvarof{x[i]}$ for a local variable $\lvarof{x}$ of thread $\thread_i$.
+Here, we describe the intersection operation for level-1 fragments. The
+intersection operation is completely analogous for higher-level fragments.
 
-\paragraph{Local Abstract Transformers:} First, let us show the abstract transformer on the set of fragment $\fragset$ in the fragment of the concurrent thread. Let $\fragset_1$ be set of fragments of level 1 in $\fragset$, $\fragset_2$ be set of fragments of level 2 in $\fragset$. For each program statement, let $\fragset_{post}$ be the set of fragments after executing the statement. Let $\fragset_{post}$ be initialized as the empty set.  Let $\tt R$ be the set of pairs of fragments. Intuitively, in each element in $\tt R$, the second fragment is the transformation of the first fragment. Let $\tt R$ be initialized as the empty set.
+For a fragment $\frag$, define
+$\greachfromat{\inof{\frag}}$ as the set of global variables in
+$\reachfromat{\inof{\frag}}$. Define
+$\greachtoat{\inof{\frag}}$,
+$\greachfromat{\outof{\frag}}$,
+$\greachtoat{\outof{\frag}}$,
+$\gpvarsat{\inof{\frag}}$, and
+$\gpvarsat{\outof{\frag}}$
+analogously.
+Define $\gtagat{\inof{\frag}}$ as the tuple
+$\tuple{\valsat{\inof{\frag}},\gpvarsat{\inof{\frag}},\greachfromat{\inof{\frag}},\greachtoat{\inof{\frag}}}$, and define
+$\gtagat{\outof{\frag}}$ analogously.
+%% \todo[inline]{Question to Quy: You have also used the notation
+%%   $\gvalsat{\inof{\frag}}$. Will you need it, and if so what does it mean?} \quycom{Because in the data, I add data constraint between data fields and local data variable. When we do intersection, we do not need to care about this constraint because its local constraint}
+We must distinguish the following possibilities.
 \begin{itemize}
-\item ${\tt x := y}$: The transformer is performed as follows:  For each fragment $\tt \frag_y \in \fragset_1$ where $\tt y \in\pvarsat{\inof{ \frag_y}}$, 
-%\begin{itemize}
-\begin{enumerate}
-\item  for each fragment $\tt v \in \fragset_1$ where $\tt v \hookrightarrow_{\fragset} \frag_y$, create $\tt v'$ which is same as $\tt v$ except that
-\begin{itemize}
-\item $\pvarsat{\inof{\frag'}} = \pvarsat{\inof{\frag}} \setminus \set{x}$,
-\item $\pvarsat{\outof{\frag'}} = \pvarsat{\outof{\frag}} \cup \set{x}$,
-\item if $\gvarof{x}$ is a global variable
-\begin{itemize}
-\item $\reachfromat{\inof{\frag'}} = \reachfromat{\inof{\frag}} \setminus \set{x}$,
-\item $\reachtoat{\inof{\frag'}} = \reachtoat{\inof{\frag}} \cup \set{x}$,
- \item $\reachfromat{\outof{\frag'}} = \reachfromat{\outof{\frag}} \cup \set{x}$,
-\item $\reachtoat{\outof{\frag'}} = \reachtoat{\outof{\frag}} \cup \set{x}$,
-\end{itemize}
-\end{itemize}
-then add $\tt v'$ to $\fragset_{post}$, and $\tt (v,v')$ to $\tt R$
-\item for each fragment $\tt v \in \fragset_1$ where $\tt v \overset{+}\hookrightarrow_{\fragset} \frag_y$, create $\tt v'$ which is same as $\tt v$ except that
-\begin{itemize}
-\item $\pvarsat{\inof{\frag'}} = \pvarsat{\inof{\frag}} \setminus \set{x}$,
-\item $\pvarsat{\outof{\frag'}} = \pvarsat{\outof{\frag}} \setminus \set{x}$,
-\item if $\gvarof{x}$ is a global variable
-\begin{itemize}
-\item $\reachfromat{\inof{\frag'}} = \reachfromat{\inof{\frag}} \setminus \set{x}$,
-\item $\reachtoat{\inof{\frag'}} = \reachtoat{\inof{\frag}} \cup \set{x}$,
-\item $\reachfromat{\outof{\frag'}} = \reachfromat{\outof{\frag}} \setminus \set{x}$,
-\item $\reachtoat{\outof{\frag'}} = \reachtoat{\outof{\frag}} \cup \set{x}$,
-\end{itemize}
-\end{itemize}
-then add $\tt v'$ to $\fragset_{post}$, and $\tt (v,v')$ to $\tt R$
-\item for each fragment $\tt v \in \fragset_1$ where $\tt \frag_y \overset{*}\hookrightarrow_{\fragset} v$, create $\tt v'$ which is same as $\tt v$ except that
-\begin{itemize}
-\item $\pvarsat{\inof{\frag'}} = \pvarsat{\inof{\frag}} \setminus \set{x}$,
-\item $\pvarsat{\outof{\frag'}} = \pvarsat{\outof{\frag}} \setminus \set{x}$,
-\item if $\gvarof{x}$ is a global variable
-\begin{itemize}
-\item $\reachfromat{\inof{\frag'}} = \reachfromat{\inof{\frag}} \cup \set{x}$,
-\item $\reachtoat{\inof{\frag'}} = \reachtoat{\inof{\frag}} \setminus \set{x}$,
- \item $\reachfromat{\outof{\frag'}} = \reachfromat{\outof{\frag}} \cup \set{x}$,
- \item $\reachtoat{\outof{\frag'}} = \reachtoat{\outof{\frag}} \setminus \set{x}$,
-\end{itemize}
-\end{itemize}
-then add $\tt v'$ to $\fragset_{post}$, and $\tt (v,v')$ to $\fragset'$
-\item for each fragment $\tt v$ where $\tt \frag_y \overset{*+}\leftrightarrow_{\fragset} v$, create $\tt v'$ which is same as $\tt v$ except that
-\begin{itemize}
-\item $\pvarsat{\inof{\frag'}} = \pvarsat{\inof{\frag}} \setminus \set{x}$,
-\item $\pvarsat{\outof{\frag'}} = \pvarsat{\outof{\frag}} \setminus \set{x}$,
-\item if $\gvarof{x}$ is a global variable
-\begin{itemize}
-\item $\reachfromat{\inof{\frag'}} = \reachfromat{\inof{\frag}} \setminus \set{x}$,
-\item $\reachtoat{\inof{\frag'}} = \reachtoat{\inof{\frag}} \setminus \set{x}$,
-\item $\reachfromat{\outof{\frag'}} = \reachfromat{\outof{\frag}} \setminus \set{x}$,
-\item $\reachtoat{\outof{\frag'}} = \reachtoat{\outof{\frag}} \setminus \set{x}$,
-\end{itemize}
-\end{itemize}
-then add $\tt v'$ to $\fragset_{post}$, and $\tt (v,v')$ to $\fragset'$
-\item for each fragment $\tt v \in \fragset_1$ where $\tt \frag_y \overset{*\circ}\leftrightarrow_{\fragset} v$, create $\tt v'$ which is same as $\tt v$ except that
-\begin{itemize}
-\item $\pvarsat{\inof{\frag'}} = \pvarsat{\inof{\frag}} \setminus \set{x}$,
-\item $\pvarsat{\outof{\frag'}} = \pvarsat{\outof{\frag}} \setminus \set{x}$,
-\item if $\gvarof{x}$ is a global variable
-\begin{itemize}
-\item $\reachfromat{\inof{\frag'}} = \reachfromat{\inof{\frag}} \setminus \set{x}$,
-\item $\reachtoat{\inof{\frag'}} = \reachtoat{\inof{\frag}} \setminus \set{x}$,
-\item $\reachfromat{\outof{\frag'}} = \reachfromat{\outof{\frag}} \cup \set{x}$,
-\item $\reachtoat{\outof{\frag'}} = \reachtoat{\outof{\frag}} \setminus \set{x}$,
-\end{itemize}
-\end{itemize}
-then add $\tt v'$ to $\fragset_{post}$, and $\tt (v,v')$ to $\fragset'$
-\item create $\tt v'$ which is same as $\tt \frag_y$ except that
-\begin{itemize}
-\item $\pvarsat{\inof{\frag'}} = \pvarsat{\inof{\frag}} \cup \set{x}$,
-\item $\pvarsat{\outof{\frag'}} = \pvarsat{\outof{\frag}} \setminus \set{x}$,
-\item if $\gvarof{x}$ is a global variable
-\begin{itemize}
-\item $\reachtoat{\inof{\frag'}} = \reachtoat{\inof{\frag}} \cup \set{x}$,
- \item $\reachfromat{\inof{\frag'}} = \reachfromat{\inof{\frag}} \cup \set{x}$,
-\item $\reachfromat{\outof{\frag'}} = \reachfromat{\outof{\frag}} \cup \set{x}$,
-\item $\reachtoat{\outof{\frag'}} = \reachtoat{\outof{\frag}} \setminus \set{x}$,
-\end{itemize}
-\end{itemize}
-then add $\tt v'$ to $\fragset_{post}$, and $\tt (v,v')$ to $\fragset'$
-%\item for each fragment $\tt v'$ in $\fragset_{post}$, assign $\tt v'.data.(i).(y.d)$ to $\tt v'.data.(i).(x.d)$ for $\tt i \in \{i, o\}$.
-\item for each fragment $\frag \in \fragset_2$ we do as follows. For each $(\frag_1,\frag_1')$ and $(\frag_2,\frag_2') \in R$, for each pair of indices $\tt i_1$, $\tt i_2$ such that $\tt i_1 \in \{\frag_1.i, \frag_1.o\}$, $\tt i_2 \in \{\frag_2.i, \frag_2.o\}$, $\tt tag(v,i) = tag(\frag_1, i_1)$, and $\tt tag(v,o) = tag(\frag_2, i_2)$.
-  \bjcom{This needs revising}
- Create $\tt v'$ which is same as $\tt v$ except that 
-\begin{itemize}
-\item $\pvarsat{\inof{\frag'}} = \pvarsat{\inoneof{\frag_1'}}$,
-\item $\pvarsat{\outof{\frag'}} = \pvarsat{\intwoof{\frag_2'}}$,
-\item $\reachfromat{\inof{\frag'}} = \reachfromat{\inoneof{\frag_1'}}$,
-\item $\reachfromat{\outof{\frag'}} = \reachfromat{\intwoof{\frag_2'}}$,
-\item $\reachtoat{\inof{\frag'}} = \reachtoat{\inoneof{\frag_1'}}$,
-\item $\reachtoat{\outof{\frag'}} =  \reachtoat{\intwoof{\frag_2'}}$,
-\end{itemize} then add $\tt v'$ to $\fragset_{post}$. 
-\end{enumerate}
-%\item If there does not exist such $\tt \frag_y$ in $\fragset_1$
-%\end{itemize}
-%\begin{enumerate}
-%%1%
-%\item  for each fragment $\tt v$ where 
-%\begin{itemize}
-%	\item $\tt tag(v,o) = tag(\frag_y,i)$,
-%	\item $\tt tag(v,i) = tag(\frag_1,i)$ where $\tt \frag_1 \overset{*}\hookrightarrow_{\fragset} \frag_y$,
-%\end{itemize}
-%
-%%\begin{itemize}
-%%\item $\pvarsat{\inof{\frag'}} = \pvarsat{\inof{\frag}} \setminus \set{x}$,
-%%\item $\pvarsat{\outof{\frag'}} = \pvarsat{\outof{\frag}} \cup \set{x}$,
-%%\item if $\tt x$ is a global variable
-%%\begin{itemize}
-%%\item $\reachfromat{\inof{\frag'}} = \reachfromat{\inof{\frag}} \setminus \set{x}$,
-%%\item $\reachtoat{\inof{\frag'}} = \reachtoat{\inof{\frag}} \cup \set{x}$,
-%% \item $\reachfromat{\outof{\frag'}} = \reachfromat{\outof{\frag}} \cup \set{x}$,
-%%\item $\reachtoat{\outof{\frag'}} = \reachtoat{\outof{\frag}} \cup \set{x}$,
-%%\end{itemize}
-%%\end{itemize}
-%%and add $\tt v'$ to $\fragset_{post}$,
-%%2%
-%\item  for each fragment $\tt v$ where
-%\begin{itemize}
-%	\item $\tt tag(v,o) = tag(\frag_y,i)$,
-%	\item $\tt tag(v,i) = tag(\frag_1,i)$ where $\tt \frag_y \overset{*+}\leftrightarrow_{\fragset} \frag_1$ or $\tt \frag_1 \overset{*\circ}\leftrightarrow_{\fragset} \frag_y$
-%\end{itemize}
-%%\begin{itemize}
-%%\item $\pvarsat{\inof{\frag'}} = \pvarsat{\inof{\frag}} \setminus \set{x}$,
-%%\item $\pvarsat{\outof{\frag'}} = \pvarsat{\outof{\frag}} \cup \set{x}$,
-%%\item if $\tt x$ is a global variable
-%%\begin{itemize}
-%%\item $\reachfromat{\inof{\frag'}} = \reachfromat{\inof{\frag}} \setminus \set{x}$,
-%%\item $\reachtoat{\inof{\frag'}} = \reachtoat{\inof{\frag}} \setminus \set{x}$,
-%% \item $\reachfromat{\outof{\frag'}} = \reachfromat{\outof{\frag}} \cup \set{x}$,
-%%\item $\reachtoat{\outof{\frag'}} = \reachtoat{\outof{\frag}} \cup \set{x}$,
-%%\end{itemize}
-%%\end{itemize}
-%%and add $\tt v'$ to $\fragset_{post}$,
-%
-%%3%
-%\item  for each fragment $\tt v$ where
-%\begin{itemize}
-%	\item $\tt tag(v,o) = tag(\frag_y,i)$,
-%	\item $\tt tag(v,i) = tag(\frag_1,i)$ where $\tt \frag_y \overset{*}\hookrightarrow_{\fragset} \frag_1$ 
-%\end{itemize}
-%
-%%4%
-%
-%\item  for each fragment $\tt v$ where 
-%\begin{itemize}
-%	\item $\tt tag(v,o) = tag(\frag_1,i)$ where $\tt \frag_1 \overset{*}\hookrightarrow_{\fragset} \frag_y$,
-%	\item $\tt tag(v,i) = tag(\frag_2,i)$ where $\tt \frag_2 \overset{*}\hookrightarrow_{\fragset} \frag_y$,
-%\end{itemize}
-%
-%
-%%5%
-%\item  for each fragment $\tt v$ where
-%\begin{itemize}
-%	\item $\tt tag(v,o) = tag(\frag_1,i)$ where $\tt \frag_1 \overset{*}\hookrightarrow_{\fragset} \frag_y$,
-%	\item $\tt tag(v,i) = tag(\frag_2,i)$ where $\tt \frag_y \overset{*+}\leftrightarrow_{\fragset} \frag_2$ or $\tt \frag_2 \overset{*\circ}\leftrightarrow_{\fragset} \frag_y$
-%\end{itemize}
-%
-%
-%%6%
-%\item  for each fragment $\tt v$ where
-%\begin{itemize}
-%	\item $\tt tag(v,o) = tag(\frag_1,i)$ where $\tt \frag_1 \overset{*}\hookrightarrow_{\fragset} \frag_y$,
-%	\item $\tt tag(v,i) = tag(\frag_2,i)$ where $\tt \frag_y \overset{*}\hookrightarrow_{\fragset} \frag_2$ 
-%\end{itemize}
-%
-%
-%%7%
-%
-%\item  for each fragment $\tt v$ where 
-%\begin{itemize}
-%	\item $\tt tag(v,o) = tag(\frag_1,i)$ where $\tt \frag_y \overset{*}\hookrightarrow_{\fragset} \frag_1$,
-%	\item $\tt tag(v,i) = tag(\frag_2,i)$ where $\tt \frag_2 \overset{*}\hookrightarrow_{\fragset} \frag_y$,
-%\end{itemize}
-%
-%
-%%8%
-%\item  for each fragment $\tt v$ where
-%\begin{itemize}
-%	\item $\tt tag(v,o) = tag(\frag_1,i)$ where $\tt \frag_y \overset{*}\hookrightarrow_{\fragset} \frag_1$,
-%	\item $\tt tag(v,i) = tag(\frag_2,i)$ where $\tt \frag_y \overset{*+}\leftrightarrow_{\fragset} \frag_2$ or $\tt \frag_2 \overset{*\circ}\leftrightarrow_{\fragset} \frag_y$
-%\end{itemize}
-%
-%
-%%9%
-%\item  for each fragment $\tt v$ where
-%\begin{itemize}
-%	\item $\tt tag(v,o) = tag(\frag_1,i)$ where $\tt \frag_y \overset{*}\hookrightarrow_{\fragset} \frag_1$,
-%	\item $\tt tag(v,i) = tag(\frag_2,i)$ where $\tt \frag_y \overset{*}\hookrightarrow_{\fragset} \frag_2$ 
-%\end{itemize}
-%
-%
-%%10%
-%
-%\item  for each fragment $\tt v$ where 
-%\begin{itemize}
-%	\item $\tt tag(v,o) = tag(\frag_1,i)$ where $\tt \frag_y \overset{*+}\leftrightarrow_{\fragset} \frag_1$ or $\tt \frag_1 \overset{*\circ} \leftrightarrow_{\fragset} \frag_y$,
-%	\item $\tt tag(v,i) = tag(\frag_2,i)$ where $\tt \frag_2 \overset{*}\hookrightarrow_{\fragset} \frag_y$,
-%\end{itemize}
-%
-%
-%%11%
-%\item  for each fragment $\tt v$ where
-%\begin{itemize}
-%	\item $\tt tag(v,o) = tag(\frag_1,i)$ where $\tt \frag_y \overset{*+}\leftrightarrow_{\fragset} \frag_1$ or $\tt \frag_1 \overset{*\circ} \leftrightarrow_{\fragset} \frag_y$,
-%	\item $\tt tag(v,i) = tag(\frag_2,i)$ where $\tt \frag_y \overset{*+}\leftrightarrow_{\fragset} \frag_2$ or $\tt \frag_2 \overset{*\circ}\leftrightarrow_{\fragset} \frag_y$
-%\end{itemize}
-%
-%
-%%12%
-%\item  for each fragment $\tt v$ where
-%\begin{itemize}
-%	\item $\tt tag(v,o) = tag(\frag_1,i)$ where $\tt \frag_y \overset{*+}\leftrightarrow_{\fragset} \frag_1$ or $\tt \frag_1 \overset{*\circ} \leftrightarrow_{\fragset} \frag_y$,
-%	\item $\tt tag(v,i) = tag(\frag_2,i)$ where $\tt \frag_y \overset{*}\hookrightarrow_{\fragset} \frag_2$ 
-%\end{itemize}
-%
-%\end{enumerate}
-	
-	
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% X := Y.NEXT1 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\item ${\tt x := y.next[1]}$: The local abstract transformer is quite similar to the previous case with slightly differences. For each fragment $\tt \frag_y \in S$ where $\tt y \in {\tt vars}(\tt i)$,
-%\begin{enumerate}
-%
-%%1%
-%\item  for each fragment $\tt v$ where 
-%\begin{itemize}
-%	\item $\tt tag(v,o) = tag(\frag_y,o)$,
-%	\item $\tt tag(v,i) = tag(\frag_1,i)$ where $\tt \frag_1 \overset{*}\hookrightarrow_{\fragset} \frag_y$ or $\tt \frag_1 = \frag_y$,
-%\end{itemize}
-%
-%%2%
-%\item  for each fragment $\tt v$ where
-%\begin{itemize}
-%	\item $\tt tag(v,o) = tag(\frag_y,o)$,
-%	\item $\tt tag(v,i) = tag(\frag_1,i)$ where $\tt \frag_y \overset{*+}\leftrightarrow_{\fragset} \frag_1$ or $\tt \frag_1 \overset{*\circ}\leftrightarrow_{\fragset} \frag_y$
-%\end{itemize}
-%
-%%3%
-%\item  for each fragment $\tt v$ where
-%\begin{itemize}
-%	\item $\tt tag(v,o) = tag(\frag_y,o)$,
-%	\item $\tt tag(v,i) = tag(\frag_1,i)$ where $\tt \frag_y \overset{+}\hookrightarrow_{\fragset} \frag_1$ 
-%\end{itemize}
-%
-%%-------------------------------------------4------------------------------------------%
-%
-%\item  for each fragment $\tt v$ where 
-%\begin{itemize}
-%	\item $\tt tag(v,o) = tag(\frag_1,i)$ where $\tt \frag_1 \overset{*}\hookrightarrow_{\fragset} \frag_y$ or $\tt \frag_1 = \frag_y$,
-%	\item $\tt tag(v,i) = tag(\frag_2,i)$ where $\tt \frag_2 \overset{*}\hookrightarrow_{\fragset} \frag_y$,
-%\end{itemize}
-%
-%
-%%-------------------------------------------5------------------------------------------%
-%\item  for each fragment $\tt v$ where
-%\begin{itemize}
-%	\item $\tt tag(v,o) = tag(\frag_1,i)$ where $\tt \frag_1 \overset{*}\hookrightarrow_{\fragset} \frag_y$ or $\tt \frag_1 = \frag_y$,
-%	\item $\tt tag(v,i) = tag(\frag_2,i)$ where $\tt \frag_y \overset{*+}\leftrightarrow_{\fragset} \frag_2$ or $\tt \frag_2 \overset{*\circ}\leftrightarrow_{\fragset} \frag_y$
-%\end{itemize}
-%
-%
-%%-------------------------------------------6------------------------------------------%
-%\item  for each fragment $\tt v$ where
-%\begin{itemize}
-%	\item $\tt tag(v,o) = tag(\frag_1,i)$ where $\tt \frag_1 \overset{*}\hookrightarrow_{\fragset} \frag_y$ or $\tt \frag_1 = \frag_y$,
-%	\item $\tt tag(v,i) = tag(\frag_2,i)$ where $\tt \frag_y \overset{*}\hookrightarrow_{\fragset} \frag_2$ 
-%\end{itemize}
-%
-%
-%%-------------------------------------------7-------------------------------------------%
-%
-%\item  for each fragment $\tt v$ where 
-%\begin{itemize}
-%	\item $\tt tag(v,o) = tag(\frag_1,i)$ where $\tt \frag_y \overset{*+}\leftrightarrow_{\fragset} \frag_1$ or $\tt \frag_1 \overset{*\circ}\leftrightarrow_{\fragset} \frag_y$,
-%	\item $\tt tag(v,i) = tag(\frag_2,i)$ where $\tt \frag_2 \overset{*}\hookrightarrow_{\fragset} \frag_y$,
-%\end{itemize}
-%
-%
-%%------------------------------------------8-------------------------------------------%
-%\item  for each fragment $\tt v$ where
-%\begin{itemize}
-%	\item $\tt tag(v,o) = tag(\frag_1,i)$ where $\tt \frag_y \overset{*+}\leftrightarrow_{\fragset} \frag_1$ or $\tt \frag_1 \overset{*\circ}\leftrightarrow_{\fragset} \frag_y$,
-%	\item $\tt tag(v,i) = tag(\frag_2,i)$ where $\tt \frag_y \overset{*+}\leftrightarrow_{\fragset} \frag_2$ or $\tt \frag_2 \overset{*\circ}\leftrightarrow_{\fragset} \frag_y$
-%\end{itemize}
-%
-%
-%%-----------------------------------------9-------------------------------------------%
-%\item  for each fragment $\tt v$ where
-%\begin{itemize}
-%	\item $\tt tag(v,o) = tag(\frag_1,i)$ where $\tt \frag_y \overset{*+}\leftrightarrow_{\fragset} \frag_1$ or $\tt \frag_1 \overset{*\circ}\leftrightarrow_{\fragset} \frag_y$,
-%	\item $\tt tag(v,i) = tag(\frag_2,i)$ where $\tt \frag_y \overset{*}\hookrightarrow_{\fragset} \frag_2$ 
-%\end{itemize}
-%
-%
-%%-----------------------------------------10-------------------------------------------%
-%
-%\item  for each fragment $\tt v$ where 
-%\begin{itemize}
-%	\item $\tt tag(v,o) = tag(\frag_1,i)$ where $\tt \frag_y \overset{*}\hookrightarrow_{\fragset} \frag_1$,
-%	\item $\tt tag(v,i) = tag(\frag_2,i)$ where $\tt \frag_2 \overset{*}\hookrightarrow_{\fragset} \frag_y$,
-%\end{itemize}
-%
-%
-%%-----------------------------------------11-------------------------------------------%
-%\item  for each fragment $\tt v$ where
-%\begin{itemize}
-%	\item $\tt tag(v,o) = tag(\frag_1,i)$  where $\tt \frag_y \overset{*}\hookrightarrow_{\fragset} \frag_1$,
-%	\item $\tt tag(v,i) = tag(\frag_2,i)$ where $\tt \frag_y \overset{*+}\leftrightarrow_{\fragset} \frag_2$ or $\tt \frag_2 \overset{*\circ}\leftrightarrow_{\fragset} \frag_y$
-%\end{itemize}
-%
-%
-%%-----------------------------------------12-------------------------------------------%
-%\item  for each fragment $\tt v$ where
-%\begin{itemize}
-%	\item $\tt tag(v,o) = tag(\frag_1,i)$ where $\tt \frag_1y\overset{*}\hookrightarrow_{\fragset} \frag_1$,
-%	\item $\tt tag(v,i) = tag(\frag_2,i)$ where $\tt \frag_y \overset{*}\hookrightarrow_{\fragset} \frag_2$ 
-%\end{itemize}
-%
-%
-%\end{enumerate}
-
-
-
-
-\begin{enumerate}
-\item  for each fragment $\tt v \in \fragset_1$ where $\tt v \overset{*}\hookrightarrow_{\fragset} \frag_y$, create $\tt v'$ which is same as $\tt v$ except that
-\begin{itemize}
-\item $\pvarsat{\inof{\frag'}} = \pvarsat{\inof{\frag}} \setminus \set{x}$,
-\item $\pvarsat{\outof{\frag'}} = \pvarsat{\outof{\frag}} \setminus \set{x}$,
-\item if $\tt x$ is a global variable
-\begin{itemize}
-\item $\reachfromat{\inof{\frag'}} = \reachfromat{\inof{\frag}} \setminus \set{x}$,
-\item $\reachtoat{\inof{\frag'}} = \reachtoat{\inof{\frag}} \cup \set{x}$,
-\item $\reachfromat{\outof{\frag'}} = \reachfromat{\outof{\frag}} \setminus \set{x}$,
-\item $\reachtoat{\outof{\frag'}} = \reachtoat{\outof{\frag}} \cup \set{x}$,
-\end{itemize}
-\end{itemize}
-then add $\tt v'$ to $\fragset_{post}$, and $\tt (v,v')$ to $\tt R$
-\item for each fragment $\tt v \in \fragset_1$ where $\tt \frag_y \hookrightarrow_{\fragset} v$, create $\tt v'$ which is same as $\tt v$ then
-\begin{itemize}
-\item $\pvarsat{\inof{\frag'}} = \pvarsat{\inof{\frag}} \cup \set{x}$,
-\item $\pvarsat{\outof{\frag'}} = \pvarsat{\outof{\frag}} \setminus \set{x}$,
-\item if $\tt x$ is a global variable
-\begin{itemize}
-\item $\reachfromat{\inof{\frag'}} = \reachfromat{\inof{\frag}} \cup \set{x}$,
- \item $\reachtoat{\outof{\frag'}} = \reachtoat{\outof{\frag}} \cup \set{x}$,
- \item $\reachfromat{\outof{\frag'}} = \reachfromat{\outof{\frag}} \cup \set{x}$,
- \item $\reachtoat{\outof{\frag'}} = \reachtoat{\outof{\frag}} \setminus \set{x}$,
-\end{itemize}
-\end{itemize}
-then add $\tt v'$ to $\fragset_{post}$, and $\tt (v,v')$ to $\tt R$
-\item for each fragment $\tt v \in \fragset_1$ where $\tt \frag_y \leftrightarrow_{\fragset} v$, create $\tt v'$ which is same as $\tt v$ except that
-\begin{itemize} 
-\item $\pvarsat{\inof{\frag'}} = \pvarsat{\inof{\frag}} \setminus \set{x}$,
-\item $\pvarsat{\outof{\frag'}} = \pvarsat{\outof{\frag}} \cup \set{x}$,
-\item if $\tt x$ is a global variable
-\begin{itemize}
-\item $\reachfromat{\inof{\frag'}} = \reachfromat{\inof{\frag}} \setminus \set{x}$,
-\item $\reachtoat{\inof{\frag'}} = \reachtoat{\inof{\frag}} \cup \set{x}$,
- \item $\reachfromat{\outof{\frag'}} = \reachfromat{\outof{\frag}} \cup \set{x}$,
- \item $\reachtoat{\outof{\frag'}} = \reachtoat{\outof{\frag}} \cup \set{x}$,
-\end{itemize}
-\end{itemize}
-then add $\tt v'$ to $\fragset_{post}$, and $\tt (v,v')$ to $\tt R$
-
-\item for each fragment $\tt v \in \fragset_1$ where $\tt \frag_y \overset{+}\hookrightarrow_{\fragset} v$, create $\tt v'$ which is same as $\tt v$ except that
-\begin{itemize}
-\item $\pvarsat{\inof{\frag'}} = \pvarsat{\inof{\frag}} \setminus \set{x}$,
-\item $\pvarsat{\outof{\frag'}} = \pvarsat{\outof{\frag}} \setminus \set{x}$,
-\item if $\tt x$ is a global variable
-\begin{itemize}
-\item $\reachfromat{\inof{\frag'}} = \reachfromat{\inof{\frag}} \cup \set{x}$,
-\item $\reachtoat{\inof{\frag'}} = \reachtoat{\inof{\frag}} \setminus \set{x}$,
- \item $\reachfromat{\outof{\frag'}} = \reachfromat{\outof{\frag}} \cup \set{x}$,
- \item $\reachtoat{\outof{\frag'}} = \reachtoat{\outof{\frag}} \setminus \set{x}$,
-\end{itemize}
-\end{itemize}
-then add $\tt v'$ to $\fragset_{post}$, and $\tt (v,v')$ to $\tt R$
-\item for each fragment $\tt v \in \fragset_1$ where $\tt \frag_y \overset{*\circ}\leftrightarrow_{\fragset} v$, create $\tt v'$ which is same as $\tt v$ except that
-\begin{itemize}
-\item $\pvarsat{\inof{\frag'}} = \pvarsat{\inof{\frag}} \setminus \set{x}$,
-\item $\pvarsat{\outof{\frag'}} = \pvarsat{\outof{\frag}} \setminus \set{x}$,
-\item if $\tt x$ is a global variable
-\begin{itemize}
-\item $\reachfromat{\inof{\frag'}} = \reachfromat{\inof{\frag}} \setminus \set{x}$,
-\item $\reachtoat{\inof{\frag'}} = \reachtoat{\inof{\frag}} \setminus \set{x}$,
-\item $\reachfromat{\outof{\frag'}} = \reachfromat{\outof{\frag}} \cup \set{x}$,
-\item $\reachtoat{\outof{\frag'}} = \reachtoat{\outof{\frag}} \setminus \set{x}$,
-\end{itemize}
-\end{itemize}
-then add $\tt v'$ to $\fragset_{post}$, and $\tt (v,v')$ to $\tt R$
-\item for each fragment $\tt v \in \fragset_1$ where $\tt \frag_y \overset{*+}\leftrightarrow_{\fragset} v$, create $\tt v'$ which is same as $\tt v$ except that 
-\begin{itemize}
-\item $\pvarsat{\inof{\frag'}} = \pvarsat{\inof{\frag}} \setminus \{x\{$,
-\item $\pvarsat{\outof{\frag'}} = \pvarsat{\outof{\frag}} \setminus \set{x}$,
-\item if $\tt x$ is a global variable
-\begin{itemize}
-\item $\reachfromat{\inof{\frag'}} = \reachfromat{\inof{\frag}} \setminus \set{x}$ ,
-\item $\reachtoat{\inof{\frag'}} = \reachtoat{\inof{\frag}} \setminus \set{x}$,
-\item $\reachfromat{\outof{\frag'}} = \reachfromat{\outof{\frag}} \setminus \set{x}$,
-\item $\reachtoat{\outof{\frag'}} = \reachtoat{\outof{\frag}} \setminus \set{x}$,
-\end{itemize}
-\end{itemize}
-then add $\tt v'$ to $\fragset_{post}$, and $\tt (v,v')$ to $\tt R$
-\item for each fragment $\tt v \in \fragset_1$ where $\tt v \overset{+\circ}\leftrightarrow_{\fragset} \frag_y$, create $\tt v'$ which is same as $\tt v$ except that 
-\begin{itemize}
-\item $\pvarsat{\inof{\frag'}} = \pvarsat{\inof{\frag}} \setminus \set{x}$,
-\item $\pvarsat{\outof{\frag'}} = \pvarsat{\outof{\frag}} \setminus \set{x}$,
-\item if $\tt x$ is a global variable
-\begin{itemize}
-\item $\reachfromat{\inof{\frag'}} = \reachfromat{\inof{\frag}} \setminus \set{x}$,
-\item $\reachtoat{\inof{\frag'}} = \reachtoat{\inof{\frag}} \cup \set{x}$,
- \item $\reachfromat{\outof{\frag'}} = \reachfromat{\outof{\frag}} \setminus \set{x}$,
- \item $\reachtoat{\outof{\frag'}} = \reachtoat{\outof{\frag}} \cup \set{x}$,
-\end{itemize}
-\end{itemize}
-then add $\tt v'$ to $\fragset_{post}$, and $\tt (v,v')$ to $\tt R$
-
-\item create $\tt v'$ which is same as $\tt \frag_y$ except that
-\begin{itemize}
-\item $\pvarsat{\inof{\frag'}} = \pvarsat{\inof{\frag}} \setminus \set{x}$,
-\item $\pvarsat{\outof{\frag'}} = \pvarsat{\outof{\frag}} \cup \set{x}$,
-\item if $\tt x$ is a global variable
-\begin{itemize}
-\item $\reachfromat{\inof{\frag'}} = \reachfromat{\inof{\frag}} \setminus \set{x}$,
-\item $\reachtoat{\inof{\frag'}} = \reachtoat{\inof{\frag}} \cup \set{x}$,
- \item $\reachfromat{\outof{\frag'}} = \reachfromat{\outof{\frag}} \cup \set{x}$,
- \item $\reachtoat{\outof{\frag'}} = \reachtoat{\outof{\frag}} \cup \set{x}$,
-\end{itemize}
-\end{itemize}
-then add $\tt v'$ to $\fragset_{post}$, and $\tt (v,v')$ to $\tt R$
-%\item for each fragment $\tt v'$ in $\fragset_o$, assign $\tt v'.data.(i).(y.d)$ to $\tt v'.data.(i).(x.d)$ for $\tt i \in \{i, o\}$.
-%
-
-\item for each fragment $\tt v \in \fragset_2$ we do as follows. For each $\tt (\frag_1,\frag_1')$, $\tt (\frag_2,\frag_2') \in R$, for each pair of indices $\tt i_1$, $\tt i_2$ such that $\tt i_1 \in \{\frag_1.i, \frag_1.o\}$, $\tt i_2 \in \{\frag_2.i, \frag_2.o\}$, $\tt tag(v,i) = tag(\frag_1, i_1)$, and $\tt tag(v,o) = tag(\frag_2, i_2)$. Create $\tt v'$ which is same as $\tt v$ except that 
-\begin{itemize}
-\item $\pvarsat{\inof{\frag'}} = \pvarsat{\inoneof{\frag_1'}}$,
-\item $\pvarsat{\outof{\frag'}} = \pvarsat{\intwoof{\frag_2'}}$,
-\item $\reachfromat{\inof{\frag'}} = \reachfromat{\inoneof{\frag_1'}}$,
-\item $\reachfromat{\outof{\frag'}} = \reachfromat{\intwoof{\frag_2'}}$,
-\item $\reachtoat{\inof{\frag'}} = \reachtoat{\inoneof{\frag_1'}}$,
-\item $\reachtoat{\outof{\frag'}} =  \reachtoat{\intwoof{\frag_2'}}$,
-\end{itemize} then add $\tt v'$ to $\fragset_{post}$. 
-\end{enumerate}
-
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% X.NEXT1 := Y %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\item  ${\tt x.next[1]:= y}$: The local abstract transformer is performed by several steps as follows: For each pair of fragments $\frag_x$, $\tt \frag_y$ in $\fragset_1$ where $\tt x \pvarsat{\inof{\in \frag_x}}$, $\tt y \in\pvarsat{\inof{ \frag_y}}$, and $\frag_x \overset{*}\hookrightarrow \frag_y$ or $\tt \frag_y \overset{*}\hookrightarrow \frag_x$ or $\frag_x \overset{**}\leftrightarrow \frag_y$, let $\tt R_1$, $\tt R_2$, $\tt R_3$, $\tt R_4$, $\tt R_5$, $\tt R_6$ be initialized as $\tt R$,  
-\begin{enumerate}
-\item let $\tt \frag_{new}$ be the fragment of size 2 and of level 1 where $\tt tag(\frag_{new},i) = tag(\frag_x, i)$ and $\tt tag(\frag_{new},o) = tag(\frag_y,i)$ except that $\tt \reachfromat{\outof{\frag_{new}}} = \reachfromat{\inof{\frag_y}} \cup \reachfromat{\inof{\frag_x}}$,
-\item  for each fragment $\tt v \in \fragset_1$ where $\tt v \overset{*}\hookrightarrow_{\fragset} \frag_x$, we do as follows: For each subset $\regset$ of observer registers in $\reachtoat{\inof{\frag}} \cap \reachfromat{\inof{\frag_x}}$
-
-
-\begin{itemize}
-\item create $\tt v'$ which is same as $\tt v$, except that
-\begin{itemize}
-\item $\reachtoat{\inof{\frag'}} = (\tt \reachtoat{\inof{\frag}} \cap \reachfromat{\inof{\frag_x}}) \cup \reachto{\inof{\frag_y}} \cup \regset$.
-\item $\reachtoat{\outof{\frag'}} = (\tt \reachtoat{\outof{\frag}} \cap \reachfromat{\inof{\frag_x}}) \cup \reachto{\inof{\frag_y}} \cup \regset$.
-\end{itemize}
-\item add $\tt v'$ to $\fragset_{post}$ 
-\item add $\tt (v,v')$ to $\tt R_1$
-\end{itemize}
-
-\item for each fragment $\tt v \in \fragset_1$ where $\tt \frag_y \overset{*}\hookrightarrow_{\fragset} v$ or $\tt \frag_y = v$, 
-\begin{itemize}
-	\item create  $\tt v'$ which is same as $\tt v$ except that
-\begin{itemize}
- \item $\tt \reachfromat{\inof{\frag'}} = \reachfromat{\inof{\frag_x}} \cup \tt \reachfromat{\inof{\frag}}$, 
-\item $\tt \reachfromat{\outof{\frag'}} = \reachfromat{\inof{\frag_x}} \cup \tt \reachfromat{\outof{\frag}}$, 
-\end{itemize}
-\item add $\tt v'$ to $\fragset_{post}$,
-\item add $\tt (v,v')$ to $\tt R_2$
-\end{itemize}
-\item for each fragment $\tt v \in \fragset_1$ where $\frag_x \overset{**}\leftrightarrow_{\fragset} v$ and either $\tt v \hookrightarrow_{\fragset} \frag_y$ or $\tt \frag_y \overset{*o}\leftrightarrow_{\fragset} v$, 
-\begin{itemize}
-\item  create $\tt v'$ which is same as $\tt v$ except that $\tt \reachfromat{\outof{\frag'}} = \reachfromat{\inof{\frag_x}} \cup \tt \reachfromat{\outof{\frag}}$, 
- \item add $\tt v'$ to $\fragset_{post}$, 
- \item add $\tt (v,v')$ to $\tt R_3$
-
-\end{itemize}
-
-
-\item for each fragment $\tt v \in \fragset_1$ where $\frag_x \overset{*}\hookrightarrow_{\fragset} v$ and either $\tt v \hookrightarrow_{\fragset} \frag_y$ or $\tt \frag_y \overset{*o}\leftrightarrow_{\fragset} v$,  
-\begin{itemize}
-\item create $\tt v'$ which is same as $\tt v$ then except that $\tt \reachfromat{\outof{\frag'}} = \reachfromat{\inof{\frag_x}} \cup \tt \reachfromat{\outof{\frag}}$, 
-\item for each subset $\regset$ of observer registers in $\reachfromat{\inof{\frag'}} \cap \reachfromat{\inof{\frag_x}}$
-\begin{itemize}
-\item create $\tt v''$ which is same as $\tt v'$, except that $\reachfromat{\inof{\frag''}} = (\reachfromat{\inof{\frag'}} \setminus \reachfromat{\inof{\frag_x}}) \cup \regset$.
-\item add $\tt v''$ to $\fragset_{post}$,
-\item add $\tt (v,v'')$ to $\tt R_4$
-\end{itemize}
-\end{itemize}
-
-\item for each fragment $\tt v \in \fragset_1$ where $\frag_x \overset{**}\leftrightarrow_{\fragset} v$ and either $\tt v \overset{+}\hookrightarrow_{\fragset} \frag_y$ or $\tt v \overset{*+}\leftrightarrow_{\fragset} \frag_y$, 
-\begin{itemize}
-\item create $\tt v'$ which is same as $\tt v$
-\item  add $\tt v'$ to $\fragset_{post}$,
-\item add $\tt (v,v')$ to $\tt R_5$
-
-\end{itemize}
-
-
-\item for each fragment $\tt v \in \fragset_1$ where $\frag_x \overset{*}\hookrightarrow_{\fragset} v$ and either $\tt v \overset{+}\hookrightarrow_{\fragset} \frag_y$ or $\tt \frag_y \overset{*+}\leftrightarrow v$, then for each subset $\regset$ of observer registers in $\tt \reachfromat{\inof{\frag}} \cap \reachfromat{\inof{\frag_x}}$, 
-\begin{itemize}
-\item create $\tt v'$ which is same as $\tt v$, except that $\reachfromat{\inof{\frag'}} = (\tt \reachfromat{\inof{\frag}} \setminus \reachfromat{\inof{\frag_x}}) \cup \regset$. 
- \item for each set $\regset'$ of observer registers in $\reachfromat{\outof{\frag'}} \cap \reachfromat{\inof{\frag_x}}$,  
-\begin{itemize}
-\item create $\frag''$ which is same as $\frag'$, except that $\reachfromat{\outof{\frag''}} = (\reachfromat{\outof{\frag'}} \setminus \reachfromat{\inof{\frag_x}}) \cup \regset'$. 
-\item add $\frag''$ to $\fragset_{post}$
-\item add $\tt (v,v'')$ to $\tt R_6$
-\end{itemize}
-\end{itemize}
-\item add $\tt \frag_{new}$ to $\fragset_{post}$ 
-\end{enumerate}
-
-\item for each fragment $\frag \in \fragset_2$ then we do as follows. for each $\tt (\frag_1,\frag_1') \in R_i$, $\tt (\frag_2,\frag_2') \in R_j$ where $\tt i \neq j$ and $\tt 1 \leq i,j \leq 6$. For each pair of indices $\tt i_1$, $\tt i_2$ such that $\tt i_1 \in \{\frag_1.i, \frag_1.o\}$, $\tt i_2 \in \{\frag_2.i, \frag_2.o\}$, $\tt tag(v,i) = tag(\frag_1, i_1)$, $\tt tag(v,o) = tag(\frag_2, i_2)$. Create $\frag'$ which is same as $\frag$ except that 
-\begin{itemize}
-\item $\pvarsat{\inof{\frag'}} = \pvarsat{\inoneof{\frag_1'}}$,
-\item $\pvarsat{\outof{\frag'}} = \pvarsat{\intwoof{\frag_2'}}$,
-\item $\reachfromat{\inof{\frag'}} = \reachfromat{\inoneof{\frag_1'}}$,
-\item $\reachfromat{\outof{\frag'}} = \reachfromat{\intwoof{\frag_2'}}$,
-\item $\reachtoat{\inof{\frag'}} = \reachtoat{\inoneof{\frag_1'}}$,
-\item $\reachtoat{\outof{\frag'}} =  \reachtoat{\intwoof{\frag_2'}}$,
-\end{itemize}
-then add $\tt v'$ to $\fragset_{post}$. 
-
-
-\newpage
- \end{itemize}
- 
- \paragraph{Fragment Intersection:} Let us describe the intersection of two fragments $\tt \frag_1 \in \fragset_1$ and $\tt \frag_2 \in \fragset_2$ denoted as $\tt \frag_1 \sqcap \frag_2$. Firstly, we consider the case where both $\tt \frag_1$ and $\tt \frag_2$ have size 2.
- \begin{itemize}
- \item if $\tt \frag_1.greachfrom(i,\{1,2\}) \neq \emptyset$ and $\tt \frag_2.greachfrom(i,\{1,2\}) \neq \emptyset$ then 
+\item If $\cell$ is accessible to both $\thread_1$ and $\thread_2$, then
+  there are fragments $\frag_1 \in \fragset_1$ and $\frag_2 \in \fragset_2$
+  such that $\cell \lsatfrag{\klevel}{\thread_1}{\sconf} \frag_1$ and $\cell \lsatfrag{\klevel}{\thread_2}{\sconf} \frag_2$.
+  This can happen only if
+ %% $\greachfromat{\inof{\frag_1}} \neq \emptyset$ and $\greachfromat{\inof{\frag_2}} \neq \emptyset$ then the global information in $\frag_1$ and $\frag_2$ must coincide. This means that we must have
+  $\gtagat{\inof{\frag_1}} = \gtagat{\inof{\frag_2}}$,
+  and $\gtagat{\outof{\frag_1}} = \gtagat{\outof{\frag_2}}$,
+  and $\privateat{\inof{\frag_1}} = \privateat{\inof{\frag_2}} = \false$.
+  Thus, for any such pair of fragments
+  $\frag_1 \in \fragset_1$ and $\frag_2 \in \fragset_2$, we let
+  $\fragset_{1,2}$ contain a fragment
+ $\frag_{12}$ which is identical to $\frag_1$ except that
   \begin{itemize}
-  \item if $\tt gtag(\frag_1, i) = gtag(\frag_2, i)$ and $\tt gtag(\frag_1, o) = gtag(\frag_2, o)$ then $\tt \frag_1 \sqcap \frag_2 = \{\frag_{12}\}$ where $\tt \frag_{12}$ is same as $\tt \frag_1$ except that, for all $\tt l \in \{1,2 \{1,2\}\}$ 
-  \begin{itemize}
-  \item $\tt \frag_{12}.vars(i) = \frag_1.vars(i) \cup \frag_2.vars(i)$ 
-  \item  $\tt \pvarsat{\outat{\frag_{12}}} = \pvarsat{\outat{\frag_1}} \cup \pvarsat{\outat{\frag_2}}$
-  \item $\tt \frag_{12}.reachfrom(i,l) = \frag_{1}.reachfrom(i,l) \cup \frag_{2}.reachfrom(i,l)$
-   \item $\tt \frag_{12}.reachfrom(i,l) = \frag_{1}.reachfrom(o,l) \cup \frag_{2}.reachfrom(o,l)$
+  \item $\pvarsat{\inof{\frag_{12}}} = \pvarsat{\inof{\frag_1}} \cup \pvarsat{\inof{\frag_2}}$, 
+  \item  $\pvarsat{\outof{\frag_{12}}} = \pvarsat{\outof{\frag_1}} \cup \pvarsat{\outof{\frag_2}}$,
+  \item $\reachfromat{\inof{\frag_{12}}} = \reachfromat{\inof{\frag_{1}}} \cup \reachfromat{\inof{\frag_{2}}}$, and
+   \item $\reachfromat{\outof{\frag_{12}}} = \reachfromat{\outof{\frag_{1}}} \cup \reachfromat{\outof{\frag_{2}}}$.
     \end{itemize}
- \end{itemize}
-
- \item if $\tt \frag_1.greachfrom(i,\{1,2\}) = \emptyset$, $\tt \frag_2.greachfrom(i,\{1,2\}) = \emptyset$, $\tt \frag_1.greachfrom(o,\{1,2\}) \neq \emptyset$ and $\tt \frag_2.greachfrom(o,\{1,2\}) \neq \emptyset$ then 
-  \begin{itemize}
-  \item if $\tt gtag(\frag_1, o) = gtag(\frag_2, o)$, $\tt \frag_1.private(i) = false$ and $\tt \frag_2.private(i) = false$ then $\tt \frag_1 \sqcap \frag_2 = \{\frag_1', \frag_2', \frag_{12}\}$ where %$\tt \frag_{12}$ is same as $\tt \frag_1$ except that 
-  $\tt \frag_1'$ is same as $\tt \frag_1$ except that, for all $\tt l \in \{1,2 \{1,2\}\}$
+\item If $\cell$ is accessible to $\thread_1$, but not to $\thread_2$, and
+  $\cell.{\tt next[1]}$ is accessible also to $\thread_2$, then
+  there are fragments $\frag_1 \in \fragset_1$ and $\frag_2 \in \fragset_2$
+  such that $\cell \lsatfrag{\klevel}{\thread_1}{\sconf} \frag_1$ and
+  $\cell.{\tt next[1]} \lsatfrag{\klevel}{\thread_2}{\sconf} \outof{\frag_2}$.
+  This can happen only if
+  $\greachfromat{\inof{\frag_1}} =  \emptyset$,
+  and $\gtagat{\outof{\frag_1}} = \gtagat{\outof{\frag_2}}$,
+  and $\privateat{\outof{\frag_1}} = \privateat{\outof{\frag_2}} = \false$.
+  Thus, for any such pair of fragments
+  $\frag_1 \in \fragset_1$ and $\frag_2 \in \fragset_2$, we let
+  $\fragset_{1,2}$ contain a fragment
+ $\frag_{1}'$ which is identical to $\frag_1$ except that
     \begin{itemize}
-  \item  $\tt \pvarsat{\outat{\frag_1'}} = \pvarsat{\outat{\frag_1}} \cup \pvarsat{\outat{\frag_2}}$
-  \item $\tt \frag_1'.reachfrom(o,l) = \frag_{1}.reachfrom(o,l) \cup \frag_{2}.reachfrom(o,l)$
+  \item  $\pvarsat{\outof{\frag_1'}} = \pvarsat{\outof{\frag_1}} \cup \pvarsat{\outof{\frag_2}}$, and
+  \item $\reachfromat{\outof{\frag_1'}} = \reachfromat{\outof{\frag_{1}}} \cup \reachfromat{\outof{\frag_{2}}}$.
     \end{itemize}
-   and $\tt \frag_2'$ is same as $\tt \frag_2$ except that 
-    \begin{itemize}
-  \item  $\tt \pvarsat{\outat{\frag_2'}} = \pvarsat{\outat{\frag_1}} \cup \pvarsat{\outat{\frag_2}}$
-  \item $\tt \frag_2'.reachfrom(o,l) = \frag_{1}.reachfrom(o,l) \cup \frag_{2}.reachfrom(o,l)$
-    \end{itemize}
-     \item if $\tt gtag(\frag_1, o) = gtag(\frag_2, o)$ and ($\tt \frag_1.private(i) = true$ or $\tt \frag_2.private(i) = true$) then $\tt \frag_1 \sqcap \frag_2 = \{\frag_1', \frag_2'\}$ 
- \end{itemize}
- 
- 
-  \item if $\tt \frag_1.greachfrom(i,\{1,2\}) = \emptyset$, $\tt \frag_2.greachfrom(i,\{1,2\}) = \emptyset$, $\tt \frag_1.greachfrom(o,\{1,2\}) = \emptyset$ and $\tt \frag_2.greachfrom(o,\{1,2\}) = \emptyset$ then 
- \begin{itemize}
- 
- 
- \item if $\tt gtag(\frag_1, o) = gtag(\frag_2, o)$, $\tt \frag_1.private(i) = false$, $\tt \privateat{\outat{\frag_1}} = false$, $\tt \privateat{\outat{\frag_1}} = false$ and $\tt \privateat{\outat{\frag_2}} = false$ then  $\tt \frag_1 \sqcap \frag_2 = \{\frag_1,\frag_2,\frag_1',\frag_2',\frag_{12}\}$ %where $\tt \frag_{12}$ is same as $\tt \frag_1$ except that 
-    \item if $\tt gtag(\frag_1, o) = gtag(\frag_2, o)$, ($\tt \frag_1.private(i) = true$ or $\tt \frag_2.private(i) = true$) and $\tt \privateat{\outat{\frag_1}} = false$ and $\tt \privateat{\outat{\frag_2}} = false$ then  $\tt \frag_1 \sqcap \frag_2 = \{\frag_1,\frag_2,\frag_1',\frag_2'\}$  
-
-  \item if $\tt gtag(\frag_1, o) = gtag(\frag_2, o)$ and ($\tt \privateat{\outat{\frag_1}} = true$ or $\tt \privateat{\outat{\frag_1}} = true$) then  $\tt \frag_1 \sqcap \frag_2 = \{\frag_1,\frag_2\}$ 
-
-    \item if $\tt gtag(\frag_1, o) \neq gtag(\frag_2, o)$ then $\tt \frag_1 \sqcap \frag_2 = \{\frag_1,\frag_2\}$
- \end{itemize}
- 
- \end{itemize}
+\item
+  If neither $\cell$ nor
+  $\cell.{\tt next[1]}$  are not accessible  $\thread_2$, then
+  there is a  fragment $\frag_1 \in \fragset_1$
+  such that $\cell \lsatfrag{\klevel}{\thread_1}{\sconf} \frag_1$.
+  This can happen only if
+  $\greachfromat{\outof{\frag_1}} = \emptyset$,
+  in which case we let  $\fragset_{1,2}$ contain the fragment
+  $\frag_1$.
+\item
+  For each of the two last cases, there is also a symmetric case with the
+  roles of $\thread_1$ and $\thread_2$ reversed.
+\end{itemize}
 
 
 
-%

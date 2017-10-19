@@ -511,7 +511,16 @@ by some fragment in the set. This ``piecing together'' must
 be both locally consistent (appending only fragments that agree on their
 common node), and globally consistent (respecting the global reachability
 information).
-
+\begin{wrapfigure}{r}{0.5\textwidth} 
+\vspace{-30pt}
+  \begin{center}
+ \includegraphics[width=0.4\textwidth, trim={13cm 10cm 12cm 9cm}, clip]{skipcell.pdf}  
+    \caption{A structure of a cell}
+    \label{skipcell}
+  \end{center}
+  \vspace{-40pt}
+  \vspace{1pt}
+\end{wrapfigure}
 When applying fragment abstraction to skiplists, we  use two types of fragments:
 {\em level 1-fragments} for
 nodes connected by a $\tt next[1]$-pointer, and {\em higher level-fragments} for
@@ -532,16 +541,6 @@ algorithm.
 %  writing}
 Figure~\ref{sl-shape} shows an example heap state of the
 skiplist algorithm with three levels. Each heap cell is shown with the values of its fields as described in Figure~\ref{skipcell}. %\bjcom{Add a legend, showing the layout of fields, as in previous papers}
-\begin{wrapfigure}{r}{0.5\textwidth} 
-\vspace{-50pt}
-  \begin{center}
- \includegraphics[width=0.5\textwidth, trim={13cm 10cm 12.5cm 9cm}, clip]{skipcell.pdf}  
-    \caption{A structure of a cell}
-    \label{skipcell}
-  \end{center}
-  \vspace{-40pt}
-  \vspace{1pt}
-\end{wrapfigure}
 In addition, each cell is labeled by the
 pointer variables that point to it; we use ${\tt preds(j)[i]}$ to denote the local
 variable ${\tt preds[i]}$ of thread $\thread_j$, and the same for other local variables.
@@ -598,7 +597,7 @@ In the heap state of Figure~\ref{sl-shape}, thread $\thread_1$ is trying to add 
 %% cells connected by a $\tt next[1]$-pointer, and {\em higher level-fragments} for
 %% cells connected by a higher level pointer. This means that we abstract all levels
 %% higher than 2 by the abstract element $\tt higher$.
-\todo[inline]{Fix the wrapfigure!!}
+%\todo[inline]{Fix the wrapfigure!!}
 Let us illustrate how pairs of heap nodes can be represented by fragments.
 As a first example, in the view of thread $\thread_1$, the two left-most cells
 in Figure~\ref{sl-shape} are represent by the level 1-fragment $\frag_1$ in
