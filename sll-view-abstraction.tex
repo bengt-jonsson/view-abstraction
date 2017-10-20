@@ -14,13 +14,13 @@ the observer cannot reach an accepting location.
 We perform this verification by  computing a symbolic representation
 of an invariant that is satisfied by all reachable program configurations,
 using an abstract interpretation-based fixpoint procedure, which starts
-from a representation of the set of initial configurations.
+from a symbolic representation of the set of initial configurations.
 thereafter repeatedly performs
 symbolic postcondition computations that extend the
 symbolic representation by the effect of any execution step of the program,
 until convergence.
 
-In Section~\ref{subsect:symbrep},
+In Section~\ref{subsect:symbrep}, we
 define in more detail our symbolic representation for skiplists,
 focusing in particular on the use of fragment abstraction, and thereafter
 (in Section~\ref{subsect:postcond})
@@ -214,7 +214,10 @@ $\cell' \lsatfrag{\klevel}{\thread}{\sconf} \outat{\frag}$, and
 The definition of $\cell \lsatfrag{\klevel}{\thread}{\sconf}\frag$
 is adapted to fragments of form
 $\tuple{\inat{\frag},\nullconst}$ and $\tuple{\inat{\frag},\dangconst}$ in the
-obvious way.
+obvious way. For a fragment $\frag = \fragtupleat{\frag}$, we often use
+$\inof{\frag}$ for $\inat{\frag}$, and
+$\outof{\frag}$ for $\outat{\frag}$, etc.
+
 %% For a fragment of form $\frag = \tuple{\inat{\frag},\nullconst}$, let
 %% $\cell \satfrag{\thread}{\sconf} \frag$ denote that
 %% $\cell \satfrag{\thread}{\sconf} \inat{\frag}$ and $\mathtt{next}(\cell) = \nullconst$.
@@ -279,7 +282,7 @@ sets of fragments.
 A system configuration $\sconf$ satisfies a symbolic representation $\symbrep$,
 denoted $\sconf \satsymbrep \symbrep$,
 if for each thread $\thread$, 
-the domain of $\symbrep$ contains a set
+the domain of $\symbrep$ contains a pair
 $\tuple{\locsymbconf,\ostate}$ such that
 $\sconf \satconf{\thread}
 \tuple{\locsymbconf,\ostate,\symbrep(\tuple{\locsymbconf,\ostate})}$.
@@ -336,17 +339,17 @@ $\sconf \satconf{\thread}
 
 \subsection{Symbolic Postcondition Computation}
 \label{subsect:postcond}
-In the  verification, we must compute an invariant in the form
-of a symbolic representation
-which is satisfied by all reachable program configurations.
-%% (including observer states).
-Such an invariant is obtained by an abstract interpretation-based
-fixpoint procedure, which starts
-from a representation of the set of initial configurations, and
-thereafter repeatedly performs postcondition computations that extend the
-symbolic representation by the effect of any execution step of the program,
-until convergence.
-We will now describe the symbolic postcondition computation.
+%% In the  verification, we must compute an invariant in the form
+%% of a symbolic representation
+%% which is satisfied by all reachable program configurations.
+%% %% (including observer states).
+%% Such an invariant is obtained by an abstract interpretation-based
+%% fixpoint procedure, which starts
+%% from a representation of the set of initial configurations, and
+%% thereafter repeatedly performs postcondition computations that extend the
+%% symbolic representation by the effect of any execution step of the program,
+%% until convergence.
+%% We will now describe the symbolic postcondition computation.
 %% \bjcom{The following should be included more smoothly, if really needed}
 %% Let $\tt gtag(v,i)$ be the tuple $\tt \tuple{\tt gvars(i), gdata(i),{\tt greachfrom}(\tt i), {\tt reachto}(\tt i), private(i )}$ where $\tt gvars(i)$ is the set of global variables in $\tt vars(i)$ and $\tt greachfrom(i)$ is the set of global variables in $\tt reachfrom(i)$.
 
@@ -375,17 +378,17 @@ We will now describe the symbolic postcondition computation.
 %
 %% We use $\confsetof\prog$ to denote the set of configurations
 
-The symbolic postcondition computation ensures that the symbolic
+The symbolic postcondition computation must ensure that the symbolic
 representation
 of the reachable configurations of a program is closed under execution of a
-statement by some thread. That is, 
-the symbolic postcondition operation applied to a symbolic representation
-$\symbrep$ must produce an extension $\symbrep'$
+statement by some thread. That is,
+given a symbolic representation $\symbrep$,
+the symbolic postcondition operation must produce an extension $\symbrep'$
 of $\symbrep$, such that whenever $\sconf \satsymbrep \symbrep$
 and $\sconf\movesto{\system}{}\sconf'$ then
 ${\sconf}' \satsymbrep \symbrep'$.
 Let $\thread$ be an arbitrary thread. Then $\sconf \satsymbrep \symbrep$
-implies that $\domof{\symbrep}$ contains some
+means that $\domof{\symbrep}$ contains some
 pair $\tuple{\locsymbconf,\ostate}$ with
 $\sconf \satconf{\thread} \tuple{\locsymbconf,\ostate,\symbrep(\tuple{\locsymbconf,\ostate})}$.
 The symbolic postcondition computation must ensure that
@@ -413,8 +416,8 @@ on which thread causes the step from $\sconf$ to ${\sconf}'$.
   is caused by $\thread$ itself executing a statement
   which may change its local state, the location of the observer,
   and the state of the heap.
-  In this case, we first compute a local symbolic configuration $\locsymbconf'$ and
-  observer location $\ostate'$, and a set $\fragset'$ of fragments such that
+  In this case, we first compute a local symbolic configuration $\locsymbconf'$,
+  an observer location $\ostate'$, and a set $\fragset'$ of fragments such that
 $\sconf' \satconf{\thread} \tuple{\locsymbconf',\ostate',\fragset'}$,
   and then (if necessary) extend $\symbrep$ so that
   $\tuple{\locsymbconf',\ostate'} \in \domof{\symbrep}$ and
@@ -424,7 +427,8 @@ $\sconf' \satconf{\thread} \tuple{\locsymbconf',\ostate',\fragset'}$,
   which may change the location of the observer (to $\ostate'$)
   and the state of the heap.
 %%   such a way that makes it necessary to extend $\symbrep(\locsymbconf)$.
-  By assumption, there is a local symbolic configuration $\locsymbconf_2$
+  By $\sconf \satsymbrep \symbrep$
+  there is a local symbolic configuration $\locsymbconf_2$
   with $\tuple{\locsymbconf_2,\ostate} \in \domof{\symbrep}$ such that
   $\sconf \satconf{\thread_2} \tuple{\locsymbconf_2,\ostate,\symbrep(\tuple{\locsymbconf_2,\ostate})}$.
   For any such $\locsymbconf_2$ and statement of $\thread_2$,
@@ -461,7 +465,7 @@ Let $\fragset = \symbrep(\tuple{\locsymbconf,\ostate})$
 For each statement that $\thread$ can execute in a configuration $\sconf$
 with $\sconf \satconf{\thread} \tuple{\locsymbconf,\ostate,\fragset}$,
 we must compute a local symbolic configuration $\locsymbconf'$, a new
-observer location $\ostate'$ and a set  $\fragset'$ of fragments such that
+observer location $\ostate'$ and a set  $\fragset'$ of fragments
 such that the resulting configuration ${\sconf}'$ satisfies
 $\sconf' \satconf{\thread} \tuple{\locsymbconf',\ostate',\fragset'}$.
 This computation is done differently for
@@ -486,7 +490,8 @@ We first describe the construction of level-1 fragments, and thereafter the
 construction of higher-level fragments.
 
 \paragraph{{\bf Construction of level-1 fragments}}
-Let us first consider a statement of form $\gvarof{g} := \lvarof{p}$,
+Let us first motivate some techniques used for constructing the level-1 fragments
+of $\fragset'$. Consider a statement of form $\gvarof{g} := \lvarof{p}$,
 which assigns the value of a local pointer variable $\lvarof{p}$ to a global
 pointer variable $\gvarof{g}$. The set $\fragset'$ of fragments is obtained by
 modifying fragments in $\fragset$ to reflect the effect of the assignment. 
@@ -498,36 +503,37 @@ and in particular to determine whether $\gvarof{g}$ should be in such a
 set after the statement
 (note that if $\lvarof{p}$ were a global variable, then the corresponding
 reachability information for $\lvarof{p}$ would be in the fields
-$\reachfrom$ and $\reachto$, and the update would be simple: just
-reflecting that $\gvarof{g}$ and $\lvarof{p}$ are now aliases, just as
-in the update of $\pvars$).
-In order to compute the postcondition with sufficient precision, we
+$\reachfrom$ and $\reachto$, and the update would be simple,
+reflecting that $\gvarof{g}$ and $\lvarof{p}$ become aliases).
+In order to constructe $\fragset'$ with sufficient precision, we
 %% However, since the $\reachfrom$ field does not include local variables, we
 therefore investigate whether the set of fragments $\fragset$
-allows to form a heap in which a $p$-cell can reach or be
+allows to form a heap in which a $\lvarof{p}$-cell can reach or be
 reached from (by a sequence of $\tt next[1]$ pointers)
 a particular tag of a fragment.
-It also checks whether a heap can be formed
+It also investigates whether a heap can be formed
 in which a $p$-cell can {\em not} reach or be reached from a particular tag.
-For each
-case that succeeds, the set $\fragset'$ will contain a level-1 fragment with
+For each successful and each unsuccessful investigation,
+the set $\fragset'$ will contain a level-1 fragment with
 corresponding contents of its $\reachto$ and $\reachfrom$ fields.
 
-The postcondition computation performs this investigation in a
-systematic manner, by computing a set of transitive closure-like relations
+Let us describe how the postcondition computation performs this investigation.
+It does so by computing a set of transitive closure-like relations
 between level-1 fragments. This computation considers only reachability
 using $\tt next[1]$ pointers, since only these are relevant for the
 $\reachfrom$ and $\reachto$ tags.
 First, say that two tags
-$\atag$ and $\atag'$ are {\em consistent} if the concretizations of their
-$\vals$-fields overlap, and if the other fields agree.
+$\atag$ and $\atag'$ are {\em consistent}
+(wrp.\ to a set of fragments $\fragset$) if the concretizations of their
+$\vals$-fields overlap, and if the other fields
+$\pvars$, $\reachfrom$, $\reachto$, and $\private$) agree.
 Thus, $\atag$ and $\atag'$ are consistent if there can exist a cell
 $\cell$ accessible to $\thread$ in some heap,
 with $\cell \satfrag{\thread}{\sconf} \atag$
 and $\cell \satfrag{\thread}{\sconf} \atag'$.
 %% \todo[inline]{To Quy: Can you really require that the data abstrations must
 %%   be the same?}
-Then, for two level-1 fragments $\frag_1$ and $\frag_2$ in a
+Next, for two level-1 fragments $\frag_1$ and $\frag_2$ in a
 set $\fragset$ of fragments,
 \begin{itemize}
 \item let $\frag_1 \hookrightarrow_{\fragset} \frag_2$ denote that $\outof{\frag_1}$   and $\inof{\frag_2}$ are consistent, and
@@ -535,10 +541,10 @@ set $\fragset$ of fragments,
   %%   $\tagat{\outof{\frag_1}}$ and $\tagat{\inof{\frag_2}}$ are consistent?}
   %% \quycom{They are consistent if they have same $\reachfrom$, $\reachto$, $\pvars$, $\private$, $\data$. This is for local thread. When we check for consistent between two tags when doing intersection, we have to define differently.}  
 \item let $\frag_1 \leftrightarrow_{\fragset} \frag_2$ denote that $\outof{\frag_1} = \outof{\frag_2}$ are consistent, and that either
-  $\pvarsat{\inof{\frag_1}} \cap \pvarsat{\inof{\frag_2}} = \emptyset$ or that
+  $\pvarsat{\inof{\frag_1}} \cap \pvarsat{\inof{\frag_2}} = \emptyset$ or
   the global variables in  $\reachfromat{\inof{\frag_1}}$ are disjoint from
   those in $\reachfromat{\inof{\frag_2}}$.
-  \bjcom{Question: Is this correct?}
+
 %%   \quycom{$\reachfromat{\inof{\frag_1}} \cap \reachfromat{\inof{\frag_2}} = \emptyset$ here is not correct, we only need the global variables of reachfrom and reachto in this case}
 %% \quycom{In my definition, the consistent here is defined for two views in the same threads. With the view from other thread, I use the notion of intersection.}
 \end{itemize}
@@ -552,9 +558,9 @@ possible that
 for different cells  $\cell_1$ and $\cell_2$ with
   $\cell_1 \lsatfrag{1}{{\thread}}{\sconf} \frag_1$ and
   $\cell_2 \lsatfrag{1}{{\thread}}{\sconf} \frag_2$
-(Note that these definitions also work for views containing
+(Note that these definitions also work for fragments containing
 $\nullconst$ or $\dangconst$).
-We use these relations to define several derived relations on level-1 fragments:
+We use these relations to define the following derived relations on level-1 fragments:
 %% \bjcom{We could use a common pattern for these and save space in definitions.}
 \begin{itemize}
 \item $\overset{+}\hookrightarrow_{\fragset}$ denotes the transitive closure,
@@ -581,17 +587,21 @@ We use these relations to define several derived relations on level-1 fragments:
   $\frag_1 \!  \overset{+}\hookrightarrow_{\fragset} \frag_1'$.
 \end{itemize}
 We say that $\frag_1$ and $\frag_2$ are {\em compatible} if $\frag_x \overset{*}\hookrightarrow \frag_y$, or $\frag_y \overset{*}\hookrightarrow \frag_x$, or $\frag_x \overset{**}\leftrightarrow \frag_y$. Intuitively, if $\frag_1$ and
-$\frag_2$ are satisfied by two cells in the same heap state, then they are
+$\frag_2$ are satisfied by two cells in the same heap state, then they must
 be compatible.
+
 \input viewrelations
-\bjcom{Do we need to update the following example?}
 Figure~\ref{fig:viewrelations} illustrates the above relations for a heap state
-with $13$ heap cells. The figure shows 4 fragments that are satisfied by heap
-cells, as denoted by green boxes, and how the relationship between heap cells
-is reflect by relations between the corresponding fragments.
+with $13$ heap cells. The figure depicts in green
+four pairs of heap cells connected by a $\tt next[1]$ pointer, which satisfy
+the four fragments $\frag_1$, $\frag_2$, $\frag_3$, and $\frag_4$, respectively.
+At the bottom are depicted the transitive-closure like relations that hold
+between these fragments.
 
 We can now describe the symbolic postcondition computation for
-statements that affect pointer variables or pointer fields.
+statements that affect pointer variables or pointer fields. This is a long
+case analysis, which is described in full in Appendix~\ref{app:skiplists}.
+For space reasons, here we can only include some representative cases.
 
 First, consider a statement of form
 ${\tt x := y}$, where $\mathtt{x}$ and $\mathtt{y}$ are local
@@ -638,7 +648,7 @@ $\reachfromat{\inof{\frag_y'}} = \reachfromat{\inof{\frag_y}} \cup \set{\abstrof
 $\reachtoat{\outof{\frag_y'}} = \reachtoat{\outof{\frag_y}} \setminus \set{\abstrof{\mathtt{x}}}$.
 \end{itemize}
 }
-\item  for each fragment $\frag$ with $\frag \hookrightarrow_{\fragset} \frag_y$, let $\fragsetpost$ contain $\frag'$ which is same as $\frag$ except that
+\item  for each fragment $\frag$ with $\frag \hookrightarrow_{\fragset} \frag_y$, let $\fragsetpost$ contain $\frag'$ which is the same as $\frag$ except that
 \begin{itemize}
 \item $\pvarsat{\inof{\frag'}} = \pvarsat{\inof{\frag}} \setminus \set{\abstrof{\mathtt{x}}}$,
 \item $\pvarsat{\outof{\frag'}} = \pvarsat{\outof{\frag}} \cup \set{\abstrof{\mathtt{x}}}$,
@@ -654,17 +664,26 @@ $\reachtoat{\outof{\frag_y'}} = \reachtoat{\outof{\frag_y}} \setminus \set{\abst
   $\frag \overset{+}\hookrightarrow_{\fragset} \frag_y$,
   $\frag_y \overset{*}\hookrightarrow_{\fragset} \frag$,
   $\frag_y \overset{*+}\leftrightarrow_{\fragset} \frag$, and
-  $\frag_y \overset{*\circ}\leftrightarrow_{\fragset} \frag$. For space reasons,
+  $\frag_y \overset{*\circ}\leftrightarrow_{\fragset} \frag$. All of these
+  cases are described in Appendix~\ref{app:skiplists}.
+Here,
   we show only the case of $\frag_y \overset{*+}\leftrightarrow_{\fragset} \frag$,
-  in which case we let $\fragsetpost$ contain $\frag'$ which is same as $\frag$ except that
-\begin{itemize}
-\item $\pvarsat{\inof{\frag'}} = \pvarsat{\inof{\frag}} \setminus \set{\abstrof{\mathtt{x}}}$,
-\item $\pvarsat{\outof{\frag'}} = \pvarsat{\outof{\frag}} \setminus \set{\abstrof{\mathtt{x}}}$,
-\item $\reachfromat{\inof{\frag'}} = \reachfromat{\inof{\frag}} \setminus \set{\abstrof{\mathtt{x}}}$ if $\tt x$ is a global variable,
-\item $\reachtoat{\inof{\frag'}} = \reachtoat{\inof{\frag}} \setminus \set{\abstrof{\mathtt{x}}}$ if $\tt x$ is a global variable,
-\item $\reachfromat{\outof{\frag'}} = \reachfromat{\outof{\frag}} \setminus \set{\abstrof{\mathtt{x}}}$ if $\tt x$ is a global variable,
-\item $\reachtoat{\outof{\frag'}} = \reachtoat{\outof{\frag}} \setminus \set{\abstrof{\mathtt{x}}}$ if $\tt x$ is a global variable,
-\end{itemize}
+  in which case we let $\fragsetpost$ contain $\frag'$ which is the same as $\frag$ except that $\abstrof{\mathtt{x}}$ is removed from the sets
+$\pvarsat{\inof{\frag'}}$,
+$\pvarsat{\outof{\frag'}}$,
+$\reachfromat{\inof{\frag'}}$,
+$\reachtoat{\inof{\frag'}}$,
+$\reachfromat{\outof{\frag'}}$, and
+$\reachtoat{\outof{\frag'}}$.
+ %
+ %% \begin{itemize}
+%% \item $\pvarsat{\inof{\frag'}} = \pvarsat{\inof{\frag}} \setminus \set{\abstrof{\mathtt{x}}}$,
+%% \item $\pvarsat{\outof{\frag'}} = \pvarsat{\outof{\frag}} \setminus \set{\abstrof{\mathtt{x}}}$,
+%% \item $\reachfromat{\inof{\frag'}} = \reachfromat{\inof{\frag}} \setminus \set{\abstrof{\mathtt{x}}}$ if $\tt x$ is a global variable,
+%% \item $\reachtoat{\inof{\frag'}} = \reachtoat{\inof{\frag}} \setminus \set{\abstrof{\mathtt{x}}}$ if $\tt x$ is a global variable,
+%% \item $\reachfromat{\outof{\frag'}} = \reachfromat{\outof{\frag}} \setminus \set{\abstrof{\mathtt{x}}}$ if $\tt x$ is a global variable,
+%% \item $\reachtoat{\outof{\frag'}} = \reachtoat{\outof{\frag}} \setminus \set{\abstrof{\mathtt{x}}}$ if $\tt x$ is a global variable,
+%% \end{itemize}
 \end{enumerate}
 The statement ${\tt x := y.next}$ is handled rather similarly to the 
 case ${\tt x := y}$.
@@ -690,10 +709,11 @@ $\fragset$.
     $\reachtoat{\inof{\frag_{new}}} = \reachtoat{\inof{\frag_y}} \cup \pvarsat{\inof{\frag_x}}$.
     The possible relations in $\datarelof{\frag_{new}}$ are obtained by
     considering the possible transitive closure-relations between
-    $\frag_x$ and $\frag_y$.
+    $\frag_x$ and $\frag_y$, some of which imply that the data field of
+    $\frag_x$ and $\frag_y$ are ordered.
   \item
     Thereafter, we add all possible fragments that can result from a transformation
-of some fragment $\frag$ which is in $\frag$. This is done by an exhaustive
+of some fragment $\frag \in \fragset$. This is done by an exhaustive
 case analysis on the possible
 relationship between $\frag$, $\frag_x$ and $\frag_y$.
 Let us consider an interesting case, in which
@@ -701,20 +721,22 @@ $\frag_x \overset{*}\hookrightarrow_{\fragset} \frag$ and either $\frag \overset
 In this case,
 \begin{enumerate}
 \item
-  for each subset $\regset$ of observer registers in $\tt \reachfromat{\inof{\frag}} \cap \reachfromat{\inof{\frag_x}}$, we first create
-  a fragment $\frag'$ which is same as $\frag$, except that $\reachfromat{\inof{\frag'}} = (\tt \reachfromat{\inof{\frag}} \setminus \reachfromat{\inof{\frag_x}}) \cup \regset$.
+  for each subset $\regset$ of observer registers in $\tt \reachfromat{\inof{\frag}} \cap \reachfromat{\inof{\frag_x}}$,
+  \bjcom{Don't we have: $\tt \reachfromat{\inof{\frag_x}} \subseteq \reachfromat{\inof{\frag}}$?}
+  we first create
+  a fragment $\frag_{\tt temp}$ which is the same as $\frag$, except that $\reachfromat{\inof{\frag_{\tt temp}}} = (\tt \reachfromat{\inof{\frag}} \setminus \reachfromat{\inof{\frag_x}}) \cup \regset$.
 \item
   Thereafter, 
-for each set $\regset'$ of observer registers in $\reachfromat{\outof{\frag'}} \cap \reachfromat{\inof{\frag_x}}$,  we let $\fragsetpost$ contain a fragment
-$\frag''$ which is same as $\frag'$, except that $\reachfromat{\outof{\frag''}} = (\reachfromat{\outof{\frag'}} \setminus \reachfromat{\inof{\frag_x}}) \cup \regset'$. 
+for each set $\regset'$ of observer registers in $\reachfromat{\outof{\frag_{\tt temp}}} \cap \reachfromat{\inof{\frag_x}}$,  we let $\fragsetpost$ contain a fragment
+$\frag'$ which is the same as $\frag_{\tt temp}$, except that $\reachfromat{\outof{\frag'}} = (\reachfromat{\outof{\frag_{\tt temp}}} \setminus \reachfromat{\inof{\frag_x}}) \cup \regset'$. 
 \end{enumerate}
 \end{enumerate}
 \todo[inline]{We should include an argument why the last case above is correct.
   Quy, could you produce one?}
 
 \paragraph{{\bf Construction of higher-level fragments}}
-Based on this construction of level-1 fragments, higher-level fragments are
-   conststructed as follows.
+Based on this construction of level-1 fragments, higher-level fragments
+in $\fragset'$ are    constructed as follows.
      For each higher level-fragment $\frag \in \fragset$, let
      $\frag_1$ and $\frag_2$ be level 1-fragments such that
      $\tagat{\inof{\frag_1}} = \tagat{\inof{\frag}}$ and
@@ -724,13 +746,14 @@ Based on this construction of level-1 fragments, higher-level fragments are
      fragment $\frag'$ to $\fragset_{post}$
      which is the same as $\frag$ except that 
 \begin{itemize}
-\item $\pvarsat{\inof{\frag'}} = \pvarsat{\inoneof{\frag_1'}}$,
-\item $\pvarsat{\outof{\frag'}} = \pvarsat{\intwoof{\frag_2'}}$,
-\item $\reachfromat{\inof{\frag'}} = \reachfromat{\inoneof{\frag_1'}}$,
-\item $\reachfromat{\outof{\frag'}} = \reachfromat{\intwoof{\frag_2'}}$,
-\item $\reachtoat{\inof{\frag'}} = \reachtoat{\inoneof{\frag_1'}}$,
-\item $\reachtoat{\outof{\frag'}} =  \reachtoat{\intwoof{\frag_2'}}$,
+\item $\pvarsat{\inof{\frag'}} = \pvarsat{\inof{\frag_1'}}$ and
+$\pvarsat{\outof{\frag'}} = \pvarsat{\inof{\frag_2'}}$,
+\item $\reachfromat{\inof{\frag'}} = \reachfromat{\inof{\frag_1'}}$ and
+$\reachfromat{\outof{\frag'}} = \reachfromat{\inof{\frag_2'}}$,
+\item $\reachtoat{\inof{\frag'}} = \reachtoat{\inof{\frag_1'}}$ and
+$\reachtoat{\outof{\frag'}} =  \reachtoat{\inof{\frag_2'}}$.
 \end{itemize}
+
 
 
 \subsubsection{Symbolic Postcondition Computation for Interference Steps} 
