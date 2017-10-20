@@ -10,22 +10,24 @@
 In the previous section, we reduced the problem of verifying linearizability
 to the problem of verifying
 that, in any execution of the cross-product of a program and an observer, 
-the observer cannot reach an accepting state.
+the observer cannot reach an accepting location.
 We perform this verification by  computing a symbolic representation
 of an invariant that is satisfied by all reachable program configurations,
-using an abstract-interpretation-based
-fixpoint procedure, which starts
+using an abstract interpretation-based fixpoint procedure, which starts
 from a representation of the set of initial configurations.
 thereafter repeatedly performs
 symbolic postcondition computations that extend the
 symbolic representation by the effect of any execution step of the program,
 until convergence.
-In this section, we first (in Section~\ref{subsect:symbrep})
-define in more detail the representation,
+
+In Section~\ref{subsect:symbrep},
+define in more detail our symbolic representation for skiplists,
 focusing in particular on the use of fragment abstraction, and thereafter
 (in Section~\ref{subsect:postcond})
-describe the symbolic postcondition computation. 
-
+describe the symbolic postcondition computation.
+Since singly-linked lists is a trivial special case of skiplists, we can use
+the relevant part of this technique also for programs based on singly-linked
+lists.
 
 %% The main novel contribution is our fragment abstraction for
 %% representing the possible heap configurations of a concurrent program.
@@ -45,7 +47,7 @@ describe the symbolic postcondition computation.
 
 
 %% In the actual verification, we compute a symbolic representation
-%% of an invariant that is satisfied by all reachable program configurations (including observer states).
+%% of an invariant that is satisfied by all reachable program configurations (including observer location).
 %% This invariant is obtained by an abstract-interpretation-based
 %% fixpoint procedure, which starts
 %% from a representation of the set of initial configurations, and
@@ -57,7 +59,7 @@ describe the symbolic postcondition computation.
 %% data values, an unbounded number of concurrently executing threads, and an
 %% unbounded heap. 
 
-\subsection{Symbolic Representations}
+\subsection{Symbolic Representation}
 \label{subsect:symbrep}
 %% \bjcom{Say that for now, we ignore timers?}
 %% \bjcom{Introduce notation for the set of local $\ddomain$-variables?.
@@ -72,11 +74,8 @@ thereafter of the fragment abstraction, and finally how these are combined
 into a symbolic representation.
 
 \subsubsection{Data Abstraction}
-We first define more precisely our data abstraction by defining an
-abstract domain for each concrete domain of data values, as follows.
-We assume that each heap cell has at most one $\ddomain$-field, named {\tt data}.
-For an observer register $\reg_i$, let a {\em $\reg_i$-cell} be a heap cell whose
-${\tt data}$ field has the same value as $\reg_i$.
+Our data abstraction is defined by assigning a
+abstract domain to each concrete domain of data values, as follows.
 %% For each thread-local variable, and each non-pointer cell field, which ranges
 %% over some concrete domain, we define a corresponding abstract domain,
 %% as follows.
@@ -98,29 +97,44 @@ ${\tt data}$ field has the same value as $\reg_i$.
 
 \subsubsection{Fragment Abstraction}
 Let us now define our fragment abstraction for skiplists more precisely.
+For presentation purposes, we assume that each heap cell has at most one
+$\ddomain$-field, named {\tt data}.
+For an observer register $\reg_i$, let a {\em $\reg_i$-cell} be a heap cell whose
+${\tt data}$ field has the same value as $\reg_i$.
+
+Since the number of levels is unbounded, we must define an abstraction for
+levels.
 Let $\klevel$ be a level.
 Define the abstraction of a pointer variable of form $\tt p[k]$,
 denoted $\abstrof{\mathtt{p[k]}}$,
 to be $\tt p[1]$ if $\klevel = 1$, and to be  $\tt p[higher]$
 if $\klevel \geq 2$.
 That is, this abstraction does not distinguish different higher levels.
+
 A {\em tag} is a tuple $\atag = \tagtuple$, where
 \begin{inparaenum}[(i)]
 \item
   $\vals$ is a mapping from non-pointer fields at level $\klevel$
-  to their corresponding abstract domains (for array fields, the abstract
-  domain is the same as for its elements),
+  to their corresponding abstract domains,
 \item
   $\pvars$ is a set of abstracted pointer variables,
  \item
    $\reachfrom$ and $\reachto$ are sets of global pointer variables and observer registers, and
   \item $\private$ is a boolean value.
 \end{inparaenum}
+Note that if a non-pointer field is an array indexed by levels, then
+the abstract domain is that for single elements. For instance, the abstract
+domain for the array {\tt marked} in Figure~\ref{sl-code:fig} is simply the
+set of booleans.
 
 For a heap cell $\cell$ that is accessible to thread $\thread$ 
 in a configuration $\sconf$, and a tag $\atag = \tagtuple$,
 we let $\cell \lsatfrag{\klevel}{\thread}{\sconf} \atag$ denote that the
-$\cell$ satisfies the tag $\atag$ ``at level $\klevel$, or more precisely that
+$\cell$ satisfies the tag $\atag$ ``at level $\klevel$''.
+This means that
+array fields of $\cell$ are considered at index $\klevel$. For instance,
+for the array $\tt marked$, we consider the element $\tt marked[\klevel]$.
+More precisly, this means that
 \begin{itemize}
 \item
   $\vals$ is an abstraction of the concrete values of the non-pointer fields of $\cell$ (for array fields $\tt f$ we use the concrete value $\tt f[k]$),
@@ -151,16 +165,16 @@ $\cell$ satisfies the tag $\atag$ ``at level $\klevel$, or more precisely that
   \item abstractions of global pointer variables
     %% and local pointer variables of $\thread$
     from which $\cell$ is reachable via a (possibly empty)
-    sequence of {\tt next} pointers, and
+    sequence of $\tt next[1]$ pointers, and
   \item observer registers $\reg_i$ such that $\cell$ is reachable from
-    some $\reg_i$-cell.
+    some $\reg_i$-cell (via a sequence of $\tt next[1]$ pointers),
   \end{inparaenum}
 \item
   $\reachto$ is the set of
   \begin{inparaenum}[(i)]
   \item abstractions of global pointer variables
     %% and local pointer variables of $\thread$
-    pointing to a cell that is reachable from $\cell$, and
+    pointing to a cell that is reachable (via a sequence of $\tt next[1]$ pointers) from $\cell$, and
   \item observer registers $\reg_i$ such that some $\reg_i$-cell is reachable
     from $\cell$.
   \end{inparaenum}
@@ -170,9 +184,8 @@ not accessible to any other thread than $\thread$.
   %% $\private$ is $\true$ if
   %%  $\cell$ has never been published (by assigning a heap pointer-field or global pointer variable) by its creating thread $\thread$.
 \end{itemize}
-Intuitively, $\cell \lsatfrag{\klevel}{\thread}{\sconf} \atag$ denotes that
-$\cell$ satisfies $\atag$ ``at level $\klevel$'' in the sense that
-array fields of $\cell$ are considered at index $\klevel$.
+Thus, the global information represented by the fields $\reachfrom$ and
+$\reachto$ concerns {\em only} reachability via level-1 pointers.
 
 %% \begin{definition}[SLL-fragment]
 %% \label{def:sll-fragment}
@@ -183,8 +196,9 @@ $\tuple{\inat{\frag},\nullconst}$, or of form
 $\tuple{\inat{\frag},\dangconst}$,
 where $\inat{\frag}$ and $\outat{\frag}$ are tags
     and $\datarelat{\frag}$ is a subset of $\set{<, =, >}$.
-    Each skiplist fragment is either a {\em level-1 fragment} or
-    a {\em higher-level fragment}.
+    Each skiplist fragment additionally has a {\em type}, which is
+    either {\em level-1} or {\em higher-level} (note that a level-1 fragment
+    can otherwise be identical to a higher-level fragment).
 For a cell $\cell$ which is accessible to thread $\thread$, and a fragment
 $\frag$ of form $\fragtupleat{\frag}$, let $\cell \lsatfrag{\klevel}{\thread}{\sconf}\frag$ denote that
 the ${\tt next[k]}$ field of $\cell$ points to a cell $\cell'$ such that
@@ -220,18 +234,24 @@ $\frag \in \fragset$ such that $\cell \lsatfrag{1}{{\thread}}{\sconf} \frag$,
 there is a higher-level fragment
 $\frag \in \fragset$ such that $\cell \lsatfrag{\klevel}{{\thread}}{\sconf} \frag$.
 \end{itemize}
-Intuitively, a set of heap states is represented a set of fragments, in which
-the level-1 fragments represent pairs of cells connected by
-a $\tt next[1]$ pointer, representing their array fields only at index
-$k$,
- and the higher-level fragments represent pairs of cells connected by
-a $\tt next[k]$ pointer for some $\klevel \geq 2$, representing their
-array fields only at index $k$.
+Intuitively, a set of fragment represents the set of heap states, in which
+each  pair of cells connected by a $\tt next[1]$ pointer is represented
+by a level-1 fragment, and each pair of cells connected by a $\tt next[k]$
+pointer for $\klevel \geq 2$ is represented by a higher-level fragment which 
+represents array fields of cells at index $\klevel$.
+%% Intuitively, a set of heap states is represented by a set of fragments, in which
+%% the level-1 fragments represent pairs of cells connected by
+%% a $\tt next[1]$ pointer, representing their array fields only at index
+%% $\klevel$,
+%%  and the higher-level fragments represent pairs of cells connected by
+%% a $\tt next[k]$ pointer for some $\klevel \geq 2$, representing their
+%% array fields only at index $\klevel$.
 
 \subsubsection{Symbolic Representation}
-We are now ready to define our abstract symbolic representation, which
-is defined as a partial mapping from augmented local symbolic
-configurations to sets of fragments. 
+We are now ready to define our abstract symbolic representation.
+%% , which
+%% is defined as a partial mapping from local symbolic
+%% configurations and observer locations to sets of fragments. 
 
 Define a {\em local symbolic configuration} $\locsymbconf$ to be
 a mapping from local non-pointer
@@ -310,8 +330,8 @@ $\sconf \satconf{\thread}
 
 
 
-\todo[inline]{What to replace the below example with?}
-\paragraph{Example:} Let us show an example of how a singly linked list (SLL) is split into a set of fragments. Fig.~\ref{lazylist}(a) shows an example of a concrete shape of a singly linked list. Each cell contains the values of $\tt val$, $\tt mark$, and $\tt lock$ from top to bottom, where \tick \; denotes $\tt true$, and \cross \; denotes $\tt false$ (or $\tt free$ for $\tt lock$) and the value of $\tt val$ is denoted by a pair of the observer register $\tt z$ and a subset of $\set{<, =, >}$. There are two threads $1$ and $2$ with two local variables $\tt c_1$ and $\tt c_2$. There are two global variables $\tt H$ and $\tt T$ pointing to the head and tail of the list. The observer register $\tt z$ has value 8. Fig.~\ref{lazylist}(b) shows the result of splitting the list in Fig.~\ref{lazylist}(a) into fragments where each heap fragment is a small list of two nodes. Fig.~\ref{lazylist}(c) shows the abstraction of fragments in Fig.~\ref{lazylist}(b) where for each cell $\cell$, the value of $val$ is abstracted to a subset in $\tt \{<z, =z, >z\}$, the reachability relation between $\cell$ and global variables and observer registers is abstracted to the predicate $\tt X \mapsto \tt Y$ where $\tt X$, $\tt Y$ are sets of global variables and observer registers, $\tt i$ or $\tt o$ states that $\cell$ is an input or output cell.
+%% \todo[inline]{What to replace the below example with?}
+%% \paragraph{Example:} Let us show an example of how a singly linked list (SLL) is split into a set of fragments. Fig.~\ref{lazylist}(a) shows an example of a concrete shape of a singly linked list. Each cell contains the values of $\tt val$, $\tt mark$, and $\tt lock$ from top to bottom, where \tick \; denotes $\tt true$, and \cross \; denotes $\tt false$ (or $\tt free$ for $\tt lock$) and the value of $\tt val$ is denoted by a pair of the observer register $\tt z$ and a subset of $\set{<, =, >}$. There are two threads $1$ and $2$ with two local variables $\tt c_1$ and $\tt c_2$. There are two global variables $\tt H$ and $\tt T$ pointing to the head and tail of the list. The observer register $\tt z$ has value 8. Fig.~\ref{lazylist}(b) shows the result of splitting the list in Fig.~\ref{lazylist}(a) into fragments where each heap fragment is a small list of two nodes. Fig.~\ref{lazylist}(c) shows the abstraction of fragments in Fig.~\ref{lazylist}(b) where for each cell $\cell$, the value of $val$ is abstracted to a subset in $\tt \{<z, =z, >z\}$, the reachability relation between $\cell$ and global variables and observer registers is abstracted to the predicate $\tt X \mapsto \tt Y$ where $\tt X$, $\tt Y$ are sets of global variables and observer registers, $\tt i$ or $\tt o$ states that $\cell$ is an input or output cell.
 
 
 \subsection{Symbolic Postcondition Computation}
