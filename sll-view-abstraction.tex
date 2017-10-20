@@ -769,13 +769,13 @@ $\thread_1$ or $\thread_2$, the set $\fragset_{1,2}$
 contains a fragment $\frag$ with $\cell \lsatfrag{\klevel}{\{\thread_1,\thread_2\}}{\sconf} \frag$ for each $\klevel$ which is at most the height of $\cell$
 (generalizing the notation  $\lsatfrag{\klevel}{\thread}{\sconf}$ to several
 threads).
-Note that a joint fragments represents local pointer variables of
+Note that a joint fragment represents local pointer variables of
 both $\thread_1$ and $\thread_2$. In order to distinguish
 between local variables of $\thread_1$ and $\thread_2$, one can, e.g.,
 use a notation of form
 $\lvarof{x[i]}$ for a local variable $\lvarof{x}$ of thread $\thread_i$.
 Here, we describe the intersection operation for level-1 fragments. The
-intersection operation is completely analogous for higher-level fragments.
+intersection operation is analogous for higher-level fragments.
 
 For a fragment $\frag$, define
 $\greachfromat{\inof{\frag}}$ as the set of global variables in
@@ -795,7 +795,7 @@ We must distinguish the following possibilities.
 \begin{itemize}
 \item If $\cell$ is accessible to both $\thread_1$ and $\thread_2$, then
   there are fragments $\frag_1 \in \fragset_1$ and $\frag_2 \in \fragset_2$
-  such that $\cell \lsatfrag{\klevel}{\thread_1}{\sconf} \frag_1$ and $\cell \lsatfrag{\klevel}{\thread_2}{\sconf} \frag_2$.
+  such that $\cell \lsatfrag{1}{\thread_1}{\sconf} \frag_1$ and $\cell \lsatfrag{1}{\thread_2}{\sconf} \frag_2$.
   This can happen only if
  %% $\greachfromat{\inof{\frag_1}} \neq \emptyset$ and $\greachfromat{\inof{\frag_2}} \neq \emptyset$ then the global information in $\frag_1$ and $\frag_2$ must coincide. This means that we must have
   $\gtagat{\inof{\frag_1}} = \gtagat{\inof{\frag_2}}$,
@@ -814,8 +814,8 @@ We must distinguish the following possibilities.
 \item If $\cell$ is accessible to $\thread_1$, but not to $\thread_2$, and
   $\cell.{\tt next[1]}$ is accessible also to $\thread_2$, then
   there are fragments $\frag_1 \in \fragset_1$ and $\frag_2 \in \fragset_2$
-  such that $\cell \lsatfrag{\klevel}{\thread_1}{\sconf} \frag_1$ and
-  $\cell.{\tt next[1]} \lsatfrag{\klevel}{\thread_2}{\sconf} \outof{\frag_2}$.
+  such that $\cell \lsatfrag{1}{\thread_1}{\sconf} \frag_1$ and
+  $\cell.{\tt next[1]} \lsatfrag{1}{\thread_2}{\sconf} \outof{\frag_2}$.
   This can happen only if
   $\greachfromat{\inof{\frag_1}} =  \emptyset$,
   and $\gtagat{\outof{\frag_1}} = \gtagat{\outof{\frag_2}}$,
@@ -830,9 +830,9 @@ We must distinguish the following possibilities.
     \end{itemize}
 \item
   If neither $\cell$ nor
-  $\cell.{\tt next[1]}$  are not accessible  $\thread_2$, then
+  $\cell.{\tt next[1]}$  is accessible  $\thread_2$, then
   there is a  fragment $\frag_1 \in \fragset_1$
-  such that $\cell \lsatfrag{\klevel}{\thread_1}{\sconf} \frag_1$.
+  such that $\cell \lsatfrag{1}{\thread_1}{\sconf} \frag_1$.
   This can happen only if
   $\greachfromat{\outof{\frag_1}} = \emptyset$,
   in which case we let  $\fragset_{1,2}$ contain the fragment
