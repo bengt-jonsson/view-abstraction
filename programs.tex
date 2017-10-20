@@ -30,7 +30,7 @@ A {\it trace} of $\dstruct$ is a sequence of operations.
 The (sequential) semantics of a data structure $\dstruct$ is given by
 a set $\denotationof\dstruct$ of allowed traces.
 %% called the {\it legal} traces of $\dstruct$.
-For example, a {\tt Set} data structure has method names
+For example, a $\tt Set$ data structure has method names
 $\tt add$, $\tt remove$, and $\tt contains$. An example of an allowed trace
 is ${\tt add(3,true)\ contains(4,false)\ contains(3,true) \ remove(3,true)}$.
 %
@@ -54,7 +54,7 @@ It assigns, to each method name,  a method which performs operations
 %
 %% Each thread executes a method that performs an operation
 on the shared state. It
-also comes with a method named {\tt init}, which initializes its shared state.
+also comes with a method named $\tt init$, which initializes its shared state.
 
 A {\it heap (state)} $\heap$ consists of a finite set
 $\cellset$ of cells, including the two special cells
@@ -67,9 +67,9 @@ assumes values in $\ddomain$, and the terms $\fset$-field and lock field
 with analogous meaning.
 Furthermore, each cell has one or several named pointer fields.
 For instance, in data structure implementations based on singly-linked lists,
-each heap cell has a pointer field named {\tt next}; in implementations
+each heap cell has a pointer field named $\tt next$; in implementations
 based on skiplists there is an array of pointer fields named
-{\tt next[k]} where {\tt k} ranges from $1$ to the maximum level of the
+$\tt next[k]$ where $\tt k$ ranges from $1$ to the maximum level of the
 skiplist.
 %% We represent each named field by a function from the set of
 %% nontrivial cells $\mcellset = \cellset\setminus\set{\nullconst,\dangconst}$ to
@@ -83,7 +83,7 @@ skiplist.
 Each method declares local variables and a method body.
 %
 The set of local variables includes the input parameter of the method and
-the program counter {\tt pc}.
+the program counter $\tt pc$.
 A {\it local state} $\lstate$ of a thread $\thread$
 %% wrt.\ a heap $\heap$
 defines  the values of its local variables.
@@ -110,17 +110,17 @@ flow constructs (sequential composition, selection, and loop constructs).
 Atomic commands include assignments between variables, 
 or fields of cells pointed to by a pointer variable.
 %
-Method execution is terminated by executing a {\tt return} command,
+Method execution is terminated by executing a $\tt return$ command,
 which may return a value.
 %
-The command {\tt new Node()} allocates a new structure of type
-{\tt Node} on the heap, and returns a reference to it.
+The command $\tt new Node()$ allocates a new structure of type
+$\tt Node$ on the heap, and returns a reference to it.
 %
-The compare-and-swap command {\tt CAS(\&a,b,c)} atomically
-compares the values of {\tt a} and {\tt b}.
+The compare-and-swap command $\tt CAS(\&a,b,c)$ atomically
+compares the values of $\tt a$ and $\tt b$.
 If  equal, it assigns the value of
-{\tt c} to {\tt a}  and returns {\tt true}, 
-otherwise, it leaves {\tt a} unchanged and returns {\tt false}. 
+$\tt c$ to $\tt a$  and returns $\tt true$, 
+otherwise, it leaves $\tt a$ unchanged and returns $\tt false$. 
 We assume a memory management mechanism, which automatically collects
 garbage, and ensures that a new cell is fresh, i.e., has
 not been used before; this avoids the so-called
@@ -133,7 +133,7 @@ executes a method
 %% denoted $\methodof\thread$.
 that performs an operation on the data structure.
 The shared state is initialized
-by the {\tt init} method prior to the start of program execution.
+by the $\tt init$ method prior to the start of program execution.
 A {\it configuration} of a program $\prog$ is a tuple
 $\pconf = \tuple{\athreads,\lstatemapping,\heap}$ where
 $\athreads$ is a set of threads,

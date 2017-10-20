@@ -359,13 +359,13 @@ of $\observer$.
 %
 The transition relation $\movesto\observer{}$
 of the observer is described by the rules
-{\tt O1} and {\tt O2} of Fig.~\ref{semantics:fig}.
+${\tt O1}$ and ${\tt O2}$ of Fig.~\ref{semantics:fig}.
 %
-Rule {\tt O1} states that
+Rule ${\tt O1}$ states that
 if there is an enabled  transition that is labeled by a given action
   then such a transition may be performed. 
 %
-Rule {\tt O2} states that if there is no
+Rule ${\tt O2}$ states that if there is no
 such a transition, the observer remains in its current state.
 %
 Notice that the rules imply that the register
@@ -430,11 +430,11 @@ We use $\confsetof\monitor$ to denote the set of configurations
 of $\monitor$.
 %
 The rules
-{\tt M1} through {\tt M8}
+${\tt M1}$ through ${\tt M8}$
 describe the transition relation
 $\movesto\monitor{}$ induced by $\monitor$. 
 %
-Rule {\tt M1} describes the scenario when the monitor 
+Rule ${\tt M1}$ describes the scenario when the monitor 
 detects an operation $\mname(\indata,\outdata)$ performed by 
 a thread $\thread$ such that $\observer$ does not change its state.
 %
@@ -443,7 +443,7 @@ is updated to $1$ (the thread has linearized but not changed the state
 of the observer), and the latest value $\outdata$
 returned by $\thread$ is stored $\rvalstatus$.
 %
-Rule {\tt M2} is similar except that the observer changes state
+Rule ${\tt M2}$ is similar except that the observer changes state
 and hence the flag $\linstatus$ is updated to $2$ for $\thread$.
 %
 Notice that in both rules, a premise is that $\thread$ has not
@@ -451,18 +451,18 @@ changed the observer state previously (the flag $\linstatus$ for
 $\thread$ is different from $2$.)
 %
 Rules 
-{\tt M3},
-{\tt M4},
-{\tt M5}, and
-{\tt M6}
+${\tt M3}$,
+${\tt M4}$,
+${\tt M5}$, and
+${\tt M6}$
 describe the conditions (i), (ii), (iii), and (iv)
 respectively described
 above that lead to the error state.
 %
-The rule {\tt M7} describes the fact that the error state is a sink,
+The rule ${\tt M7}$ describes the fact that the error state is a sink,
 i.e., once $\monitor$ enters that state then it will never leave it.
 %
-Finally, rule {\tt M8} describes the reflexive transitive closure of
+Finally, rule ${\tt M8}$ describes the reflexive transitive closure of
 the relation $\movesto\monitor{}$.
 %
 An initial configuration of $\monitor\in\confsetof\monitor$
@@ -488,7 +488,7 @@ of $\system$.
 %
 The induced transition relation $\movesto{\system}{}$
 is described by
-rule {\tt QM} of Fig.~\ref{semantics:fig}.
+rule ${\tt QM}$ of Fig.~\ref{semantics:fig}.
 %
 Intuitively, in the composed systems, the augmented program and the monitor
 synchronize through the actions they produce.

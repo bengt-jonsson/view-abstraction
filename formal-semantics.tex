@@ -58,13 +58,13 @@ $\cellval:\cellset\times\fieldset\to\fset\cup\ddomain$
 maps data and lock fields of each cell to their values.
 %
 We let $\initheap$ denote the initial heap produced by the
-{\tt init} method.
+${\tt init}$ method.
 
 \paragraph{Threads.}
 A {\it local state} $\lstate$ of a thread $\thread$
 wrt.\ a heap $\heap$ defines 
 the values of its local variables, including the program counter
-{\tt pc} and the input parameter for the method executed by $\thread$.
+${\tt pc}$ and the input parameter for the method executed by $\thread$.
 In addition, there is the special initial state $\idlestate$,
 and terminated state $\terminatedstate$.
 %
@@ -87,7 +87,7 @@ labeled by a call action with $\thread$ as the action identifier and
 $\mname=\methodof\thread$, taking $\thread$
 to an initial local state $\initlstateof\thread$
 where $\indata$ is the value of its input parameter,
-the value of {\tt pc} is the label of the first statement of the method, and
+the value of ${\tt pc}$ is the label of the first statement of the method, and
 the other local variables are undefined.
 \item
 $\tuple{\lstate,\heap}\movesto\thread{}\tuple{\lstate',\heap'}$
@@ -104,7 +104,7 @@ $\tuple{\lstate,\heap}\movesto\thread{}\tuple{\lstate',\heap'}$
 \item 
 $\tuple{\lstate,\heap}\movesto\thread{\return\thread\mname\outdata}
 \tuple{\terminatedstate,\heap}$ terminates
-thread $\thread$ through execution of its {\tt return} command, labeled
+thread $\thread$ through execution of its ${\tt return}$ command, labeled
 by a return action with $\thread$ as action identifier,
 $\mname=\methodof\thread$, and $\outdata$
 as the returned value.
