@@ -30,7 +30,7 @@
 \node[anchor=south,font=\tiny,align=center] at ($(cell21.south)+(0pt,-13pt)$) {{$\tt pools[ot],x_1$}};
 \node[anchor=south,font=\tiny,align=center] at ($(cell21.south)+(0pt,-20pt)$) {{$\tt \emptyset$}};
 \node[circle,draw,font=\tiny,inner sep=1pt,fill=red!5] at ($(cell1.north)+(24.5pt,11pt)$) {$\tt v_1$};
-\draw[->] (succ1) -- (cell21);
+\draw[->] (succ1)  to node[above=0pt,pos=0.5] {\footnotesize$>$} (cell21);
 
 
 
@@ -80,7 +80,7 @@ at ($(cell22.east)+(30pt,0pt)$){};
 %\node[anchor=south,font=\tiny,align=center] at ($(cell41.south)+(0pt,-13pt)$) {{$\tt pools[ot],x_1$}};
 %\node[anchor=south,font=\tiny,align=center] at ($(cell41.south)+(0pt,-20pt)$) {{$\tt \emptyset$}};
 %
-\draw[->] (succ22) -- (cell31);
+\draw[->] (succ22)  to node[above=0pt,pos=0.5] {\footnotesize$>$} (cell31);
 %\draw[->] (succ32) -- (cell41);
 %
 
@@ -120,7 +120,7 @@ at ($(cell22.east)+(30pt,0pt)$){};
 %\draw[->] (succ6) -- (cell71);
 
 \node[name=cell8] at ($(cell72.east)+(30pt,0pt)$){$\bot$};
-\draw[->] (succ72) -- (cell8);
+\draw[->] (succ72)  -- (cell8);
 
 %% LAST LIST
 
@@ -160,7 +160,7 @@ at ($(cell22.east)+(30pt,0pt)$){};
 \node[anchor=south,font=\tiny,align=center] at ($(cell232.south)+(0pt,-20pt)$) {{$\tt x_2$}};
 \node[circle,draw,font=\tiny,inner sep=1pt,fill=blue!10] at ($(cell232.north)+(24.5pt,11pt)$) {$\tt v_5$};
 
-\draw[->] (succ13) -- (cell231);
+\draw[->] (succ13)  to node[above=0pt,pos=0.5] {\footnotesize$>$} (cell231);
 
 
 \node[rounded corners,draw,name=cell331,minimum width=24pt, minimum height=20pt] at ($(cell232.east)+(30pt,0pt)$){};
@@ -194,8 +194,8 @@ at ($(cell22.east)+(30pt,0pt)$){};
 \node[anchor=south,font=\tiny,align=center] at ($(cell431.south)+(0pt,-13pt)$) {{$\tt pools[me],x_2$}};
 \node[anchor=south,font=\tiny,align=center] at ($(cell431.south)+(0pt,-20pt)$) {{$\tt x_2$}};
 \node[anchor=south,font=\tiny,align=center] at ($(cell431.north)+(0pt,-2pt)$) {{${\tt youngest, n}$}};
-\draw[->] (succ232) -- (cell331);
-\draw[->] (succ332) -- (cell431);
+\draw[->] (succ232)  to node[above=0pt,pos=0.5] {\footnotesize$>$} (cell331);
+\draw[->] (succ332)  to node[above=0pt,pos=0.5] {\footnotesize$>$} (cell431);
 
 
 %\node[name=succ431,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=0pt] at ($(cell431.east)+(-3pt,0pt)$) {};

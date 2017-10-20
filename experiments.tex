@@ -6,7 +6,7 @@
 %\begin{wrapfigure}{r}[0pt]{0.5\textwidth}
 %\vspace{5mm}
 
- Based on our framework, we have implemented a tool in OCaml, and used it for verifying various kinds of concurrent data structures implementation of stack, priority queue, queue and set. These data structures include singly-linked lists, skiplists and arrays of singly-linked lists.
+ Based on our framework, we have implemented a tool in OCaml, and used it for verifying various kinds of concurrent data structures implementation of stacks, priority queues, queues and sets. All of them are based on heap structures. There are three types of heap structures we consider in our experiments.
 \begin{figure}[]
 %% \vspace*{-1cm}
 \center
@@ -44,6 +44,9 @@
 %
 
 
+%\textit{\textsf{SLLs}}  & & & \textit{\textsf {SLLs}} &  &  \\
+
+%\hline
 
 \textsf{Treiber stack  ~\cite{Treiber:stack}} & \textsf {18} & \textsf {0.18} & \textsf {O$\textquotesingle $Hearn set  ~\cite{OHearnlist}} & \textsf{88} & \textsf{12} \\
 \textsf{MS lock-free queue  ~\cite{MS:QueueAlgorithms}}& \textsf{22} & \textsf {21} & \textsf{HM lock-free set  ~\cite{ArtOfMpP} } & \textsf{120} & \textsf{462} \\
@@ -55,34 +58,38 @@
 \cline{4-5}
 \textsf{Pessimistic set  ~\cite{ArtOfMpP}}&\textsf{30} & \textsf{1.51} & \textsf{Lock-free skiplist   ~\cite{ArtOfMpP}}& \textsf{1992} & \\
 \textsf{Optimistic set ~\cite{ArtOfMpP}}& \textsf{25} & \textsf{60} & \textsf{Lock-based skiplist ~\cite{lockskiplist}}& \textsf{500} & \\
-\textsf{Lazy set ~\cite{Lazyset}}  & \textsf {34} & \textsf{289} & \textsf{Priority queue skiplist 1 ~\cite{Shavit:ElimQueue}} &\textsf{1320} & \\
+\textsf{Lazy set ~\cite{Lazyset}}  & \textsf {34} & \textsf{289} & \textsf{Priority queue skiplist 1 ~\cite{Shavit:queue}} &\textsf{1320} & \\
 & & &\textsf{Priority queue skiplist 2~\cite{Linden:opodis13}}  &  \textsf{599} &\\
 \hline
+ \multicolumn{1}{l}{\textsf{a: Our tool, b:~\cite{Quy:sas16} }} & \multicolumn{1}{l}{}  & \multicolumn{1}{l}{} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{} \\
+% \multicolumn{1}{l}{b:~\cite{Quy:sas16}} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{} \\
 \end{tabular}
 
 %\vspace{10mm}
 %\vspace*{-0.3cm}
-\caption{Experimental results for verifying concurrent programs}
+\caption{Experimental results for verifying concurrent programs where}
 %\vspace*{-0.7cm}
 \label{Experiments:fig}
 \end{figure}
 %\vspace{-0.2cm}
-\paragraph{Singly-linked list benchmarks:} These benchmarks include stacks, queues and sets algorithms which already verified in our previous work in ~\cite{Quy:sas16}. Our previous work handles SLL implementations of concurrent sets by adapting a well-known abstraction of singly-linked lists ~\cite{MYRS:Canonical} for concurrent programs.
-The resulting technique is specifically tailored for singly-links in a slightly ad-hoc way.
-Our fragment abstraction is significantly simpler conceptually, and can therefore be used directly
-also for other classes of heap structures. Our approach of previous work is strong enough to verify  concurrent set
-implementations based on sorted and non-sorted singly-linked lists having non-optimistic contains (or lookup) operations we consider, such as the lock-free sets of {\it HM}~\cite{ArtOfMpP}, {\it Harris}~\cite{Harris:list}, or {\it Michael}~\cite{Michael:list}, or unordered set of~\cite{Zhang:unorderedlist} which have not done automatically before. Our fragment abstraction can handle them as well.
+\paragraph{Singly-linked list benchmarks:} These benchmarks include stacks, queues and sets algorithms which are the well-known in the literature. The challenge is that in some set implementation, the linearization points are not fixed, they depended on the future of each execution. The sets with non fixed linearization points are the lazy set ~\cite{Lazyset}, lock-free sets of {\it HM}~\cite{ArtOfMpP}, {\it Harris}~\cite{Harris:list}, {\it Michael}~\cite{Michael:list}, and unordered set of~\cite{Zhang:unorderedlist}. By using observers and controllers in our previous work~\cite{Quy:sas16}. Our approach is simple and strong enough to verify these singly-linked list benchmarks.
 
-\paragraph{Skiplist benchmarks:} We consider four skiplist algorithms including one lock-based skiplist set~\cite{MS:QueueAlgorithms}, one lock-free skiplist ~\cite{ArtOfMpP} skiplist which is described in section 2, and two skiplist-based priority queues. The challenge for verifying these algorithms is to deal with the problem of unbounded number of levels in these skiplists. In addition, in the lock-free skiplist ~\cite{ArtOfMpP} and priority queue ~\cite{Linden:opodis13}, the skiplist shape is not well formed, it means that each higher level list is not always a sub-list of lower level lists. This makes the verification tasks became extremely difficult, these algorithms have not been formally verified by any previous work. By applying our fragment abstraction,  to the best of our knowledge, we are the first one who is able to verify these concurrent skiplists automatically. 
+%Our previous work handles SLL implementations of concurrent sets by adapting a well-known abstraction of singly-linked lists ~\cite{MYRS:Canonical} for concurrent programs.
+%The resulting technique is specifically tailored for singly-links in a slightly ad-hoc way.
+%Our fragment abstraction is significantly simpler conceptually, and can therefore be used directly
+%also for other classes of heap structures. Our approach of previous work is strong enough to verify  concurrent set
+%implementations based on sorted and non-sorted singly-linked lists having non-optimistic contains (or lookup) operations we consider, such as the lock-free sets of {\it HM}~\cite{ArtOfMpP}, {\it Harris}~\cite{Harris:list}, or {\it Michael}~\cite{Michael:list}, or unordered set of~\cite{Zhang:unorderedlist} which have not done automatically before. Our fragment abstraction can handle them as well.
 
-\paragraph{Timestamp benchmarks:} We consider two challenging timestamp algorithms in ~\cite{ts-stack}. There are two challenges problems of verifying these algorithm, the fist challenge is how to deal with unbounded number of SLLs and the second challenge is that the lineatization points of the algorithms are not fixed, they are depended on the future behaviors of the algorithms. By using our fragment abstraction and observers for stack and queue in ~\cite{BEEH:icalp15}. Our tool is the first one which verifies these two algorithms automatically.
+\paragraph{Skiplist benchmarks:} We consider four skiplist algorithms including the lock-based skiplist set~\cite{MS:QueueAlgorithms}, the lock-free skiplist set which is described in section 2~\cite{ArtOfMpP}, and two skiplist-based priority queues~\cite{Linden:opodis13},~\cite{Shavit:queue}. One challenge for verifying these algorithms is to deal with unbounded number of levels. In addition, in the lock-free skiplist~\cite{ArtOfMpP} and priority queue ~\cite{Linden:opodis13}, the skiplist shape is not well formed, it means that each higher level list is not always a sub-list of lower level lists. This makes the verification tasks became extremely difficult, these algorithms have not been formally verified by any previous work. By applying our fragment abstraction,  to the best of our knowledge, we provide first framework which formally verify these concurrent skiplists algorithms. 
 
-\paragraph{Running Times.}The experiments were performed on a desktop 2.8 GHz processor with 8GB memory. The results are presented in Fig.~\ref{Experiments:fig}, where running times are given in seconds. The column \textbf{a} show the running times of our tool, whereas the column \textbf{b} show the running time of ~\cite{Quy:sas16}.  In our experiments, we run the tool together with observer in \cite{AHHR:integrated:rep}, \cite{BEEH:icalp15} and controller in~\cite{Quy:sas16} to verify linearization properties of the algorithms. All experiments start from the initial heap,  
+\paragraph{Arrays of singly-linked list benchmarks:} We consider two challenging timestamp algorithms in \cite{ts-stack}. There are two challenges problems of verifying these algorithm, the fist challenge is how to deal with unbounded number of SLLs and the second challenge is that the lineatization points of the algorithms are not fixed, but depended on the future of each execution. By combining our fragment abstraction and the observers for stacks and queues in \cite{BEEH:icalp15} and the controllers in~\cite{Quy:sas16} . Our tool is the first one verifing these two algorithms automatically.
+
+\paragraph{Running Times.}The experiments were performed on a desktop 2.8 GHz processor with 8GB memory. The results are presented in Fig.~\ref{Experiments:fig}, where running times are given in seconds. The column \textsf{a} show the running times of our tool, whereas the column \textsf{b} show the running time of algorithms which can be verified by our previous work~\cite{Quy:sas16}.  In our experiments, we run the tool together with observer in \cite{AHHR:integrated:rep}, \cite{BEEH:icalp15} and controller in~\cite{Quy:sas16} to verify linearization properties of the algorithms. All experiments start from the initial heap,  
 and end either when the analysis reaches the fixed point or when a violation of safety properties or linearizability is detected. As can be seen from the table, the running times vary in the different examples. This is due to the types of shapes that are produced during the analysis. For instance, skiplist algorithms have much longer running times. This is due to the number of pointer variables and their complicated shapes. Whereas, other algorithms 
 produce simple shape patterns and hence they have shorter running times.
 \paragraph{Error Detection}
  In addition to establishing correctness of the original versions of the
-benchmark algorithms, we tested our tool with intentionally inserted bugs. For example, we emitted setting time statement in line 5 of the ${\tt push}$ method in TS stack algorithm. The tool, as expected, successfully detected and reported the bug.
+benchmark algorithms, we tested our tool with intentionally inserted bugs. For example, we emitted setting time statement in line 5 of the ${\tt push}$ method in TS stack algorithm, or we emitted the $\tt CAS$ statements in lock-free algorithms. The tool, as expected, successfully detected and reported the bug. 
  
 
 %
