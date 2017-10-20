@@ -883,7 +883,7 @@ r := false;};
  
 %%%%%%%%%%% struct %%%%%%%%%%%%%%%%
 
-\node[linecode,anchor=south west](struct) at ($(locate-head.north)+(-800pt,20pt)$) 
+\node[linecode,anchor=south west](struct) at ($(locate-head-locate.north)+(-80pt,10pt)$) 
 {\scriptsize struct Node(int key; int topLayer; Node *next[]; bool marked; fullylinked;Lock lock);};
 
 
@@ -1095,8 +1095,11 @@ r := false;};
 \node[linecode] at ($(locate-head.west)+(7pt,-90pt)$)  {\scriptsize    node1 = node2; };
 \node[linecode] at ($(locate-head.west)+(7pt,-100pt)$)  {\scriptsize   lock(node1, level); };
 \node[linecode] at ($(locate-head.west)+(7pt,-110pt)$)  {\scriptsize      node2 = node1.next[level]; };
- \node[linecode] at ($(locate-head.west)+(0pt,-120pt)$)  {\scriptsize     return node1; };
+ \node(2)[linecode] at ($(locate-head.west)+(0pt,-120pt)$)  {\scriptsize     return node1; };
 
+\begin{pgfonlayer}{background}
+ \node[code-bg,fit=(locate-head) (2)]{};
+ \end{pgfonlayer}
 %%%%%%%%%% add %%%%%%%%%%
 
 \node[anchor=west](add) at ($(locate.east)+(75pt,-20pt)$) {};
@@ -1120,14 +1123,17 @@ r := false;};
 \node[linecode] at ($(add.east)+(0pt,-170pt)$) {\scriptsize    lock(newNode)};
 \node[linecode] at ($(add.east)+(0pt,-180pt)$) {\scriptsize  	for (i = 1; i <= level; i++)};
 \node[linecode] at ($(add.east)+(7pt,-190pt)$) {\scriptsize      if (i != 1)};
-\node[linecode] at ($(add.east)+(14pt,-200pt)$) {\scriptsize         node1 = getLock(savedNodes[i], key, i);};
+\node(1)[linecode] at ($(add.east)+(14pt,-200pt)$) {\scriptsize         node1 = getLock(savedNodes[i], key, i);};
 \node[linecode] at ($(add.east)+(7pt,-210pt)$) {\scriptsize           newNode.next[i] = node1.next[i];};
 \node[linecode] at ($(add.east)+(7pt,-220pt)$) {\scriptsize           node1.next[i] = newNode;};
 \node[linecode] at ($(add.east)+(7pt,-230pt)$) {\scriptsize           unlock(node1, i);};
 \node[linecode] at ($(add.east)+(0pt,-240pt)$) {\scriptsize              unlock(newNode);};
 \node[linecode] at ($(add.east)+(0pt,-250pt)$) {\scriptsize           newNode.timeStamp = getTime();};
-\node[linecode] at ($(add.east)+(0pt,-260pt)$) {\scriptsize      return INSERTED;};
+\node(2)[linecode] at ($(add.east)+(0pt,-260pt)$) {\scriptsize      return INSERTED;};
 
+\begin{pgfonlayer}{background}
+ \node[code-bg,fit=(add-head) (1) (2)]{};
+ \end{pgfonlayer}
 %%%%%%%%%% rmv %%%%%%%%%%
 
 \node[linecode,anchor=west](rmv) at ($(locate.west)+(-120pt,-160pt)$) {};
@@ -1153,7 +1159,7 @@ r := false;};
 \node[linecode] at ($(rmv.east)+(7pt,-210pt)$)  {\scriptsize  node2 = node2.next[1];};
 \node[linecode] at ($(rmv.east)+(7pt,-220pt)$)  {\scriptsize  lock(node2);};
 \node[linecode] at ($(rmv.east)+(7pt,-230pt)$)  {\scriptsize  for (i = node2.level; i > 0; i-\;-)};
-\node[linecode] at ($(rmv.east)+(7pt,-240pt)$)  {\scriptsize  node1 = getLock(savedNodes[i], key, i);};
+\node(1)[linecode] at ($(rmv.east)+(7pt,-240pt)$)  {\scriptsize  node1 = getLock(savedNodes[i], key, i);};
 \node[linecode] at ($(rmv.east)+(7pt,-250pt)$)  {\scriptsize  lock(node2, i);};
 \node[linecode] at ($(rmv.east)+(7pt,-260pt)$)  {\scriptsize  node1.next[i] = node2.next[i];};
 \node[linecode] at ($(rmv.east)+(7pt,-270pt)$)  {\scriptsize  node2.next[i] = node1;};
@@ -1161,8 +1167,11 @@ r := false;};
 \node[linecode] at ($(rmv.east)+(7pt,-280pt)$)  {\scriptsize  unlock(node2, i);};
 \node[linecode] at ($(rmv.east)+(0pt,-290pt)$)  {\scriptsize  unlock(node1, i);};
 \node[linecode] at ($(rmv.east)+(0pt,-300pt)$)  {\scriptsize  unlock(node2);};
-\node[linecode] at ($(rmv.east)+(0pt,-310pt)$)  {\scriptsize return DELETE;};
+\node(2)[linecode] at ($(rmv.east)+(0pt,-310pt)$)  {\scriptsize return DELETE;};
 
+\begin{pgfonlayer}{background}
+ \node[code-bg,fit=(rmv-head) (1) (2)]{};
+ \end{pgfonlayer}
 %%%%%%%%%%% struct %%%%%%%%%%%%%%%%
 
 \node[linecode,anchor=south west](struct) at ($(locate-head.north west)+(-4pt,8pt)$) 
