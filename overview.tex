@@ -34,16 +34,16 @@ Figure~\ref{sl-code:fig} shows code for these two methods.
 
 %\bjcom{Say how the list looks, and the role of marked nodes}
 
-In the algorithm, each heap node has a {\tt key} field, a {\tt height} field, an array of {\tt next} pointers indexed from
-$1$ up to its {\tt height}, and a {\tt marked} field which is true if the node has been logically removed. Removal of a node occurs in two steps: first the node is logically removed by setting its marked flag to {\tt true}, thereafter the node is physically removed by unlinking it from the list. The algorithm must be able to update the $\tt next[i]$ pointer and $\tt marked[i]$ field together as one atomic operation, this standard technique is implemented by encoding them in a single word. The head and tail nodes of the skiplist are pointed to by global pointer variables $\tt H$ and $\tt T$, respectively. The $\tt find$ method traverses the list at decreasing levels using two local variables $\tt pred$ and $\tt curr$, starting at the head and at 
-the maximum level (line 5). At each level $\tt i$ it sets $\tt curr$ to $\tt pred.next[i]$ (line 7). During the traversal, the pointer variable $\tt succ$ and boolean variable $\tt marked$ are atomically assigned the values of $\tt curr.next[i]$ and $\tt curr.marked[i]$, respectively (line 9, 14). After that, the method repeatedly removes marked nodes at the current level (lines 10 to 14). This is done by using a $\tt compareAndSwap$ $\tt (CAS)$ command (line 11), which tests whether $\tt pred.next[i]$ and $\tt pred.marked[i]$ are equal to $\tt curr$ and {\tt false} respectively. If this test succeeds, it replaces them with $\tt succ$ and {\tt false} and returns {\tt true}; otherwise, the $\tt CAS$ returns {\tt false}. During the traversal at level $\tt i$, $\tt pred$ and $\tt curr$ are advanced until $\tt pred$ points to a node with the largest key at level $\tt i$ which is smaller than $\tt x$ (line 18). Therafter, the resulting values of $\tt pred$ and $\tt curr$ are recorded into $\tt preds[i]$ and $\tt succs[i]$ (lines 19, 20), whereafter traversal continues one level below until it reaches the bottom level. Finally, the
-method returns {\tt true} if the {\tt key} value of $\tt curr$ is equal to {\tt x}; otherwise, it returns {\tt false} meaning that with key $\tt x$ is not found.
+In the algorithm, each heap node has a $\tt key$ field, a $\tt height$ field, an array of $\tt next$ pointers indexed from
+$1$ up to its $\tt height$, and a $\tt marked$ field which is true if the node has been logically removed. Removal of a node occurs in two steps: first the node is logically removed by setting its marked flag to $\tt true$, thereafter the node is physically removed by unlinking it from the list. The algorithm must be able to update the $\tt next[i]$ pointer and $\tt marked[i]$ field together as one atomic operation, this standard technique is implemented by encoding them in a single word. The head and tail nodes of the skiplist are pointed to by global pointer variables $\tt H$ and $\tt T$, respectively. The $\tt find$ method traverses the list at decreasing levels using two local variables $\tt pred$ and $\tt curr$, starting at the head and at 
+the maximum level (line 5). At each level $\tt i$ it sets $\tt curr$ to $\tt pred.next[i]$ (line 7). During the traversal, the pointer variable $\tt succ$ and boolean variable $\tt marked$ are atomically assigned the values of $\tt curr.next[i]$ and $\tt curr.marked[i]$, respectively (line 9, 14). After that, the method repeatedly removes marked nodes at the current level (lines 10 to 14). This is done by using a $\tt compareAndSwap$ $\tt (CAS)$ command (line 11), which tests whether $\tt pred.next[i]$ and $\tt pred.marked[i]$ are equal to $\tt curr$ and $\tt false$ respectively. If this test succeeds, it replaces them with $\tt succ$ and $\tt false$ and returns $\tt true$; otherwise, the $\tt CAS$ returns $\tt false$. During the traversal at level $\tt i$, $\tt pred$ and $\tt curr$ are advanced until $\tt pred$ points to a node with the largest key at level $\tt i$ which is smaller than $\tt x$ (line 18). Therafter, the resulting values of $\tt pred$ and $\tt curr$ are recorded into $\tt preds[i]$ and $\tt succs[i]$ (lines 19, 20), whereafter traversal continues one level below until it reaches the bottom level. Finally, the
+method returns $\tt true$ if the $\tt key$ value of $\tt curr$ is equal to $\tt x$; otherwise, it returns $\tt false$ meaning that with key $\tt x$ is not found.
 
 
 %% Once an unmarked $\tt curr$ is found (line 20), it is tested to see if its key is less than the target key. If so, $\tt pred$ is advanced to $\tt curr$. Otherwise, $\tt curr$'s key is greater than or equal to $\tt x$, so the current value
 %% of $\tt pred$ is the target node's immediate predecessor. The method breaks out of the current level search loop, saving the current values of $\tt pred$ and $\tt curr$. It proceedsd int by this way until reaching the bottom level.
 
-The $\tt add$ method uses $\tt find$ to check whether a node with key $\tt x$ is already in the list. If so it returns $\tt false$; otherwise, a new node is created with randomly chosen height $\tt h$ (line 7), and with $\tt next$ pointers at levels from $1$ to $\tt h$  initialised to corresponding elements of $\tt succ$ (line 8 to 9). Thereafter, the new node is added into the list by linking it into the bottom-level list between the $\tt preds[1]$ and $\tt succs[1]$ pointers returned by $\tt find$. This is achieved by using a $\tt CAS$ to make $\tt preds.next[1]$ point to the new node (line 13). If the $\tt CAS$ fails, the $\tt add$ method will restart from the beginning (line 3) by calling $\tt find$ again etc. Otherwise, $\tt add$ proceeds with linking the new node into the list at increasingly higher levels. (lines 16 to 22). For each higher level, the method $\tt find$ (line 22) is called again to recompute $\tt preds[]$ and $\tt succs[]$ on the remaining unlinked levels. Once all levels are linked, the method returns {\tt true} (line 23).
+The $\tt add$ method uses $\tt find$ to check whether a node with key $\tt x$ is already in the list. If so it returns $\tt false$; otherwise, a new node is created with randomly chosen height $\tt h$ (line 7), and with $\tt next$ pointers at levels from $1$ to $\tt h$  initialised to corresponding elements of $\tt succ$ (line 8 to 9). Thereafter, the new node is added into the list by linking it into the bottom-level list between the $\tt preds[1]$ and $\tt succs[1]$ pointers returned by $\tt find$. This is achieved by using a $\tt CAS$ to make $\tt preds.next[1]$ point to the new node (line 13). If the $\tt CAS$ fails, the $\tt add$ method will restart from the beginning (line 3) by calling $\tt find$ again etc. Otherwise, $\tt add$ proceeds with linking the new node into the list at increasingly higher levels. (lines 16 to 22). For each higher level, the method $\tt find$ (line 22) is called again to recompute $\tt preds[]$ and $\tt succs[]$ on the remaining unlinked levels. Once all levels are linked, the method returns $\tt true$ (line 23).
 
  
 %The $\tt remove$ method also use $\tt find$ to determine whether an unmarked node with a matching key $\tt k$ is in the bottom-level list. If no node is found in the bottom-level list, or the node with a matching key is marked, the method returns false. If an unmarked node is found, then the method logically removes the associated key from the list, and prepares it for physical removal. First, starting from the topLevel, all links up to and not including the bottom-level link are marked . If the link is found to be marked the method moves on to the next-level link. Otherwise, the marking attempt must be repeated. Once all levels but the bottom one have been marked, the method marks the bottom levels next reference. Before returning true, the $\tt find$ method is called again. This call physically removes all links to the node it is searching for if that node is already logically removed.
@@ -80,7 +80,7 @@ the technique of
 For our skiplist algorithm, the user first instruments statements in each
 method that correspond to linearization points, so that their execution
 announces the corresponding atomic set operation.
-In Figure~\ref{sl-code:fig}, the LP of a successful {\tt add} operation is at line 16 of the $\tt add$ method (denoted by a blue dot) where the $\tt CAS$ is succeed, whereas the linearization point of an unsuccessful {\tt add} operation is at line 4 of the $\tt add$
+In Figure~\ref{sl-code:fig}, the LP of a successful ${\tt add}$ operation is at line 16 of the $\tt add$ method (denoted by a blue dot) where the $\tt CAS$ is succeed, whereas the linearization point of an unsuccessful $\tt add$ operation is at line 4 of the $\tt add$
 method (denoted by a red dot).
 We must now verify that in any concurrent
 execution of a collection of method calls, the sequence of announced
@@ -88,10 +88,10 @@ operations satisfies the semantics of the set data structure.
 This check is performed by an {\em observer}, which
 monitors the sequence of announced operations. The observer for the set
 data structure utilizes a register, which is initialized with
-a single, arbitrary {\tt key} value.
+a single, arbitrary $\tt key$ value.
 It checks that operations on this particular value follow set semantics,
-i.e., that successful {\tt add} and {\tt remove} operations alternate and that
-{\tt contains} are consistent with them.
+i.e., that successful $\tt add$ and $\tt remove$ operations alternate and that
+$\tt contains$ are consistent with them.
 We form %% as in the automata-theoretic approach~\cite{VW:modelchecking}
 %% (adapted in~\cite{AHHR:integrated}),
 the cross-product of the program  and the observer, synchronizing on
@@ -480,7 +480,7 @@ of the cells. Each of the two tags is a tuple $\atag = \tagtuple$, where
   \item global pointer variables
     %% and local pointer variables of $\thread$
     from which the cell represented by the tag is reachable via a (possibly empty)
-    sequence of {\tt next[1]} pointers, and
+    sequence of $\tt next[1]$ pointers, and
   \item observer registers $\reg_i$ such that the cell is reachable from
     some cell whose data value equals that of $\reg_i$,
   \end{inparaenum}
@@ -632,7 +632,7 @@ The pair consisting of the two sentinel cells (with keys $\tt -\infty$ and $\tt 
 Figure~\ref{fig:skiplistabs} shows a set of fragments that is sufficient to
 represents the part of the heap that is accessible to
 $\thread_1$ in the configuration in Figure~\ref{sl-shape}. There are $11$ fragments, named $\frag_1$, \ldots , $\frag_{11}$. Two of
-these ($\frag_6$, $\frag_7$ and $\frag_{11}$) consist of a tag that points to $\dangconst$. All other fragments consist of a pair of pointer-connected tags. The fragments $\frag_1$, \ldots , $\frag_{6}$ are  level-1-fragments, whereas $\frag_7$, \ldots , $\frag_{11}$ are higher level-fragments. The {\tt private} field of the input tag of $\frag_7$ is {\tt true}, whereas the {\tt private} field of other tags of other fragments are {\tt false}.
+these ($\frag_6$, $\frag_7$ and $\frag_{11}$) consist of a tag that points to $\dangconst$. All other fragments consist of a pair of pointer-connected tags. The fragments $\frag_1$, \ldots , $\frag_{6}$ are  level-1-fragments, whereas $\frag_7$, \ldots , $\frag_{11}$ are higher level-fragments. The $\tt private$ field of the input tag of $\frag_7$ is $\tt true$, whereas the $\tt private$ field of other tags of other fragments are $\tt false$.
 
 To verify linearizability of the algorithm in Figure~\ref{sl-code:fig},
 we must represent several key invariants of the heap. These include (among others)
@@ -641,7 +641,7 @@ we must represent several key invariants of the heap. These include (among other
 \item Higher-level lists serve as shortcuts into lower-level lists.
 \item All nodes which are unreachable from the head of the list are marked.
 \item The variables $\tt pred$, $\tt curr$, $\tt preds$, $\tt currs$ reflect the position of the
-  cell with {\tt key}
+  cell with $\tt key$
 \end{enumerate}
 Let us illustrate how such invariants are capture by our fragment abstraction.
 \begin{inparaenum}[1)]

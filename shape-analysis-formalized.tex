@@ -34,12 +34,12 @@ defined next relevant cell.
 For instance, the thread abstracted
 heap in Figure~\ref{fig:llshapes}(b) has $5$ relevant
 cells: $4$ cells that are pointed to by variables
-({\tt Head}, {\tt Tail}, {\tt p[1]}, and {\tt c[1]}) and the cell where
+(${\tt Head}$, ${\tt Tail}$, ${\tt p[1]}$, and ${\tt c[1]}$) and the cell where
 the lower list segment meets the upper one (the second cell in the top row).
 The corresponding symbolic representation, shown 
 in Figure~\ref{fig:llshapes}(c), contains only the relevant cells, and
 connects each relevant cell to its successor relevant cell. 
-Note that the cell containing {\tt 4} is not relevant,
+Note that the cell containing ${\tt 4}$ is not relevant,
 %% although it is pointed to from two other cells,
 since it is not globally reachable.
 %% Consequently, the next relevant cell of the two relevant cells in the
@@ -114,10 +114,10 @@ the sequence $x^1$, expressing that there is exactly one cell whose
 $\intgrs$-field has the same value as the observer register $x$.
 The row $x:[\set{\mbox{\tick}},\set{\mbox{\cross}}]$ expresses
 that the cells whose $\intgrs$-value is equal to that of $x$, have
-their {\tt mark} field {\tt true}, and their {\tt lock} field {\tt free}.
+their ${\tt mark}$ field ${\tt true}$, and their ${\tt lock}$ field ${\tt free}$.
 The row $\neq:[\set{\mbox{\cross}},\set{\mbox{\cross}}]$ expresses
 that the other cells have
-their {\tt mark} field {\tt false}, and their {\tt lock} field {\tt free}.
+their ${\tt mark}$ field ${\tt false}$, and their ${\tt lock}$ field ${\tt free}$.
 The two lower path expressions express that no cell has a value equal to
 that of $x$, and summarize the possible values of fields.
   
