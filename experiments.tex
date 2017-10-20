@@ -6,16 +6,15 @@
 %\begin{wrapfigure}{r}[0pt]{0.5\textwidth}
 %\vspace{5mm}
 
- Based on our framework, we have implemented a tool in OCaml, and used it for verifying various kinds of concurrent data structures implementation of stack, queue and set. These algorithms includes singly-linked lists algorithms, skip-list sets and priority queues as well as timestamps stack and queue.  
-
+ Based on our framework, we have implemented a tool in OCaml, and used it for verifying various kinds of concurrent data structures implementation of stack, priority queue, queue and set. These data structures include singly-linked lists, skip-lists and arrays of singly-linked lists.
 \begin{figure}[]
 %% \vspace*{-1cm}
 \center
-\begin{tabular}{|c | c || c | c |}
+\begin{tabular}{|l | r| r | l | r | r |}
   \hline
-   \textsf{{\textbf{Algorithms}}} &  \textsf{{\textbf{Time (s)}}} & \textsf{{\textbf{Algorithms}}} &  \textsf{{\textbf{Time (s)}}}  \\
-
-\hline
+  \multirow{2}{*}{\textsf{{\textbf{Algorithms}}}} &   \multicolumn{2}{c|}{\textsf{{\textbf{Time (s)}}}} & \multirow{2}{*}{\textsf{{\textbf{Algorithms}}}} &  \multicolumn{2}{c|}{\textsf{{\textbf{Time (s)}}}}  \\
+   \cline{2-3} \cline{5-6} 
+& \multicolumn{1}{c|}{\textsf{a}} & \multicolumn{1}{c|}{\textsf{b}} & & \multicolumn{1}{c|}{\textsf{a}} & \multicolumn{1}{c|}{\textsf{b}} \\
 \hline
 %\hline
 %
@@ -46,18 +45,18 @@
 
 
 
-\textsf{Treiber stack  ~\cite{Treiber:stack}} & \textsf {18} & \textsf {O$\textquotesingle $Hearn set  ~\cite{OHearnlist}} & \textsf{88}  \\
-\textsf{MS lock-free queue  ~\cite{MS:QueueAlgorithms}}& \textsf{21} & \textsf{HM lock-free set  ~\cite{ArtOfMpP} } & \textsf{120}  \\
-\textsf{DGLM queue  ~\cite{Doherty:lockfree}}&  \textsf {16} & \textsf{Harris lock-free set  ~\cite{Harris:list}} & \textsf{320}  \\
-\textsf{Vechev-CAS set  ~\cite{Vechev:list}}  & \textsf{86} &  \textsf{Unordered set  ~\cite{Zhang:unorderedlist}} & \textsf{1230} \\
-\cline{3-4}
-\textsf{Vechev-DCAS set  ~\cite{Vechev:list}}   & \textsf{16} & \textsf{TS stack  ~\cite{ts-stack}}  & \textsf{176} \\
-\textsf{Michael lock-free set ~\cite{Michael:list}}  & \textsf{178} & \textsf{TS queue  ~\cite{ts-stack}} & \textsf{101} \\
-\cline{3-4}
-\textsf{Pessimistic set  ~\cite{ArtOfMpP}}&\textsf{30} & \textsf{Lock-free skip-list   ~\cite{ArtOfMpP}}& \textsf{1992} \\
-\textsf{Optimistic set ~\cite{ArtOfMpP}}& \textsf{25} & \textsf{Lock-based skip-list ~\cite{lockskiplist}}& \textsf{500} \\
-\textsf{Lazy set ~\cite{Lazyset}}  & \textsf {34} & \textsf{Priority queue skip-list 1 ~\cite{Shavit:ElimQueue}} &\textsf{1320} \\
-& & \textsf{Priority queue skip-list 2~\cite{Linden:opodis13}}  &  \textsf{599} \\
+\textsf{Treiber stack  ~\cite{Treiber:stack}} & \textsf {18} & \textsf {0.18} & \textsf {O$\textquotesingle $Hearn set  ~\cite{OHearnlist}} & \textsf{88} & \textsf{12} \\
+\textsf{MS lock-free queue  ~\cite{MS:QueueAlgorithms}}& \textsf{22} & \textsf {21} & \textsf{HM lock-free set  ~\cite{ArtOfMpP} } & \textsf{120} & \textsf{462} \\
+\textsf{DGLM queue  ~\cite{Doherty:lockfree}}&  \textsf {16} & \textsf{16} & \textsf{Harris lock-free set  ~\cite{Harris:list}} & \textsf{950} & \textsf {1512} \\
+\textsf{Vechev-CAS set  ~\cite{Vechev:list}}  & \textsf{86} & \textsf {24} & \textsf{Unordered set  ~\cite{Zhang:unorderedlist}} & \textsf{1230} & \textsf {2301} \\
+\cline{4-5}
+\textsf{Vechev-DCAS set  ~\cite{Vechev:list}}   & \textsf{16} & \textsf{16} & \textsf{TS stack  ~\cite{ts-stack}}  & \textsf{176} &\\
+\textsf{Michael lock-free set ~\cite{Michael:list}}  & \textsf{178} & \textsf{110} & \textsf{TS queue  ~\cite{ts-stack}} & \textsf{101} &\\
+\cline{4-5}
+\textsf{Pessimistic set  ~\cite{ArtOfMpP}}&\textsf{30} & \textsf{1.51} & \textsf{Lock-free skip-list   ~\cite{ArtOfMpP}}& \textsf{1992} & \\
+\textsf{Optimistic set ~\cite{ArtOfMpP}}& \textsf{25} & \textsf{60} & \textsf{Lock-based skip-list ~\cite{lockskiplist}}& \textsf{500} & \\
+\textsf{Lazy set ~\cite{Lazyset}}  & \textsf {34} & \textsf{289} & \textsf{Priority queue skip-list 1 ~\cite{Shavit:ElimQueue}} &\textsf{1320} & \\
+& & &\textsf{Priority queue skip-list 2~\cite{Linden:opodis13}}  &  \textsf{599} &\\
 \hline
 \end{tabular}
 
@@ -68,7 +67,7 @@
 \label{Experiments:fig}
 \end{figure}
 %\vspace{-0.2cm}
-\paragraph{Singly-linked list benchmarks:} These benchmarks include stacks, queues and sets algorithms which already verified in our previous work in ~\cite{Quy:sas16}, in which we extended this approach to handle SLL implementations of concurrent sets by adapting a well-known abstraction of singly-linked lists ~\cite{MYRS:Canonical} for concurrent programs.
+\paragraph{Singly-linked list benchmarks:} These benchmarks include stacks, queues and sets algorithms which already verified in our previous work in ~\cite{Quy:sas16}. Our previous work handles SLL implementations of concurrent sets by adapting a well-known abstraction of singly-linked lists ~\cite{MYRS:Canonical} for concurrent programs.
 The resulting technique is specifically tailored for singly-links in a slightly ad-hoc way.
 Our fragment abstraction is significantly simpler conceptually, and can therefore be used directly
 also for other classes of heap structures. Our approach of previous work is strong enough to verify  concurrent set
@@ -76,9 +75,9 @@ implementations based on sorted and non-sorted singly-linked lists having non-op
 
 \paragraph{Skiplist benchmarks:} We consider four skiplist algorithms including one lock-based skiplist set~\cite{MS:QueueAlgorithms}, one lock-free skiplist ~\cite{ArtOfMpP} skiplist which is described in section 2, and two skip-list based priority queues. The challenge for verifying these algorithms is to deal with the problem of unbounded number of levels in these skiplists. In addition, in the lock-free skiplist ~\cite{ArtOfMpP} and priority queue ~\cite{Linden:opodis13}, the skiplist shape is not well formed, it means that each higher level list is not always a sub-list of lower level lists. This makes the verification tasks became extremely difficult, these algorithms have not been formally verified by any previous work. By applying our fragment abstraction,  to the best of our knowledge, we are the first one who is able to verify these concurrent skiplists automatically. 
 
-\paragraph{Timestamp benchmarks:} We consider two challenging timestamp algorithms in ~\cite{ts-stack}, the timestamp stack uses an array of singly-linked lists (SLLs), one for each thread, accessed via the thread-indexed array ${\tt pools[maxThreads]}$ of pointers to the first cell of each list. Each list cell contains a data value, a timestamp value, a ${\tt next}$ pointer, and a boolean flag ${\tt mark}$ which indicates whether the node is logically removed from the stack. The $\tt push$ method of a thread push an to ``its own'' list, and can $\tt pop$ method pop the youngest element from any list. The timestamp queue uses the same data structure as timestamp stack, and it also push an element to its own list. However, the its dequeue method removes the oldest element from any list. There are two challenges problems of verifying these algorithm, the fist challenge is how to deal with unbounded number of SLLs and the second challenge is that the lineatization points of the algorithms are not fixed, they are depended on the future behaviors of the algorithms. By using our fragment abstraction and observers for stack and queue in ~\cite{BEEH:icalp15}. Our tool is the first one which verifies these two algorithms automatically.
+\paragraph{Timestamp benchmarks:} We consider two challenging timestamp algorithms in ~\cite{ts-stack}. There are two challenges problems of verifying these algorithm, the fist challenge is how to deal with unbounded number of SLLs and the second challenge is that the lineatization points of the algorithms are not fixed, they are depended on the future behaviors of the algorithms. By using our fragment abstraction and observers for stack and queue in ~\cite{BEEH:icalp15}. Our tool is the first one which verifies these two algorithms automatically.
 
-\paragraph{Running Times.}The experiments were performed on a desktop 2.8 GHz processor with 8GB memory. The results are presented in Fig.~\ref{Experiments:fig}, where running times are given in seconds. In our experiment, we run the tool together with observer in \cite{AHHR:integrated:rep}, \cite{BEEH:icalp15} and controller in~\cite{Quy:sas16} to verify linearization properties of the algorithms. All experiments start from the initial heap,  
+\paragraph{Running Times.}The experiments were performed on a desktop 2.8 GHz processor with 8GB memory. The results are presented in Fig.~\ref{Experiments:fig}, where running times are given in seconds. The column \textbf{a} show the running times of our tool, whereas the column \textbf{b} show the running time of ~\cite{Quy:sas16}.  In our experiments, we run the tool together with observer in \cite{AHHR:integrated:rep}, \cite{BEEH:icalp15} and controller in~\cite{Quy:sas16} to verify linearization properties of the algorithms. All experiments start from the initial heap,  
 and end either when the analysis reaches the fixed point or when a violation of safety properties or linearizability is detected. As can be seen from the table, the running times vary in the different examples. This is due to the types of shapes that are produced during the analysis. For instance, skip-list algorithms have much longer running times. This is due to the number of pointer variables and their complicated shapes. Whereas, other algorithms 
 produce simple shape patterns and hence they have shorter running times.
 \paragraph{Error Detection}
