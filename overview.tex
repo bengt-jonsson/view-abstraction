@@ -645,7 +645,7 @@ we must represent several key invariants of the heap. These include (among other
 \item A higher-level pointer from a globally reachable node serves  as a shortcut into the level-1 list.
 \item All nodes which are unreachable from the head of the list are marked.
 \item The variable $\tt pred$ points to a cells whose $\tt key$ field is never
-  larger than the input parameter of its $\tt add method$.
+  larger than the input parameter of its $\tt add$ method.
 %% \item The variable $\tt pred$, $\tt curr$, $\tt preds$, $\tt currs$ reflect the position of the
 %%   cell with $\tt key$
 \end{enumerate}

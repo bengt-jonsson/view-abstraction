@@ -61,13 +61,16 @@
 \textsf{Lazy set ~\cite{Lazyset}}  & \textsf {34} & \textsf{289} & \textsf{Priority queue skiplist 1 ~\cite{Shavit:queue}} &\textsf{1320} & \\
 & & &\textsf{Priority queue skiplist 2~\cite{Linden:opodis13}}  &  \textsf{599} &\\
 \hline
- \multicolumn{1}{l}{\textsf{a: Our tool, b:~\cite{Quy:sas16} }} & \multicolumn{1}{l}{}  & \multicolumn{1}{l}{} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{} \\
+ %% \multicolumn{1}{l}{\textsf{a: Our tool, b:~\cite{Quy:sas16} }} & \multicolumn{1}{l}{}  & \multicolumn{1}{l}{} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{} \\
 % \multicolumn{1}{l}{b:~\cite{Quy:sas16}} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{} \\
 \end{tabular}
 
 %\vspace{10mm}
 %\vspace*{-0.3cm}
-\caption{Experimental results for verifying concurrent programs where}
+\caption{Times for verifying concurrent data structure implementations.
+Column {\bf a} shows the verification times for our tool based on fragment abstraction.
+Column {\bf b} shows the verification times for the tool for SLLs in our previous
+work~\protect\cite{Quy:sas16}}
 %\vspace*{-0.7cm}
 \label{Experiments:fig}
 \end{figure}
@@ -84,7 +87,7 @@
 
 \paragraph{Arrays of singly-linked list benchmarks:} We consider two challenging timestamp algorithms in \cite{ts-stack}. There are two challenges problems of verifying these algorithm, the fist challenge is how to deal with unbounded number of SLLs and the second challenge is that the lineatization points of the algorithms are not fixed, but depended on the future of each execution. By combining our fragment abstraction and the observers for stacks and queues in \cite{BEEH:icalp15} and the controllers in~\cite{Quy:sas16} . Our tool is the first one verifing these two algorithms automatically.
 
-\paragraph{Running Times.}The experiments were performed on a desktop 2.8 GHz processor with 8GB memory. The results are presented in Fig.~\ref{Experiments:fig}, where running times are given in seconds. The column \textsf{a} show the running times of our tool, whereas the column \textsf{b} show the running time of algorithms which can be verified by our previous work~\cite{Quy:sas16}.  In our experiments, we run the tool together with observer in \cite{AHHR:integrated:rep}, \cite{BEEH:icalp15} and controller in~\cite{Quy:sas16} to verify linearization properties of the algorithms. All experiments start from the initial heap,  
+\paragraph{Running Times.}The experiments were performed on a desktop 2.8 GHz processor with 8GB memory. The results are presented in Fig.~\ref{Experiments:fig}, where running times are given in seconds. The column \textsf{a} show the running times of our tool, whereas the column \textsf{b} show the running time of algorithms which can be verified by our previous work~\cite{Quy:sas16}.  In our experiments, we run the tool together with observer in \cite{AHHR:integrated}, \cite{BEEH:icalp15} and controller in~\cite{Quy:sas16} to verify linearization properties of the algorithms. All experiments start from the initial heap,  
 and end either when the analysis reaches the fixed point or when a violation of safety properties or linearizability is detected. As can be seen from the table, the running times vary in the different examples. This is due to the types of shapes that are produced during the analysis. For instance, skiplist algorithms have much longer running times. This is due to the number of pointer variables and their complicated shapes. Whereas, other algorithms 
 produce simple shape patterns and hence they have shorter running times.
 \paragraph{Error Detection}

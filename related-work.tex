@@ -2,7 +2,7 @@
 A large number of techniques have been developed for representing heap structures
 in automated analysis, including,
 e.g., separation logic and various related graph formalisms
-\cite{InvaderCAV08,thor10,rival11,dudka13}, other logics \cite{Sagiv02,pale97},
+\cite{InvaderCAV08,rival11,dudka13}, other logics \cite{Sagiv02},
 automata \cite{habermehl:forest}, or graph grammars \cite{juggrnaut10}. 
 Most works apply these to sequential programs.
 
@@ -12,7 +12,7 @@ lists~\cite{AHHR:integrated,meyer:vmcai16,Quy:sas16,Sagiv:correlation,Vafeiadis:
 Furthermore, many of these techniques impose additional restrictions on the considered verification problem, such as bounding the number of accessing
 threads~\cite{Amit:comparisonAbstraction,Vechev:spin09,CernyRZCA:CAV10}.
 
-In~\cite{haziza:tacas13}, concurrent programs operating on SLLs are analyzed
+In~\cite{AHHR:integrated}, concurrent programs operating on SLLs are analyzed
 using an adaptation of a transitive closure logic~\cite{BiRa:vmcai06}, combined with
 tracking of simple sortedness properties between data elements; the approach does
 not allow to represent patterns observed by threads when following sequences of
@@ -21,8 +21,8 @@ implementations.
 In our recent work~\cite{Quy:sas16}, we extended this approach to handle SLL implementations
 of concurrent sets by adapting a
 well-known abstraction of singly-linked lists ~\cite{MYRS:Canonical} for concurrent programs.
-The resulting technique is specifically tailored for singly-links in a slightly ad-hoc way.
-Our fragment abstraction is significantly simpler conceptually, and can therefore be used directly
+The resulting technique is specifically tailored for singly-links.
+Our fragment abstraction is significantly simpler conceptually, and can therefore be  adapted
 also for other classes of heap structures.
 The approach of~\cite{Quy:sas16} is the only one with a shape representation strong enough to
 verify  concurrent set
@@ -30,21 +30,35 @@ implementations based on sorted and non-sorted
 singly-linked lists having non-optimistic contains (or lookup) operations we consider, such as
 the lock-free sets of {\it HM}~\cite{ArtOfMpP},
 {\it Harris}~\cite{Harris:list}, or {\it Michael}~\cite{Michael:list},
-or unordered set of~\cite{Zhang:unorderedlist}. Our fragment abstraction can handle them
+or unordered set of~\cite{Zhang:unorderedlist}. As shown in
+Section~\ref{section:experiments}, our fragment abstraction can handle them
 as well as also algorithms employing skiplists and arrays of singly-linked lists.
 
 There is no previous work on automated verification of skiplist-based concurrent algorithms.
-Verification of sequential algorithms have been addressed under restrictions, such as limiting the
+Verification of {\em  sequential} algorithms have been addressed under restrictions, such as limiting the
 number of levels to two or three~\cite{boxes13,Quy:atva13:journal}. The work~\cite{Sanchez:skiplists}
 generates verification conditions for statements in sequential skiplist implementations. All these
 works assume that skiplists have the well-formedness property that any higher-level lists is a
 sublist of any lower-level list, which is true for sequential skiplist algorithms, but false for
 several concurrent ones, such as~\cite{ArtOfMpP,Linden:opodis13}.
 
-Concurrent algorithms based on arrays of SLLs, and including timestamps, e.g., addressing
-the challenge of verifying the algorithms in~\cite{ts-stack} have been verified using manual
-techniques in~\cite{Khyzha:esop17,singh:issre16}.
 
+
+Concurrent algorithms based on arrays of SLLs, and including timestamps, e.g.,
+for verifying the algorithms in~\cite{ts-stack} have shown to be rather challenging. Only
+recently has the TS stack been verified by non-automated
+techniques~\cite{bouajjani:icalp17:rep} using a non-trivial extension of
+forward simulation, and the TS queue by been verified manually by a new technique
+based on partial orders~\cite{Khyzha:esop17,singh:issre16}..
+We have verified both these algorithms automatically using fragment abstraction,
+
+Our fragment abstraction is related in spirit to other formalisms that
+abstract dynamic graph structures by defining some form of equivalence on
+its nodes (e.g.,~\cite{spotlight07,Sagiv02,habermehl:forest}). These have
+not been applied to verify functional correctness fine-grained concurrent
+algorithms,  except for a limited number of SLL-based algorithms. Fragment
+abstraction's representation of both local an global information allows to
+extend the applicability of this class of techniques.
 
 
 
