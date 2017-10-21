@@ -1,8 +1,7 @@
 \begin{abstract}
 %%   One of the most challenging tasks in software verification is to prove linearizability for concurrent threads  that  access a shared data structure. Such systems give rise to unbounded numbers of threads that operate on an bounded data domain and that access dynamically allocated memory. Furthermore, proving linearizability is harder than proving control state reachability due to  
 %% existentially quantified linearization points. The problem is further complicated by the presence of advanced features such as non-fixed linearization points, speculation, and helping. In this paper, 
-A major challenge in automated verification is
-is to develop techniques that are
+A major challenge in automated verification is to develop techniques that are
 able to reason about fine-grained concurrent algorithms that
 consist of an unbounded number of concurrent threads, which
 operate on an unbounded domain of data values, and use
@@ -11,7 +10,7 @@ Existing automated techniques consider the case where
 shared data is organized into singly-linked lists.
 We present a novel shape analysis for automated verification of fine-grained concurrent algorithms that can handle heap structures which are more complex than just singly-linked lists, in particular
 skip lists and arrays of singly linked lists, while
-at the same time as handling an unbounded
+at the same time handling an unbounded
 number of concurrent threads, an unbounded domain of data values
 (including timestamps), and an unbounded shared heap.
 Our technique is based on a novel shape abstraction,
@@ -23,5 +22,6 @@ We have implemented our approach and applied it to automatically verify
 correctness, in the sense of linearizability, of 
 most linearizable concurrent implementations
 of sets, stacks, and queues, which emply singly-linked lists, skip lists, or
-arrays of timestamped singly-linked lists, which are known to us in the literature.
+arrays of singly-linked lists with timestamps,
+which are known to us in the literature.
 \end{abstract}

@@ -41,7 +41,7 @@ unbounded dynamically allocated memory.
 Perhaps the hardest of these challenges is that of handling 
 dynamically allocated memory.
 Consequently, existing techniques that can automatically prove correctness
-of such fine-grained concurrent algorithms restrict attention to the simple
+of such fine-grained concurrent algorithms restrict attention to the
 case where heap structures represent shared data by singly-linked 
 %% All automated approaches restrict attention to concurrent algorithms in which
 lists~\cite{AHHR:integrated,meyer:vmcai16,Quy:sas16,Sagiv:correlation,Vafeiadis:cav10}. Furthermore, many of these techniques impose additional restrictions on the considered verification problem, such as bounding the number of accessing
@@ -57,7 +57,7 @@ that operate on such data structures.
 %% \cite{HSV:concur13,Vafeiadis:cav10},
 %% or requiring auxiliary lemmas
 %% \cite{OHearnlist,Poling}.}
-\todo[inline]{The list of description of restrictions of SSL work must be improved. We actually should be more precise about what previous work has achieved, in terms of which combinations of challenges have been overcome}
+%% \todo[inline]{The list of description of restrictions of SSL work must be improved. We actually should be more precise about what previous work has achieved, in terms of which combinations of challenges have been overcome}
 
 \paragraph{Contributions}
 In this paper, we present a technique for automatic verification of concurrent
@@ -102,22 +102,22 @@ Thus, a set of fragments describes the set of heaps that can be formed by
 The combination of local and global information in fragments supports
 precise reasoning about the sequence of cells that can be accessed by
 threads that traverse the heap by following pointer fields in cells and
-pointer variables.
-The local information captures properties of the cell fields that can
+pointer variables:
+the local information captures properties of the cell fields that can
 be accessed as a thread dereferences a pointer variable or a pointer field;
 the global information also captures whether certain significant accesses
 will at all be possible by following a sequence of pointer fields.
 This support for reasoning about patterns of cell accesses enables
 automated verification of reachability and other functional properties.
 
-Fragment abstraction can and should be, in a natural way,
-be combined with data abstractions for
+Fragment abstraction can (and should) be combined, in a natural way,
+with data abstractions for
 handling unbounded data domains and with thread abstractions
 for handling an unbounded number of threads.
 For the latter we adapt
-the successful thread-modular approach~\cite{BLMRS:cav08}, which constructs
-a representation of the local state of a single, but arbitrary thread, together
-with part of the global state and heap that is accessible to that thread.
+the successful thread-modular approach~\cite{BLMRS:cav08}, which
+represents the local state of a single, but arbitrary thread, together
+with the part of the global state and heap that is accessible to that thread.
 Our combination of fragment abstraction, thread abstraction, and data
 abstraction results in a finite abstract domain, thereby guaranteeing
 termination of our analysis.
@@ -169,7 +169,8 @@ correctness, in the sense of linearizability, of a large number of
 concurrent data structure algorithms, described in a C-like language.
 More specifically, we have automatically verified linearizability of 
 most linearizable concurrent implementations
-of sets, stacks, and queues, which emply singly-linked lists, skiplists, or
+of sets, stacks, and queues, and priority queues,
+which emply singly-linked lists, skiplists, or
 arrays of timestamped singly-linked lists, which are known to us in
 the literature on concurrent data structures.
 For this verification, we specify linearizability
@@ -179,8 +180,8 @@ which reduces the criterion of linearizability to a simple reachability
 property. To verify implementations of stacks and queues, 
 the application of observers can be done completely automatically without
 any manual steps, whereas for implementations of sets, the verification relies
-on user annotation of how linearization points are placed in each method, which
-is a small burden for the verifier.
+on light-weight user annotation of how linearization points are placed in
+each method.
 %% report violations of the linearizability criterion. Observers synchronize with
 %% the monitored concurrent programs at designated actions. This can be done in
 %% two ways.
@@ -222,10 +223,13 @@ via a shared heap.
 In the next section, we intuitively illustrate our fragment abstraction on the
 verification of a skiplist-based concurrent set implementation.
 In Section~\ref{programs:section} we introduce our model for programs,
-and of observers for specifying linearizability. The fragment abstraction
-is described for singly-linked in Section~\ref{sec:fragment-abstraction},
-for skiplists in Section~\ref{sect:skiplists}, and for arrays of
-singly-linked lists in Section~\ref{sect:ts}. Our implementation and
+and of observers for specifying linearizability. In 
+Section~\ref{sec:fragment-abstraction} we describe in more detail our
+fragment abstraction for skiplists; note that singly-linked lists can
+be handled as a simple special case of skiplists.
+In Section~\ref{sec:ts} we describe how fragment abstraction applies to
+arrays of singly-linked lists with timestamp fields.
+Our implementation and
 experiments are reported in Section~\ref{section:experiments}, followed
 by conclusions in Section~\ref{section:conclusions}.
 
