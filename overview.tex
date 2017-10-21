@@ -29,11 +29,14 @@ returns true iff $\tt x$ is in the set.
 All methods rely on a method $\tt find$ to search for a given key. 
 In this section, we shortly describe the $\tt find$ and $\tt add$ methods.
 Figure~\ref{sl-code:fig} shows code for these two methods.
+\vspace*{-0.6cm}
 %\bjcom{Start with the most important property of the method. What does it do?}
 \input slcode
 
 
 %\bjcom{Say how the list looks, and the role of marked nodes}
+
+\vspace*{-0.6cm}
 
 In the algorithm, each heap node has a $\tt key$ field, a $\tt height$, an array of $\tt next$ pointers indexed from
 $1$ up to its $\tt height$, and an array of $\tt marked$ fields which are true if the node has been logically removed at the corresponding level. Removal of a node (at a certain level $\klevel$) occurs in two steps: first the node is logically removed by setting its marked flag at level $\klevel$ to $\tt true$, thereafter the node is physically removed by unlinking it from the level-$\klevel$ list. The algorithm must be able to update the $\tt next[k]$ pointer and $\tt marked[k]$ field together as one atomic operation; this is standardly implemented by encoding them in a single word. The head and tail nodes of the skiplist are pointed to by global pointer variables $\tt H$ and $\tt T$, respectively. The $\tt find$ method traverses the list at decreasing levels using two local variables $\tt pred$ and $\tt curr$, starting at the head and at 
@@ -516,6 +519,7 @@ information).
 \vspace{-30pt}
   \begin{center}
  \includegraphics[width=0.4\textwidth, trim={13cm 10cm 12cm 9cm}, clip]{skipcell.pdf}  
+\vspace*{-0.6cm}
     \caption{A structure of a cell}
     \label{skipcell}
   \end{center}
@@ -533,10 +537,13 @@ abstracted to as the variable $\tt v[higher]$.
 Let us illustrate how fragment abstraction applies to the skiplist
 algorithm.
 \begin{figure}
+\vspace*{-0.6cm}
 \center  
  \includegraphics[width=1.2\textwidth, trim={7cm 8cm 0.5cm 6cm}, clip]{skipshape.pdf}  
+\vspace*{-0.6cm}
  \caption{A concrete shape of 3-level skiplist with two threads}
 \label{sl-shape}
+\vspace*{-0.6cm}
 \end{figure}
 %\todo[inline]{Quy: you must provide example heaps, etc. before I can continue
 %  writing}
@@ -631,6 +638,7 @@ The pair consisting of the two sentinel cells (with keys $\tt -\infty$ and $\tt 
 	\input skiplistabs
 \caption{Fragment abstraction of skiplist algorithm}
 \label{fig:skiplistabs}
+\vspace*{-0.6cm}
 \end{figure} 
 Figure~\ref{fig:skiplistabs} shows a set of fragments that is sufficient to
 represents the part of the heap that is accessible to
