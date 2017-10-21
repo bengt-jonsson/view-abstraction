@@ -6,25 +6,18 @@ programs that  operate on a shared heap which represents
 an array of singly linked lists.
 We use this abstraction to provide the first automated verification of
 linearizability for the Timedstamped stack and
-Timestamped queues algorithms of~\cite{ts-stack}. The verification of
-these algorithms have shown to be rather challenging. Only
-recently has the TS stack been verified by non-automated
-techniques~\cite{bouajjani:icalp17:rep} using a non-trivial extension of
-forward simulation, and the TS queue by been verified manually by a new technique
-based on partial orders~\cite{ts-stack}.
-We have verified both these algorithms automatically using fragment abstraction,
+Timestamped queues algorithms of~\cite{ts-stack}. 
 as reported in Section~\ref{section:experiments}.
 
-\subsection{Example Algorithm: the Timestamped Stack}
 
 \input tscode
 
 %\todo[inline]{Provide a description of the algorithm}
 %\todo[inline]{Quy: The line numbers for Pop are scrambled. Can you fix?
 %Also, the variable {\tt i} at line 6 is initialized strangely. Can you fix?}
-Figure~\ref{ts-stack:fig} shows a simplified version of the Timestamped Stack (TS stack), where we have omitted the check for emptiness in the ${\tt pop}$ method, and the optimization using ${\tt push}$-${\tt pop}$ elimination. These features are included in the full version of the algorithm, described in Appendix XXX, that we have verified automatically.
+Figure~\ref{ts-stack:fig} shows a simplified version of the Timestamped Stack (TS stack) of~\cite{ts-stack}, where we have omitted the check for emptiness in the ${\tt pop}$ method, and the optimization using ${\tt push}$-${\tt pop}$ elimination. These features are included in the full version of the algorithm, described in Appendix~\ref{app:codes}, that we have verified automatically.
 
-The algorithm uses an array of singly-linked lists (SLLs), one for each thread, accessed via the thread-indexed array ${\tt pools[maxThreads]}$ of pointers to the first cell of each list. The ${\tt init}$ method initializes each of these pointers to $\nullconst$. Each list cell contains a data value, a timestamp value, a ${\tt next}$ pointer, and a boolean flag ${\tt mark}$ which indicates whether the node is logically removed from the stack. Each thread pushes elements to ``its own'' list, and can pop elements from any list.
+The algorithm uses an array of singly-linked lists (SLLs), one for each thread, accessed via the thread-indexed array ${\tt pools[maxThreads]}$ of pointers to the first cell of each list. The ${\tt init}$ method initializes each of these pointers to $\nullconst$. Each list cell contains a data value, a timestamp value, a ${\tt next}$ pointer, and a boolean flag ${\tt mark}$ which indicates whether the node is logically removed from the stack. Each thread pushes elements only to ``its own'' list, but can pop elements from any list.
 
 A ${\tt push}$ method for inserting a data element ${\tt d}$ works as follows: first, a new cell with element ${\tt d}$ and minimal timestamp ${\tt -1}$ is inserted at the beginning of the list indexed by the calling thread (line 1-3). After that, a new timestamp is created and assigned (via the variable ${\tt t}$) to the ${\tt ts}$ field of the inserted cell (line 4-5).
 %\bjcom{Quesion to Quy: What happens when pop methods sees uninitialized timestamps?} \quycom{uninitialized time is -1, its smaller than any other time.}
@@ -43,7 +36,7 @@ Finally, the method returns the ${\tt data}$ value of the removed cell.
 %\todo[inline]{Comments by Bengt: How can you return empty? Also, I think you
 % need to explain the extra removal of marked cells better} \quycom{this code is a simplified version without emptiness checking. If we add emptiness part, the code will be longer and more complicated}
 
-\subsection{Fragment Abstraction}
+\subsubsection{Fragment Abstraction}
 In our verification, we establish that the TS stack algorithm of
 Figure~\ref{ts-stack:fig} is is correct in the sense that it is a
 linearizable implementation of a stack data structure.
@@ -63,10 +56,10 @@ it is accessed concurrently by three threads $\thread_1$, $\thread_2$, and $\thr
 shown with the values of its fields, using the layout shown to the right in
 Figure~\ref{fig:tsshape}.
 In addition, each cell is labeled by the pointer variables that point to it.
-We use ${\tt lvar[i]}$ to denote the local
+We use ${\tt lvar(i)}$ to denote the local
 variable ${\tt lvar}$ of thread $\thread_i$.
 %\todo[inline]{Quy: Use a better scheme for indexing local variables. Previously,
-%  we used ${\tt var[2]}$, for variable ${\tt var}$ of thread 2. Maybe use it also here?}
+%  we used ${\tt var(2]}$, for variable ${\tt var}$ of thread 2. Maybe use it also here?}
 %\todo[inline]{You must start by explaining the notation better. E.g., what means
 %  a pointer variable that labels a node?}
 
@@ -124,14 +117,16 @@ as an observer register.
 
 Figure~\ref{fig:tsviewshape} shows a set of fragments that is
 satisfied wrp.\ to $\thread_2$ by the configuration in Figure~\ref{fig:tsshape}.
-There are $7$ fragments, named $\frag_1$, \ldots , $\frag_2$. Two of
-these ($\frag_3$ and $\frag_7$) consist of a tag that points to $\dangconst$,
-and the other consist of a pair of pointer-connected tags.
-Consider the tag which occurs in fragment $\frag_7$; it is the bottom-rightmost
-tag. This tag is an abstraction of the
-bottom-rightmost heap cell in Figure~\ref{fig:tsshape}, using the same layout
-for fields as Figure~\ref{fig:tsshape}. The different non-pointer fields
-are represented as follows.
+There are $7$ fragments, named $\frag_1$, \ldots , $\frag_7$.
+%% Two of
+%% these ($\frag_3$ and $\frag_7$) consist of a tag that points to $\dangconst$,
+%% and the other consist of a pair of pointer-connected tags.
+Consider the tag which occurs in fragment $\frag_7$.
+%% ; it is the bottom-rightmost tag.
+This tag is an abstraction of the
+bottom-rightmost heap cell in Figure~\ref{fig:tsshape},
+%% using the same layout for fields as Figure~\ref{fig:tsshape}.
+The different non-pointer fields are represented as follows.
 \begin{itemize}
 \item The $\tt data$ field of the tag (to the left) abstracts the data value
   $2$ to the set of observer registers with that value: in this case
@@ -149,17 +144,17 @@ are represented as follows.
 \item The $\tt mark$ field assumes values from a small finite domain and
   is represented precisely as in concrete heap cells
 \end{itemize}
-Above the top, the tag contains the thread-local and global pointer variables
-that point to the cell, in this case $\tt youngest$ and $\tt n$.
-At the bottom of the tag, the first row contains the global variables 
-pointing to cells from which the cell can be reached, in this case
-$\tt pools[3]$, as well as observer registers whose value is equal to the
-${\tt data}$ field of a cell from which  the cell can be reached, in this
-case $\reg_2$ (since the cell itself has the same data value as $\reg_2$).
-The second row contains dual information: now for cells that can be reached
-from the cell itself (this is again $\reg_2$).
+%% Above the top, the tag contains the thread-local and global pointer variables
+%% that point to the cell, in this case $\tt youngest$ and $\tt n$.
+%% At the bottom of the tag, the first row contains the global variables 
+%% pointing to cells from which the cell can be reached, in this case
+%% $\tt pools[3]$, as well as observer registers whose value is equal to the
+%% ${\tt data}$ field of a cell from which  the cell can be reached, in this
+%% case $\reg_2$ (since the cell itself has the same data value as $\reg_2$).
+%% The second row contains dual information: now for cells that can be reached
+%% from the cell itself (this is again $\reg_2$).
 
-\todo[inline]{Fix the issue with ${\tt pools[3]}$}
+%% \todo[inline]{Fix the issue with ${\tt pools[3]}$}
 
 %% Each cell in the heap state of Figure~\ref{fig:tsshape} now satisfies
 %% some tag in Figure~\ref{fig:tsshape}. Moreoever, each pair of pointer-connected
@@ -191,9 +186,9 @@ from the cell itself (this is again $\reg_2$).
 %%   by $\tt pools[i]$, and $\mathit{other}$ any other index.
 %% \end{itemize}
 
-\subsection{Symbolic Postcondition Computation}
-The symbolic postcondition computation is quite similar to that for skiplist.
-The main differences are as follows.
+\subsubsection{Symbolic Postcondition Computation}
+The symbolic postcondition computation is similar to that for skiplist.
+Main differences are as follows.
 \begin{itemize}
 \item
   Whenever a thread assigns to $\tt myTop$, the abstraction must consider
@@ -201,8 +196,8 @@ The main differences are as follows.
   \item
     In interference steps, we must consider that the abstraction
     $\tt me$ for the interfering thread may have to be changed into $\tt ot$.
-    We further note that the abstractions $\tt me$ for two $\tt push$ methods
-    cannot coincide, since each thread pushes to its own list.
+    Furthermoe, the abstractions $\tt me$ for two $\tt push$ methods
+    cannot coincide, since each thread pushes only to its own list.
 \end{itemize}
 
 %% \section{Timestamp Abstraction}

@@ -27,7 +27,7 @@
 %\draw ($(cellnew.north west)+(0pt,-10pt)$) -- ($(cellnew.north west)+(10pt,-10pt)$);
 %\draw ($(cellnew.north west)+(0pt,-20pt)$) -- ($(cellnew.north west)+(10pt,-20pt)$);
 %\draw ($(cellnew.north west)+(10pt,0pt)$) -- ($(cellnew.south west)+(10pt,0pt)$);
-%\node[anchor=south,font=\tiny,align=center] at ($(cellnew.north)+(0pt,-2pt)$) {{\tt new[1]}};
+%\node[anchor=south,font=\tiny,align=center] at ($(cellnew.north)+(0pt,-2pt)$) {{\tt new(1)}};
 
 
 \node[rounded corners,draw,name=cellnew,minimum width=24pt, minimum height=20pt] at ($(cell0.east)+(8pt,80pt)$){};
@@ -36,7 +36,7 @@
 \node[draw,minimum width=8pt, minimum height=10pt,anchor=north,font=\tiny,inner sep=0pt]at (cellnew.north){\tt -1};
 \node[draw,minimum width=8pt, minimum height=10pt,anchor=south,font=\tiny,inner sep=0pt]at (cellnew.south){\cross};
 \node[name=succnew,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=0pt] at ($(cellnew.east)+(-4pt,0pt)$) {};
-\node[anchor=south,font=\tiny,align=center,name=head] at ($(cellnew.north)+(0pt,-2pt)$) {{\tt new[1]}};
+\node[anchor=south,font=\tiny,align=center,name=head] at ($(cellnew.north)+(0pt,-2pt)$) {{\tt new(1)}};
 
 
 
@@ -196,7 +196,7 @@ at ($(cell2.east)+(30pt,0pt)$){};
 \node[name=succ13,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=0pt] at ($(cell13.east)+(-4pt,0pt)$) {};
 
 
-\node[anchor=south,font=\tiny,align=center] at ($(cell13.north)+(0pt,-2pt)$) {{\tt myTop[2]}};
+\node[anchor=south,font=\tiny,align=center] at ($(cell13.north)+(0pt,-2pt)$) {{\tt myTop(2)}};
 
 \draw[->] (succ02) -- (cell13);
 
@@ -258,7 +258,7 @@ at ($(cell2.east)+(30pt,0pt)$){};
 \node[name=succ43,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=0pt] at ($(cell43.east)+(-4pt,0pt)$) {};
 
 
-\node[anchor=south,font=\tiny,align=center] at ($(cell43.north)+(0pt,-2pt)$) {{${\tt youngest[2], n[2]}$}};
+\node[anchor=south,font=\tiny,align=center] at ($(cell43.north)+(0pt,-2pt)$) {{${\tt youngest(2), n(2)}$}};
 \draw[->] (succ23) -- (cell33);
 \draw[->] (succ33) -- (cell43);
 
