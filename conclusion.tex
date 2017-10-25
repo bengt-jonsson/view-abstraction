@@ -1,0 +1,48 @@
+\section{Conclusions}
+\label{sec:conclusions}
+% \vspace*{-6pt}
+We have presented a novel shape abstraction, called fragment abstraction,
+for automatic verification of
+concurrent data structure implementations that operate different forms of
+dynamically allocated heap structures, including singly-linked lists, skiplists,
+and arrays of singly-linke lists.
+Our approach is the first framework that
+can automatically verify concurrent data structure implementations that employ
+skiplists and arrays of singly linked lists,
+at the same time as handling an unbounded
+number of concurrent threads, an unbounded domain of data values
+(including timestamps), and an unbounded shared heap.
+We showed fragment abstraction allows to combine local and global reachability
+information to allow verification of the functional behavior
+of a collection of threads.
+
+As future work, we intend to investigate whether fragment abstraction can be
+applied also to other heap structures, such as concurrent binary search trees.
+%% \begin{itemize}
+%% \item
+%%   We present a novel formalism for specifying the occurrence of linearization
+%%   points, called {\it controllers}.
+%% Controllers  can handle, in a simple and uniform manner, complex patterns for
+%% We have presented a framework for proving linearizability
+%% of algorithms for concurrent data structures such as 
+%% % 
+%% To that end, we provide a specification language that
+%% allows defining complex linearization patterns in a
+%% simple and concise manner.
+%% %
+%% The systems we consider are infinite in multiple dimensions, namely,
+%% in the size of the data, the number of threads, and the size
+%% of the heap.
+%% %
+%% Therefore, we define a collection of powerful
+%% abstraction schemes that allow both precision
+%% and efficiency of the analysis.
+%
+
+%%  \paragraph{Acknowledgments}
+%% We thank the reviewers for helpful comments.
+%% This work was supported in part by
+%% the Swedish Foundation for Strategic Research within the
+%% ProFuN project, and by the Swedish Research Council within the UPMARC 
+%% centre of
+%% excellence.
