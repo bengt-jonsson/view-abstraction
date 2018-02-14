@@ -1,0 +1,234 @@
+Dear Bengt Jonsson,
+
+I am delighted to inform you that your submitted paper, "Fragment
+Abstraction for Concurrent Shape Analysis,” has been accepted for
+publication in ESOP 2018.
+
+Your paper was one of 36 accepted out of 114 submissions.  Congratulations!
+
+Please find below the anonymous referees' comments on your paper. We trust
+you will make a serious effort to address the comments in these reviews.
+You can also see these comments on the reviewing site,
+https://esop18.hotcrp.com.
+
+You will receive instructions for producing and sending the final version
+in a couple of weeks.  The page limit of your final version is the same as
+the one for your submission: max 25 pp, excluding bibliography of max 2 pp.
+The firm deadline for the final version is February 23, 2018.  Failure to
+meet this deadline means that your paper will not appear in the
+proceedings.
+
+Thank you very much for submitting to ESOP 2018.  I look forward to seeing
+you at the conference in Greece in April.  Please contact me if you have
+any questions.
+
+Amal Ahmed
+ESOP 2018 Program Chair
+
+----
+
+Review #122A
+===========================================================================
+* Updated: 13 Dec 2017 11:10:26am EST
+
+Overall merit
+-------------
+A. Accept (Good paper. I will champion it at the PC meeting.)
+
+Reviewer expertise
+------------------
+X. Expert
+
+Paper summary
+-------------
+The paper presents a new analysis for verifying linearizability of optimistic concurrent stack, queue, and set data structure algorithms. The approach is applicable to data structures represented by linked-lists, skip-lists, and arrays of such. This is a high degree of coverage for data structures which employ a garbage collector. To the best of my knowledge, the analysis results for several benchmarks represent the first verification of the algorithms in the literature.
+
+Linearizability is verified using a version of recent approaches that express linearizability as a reachability/safety property. This basic approach also results in not needing annotations for stack and queue algorithms, and only minor annotations for set structures.
+
+The proposed analysis is based on a new abstraction for heaps, data values, and threads which combines the Cartesian abstraction of existing thread-modular approaches with another form of Cartesian abstraction for the heap structure of individual threads in a new way. Roughly, abstract states consist of a set of facts/constraints involving two adjacent heap objects. The meaning of an abstract state is a set of concrete states where each concrete state can be obtained by arbitrarily combining/multiplying arbitrary object-pair constraints from the set, subject to local and global consistency conditions implicit in the object-pair constraints. These consistency conditions refer to local relationships between the values of fields of adjacent objects, as well as global properties such as which variables can transitively reach through the heap to or from the objects. This combination of a Cartesian abstraction together with maintaining global reachability information results in a s
+ ymbolic postcondition computation that is quite involved.
+
+Experiments performed using a prototype implementation are reported, indicating that a broad collection of data structures from the literature can be successfully verified using the presented approach.
+
+The paper's presentation is quite good in that the conceptual description of the abstraction is done well, and the following technical development is given in enough detail for readers to understand the definitions. However, the degree of detail required leaves the impression that something like a higher-level simplifying insight is missing. This is not a criticism, as I do not see such a simplification, only an observation that the potential audience who could get much value from the paper would increase if a way to simplify the presentation were found.
+
+Reaction to author response
+---------------------------
+While I fully appreciate that "Shape analysis is a difficult problem, and many techniques in the literature are rather complex.", I still think that there is value in spending some time reconsidering and searching for some overarching connection as a way of finding a technical or presentational simplification.
+
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+
+Review #122B
+===========================================================================
+
+Overall merit
+-------------
+B. Weak accept (OK paper, but I will not champion it.)
+
+Reviewer expertise
+------------------
+Y. Knowledgeable
+
+Paper summary
+-------------
+This paper presents a new heap shape abstraction based on fragments
+for skip lists and arrays of singly linked lists for verification of
+linearizability of concurrent algorithms. A fragment is a pair of
+connected heap cells. Each thread has access to a set of these
+fragment.  An algorithm for verifying the linearzability of concurrent
+algorithm is presented and implemented. The new algorithm can verify
+algorithms that prior approaches have not been able to verify.
+
+Comments for author
+-------------------
+Strengths:
+
++ The proposed heap abstraction enables verification of
+linearizability of algorithms that have not been done before.
+
++ A prototype implementation of the algorithm is evaluated on a number
+of algorithms and shown to perform better than the authors' own prior
+work.
+
+Weaknesses:
+
+- The title shape analysis is misleading. I don't think there is shape
+  analysis involved in the algorithm. It is not the case that an
+  algorithm analyzes the program and synthesizes an abstraction of the
+  heap data structure. Instead, the abstractions are already given.
+
+- The paper is very dense. I am having a hard time extracting the key
+  insights. Why fragments is the right abstraction?
+
+- The property of the algorithm is unknown. There is no soundness,
+  completeness, or decidability result of the algorithm.
+  
+- It is unclear the degree of automation is supported by the tool. The
+  proposed approach seems to involve non-trivial manual effort in
+  coming up with the right abstraction.
+
+
+Figure 4 has th2 trying to insert 11, not 20.
+
+Under figure 4, "... thus it currnetly tracks the add operation of
+th1.". Misspelling of currently.
+
+In the first paragraph of section 5, there is an extra period after
+[11].
+
+On page 21, "Fragment Abstraction",  "...Figure 8 is is correct in..."
+an extra is.
+
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+
+Review #122C
+===========================================================================
+* Updated: 6 Dec 2017 7:28:52pm EST
+
+Overall merit
+-------------
+B. Weak accept (OK paper, but I will not champion it.)
+
+Reviewer expertise
+------------------
+Z. Outsider
+
+Paper summary
+-------------
+This paper describes a new shape analysis abstraction that makes it possible to automatically verify operations over more concurrent data structures than have been previously treated. In particular, the approach is able to verify skip lists and arrays of singly-linked lists with timestamps. As skip lists subsume normal singly-linked lists, this approach is also able to verify operations on singly-linked lists, which is (apparently) all that is possible in the state-of-the-art.
+
+After describing the fundamental verification goal (demonstrating linearizability), the paper gives a detailed description of the shape analysis, called *fragment abstraction*. The application to both the skip-list and timestamped arrays of lists is described. Finally, the paper concludes with some experimental results, comparing to other methods where the domains coincide, and showing running times for the new method’s application to the new, previously unsolvable, problems
+
+Comments for author
+-------------------
+## Pros
+
+- The paper is quite well-written: it isn’t completely forbidding to a non-expert reader (such as myself)
+- There is a clear contribution through the increase in verification problem coverage
+- The experimental evidence supports the claim (the runtimes don’t look too awful)
+
+## Cons
+
+- the paper doesn’t make strong claims for the general applicability of its technique. This is good in that it’s clearly appropriate not to oversell, this makes me wonder a little: is fragment abstraction a small delta? Is verifying the next set of interesting data structures going to require yet another custom abstraction?
+- relatedly, even the examples in the paper seem to require quite a bit of user work in setting up the right abstractions, and then in confirming that these are sound. This doesn’t seem like much of a tradeoff: the user gets an automatic method for their data structure, but only after first devising a fragment based abstraction and verifying that this is correct.
+- While the technique may subsume older methods for domains where both work, it seems as if the new method may be worse in terms of efficiency as often as it is better, being 100 times slower on the Treiber stack, and 8–9 times worse on the lazy set.
+- I would have appreciated a better "big picture" of how this contribution fits into the authors' ongoing research---how is this all an advance on their previous work?
+
+# Minor things
+
+- p8: “currnetly”
+- p8: “the two left-most cells in Figure 4 are represent by ..” should be “represented by”
+- p18: “hwere”
+
+
+
+Comments
+===========================================================================
+
+Response by Cong Quy Trinh <cong-quy.trinh@it.uu.se>
+===========================================================================
+We would like to thank the reviewers for their careful work.
+
+Reviewer A:
+
+Concerning
+"the degree of detail required leaves the impression that something like a higher-level simplifying insight is missing"
+
+Shape analysis is a difficult problem, and many techniques in the literature are
+rather complex. In Section 2, we have tried to bring forward that our shape analysis is based on the simple idea to characterize the pairs of adjacent cells in a heap, to which we add a information about reachability of global variables (also stated at p2, l -19 and p3 l15-20). Our results show that this information is sufficient for verifying a large class of algorithms.
+
+Reviewer B:
+
+Concerning
+"The title shape analysis is misleading. I don't think there is shape analysis involved in the algorithm. It is not the case that an algorithm analyzes the program and synthesizes an abstraction of the heap data structure. Instead, the abstractions are already given."
+
+This comment might possibly result from a misunderstanding. Our algorithm does perform shape analysis: given a program, it automatically synthesizes an abstraction of the set of reachable heap structures (shapes) by an abstract interpretation-based fixed point procedure (as said in the first paragraph of Section 4). The abstraction is NOT already given, but synthesized by our algorithm, which is the postcondition computation described in Section 4.2.
+
+Concerning
+"Why is fragments the right abstraction?"
+
+See comment for Reviewer A.
+
+Concerning
+"The property of the algorithm is unknown. There is no soundness, completeness, or decidability result of the algorithm."
+
+The soundness for the algorithm follows from the construction of the symbolic postcondition computation in Section 4.2. We have not included a formalized theorem about this, instead assuming that it is implicitly understood that our postcondition computation is correct (such a style of exposition is found in several related papers, e.g., [4,5]). We will add a soundness theorem for clarity. 
+Our algorithm is guaranteed to terminate, as stated on p3, l2. The verification problem itself is, of course, in the general case undecidable.
+
+Concerning
+"It is unclear the degree of automation is supported by the tool. The proposed approach seems to involve non-trivial manual effort in coming up with the right abstraction."
+
+We have tried to be clear that our technique is fully automatic (p2, 2nd paragraph, p3 3rd paragraph, Section 4, 1st paragraph).
+The work needed by the user is to  assign linearization points (this is a standard technique in proving linearizability, and is independent of the shape analysis), to state that the heap structure is a skiplist (or array of timestamped lists, resp), and to provide a suitable abstract domain for data values. The rest is performed automatically by the verification framework, using symbolic postcondition computations.
+
+
+Reviewer C:
+
+Concerning
+"claims for the general applicability of its technique"
+
+To us, fragment abstraction is a significant step forward, since it was both
+sufficiently simple and powerful to handle concurrent skiplists,
+which previously have been beyond reach of automated verification methods. The
+fragment abstraction must be adapted to each new class of heap structures. For
+skiplists and arrays of timestamped lists, the adaptation was rather natural. We plan to
+address other structures, such as trees.
+
+Concerning
+"Even the examples in the paper seem to require quite a bit of user work ..."
+
+See the last comment for Reviewer B.
+
+Concerning  efficiency (e.g., Treiber stack)
+
+Our previous abstraction (in [3]) was specialized for singly-linked lists, and naturally performs better on some benchmarks.
+
+Concerning "big picture"
+
+See the answer to the first comment of Reviewer C
+
+
