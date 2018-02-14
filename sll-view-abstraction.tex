@@ -711,24 +711,20 @@ $\fragset$.
     Thereafter, we add all possible fragments that can result from a transformation
 of some fragment $\frag \in \fragset$. This is done by an exhaustive
 case analysis on the possible
-relationship between $\frag$, $\frag_x$ and $\frag_y$.
+relationships between $\frag$, $\frag_x$ and $\frag_y$.
 Let us consider an interesting case, in which
 $\frag_x \overset{*}\hookrightarrow_{\fragset} \frag$ and either $\frag \overset{+}\hookrightarrow_{\fragset} \frag_y$ or $\frag_y \overset{*+}\leftrightarrow \frag$.
-In this case,
-\begin{enumerate}
+In this case, 
+\begin{itemize}
 \item
-  for each subset $\regset$ of observer registers in $\tt \reachfromat{\inof{\frag}} \cap \reachfromat{\inof{\frag_x}}$,
-  \bjcom{Don't we have: $\tt \reachfromat{\inof{\frag_x}} \subseteq \reachfromat{\inof{\frag}}$?}
-  we first create
-  a fragment $\frag_{\tt temp}$ which is the same as $\frag$, except that $\reachfromat{\inof{\frag_{\tt temp}}} = (\tt \reachfromat{\inof{\frag}} \setminus \reachfromat{\inof{\frag_x}}) \cup \regset$.
-\item
-  Thereafter, 
-for each set $\regset'$ of observer registers in $\reachfromat{\outof{\frag_{\tt temp}}} \cap \reachfromat{\inof{\frag_x}}$,  we let $\fragsetpost$ contain a fragment
-$\frag'$ which is the same as $\frag_{\tt temp}$, except that $\reachfromat{\outof{\frag'}} = (\reachfromat{\outof{\frag_{\tt temp}}} \setminus \reachfromat{\inof{\frag_x}}) \cup \regset'$. 
+  for each subset $\regset$ of the observer registers in $\tt \reachfromat{\inof{\frag_x}}$, and for each subset $\regset'$ of the set of observer registers in
+  $\reachfromat{\outof{\frag}} \cap \reachfromat{\inof{\frag_x}}$,
+  we let $\fragsetpost$ contain a fragment $\frag'$ which is the same as $\frag$
+  except that
+%%   \bjcom{Don't we have: $\tt \reachfromat{\inof{\frag_x}} \subseteq \reachfromat{\inof{\frag}}$?}
+$\reachfromat{\inof{\frag'}} = (\tt \reachfromat{\inof{\frag}} \setminus \reachfromat{\inof{\frag_x}}) \cup \regset$ and $\reachfromat{\outof{\frag'}} = (\reachfromat{\outof{\frag}} \setminus \reachfromat{\inof{\frag_x}}) \cup \regset'$. 
+\end{itemize}
 \end{enumerate}
-\end{enumerate}
-\todo[inline]{We should include an argument why the last case above is correct.
-  Quy, could you produce one?}
 
 \paragraph{{\bf Construction of higher-level fragments}}
 Based on this construction of level-1 fragments, higher-level fragments
