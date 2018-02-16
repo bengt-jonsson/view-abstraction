@@ -12,10 +12,10 @@ to the problem of verifying
 that, in any execution of the cross-product of a program and an observer, 
 the observer cannot reach an accepting location.
 We perform this verification by  computing a symbolic representation
-of an invariant that is satisfied by all reachable program configurations,
-using an abstract interpretation-based fixpoint procedure, which starts
-from a symbolic representation of the set of initial configurations.
-thereafter repeatedly performs
+of an invariant that is satisfied by all reachable configurations of the cross-product,
+using an abstract interpretation-based fixpoint procedure, starting
+from a symbolic representation of the set of initial configurations,
+thereafter repeatedly performing
 symbolic postcondition computations that extend the
 symbolic representation by the effect of any execution step of the program,
 until convergence.
@@ -67,10 +67,10 @@ lists.
 %%   For now, we skip timestamps.
 %% }
 %% We assume that we must analyze the product of a program and an observer.
-Let us here in more detail describe our symbolic representation for programs that
+This subsection contains a more detailed description of our symbolic representation for programs that
 operate on skiplists, which was introduced in Section~\ref{sec:overview}.
-We do this by first giving a more precise description of the data abstraction,
-thereafter of the fragment abstraction, and finally how these are combined
+We first describe the data abstraction,
+thereafter the fragment abstraction, and finally their combination
 into a symbolic representation.
 
 \vspace*{-0.6cm}
@@ -86,25 +86,25 @@ abstract domain to each concrete domain of data values, as follows.
   the abstract domain is the same as the concrete one.
 \item
   For locks, the abstract domain is $\set{\mathit{me},\mathit{other},\mathit{free}}$,
-  meaning that the lock is held by $\thread$,  held by some other thread, or is
+  meaning that the lock is held by the concerned thread, held by some other thread, or is
   free, respectively.
 \item For the concrete domain $\ddomain$ of data values, the abstract domain
   is the set of mappings from observer registers and local variables
   ranging over $\ddomain$ to subsets of $\set{<,=,>}$.
-  An element in this abstract domain represents a concrete data value $\tt d$
-  if it maps each local variable and observer register with a value ${\tt d'} \in \ddomain$
+  An mapping in this abstract domain represents the set of data values $\tt d$
+  such that it maps each local variable and observer register with a value ${\tt d'} \in \ddomain$
   to a set which includes a relation $\sim$ such that $\tt d \sim \tt d'$.
 \end{itemize}
 
 \vspace*{-0.6cm}
 \subsubsection{Fragment Abstraction}
-Let us now define our fragment abstraction for skiplists more precisely.
+Let us now define our fragment abstraction for skiplists.
 For presentation purposes, we assume that each heap cell has at most one
 $\ddomain$-field, named ${\tt data}$.
 For an observer register $\reg_i$, let a {\em $\reg_i$-cell} be a heap cell whose
 ${\tt data}$ field has the same value as $\reg_i$.
 
-Since the number of levels is unbounded, we must define an abstraction for
+Since the number of levels is unbounded, we define an abstraction for
 levels.
 Let $\klevel$ be a level.
 Define the abstraction of a pointer variable of form $\tt p[k]$,
@@ -116,18 +116,19 @@ That is, this abstraction does not distinguish different higher levels.
 A {\em tag} is a tuple $\atag = \tagtuple$, where
 \begin{inparaenum}[(i)]
 \item
-  $\vals$ is a mapping from non-pointer fields at level $\klevel$
-  to their corresponding abstract domains,
+  $\vals$ is a mapping from non-pointer fields
+  %% at level $\klevel$
+  to their corresponding abstract domains;
+  if a non-pointer field is an array indexed by levels, then
+the abstract domain is that for single elements: e.g., the abstract
+domain for the array ${\tt marked}$ in Figure~\ref{sl-code:fig} is simply the
+set of booleans,
 \item
   $\pvars$ is a set of abstracted pointer variables,
  \item
    $\reachfrom$ and $\reachto$ are sets of global pointer variables and observer registers, and
   \item $\private$ is a boolean value.
 \end{inparaenum}
-Note that if a non-pointer field is an array indexed by levels, then
-the abstract domain is that for single elements. For instance, the abstract
-domain for the array ${\tt marked}$ in Figure~\ref{sl-code:fig} is simply the
-set of booleans.
 
 For a heap cell $\cell$ that is accessible to thread $\thread$ 
 in a configuration $\sconf$, and a tag $\atag = \tagtuple$,

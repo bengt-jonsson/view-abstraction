@@ -62,15 +62,14 @@ $\nullconst$ and $\dangconst$ (dangling).
 Heap cells have a fixed set $\fieldset$ of fields, namely
 non-pointer fields that assume values in
 $\ddomain$ or $\fset$, and possibly lock fields.
-We use the term $\ddomain$-field for a non-pointer field that
-assumes values in $\ddomain$, and the terms $\fset$-field and lock field
+We use the term {\em $\ddomain$-field} for a non-pointer field that
+assumes values in $\ddomain$, and the terms {\em $\fset$-field} and {\em lock field}
 with analogous meaning.
 Furthermore, each cell has one or several named pointer fields.
 For instance, in data structure implementations based on singly-linked lists,
 each heap cell has a pointer field named $\tt next$; in implementations
 based on skiplists there is an array of pointer fields named
-$\tt next[k]$ where $\tt k$ ranges from $1$ to the maximum level of the
-skiplist.
+$\tt next[k]$ where $\tt k$ ranges from $1$ to a maximum level.
 %% We represent each named field by a function from the set of
 %% nontrivial cells $\mcellset = \cellset\setminus\set{\nullconst,\dangconst}$ to
 %% the appropriate domain (e.g., $\cellset$ for pointer fields).
@@ -148,7 +147,7 @@ a transition relation $\movesto\thread{}$
 on pairs $\tuple{\lstate,\heap}$ consisting of a local state
 $\lstate$ and a heap state $\heap$.
 The behavior of a program $\prog$ can be formalized by a transition relation
-$\movesto\prog{}$ where each step corresponds to one move of a single thread.
+$\movesto\prog{}$ on program configurations; each step corresponds to a move of a single thread.
 I.e., 
 there is a transition of form
 $\tuple{\athreads,\lstatemapping,\heap}
@@ -308,7 +307,7 @@ a corresponding operation precisely when the method executes its LP, either
 directly or with lightweight instrumentation using
 the technique of linearization policies~\cite{Quy:sas16}.
 We represent such announcements by labels on the program
-transition relation, resulting in transitions of form
+transition relation $\movesto\prog{}$, resulting in transitions of form
 $\pconf\movesto\prog{\mname(\indata,\outdata)}\pconf'$.
 Therafter, an {\em observer} is constructed, which
 %% Thereafter, it should be checked that the concurrent execution of any
@@ -480,7 +479,7 @@ $\ostate \movesto{}{\lbl} {\ostate}'$ if it can perform such a matching
 transition, otherwise $\ostate' = \ostate$.
 Note that the observer registers are not changed.
 We also add straightforward instrumentation to check that
-each method invocation announces exactly one operation, which
+each method invocation announces exactly one operation, whose input and output values
 agree with the method's parameters and return value.
 This reduces the
 problem of checking linearizability to the problem of checking that

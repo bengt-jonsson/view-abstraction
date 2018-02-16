@@ -14,14 +14,14 @@ at the same time handling an unbounded
 number of concurrent threads, an unbounded domain of data values
 (including timestamps), and an unbounded shared heap.
 Our technique is based on a novel shape abstraction,
-which represent a set of heaps by a set of {\em fragments}.
+which represents a set of heaps by a set of {\em fragments}.
 A fragment is an abstraction of a pair of heap cells that are connected by a pointer field.
 %% Our fragment abstraction is simple and uniform shape representation, which
 %% anyway allows automatic verification of reachability properties.
 We have implemented our approach and applied it to automatically verify
 correctness, in the sense of linearizability, of 
 most linearizable concurrent implementations
-of sets, stacks, and queues, which emply singly-linked lists, skip lists, or
+of sets, stacks, and queues, which employ singly-linked lists, skip lists, or
 arrays of singly-linked lists with timestamps,
 which are known to us in the literature.
 \end{abstract}

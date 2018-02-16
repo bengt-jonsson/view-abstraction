@@ -607,15 +607,15 @@ In the heap state of Figure~\ref{sl-shape}, thread $\thread_1$ is trying to add 
 %% cells connected by a higher level pointer. This means that we abstract all levels
 %% higher than 2 by the abstract element $\tt higher$.
 %\todo[inline]{Fix the wrapfigure!!}
-Let us illustrate how pairs of heap nodes can be represented by fragments.
+Figure~\ref{fig:skiplistabs} illustrates how pairs of heap nodes can be represented by fragments.
 As a first example, in the view of thread $\thread_1$, the two left-most cells
-in Figure~\ref{sl-shape} are represented by the level 1-fragment $\frag_1$ in
-Figure~\ref{fig:skiplistabs}. Here, the variable $\tt preds(1)[3]$ is represented by $\tt preds[higher]$. The mapping $\pi_1$ represents the data abstraction of
+in Figure~\ref{sl-shape} are represented by the level 1-fragment $\frag_1$ in Figure~\ref{fig:skiplistabs}.
+Here, the variable $\tt preds(1)[3]$ is represented by $\tt preds[higher]$. The mapping $\pi_1$ represents the data abstraction of
 the $\tt key$ field, here saying that it is smaller than the value $9$ of the
 observer register.
 The two left-most cells are also represented by
 a higher-level fragment, viz.\ $v_8$.
-The pair consisting of the two sentinel cells (with keys $\tt -\infty$ and $\tt +\infty$) are represented by the higher-level fragment $v_9$. In each fragment, the abstraction $\vals$ of non-pointer fields are shown represented inside each tag of the fragment. The $\datarelat{\frag}$ is shown as a label on the  arrow between two tags. Above each tag is $\pvars$. The first row under each tag is $\reachfrom$, whereas the second row is $\reachto$.
+The pair consisting of the two sentinel cells (with keys $\tt -\infty$ and $\tt +\infty$) is represented by the higher-level fragment $v_9$. In each fragment, the abstraction $\vals$ of non-pointer fields are shown represented inside each tag of the fragment. The $\datarelat{\frag}$ is shown as a label on the  arrow between two tags. Above each tag is $\pvars$. The first row under each tag is $\reachfrom$, whereas the second row is $\reachto$.
  
 
 %In the fragment, we have 
