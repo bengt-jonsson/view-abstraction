@@ -113,7 +113,7 @@ or fields of cells pointed to by a pointer variable.
 Method execution is terminated by executing a $\tt return$ command,
 which may return a value.
 %
-The command $\tt new Node()$ allocates a new structure of type
+The command $\tt new\ Node()$ allocates a new structure of type
 $\tt Node$ on the heap, and returns a reference to it.
 %
 The compare-and-swap command $\tt CAS(\&a,b,c)$ atomically
@@ -140,7 +140,7 @@ $\athreads$ is a set of threads,
 $\heap$ is a heap, and $\lstatemapping$
 %% is a {\it local state mapping} over $\athreads$ wrt.\ $\heap$ that
 maps each thread $\thread\in\athreads$ to its
-local state $\lstatemappingof\thread$
+local state $\lstatemappingof\thread$.
 We assume concurrent execution according to sequentially consistent memory
 model.
 The behavior of a thread $\thread$ executing a method can be formalized as 
@@ -198,7 +198,7 @@ $\action_1\action'_1\action_2\action'_2\cdots\action_\nn\action'_\nn$
 %% where $\action'_\nn$ can be absent and
 where $\action'_\ii$ is the matching action of $\action_\ii$ 
 for all $\ii:1\leq\ii\leq\nn$, i.e., each call action 
-is immediately followed by the matching return action. 
+is immediately followed by its matching return action. 
 %
 We identify a sequential history of the above form with
 the corresponding trace 

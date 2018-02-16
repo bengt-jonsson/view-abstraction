@@ -79,7 +79,7 @@ Its main idea is to represent a set of heap states by a set of {\em fragments}.
 A fragment represents two heap cells that are connected by a pointer field.
 For each of its cells, 
 the fragment represents the contents of its non-pointer fields, together with
-information about how the cell can be reached from the program's pointer
+information about how the cell can be reached from the program's global pointer
 variables. The latter information consists of both:
 \begin{inparaenum}[(i)]
   \item {\em local} information, saying which pointer variables
@@ -93,7 +93,7 @@ A set of fragments represents the set of heap states
 in which any two pointer-connected nodes is represented by some
 fragment in the set.
 Thus, a set of fragments describes the set of heaps that can be formed by
-``pieced together'' fragments in the set.
+``piecing together'' fragments in the set.
 %% This ``piecing together'' must
 %% be both locally consistent (appending only fragments that agree on their
 %% common node), and globally consistent (respecting the global reachability
@@ -174,13 +174,13 @@ arrays of timestamped singly-linked lists, which are known to us in
 the literature on concurrent data structures.
 For this verification, we specify linearizability
 using the simple and powerful technique of
-{\em observers}~\cite{AHHR:integrated,BEEH:icalp15,HSV:concur13,Quy:sas16},
+{\em observers}~\cite{AHHR:integrated,BEEH:icalp15,HSV:concur13},
 which reduces the criterion of linearizability to a simple reachability
 property. To verify implementations of stacks and queues, 
 the application of observers can be done completely automatically without
 any manual steps, whereas for implementations of sets, the verification relies
 on light-weight user annotation of how linearization points are placed in
-each method.
+each method~\cite{Quy:sas16},.
 %% report violations of the linearizability criterion. Observers synchronize with
 %% the monitored concurrent programs at designated actions. This can be done in
 %% two ways.
