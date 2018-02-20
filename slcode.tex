@@ -74,7 +74,7 @@
 \node[linecode] at ($(locate17.east)+(24pt,0pt)$) {\scriptsize \textbf{if} ({!}s) \textbf{goto} {retry};};
 
 \node(locate18)[linenum] at ($(locate17.east)+(0pt,-10pt)$) {\scriptsize 13};
-\node[linecode] at ($(locate18.east)+(24pt,0pt)$) {\scriptsize curr {=} pred.next[k];};
+\node[linecode] at ($(locate18.east)+(24pt,0pt)$) {\scriptsize curr {=} pred.next[k]; \larger\textcolor{red}{$\bullet$}};
 
 
 \node(locate190)[linenum] at ($(locate18.east)+(0pt,-10pt)$) {\scriptsize 14};
@@ -141,7 +141,7 @@
 %\node[linecode] at ($(locate6.east)+(8pt,0pt)$) {\scriptsize boolean found = find(x,preds,succs);};
  
 \node(locate7)[linenum] at ($(locate5.east)+(0pt,-10pt)$) {\scriptsize 4};
-\node[linecode] at ($(locate7.east)+(8pt,0pt)$) {\scriptsize \textbf{if} find(x,preds,succs) \larger \textcolor{red}{$\bullet$}};
+\node[linecode] at ($(locate7.east)+(8pt,0pt)$) {\scriptsize \textbf{if} find(x,preds,succs) };
 %
 \node(locate8)[linenum] at ($(locate7.east)+(0pt,-10pt)$) {\scriptsize 5};
 \node(code8)[linecode] at ($(locate8.east)+(14pt,0pt)$) {\scriptsize \textbf{return} {false};};

@@ -85,7 +85,7 @@ the technique of
 For our skiplist algorithm, the user first instruments statements in each
 method that correspond to linearization points (LPs), so that their execution
 announces the corresponding atomic set operation.
-In Figure~\ref{sl-code:fig}, the LP of a successful ${\tt add}$ operation is at line 15 of the $\tt add$ method (denoted by a blue dot) when the $\tt CAS$ succeeds, whereas the LP of an unsuccessful $\tt add$ operation is at line 4 of the $\tt add$
+In Figure~\ref{sl-code:fig}, the LP of a successful ${\tt add}$ operation is at line 15 of the $\tt add$ method (denoted by a blue dot) when the $\tt CAS$ succeeds, whereas the LP of an unsuccessful $\tt add$ operation is at line 13 of the $\tt find$
 method (denoted by a red dot).
 We must now verify that in any concurrent
 execution of a collection of method calls, the sequence of announced

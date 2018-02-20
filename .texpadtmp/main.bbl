@@ -1,0 +1,200 @@
+\def\Nst#1{$#1^{st}$}\def\Nnd#1{$#1^{nd}$}\def\Nrd#1{$#1^{rd}$}\def\Nth#1{$#1^{th}$}
+\begin{thebibliography}{10}
+\providecommand{\url}[1]{\texttt{#1}}
+\providecommand{\urlprefix}{URL }
+
+\bibitem{AHHR:integrated}
+Abdulla, P.A., Haziza, F., Hol\'{\i}k, L., Jonsson, B., Rezine, A.: An
+  integrated specification and verification technique for highly concurrent
+  data structures. In: TACAS. LNCS, vol. 7795, pp. 324--338 (2013)
+
+\bibitem{Quy:atva13:journal}
+Abdulla, P.A., Hol{\'{\i}}k, L., Jonsson, B., Leng{\'{a}}l, O., Trinh, C.Q.,
+  Vojnar, T.: Verification of heap manipulating programs with ordered data by
+  extended forest automata. Acta Inf.  53(4),  357--385 (2016)
+
+\bibitem{Quy:sas16}
+Abdulla, P.A., Jonsson, B., Trinh, C.Q.: Automated verification of
+  linearization policies. In: {SAS}. Lecture Notes in Computer Science, vol.
+  9837, pp. 61--83. Springer (2016)
+
+\bibitem{Amit:comparisonAbstraction}
+Amit, D., Rinetzky, N., Reps, T., Sagiv, M., Yahav, E.: Comparison under
+  abstraction for verifying linearizability. In: CAV'07. LNCS, vol. 4590, pp.
+  477--490 (2007)
+
+\bibitem{BLMRS:cav08}
+Berdine, J., Lev-Ami, T., Manevich, R., Ramalingam, G., Sagiv, S.: Thread
+  quantification for concurrent shape analysis. In: {CAV'08}. LNCS, vol. 5123,
+  pp. 399--413 (2008)
+
+\bibitem{BiRa:vmcai06}
+Bingham, J., Rakamaric, Z.: A logic and decision procedure for predicate
+  abstraction of heap-manipulating programs. In: Proc.\ of VMCAI'06. LNCS, vol.
+  3855, pp. 207--221. Springer (2006)
+
+\bibitem{BEEH:icalp15}
+Bouajjani, A., Emmi, M., Enea, C., Hamza, J.: On reducing linearizability to
+  state reachability. In: ICALP. LNCS, vol. 9135, pp. 95--107 (2015)
+
+\bibitem{bouajjani:icalp17:rep}
+Bouajjani, A., Emmi, M., Enea, C., Mutluergil, S.O.: Proving linearizability
+  using forward simulations. CoRR  abs/1702.02705 (2017),
+  \url{http://arxiv.org/abs/1702.02705}
+
+\bibitem{Colvin:Lazy-List}
+Colvin, R., Groves, L., Luchangco, V., Moir, M.: Formal verification of a lazy
+  concurrent list-based set algorithm. In: CAV. LNCS, vol. 4144, pp. 475--488
+  (2006)
+
+\bibitem{ts-stack}
+Dodds, M., Haas, A., Kirsch, C.: A scalable, correct time-stamped stack. In:
+  {POPL}. pp. 233--246. {ACM} (2015),
+  \url{http://dl.acm.org/citation.cfm?id=2676726}
+
+\bibitem{DDGJLMMSS:dcas}
+Doherty, S., Detlefs, D., Groves, L., Flood, C., Luchangco, V., Martin, P.,
+  Moir, M., Shavit, N., {Steele Jr.}, G.: {DCAS} is not a silver bullet for
+  nonblocking algorithm design. In: SPAA'04. pp. 216--224. ACM (2004)
+
+\bibitem{Doherty:lockfree}
+Doherty, S., Groves, L., Luchangco, V., Moir, M.: Formal verification of a
+  practical lock-free queue algorithm. In: {{FORTE}'04}. LNCS, vol. 3235, pp.
+  97--114 (2004)
+
+\bibitem{Fomitchev:2004}
+Fomitchev, M., Ruppert, E.: Lock-free linked lists and skip lists. In: PODC'04.
+  pp. 50--59. ACM (2004)
+
+\bibitem{habermehl:forest}
+Habermehl, P., Hol{\'i}k, L., Rogalewicz, A., {\v S}im{\' a}{\v c}ek, J.,
+  Vojnar, T.: Forest automata for verification of heap manipulation. Formal
+  Methods in System Design pp. 1--24 (2012)
+
+\bibitem{Harris:list}
+Harris, T.L.: A pragmatic implementation of non-blocking linked-lists. In:
+  {DISC}. pp. 300--314 (2001)
+
+\bibitem{meyer:vmcai16}
+Haziza, F., Hol{\'{\i}}k, L., Meyer, R., Wolff, S.: Pointer race freedom. In:
+  {VMCAI}. Lecture Notes in Computer Science, vol. 9583, pp. 393--412. Springer
+  (2016)
+
+\bibitem{Lazyset}
+Heller, S., Herlihy, M., Luchangco, V., Moir, M., III, W.N.S., Shavit, N.: A
+  lazy concurrent list-based set algorithm. In: OPODIS. pp. 3--16 (2005)
+
+\bibitem{HSV:concur13}
+Henzinger, T., Sezgin, A., Vafeiadis, V.: Aspect-oriented linearizability
+  proofs. In: CONCUR. LNCS, vol. 8052, pp. 242--256. Springer (2013)
+
+\bibitem{lockskiplist}
+Herlihy, M., Lev, Y., Luchangco, V., Shavit, N.: A simple optimistic skip-list
+  algorithm. In: SIROCCO. pp. 124--138 (2007)
+
+\bibitem{ArtOfMpP}
+Herlihy, M., Shavit, N.: The Art of Multiprocessor Programming. Morgan Kaufmann
+  (2008)
+
+\bibitem{Khyzha:esop17}
+Khyzha, A., Dodds, M., Gotsman, A., Parkinson, M.: Proving linearizability
+  using partial orders. In: {ESOP}. LNCS, vol. 10201, pp. 639--667. Springer
+  (2017)
+
+\bibitem{LF:pldi13}
+Liang, H., Feng, X.: Modular verification of linearizability with non-fixed
+  linearization points. In: {PLDI}. pp. 459--470. ACM (2013)
+
+\bibitem{Linden:opodis13}
+Lind{\'e}n, J., Jonsson, B.: A skiplist-based concurrent priority queue with
+  minimal memory contention. In: OPODIS. LNCS, vol. 8304, pp. 206--220.
+  Springer (2013)
+
+\bibitem{Shavit:queue}
+Lotan, I., Shavit, N.: Skiplist-based concurrent priority queues. In: IPDPS'00.
+  {IEEE} Computer Society (2000)
+
+\bibitem{MYRS:Canonical}
+Manevich, R., Yahav, E., Ramalingam, G., Sagiv, S.: Predicate abstraction and
+  canonical abstraction for singly-linked lists. In: {VMCAI}. pp. 181--198.
+  LNCS (2005)
+
+\bibitem{Michael:list}
+Michael, M.M.: High performance dynamic lock-free hash tables and list-based
+  sets. In: {SPAA}. pp. 73--82 (2002)
+
+\bibitem{MiSc:correction}
+Michael, M., Scott, M.: Correction of a memory management method for lock-free
+  data structures. Tech. Rep. TR599, University of Rochester, Rochester, NY,
+  USA (1995)
+
+\bibitem{MS:QueueAlgorithms}
+Michael, M., Scott, M.: Simple, fast, and practical non-blocking and blocking
+  concurrent queue algorithms. In: PODC. pp. 267--275 (1996)
+
+\bibitem{OHearnlist}
+O'Hearn, P.W., Rinetzky, N., Vechev, M.T., Yahav, E., Yorsh, G.: Verifying
+  linearizability with hindsight. In: PODC. pp. 85--94 (2010)
+
+\bibitem{Sanchez:skiplists}
+S{\'{a}}nchez, A., S{\'{a}}nchez, C.: Formal verification of skiplists with
+  arbitrary many levels. In: {ATVA}. LNCS, vol. 8837, pp. 314--329. Springer
+  (2014)
+
+\bibitem{SDW:tcl14}
+Schellhorn, G., Derrick, J., Wehrheim, H.: A sound and complete proof technique
+  for linearizability of concurrent data structures. {ACM} Trans. Comput. Log.
+  15(4),  31:1--31:37 (2014)
+
+\bibitem{Sagiv:correlation}
+Segalov, M., Lev-Ami, T., Manevich, R., Ramalingam, G., Sagiv, M.: Abstract
+  transformers for thread correlation analysis. In: APLAS. LNCS, vol. 5904, pp.
+  30--46. Springer (2009)
+
+\bibitem{singh:issre16}
+Singh, V., Neamtiu, I., Gupta, R.: Proving concurrent data structures
+  linearizable. In: {ISSRE}. pp. 230--240. IEEE (2016)
+
+\bibitem{Sundell:2005}
+Sundell, H., Tsigas, P.: Fast and lock-free concurrent priority queues for
+  multi-thread systems. J. Parallel Distrib. Comput.  65(5),  609--627 (May
+  2005)
+
+\bibitem{Treiber:stack}
+Treiber, R.: Systems programming: Coping with parallelism. Tech. Rep. RJ5118,
+  IBM Almaden Res.\ Ctr. (1986)
+
+\bibitem{Aaron:logical:linearizability}
+Turon, A.J., Thamsborg, J., Ahmed, A., Birkedal, L., Dreyer, D.: Logical
+  relations for fine-grained concurrency. In: {POPL} '13. pp. 343--356 (2013)
+
+\bibitem{Vafeiadis:Thesis}
+Vafeiadis, V.: Modular fine-grained concurrency verification. Ph.D. thesis,
+  University of Cambridge (2008)
+
+\bibitem{Vafeiadis:cav10}
+Vafeiadis, V.: Automatically proving linearizability. In: CAV. LNCS, vol. 6174,
+  pp. 450--464 (2010)
+
+\bibitem{CernyRZCA:CAV10}
+\v{C}ern{\'y}, P., Radhakrishna, A., Zufferey, D., Chaudhuri, S., Alur, R.:
+  Model checking of linearizability of concurrent list implementations. In:
+  {CAV}. LNCS, vol. 6174, pp. 465--479 (2010)
+
+\bibitem{Vechev:list}
+Vechev, M.T., Yahav, E.: Deriving linearizable fine-grained concurrent objects.
+  In: PLDI. pp. 125--135 (2008)
+
+\bibitem{Vechev:spin09}
+Vechev, M., Yahav, E., Yorsh, G.: Experience with model checking
+  linearizability. In: SPIN. LNCS, vol. 5578, pp. 261--278. Springer (2009)
+
+\bibitem{spotlight07}
+Wachter, B., Westphal, B.: The spotlight principle. In: {VMCAI}. LNCS, vol.
+  4349, pp. 182--198. Springer (2007)
+
+\bibitem{Zhang:unorderedlist}
+Zhang, K., Zhao, Y., Yang, Y., Liu, Y., Spear, M.F.: Practical non-blocking
+  unordered lists. In: {DISC}. pp. 239--253 (2013)
+
+\end{thebibliography}
