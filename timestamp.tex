@@ -41,7 +41,7 @@ Finally, the method returns the ${\tt data}$ value of the removed cell.
 %\todo[inline]{Comments by Bengt: How can you return empty? Also, I think you
 % need to explain the extra removal of marked cells better} \quycom{this code is a simplified version without emptiness checking. If we add emptiness part, the code will be longer and more complicated}
 
-\subsubsection{Fragment Abstraction}
+\paragraph{{\bf Fragment Abstraction}}
 In our verification, we establish that the TS stack algorithm of
 Figure~\ref{ts-stack:fig} is correct in the sense that it is a
 linearizable implementation of a stack data structure.
@@ -104,8 +104,9 @@ to the one used for skiplists. There are two main differences.
   a thread, the index of the list where it is currently active
   is abstracted to $\tt me$, and all other
   indices are abstracted to $\tt ot$. The currently active index is taken to
-  be the index the list to which $\tt myTop$ points.
-\bjcom{Quy: can you make this text precise}
+  be the thread index for a thread performing a $\tt push$, the value of
+  $\tt i$ for   a thread executing in the {\tt\bf for} loop of $\tt pop$, and the
+  value of $\tt k$ after that loop.
 \end{itemize}
 In the definition of tags, the only global variables that can occur in
 the fields $\reachfrom$ and $\reachto$ are therefore
@@ -151,7 +152,7 @@ The different non-pointer fields are represented as follows.
   value less than $15$. There is one heap cell with
   $\tt data$ field value $2$, having $\tt ts$ value $15$.
   Consequently, the abstraction of the $\tt ts$ field maps $\reg_1$ to
-  $\set{>}$ and $\reg_2$ to $\set{=}$: this is shown as the mapping
+  $\set{>}$ and $\reg_2$ to $\set{=}$: this is the mapping
   $\lambda_4$ in Figure~\ref{fig:tsviewshape}.
 \item The $\tt mark$ field assumes values from a small finite domain and
   is represented precisely as in concrete heap cells.
@@ -198,12 +199,13 @@ The different non-pointer fields are represented as follows.
 %%   by $\tt pools[i]$, and $\mathit{other}$ any other index.
 %% \end{itemize}
 
-\subsubsection{Symbolic Postcondition Computation}
-The symbolic postcondition computation is similar to that for skiplist.
+\paragraph{{\bf Symbolic Postcondition Computation}}
+The symbolic postcondition computation is similar to that for skiplists.
 Main differences are as follows.
 \begin{itemize}
 \item
-  Whenever a thread assigns to $\tt myTop$, the abstraction must consider
+  Whenever a thread performing $\tt pop$ moves from one iteration of the
+  {\bf\tt for} loop to the next, the abstraction must consider
   to swap between the abstractions $\tt me$ and $\tt ot$.
   \item
     In interference steps, we must consider that the abstraction
