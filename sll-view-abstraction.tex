@@ -137,7 +137,7 @@ $\cell$ satisfies the tag $\atag$ ``at level $\klevel$''.
 %% This means that
 %% array fields of $\cell$ are considered at index $\klevel$. For instance,
 %% for the array $\tt marked$, we consider the element $\tt marked[\klevel]$.
-More precisly, this means that
+More precisely, this means that
 \begin{itemize}
 \item
   $\vals$ is an abstraction of the concrete values of the non-pointer fields of $\cell$; for array fields $\tt f$ we use the concrete value $\tt f[k]$,
@@ -671,8 +671,10 @@ $\reachtoat{\outof{\frag_y'}} = \reachtoat{\outof{\frag_y}} \setminus \set{\abst
   $\frag \overset{+}\hookrightarrow_{\fragset} \frag_y$,
   $\frag_y \overset{*}\hookrightarrow_{\fragset} \frag$,
   $\frag_y \overset{*+}\leftrightarrow_{\fragset} \frag$, and
-  $\frag_y \overset{*\circ}\leftrightarrow_{\fragset} \frag$. All of these
-  cases are described in Appendix~\ref{app:skiplists}.
+  $\frag_y \overset{*\circ}\leftrightarrow_{\fragset} \frag$.
+\ifreport
+  All of these cases are described in Appendix~\ref{app:skiplists}.
+\fi 
 Here,
   we show only the case of $\frag_y \overset{*+}\leftrightarrow_{\fragset} \frag$,
   in which case we let $\fragsetpost$ contain $\frag'$ which is the same as $\frag$ except that $\abstrof{\mathtt{x}}$ is removed from the sets

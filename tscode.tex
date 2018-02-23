@@ -34,7 +34,7 @@
 \node[linecode] at ($(locate5.east)+(7pt,0pt)$) {\scriptsize \textbf{int} k; };
 
 \node(locate6)[linenum] at ($(locate5.east)+(0pt,-10pt)$) {\scriptsize 6};
-\node[linecode] at ($(locate6.east)+(7pt,0pt)$) {\scriptsize \textbf{for}(\textbf{int} i=0; i<maxThreads; i++)};
+\node[linecode] at ($(locate6.east)+(7pt,0pt)$) {\scriptsize \textbf{for}(\textbf{int} i=1; i<=maxThreads; i++)};
 
 \node(locate7)[linenum] at ($(locate6.east)+(0pt,-10pt)$) {\scriptsize 7};
 \node[linecode] at ($(locate7.east)+(14pt,0pt)$) {\scriptsize n = pools[i];};
@@ -58,7 +58,7 @@
 \node[linecode] at ($(locate13.east)+(7pt,0pt)$) {\scriptsize \textbf{if} (youngest != null)};
 
 \node(locate14)[linenum] at ($(locate13.east)+(0pt,-10pt)$) {\scriptsize 14};
-\node(code14)[linecode] at ($(locate14.east)+(14pt,0pt)$) {\scriptsize success= CAS(youngest.mark,false,true);};
+\node(code14)[linecode] at ($(locate14.east)+(14pt,0pt)$) {\scriptsize success = CAS(youngest.mark,false,true);};
 
 \node(locate15)[linenum] at ($(locate14.east)+(0pt,-10pt)$) {\scriptsize 15};
 \node[linecode] at ($(locate15.east)+(21pt,0pt)$) {\scriptsize \textbf{if} (success)};
@@ -162,7 +162,7 @@
 \node[linecode,anchor=south west](init) at ($(top-head.east)+(-30pt,-75pt)$) {\scriptsize init() :};
 %{struct Node(bool lock; int val; Node *next; bool mark);};
 \node(init1)[linecode] at ($(top-head.east)+(-30pt,-80pt)$) {\scriptsize Node* pools[maxThreads];};
-\node(init2)[linecode] at ($(top-head.east)+(-30pt,-90pt)$) {\scriptsize \textbf{for}(\textbf{int} i=0; i<maxThreads; i++)};
+\node(init2)[linecode] at ($(top-head.east)+(-30pt,-90pt)$) {\scriptsize \textbf{for}(\textbf{int} i=1; i<=maxThreads; i++)};
 \node(init4)[linecode] at ($(top-head.east)+(-30pt,-100pt)$) {\scriptsize pools[i].next = null;};
 
 \node(bot)[linecode] at ($(init4.east)+(0pt,-4pt)$) {};

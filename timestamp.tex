@@ -6,7 +6,7 @@ programs that  operate on a shared heap which represents
 an array of singly linked lists.
 We use this abstraction to provide the first automated verification of
 linearizability for the Timedstamped stack and
-Timestamped queues algorithms of~\cite{ts-stack}. 
+Timestamped queue algorithms of~\cite{ts-stack}
 as reported in Section~\ref{section:experiments}.
 
 
@@ -15,7 +15,11 @@ as reported in Section~\ref{section:experiments}.
 %\todo[inline]{Provide a description of the algorithm}
 %\todo[inline]{Quy: The line numbers for Pop are scrambled. Can you fix?
 %Also, the variable {\tt i} at line 6 is initialized strangely. Can you fix?}
-Figure~\ref{ts-stack:fig} shows a simplified version of the Timestamped Stack (TS stack) of~\cite{ts-stack}, where we have omitted the check for emptiness in the ${\tt pop}$ method, and the optimization using ${\tt push}$-${\tt pop}$ elimination. These features are included in the full version of the algorithm, described in Appendix~\ref{app:codes}, that we have verified automatically.
+Figure~\ref{ts-stack:fig} shows a simplified version of the Timestamped Stack (TS stack) of~\cite{ts-stack}, where we have omitted the check for emptiness in the ${\tt pop}$ method, and the optimization using ${\tt push}$-${\tt pop}$ elimination. These features are included in the full version of the algorithm,
+\ifreport
+described in Appendix~\ref{app:codes},
+\fi
+that we have verified automatically.
 
 The algorithm uses an array of singly-linked lists (SLLs), one for each thread, accessed via the thread-indexed array ${\tt pools[maxThreads]}$ of pointers to the first cell of each list. The ${\tt init}$ method initializes each of these pointers to $\nullconst$. Each list cell contains a data value, a timestamp value, a ${\tt next}$ pointer, and a boolean flag ${\tt mark}$ which indicates whether the node is logically removed from the stack. Each thread pushes elements only to ``its own'' list, but can pop elements from any list.
 
@@ -25,7 +29,8 @@ Finally, the method unlinks (i.e., physically removes) all cells that are reacha
 reachable from the inserted cell.
 
 A ${\tt pop}$ method first traverses all lists, finding in each list
-the first cell whose ${\tt mark}$ field is ${\tt false}$(line 8), and letting the variable ${\tt youngest}$ point to the most recent such cell
+the first cell whose ${\tt mark}$ field is ${\tt false}$ (line 8),
+and letting the variable ${\tt youngest}$ point to the most recent such cell
 (i.e., with the largest timestamp) (line 1-11).
 A compare-and-swap (CAS) is used
 to set the ${\tt mark}$ field of this youngest cell to $\true$,
@@ -38,12 +43,12 @@ Finally, the method returns the ${\tt data}$ value of the removed cell.
 
 \subsubsection{Fragment Abstraction}
 In our verification, we establish that the TS stack algorithm of
-Figure~\ref{ts-stack:fig} is is correct in the sense that it is a
+Figure~\ref{ts-stack:fig} is correct in the sense that it is a
 linearizable implementation of a stack data structure.
 For stacks and queues, we specify linearizability by 
  observers that synchronize on call and return actions of
   methods, as shown by~\cite{BEEH:icalp15}; this is done without
- any user annotation.
+ any user-supplied annotation, hence the verification is fully automated.
 
  The verification is performed analogously as for skiplists, as described
  in Section~\ref{sec:fragment-abstraction}. Here we show how fragment
@@ -57,7 +62,7 @@ shown with the values of its fields, using the layout shown to the right in
 Figure~\ref{fig:tsshape}.
 In addition, each cell is labeled by the pointer variables that point to it.
 We use ${\tt lvar(i)}$ to denote the local
-variable ${\tt lvar}$ of thread $\thread_i$.
+variable ${\tt lvar}$ of thread $\thread_{\tt i}$.
 %\todo[inline]{Quy: Use a better scheme for indexing local variables. Previously,
 %  we used ${\tt var(2]}$, for variable ${\tt var}$ of thread 2. Maybe use it also here?}
 %\todo[inline]{You must start by explaining the notation better. E.g., what means
@@ -104,10 +109,16 @@ to the one used for skiplists. There are two main differences.
 \end{itemize}
 In the definition of tags, the only global variables that can occur in
 the fields $\reachfrom$ and $\reachto$ are therefore
-$\tt pools[me]$ and $\tt pools[other]$. The data abstraction repesents
-ordering information between timestamps, including to represent the ordering
-of each timestamp with the timestamp of a cell that has the same data value
-as an observer register.
+$\tt pools[me]$ and $\tt pools[other]$. The data abstraction represents
+\begin{inparaenum}[(i)]
+\item
+   for each cell,
+   the set of observer registers, whose values are equal to the $\tt data field$,
+\item
+  for each timestamp and observer register $\reg_i$,
+  the possible orderings between this timestamp and the timestamp of an
+  $\reg_i$-cell.
+\end{inparaenum}
 
 \begin{figure}
 \center
@@ -143,7 +154,7 @@ The different non-pointer fields are represented as follows.
   $\set{>}$ and $\reg_2$ to $\set{=}$: this is shown as the mapping
   $\lambda_4$ in Figure~\ref{fig:tsviewshape}.
 \item The $\tt mark$ field assumes values from a small finite domain and
-  is represented precisely as in concrete heap cells
+  is represented precisely as in concrete heap cells.
 \end{itemize}
 %% Above the top, the tag contains the thread-local and global pointer variables
 %% that point to the cell, in this case $\tt youngest$ and $\tt n$.
@@ -197,7 +208,7 @@ Main differences are as follows.
   \item
     In interference steps, we must consider that the abstraction
     $\tt me$ for the interfering thread may have to be changed into $\tt ot$.
-    Furthermoe, the abstractions $\tt me$ for two $\tt push$ methods
+    Furthermore, the abstractions $\tt me$ for two $\tt push$ methods
     cannot coincide, since each thread pushes only to its own list.
 \end{itemize}
 
