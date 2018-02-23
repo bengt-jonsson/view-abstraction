@@ -81,7 +81,7 @@ To prepare for verification, we add a specification which expresses that
 the skiplist algorithm of Figure~\ref{sl-code:fig} is a
 linearizable implementation of a set data structure, using
 the technique of
-{\em observers}~\cite{AHHR:integrated:short,BEEH:icalp15,HSV:concur13,Quy:sas16}.
+{\em observers}~\cite{AHHR:integrated:short,BEEH:icalp15,CHSV:aspect-oriented,Quy:sas16}.
 For our skiplist algorithm, the user first instruments statements in each
 method that correspond to linearization points (LPs), so that their execution
 announces the corresponding atomic set operation.
@@ -113,7 +113,7 @@ the semantics of the set data structure has been violated.
 %% This is achieved by exploiting recent results saying that
 %% linearizability for stacks and queues can be precisely specified by
 %% observers that process the sequence of call and return actions of
-%% methods,  instead of the user-supplied LPs~\cite{BEEH:icalp15,HSV:concur13}.
+%% methods,  instead of the user-supplied LPs~\cite{BEEH:icalp15,CHSV:aspect-oriented}.
 %% We use this technique for stacks and queues in Section XXX.
 
 %% typically by affixing
@@ -133,7 +133,7 @@ the semantics of the set data structure has been violated.
 %% on how their corresponding later pop operations are ordered in time.
 %% not be determined during their invocation, but only later
 %% when the ordering between the two corresponding pop operations is determined.
-%% Instead, we use a recent technique of~\cite{BEEH:icalp15,HSV:concur13}, who show
+%% Instead, we use a recent technique of~\cite{BEEH:icalp15,CHSV:aspect-oriented}, who show
 %% that for stacks and queues,
 %% linearizability can be precisely specified by a small number of
 %% constraints on the ordering of call and return actions of the methods,

@@ -290,7 +290,7 @@ of call and return actions is {\em linearizable} wrt.\ $\dstruct$.
 %% sequential semantics of the particular data structure that is implemented.}
 
 We specify linearizability using the technique of
-{\em observers}~\cite{AHHR:integrated:short,BEEH:icalp15,HSV:concur13,Quy:sas16}.
+{\em observers}~\cite{AHHR:integrated:short,BEEH:icalp15,CHSV:aspect-oriented,Quy:sas16}.
 Depending on the data structure, we apply it in two different ways.
 \begin{itemize}
     \item For implementations of sets and priority queues,
@@ -319,7 +319,7 @@ whenever this sequence violates the (sequential) semantics of the
 data structure.
 \item
   For stacks and queues, we use a recent result
-~\cite{BEEH:icalp15,HSV:concur13} that the set of linearizable histories,
+~\cite{BEEH:icalp15,CHSV:aspect-oriented} that the set of linearizable histories,
 i.e., sequences of call and return actions,
 can be exactly specified by an observer.
 Thus, linearizability can be specified without
@@ -355,7 +355,7 @@ linearizability.
 %% For queue and stack implementations, we employ another technique which does
 %% not require user annotation.
 %% For stacks and queues, it was recently established
-%% ~\cite{BEEH:icalp15,HSV:concur13} that the linearizability criterion can be
+%% ~\cite{BEEH:icalp15,CHSV:aspect-oriented} that the linearizability criterion can be
 %% checked by an observer
 
 %% is equivalent to

@@ -176,7 +176,7 @@ arrays of timestamped singly-linked lists, which are known to us in
 the literature on concurrent data structures.
 For this verification, we specify linearizability
 using the simple and powerful technique of
-{\em observers}~\cite{AHHR:integrated:short,BEEH:icalp15,HSV:concur13},
+{\em observers}~\cite{AHHR:integrated:short,BEEH:icalp15,CHSV:aspect-oriented},
 which reduces the criterion of linearizability to a simple reachability
 property. To verify implementations of stacks and queues, 
 the application of observers can be done completely automatically without
@@ -191,7 +191,7 @@ each method~\cite{Quy:sas16},.
 %%   For concurrent implementations of stacks and queues,
 %%   linearizability can be precisely specified by
 %%   observers that synchronize on call and return actions of
-%%   methods, as shown by~\cite{BEEH:icalp15,HSV:concur13}; this is done without
+%%   methods, as shown by~\cite{BEEH:icalp15,CHSV:aspect-oriented}; this is done without
 %%  any user annotation.
 %% \item
 %%   For sets, the verification requires the user to annotate how linearization
