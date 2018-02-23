@@ -45,7 +45,7 @@ Consequently, existing techniques that can automatically prove correctness
 of such fine-grained concurrent algorithms restrict attention to the
 case where heap structures represent shared data by singly-linked 
 %% All automated approaches restrict attention to concurrent algorithms in which
-lists~\cite{AHHR:integrated,meyer:vmcai16,Quy:sas16,Sagiv:correlation,Vafeiadis:cav10}. Furthermore, many of these techniques impose additional restrictions on the considered verification problem, such as bounding the number of accessing
+lists~\cite{AHHR:integrated:short,meyer:vmcai16,Quy:sas16,Sagiv:correlation,Vafeiadis:cav10}. Furthermore, many of these techniques impose additional restrictions on the considered verification problem, such as bounding the number of accessing
 threads~\cite{Amit:comparisonAbstraction,Vechev:spin09,CernyRZCA:CAV10}.
 However, in many concurrent data structure implementations the heap represents
 more sophisticated structures, such as 
@@ -176,7 +176,7 @@ arrays of timestamped singly-linked lists, which are known to us in
 the literature on concurrent data structures.
 For this verification, we specify linearizability
 using the simple and powerful technique of
-{\em observers}~\cite{AHHR:integrated,BEEH:icalp15,HSV:concur13},
+{\em observers}~\cite{AHHR:integrated:short,BEEH:icalp15,HSV:concur13},
 which reduces the criterion of linearizability to a simple reachability
 property. To verify implementations of stacks and queues, 
 the application of observers can be done completely automatically without

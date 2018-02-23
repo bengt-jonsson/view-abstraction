@@ -550,9 +550,11 @@ Year=1983
                William N. Scherer III and
                Nir Shavit},
   title     = {A Lazy Concurrent List-Based Set Algorithm},
-  booktitle = {OPODIS
-               },
+  booktitle = {OPODIS},
   pages     = {3--16},
+  series    = {LNCS},
+  volume    = {3974},
+  publisher = {Springer},
   year      = {2005},
 }
 
@@ -1809,6 +1811,19 @@ properties.",
 	Pages = "209-229"}
 
 @inproceedings{CernyRZCA:CAV10,
+  author    = {Pavol \v{C}ern{\'y} and
+               Arjun Radhakrishna and
+               Damien Zufferey and
+               others},
+  title     = {Model Checking of Linearizability of Concurrent List Implementations},
+  booktitle = "{CAV}",
+  year      = {2010},
+  pages     = {465-479},
+  series    = {LNCS},
+  volume    = {6174}
+}
+
+@inproceedings{CernyRZCA:CAV10:long,
   author    = {Pavol \v{C}ern{\'y} and
                Arjun Radhakrishna and
                Damien Zufferey and
@@ -4497,7 +4512,6 @@ Value-Passin Processes",
                of Heap-Manipulating Programs},
   booktitle = {Proc.\ of VMCAI'06},
   year      = {2006},
-  publisher = {Springer},
   series    = {LNCS},
   volume    = {3855},
   pages     = {207-221},
@@ -5150,6 +5164,22 @@ Unification and Extension",
   url       = {http://arxiv.org/abs/1702.02705},
 }
 
+
+@inproceedings{BEEM:cav17,
+  author    = {Ahmed Bouajjani and
+               Michael Emmi and
+               Constantin Enea and
+               Suha Orhun Mutluergil},
+  title     = {Proving Linearizability Using Forward Simulations},
+  booktitle = {{CAV}},
+  pages     = {542--563},
+  year      = {2017},
+  series    = {LNCS},
+  volume    = {10427},
+  publisher = {Springer},
+}
+
+                  
 @inproceedings{BDES:vmcai12,
   author    = {A. Bouajjani and
                C. Dragoi and
@@ -8669,7 +8699,6 @@ Logic Programming",
   pages     = {233--246},
   year      = {2015},
   publisher = {{ACM}},
-  url       = {http://dl.acm.org/citation.cfm?id=2676726},
 }
 
 @INPROCEEDINGS{Doeppner:Unix,
@@ -8697,12 +8726,26 @@ Logic Programming",
 @inproceedings{Shavit:queue,
  author    = "I. Lotan and N. Shavit",
   title = {Skiplist-Based Concurrent Priority Queues},
-  booktitle     = {IPDPS'00},
-  publisher = {{IEEE} Computer Society},
+  booktitle     = {IPDPS},
+  publisher = {{IEEE}},
+  pages     = {263--268},
   year      = {2000},
 }
 
 @inproceedings{DDGJLMMSS:dcas,
+  author    = {S. Doherty and
+               D. Detlefs and
+               L. Groves and
+               C.H. Flood and
+               others},
+  title     = {{DCAS} is not a silver bullet for nonblocking algorithm design},
+  booktitle = {SPAA'04},
+  publisher = {ACM},
+  year      = {2004},
+  pages     = {216-224},
+}
+
+@inproceedings{DDGJLMMSS:dcas:long,
   author    = {S. Doherty and
                D. Detlefs and
                L. Groves and
@@ -18733,7 +18776,8 @@ month =        {September/October},
     title = "Simple, Fast, and Practical Non-Blocking and Blocking Concurrent Queue Algorithms",
     booktitle = "PODC",
     year = "1996",
-    pages = "267--275"
+    pages = "267--275",
+    publisher = {ACM}
 }
 
 @inproceedings{Michael:hashTables,
@@ -22762,7 +22806,7 @@ address={Paris, France}}
   journal   = {{ACM} Trans. Comput. Log.},
   volume    = {15},
   number    = {4},
-  pages     = {31:1--31:37},
+  pages     = {31:1--37},
   year      = {2014},
 }
 
@@ -26889,6 +26933,17 @@ for Highly Concurrent Data Structures",
         Year = 		2013,
 }
 
+@INPROCEEDINGS{AHHR:integrated:short,
+        Author = 	"Parosh A. Abdulla and {Fr\'ed\'eric} Haziza and Luk{\'a}s Hol\'{\i}k and others",
+        Title = 	"An Integrated Specification and Verification Technique
+for Highly Concurrent Data Structures",
+  booktitle = {TACAS},
+  pages     = {324-338},
+  series    = {LNCS},
+  volume    = {7795},
+  year      = {2013},
+}
+
 @INPROCEEDINGS{AHHR:integrated,
         Author = 	"Parosh A. Abdulla and {Fr\'ed\'eric} Haziza and Luk{\'a}s Hol\'{\i}k and Bengt Jonsson and Ahmed Rezine",
         Title = 	"An Integrated Specification and Verification Technique
@@ -26904,8 +26959,9 @@ for Highly Concurrent Data Structures",
   author = {Habermehl, P. and Hol{\'i}k, L. and Rogalewicz, A. and {\v S}im{\' a}{\v c}ek, J. and Vojnar, T.},
   title = {Forest Automata for Verification of Heap Manipulation},
   journal = {Formal Methods in System Design},
-  publisher = {Springer Netherlands},
-  pages = {1--24},
+ volume    = {41},
+  number    = {1},
+  pages     = {83--106},
   year = {2012},
 }
 
@@ -26927,6 +26983,23 @@ for Highly Concurrent Data Structures",
 }
                   
 @article{Quy:atva13:journal,
+  author    = {Parosh Aziz Abdulla and
+               Luk{\'{a}}s Hol{\'{\i}}k and
+               Bengt Jonsson and
+               others},
+  title     = {Verification of Heap Manipulating Programs with Ordered
+               Data by Extended Forest Automata},
+  journal   = {Acta Inf.},
+  volume    = {53},
+  number    = {4},
+  pages     = {357--385},
+  year      = {2016},
+  timestamp = {Mon, 05 Jun 2017 12:38:14 +0200},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/journals/acta/AbdullaHJLTV16},
+  bibsource = {dblp computer science bibliography, http://dblp.org}
+}
+                  
+@article{Quy:atva13:journal:long,
   author    = {Parosh Aziz Abdulla and
                Luk{\'{a}}s Hol{\'{\i}}k and
                Bengt Jonsson and

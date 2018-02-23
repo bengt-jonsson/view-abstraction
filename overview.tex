@@ -81,7 +81,7 @@ To prepare for verification, we add a specification which expresses that
 the skiplist algorithm of Figure~\ref{sl-code:fig} is a
 linearizable implementation of a set data structure, using
 the technique of
-{\em observers}~\cite{AHHR:integrated,BEEH:icalp15,HSV:concur13,Quy:sas16}.
+{\em observers}~\cite{AHHR:integrated:short,BEEH:icalp15,HSV:concur13,Quy:sas16}.
 For our skiplist algorithm, the user first instruments statements in each
 method that correspond to linearization points (LPs), so that their execution
 announces the corresponding atomic set operation.
@@ -98,7 +98,7 @@ It checks that operations on this particular value follow set semantics,
 i.e., that successful $\tt add$ and $\tt remove$ operations on an element alternate and that
 $\tt contains$ are consistent with them.
 We form %% as in the automata-theoretic approach~\cite{VW:modelchecking}
-%% (adapted in~\cite{AHHR:integrated}),
+%% (adapted in~\cite{AHHR:integrated:short}),
 the cross-product of the program  and the observer, synchronizing on
 operation announcements. This reduces the
 problem of checking linearizability to the problem of checking that
@@ -127,7 +127,7 @@ the semantics of the set data structure has been violated.
 %% occurrences of LPs in any program execution.
 %% a concept of data-independence, these constraints can be formulated as
 %% a number of samll observers, which are automata that recognize violations
-%% of these ordering requirements~\cite{AHHR:integrated}.
+%% of these ordering requirements~\cite{AHHR:integrated:short}.
 %% does not LPs cannot be affixed to particular statements. For instance,  two overlapping
 %% push operations may have to be linearized in different orders depending
 %% on how their corresponding later pop operations are ordered in time.
@@ -173,7 +173,7 @@ the semantics of the set data structure has been violated.
 %% and returns of different methods. For completeness, we here
 %% present how this can be done for a stack implementation, as shown
 %% in~\cite{BEEH:icalp15}.
-%% show how this can be done using observers, introduced in~\cite{AHHR:integrated}. 
+%% show how this can be done using observers, introduced in~\cite{AHHR:integrated:short}. 
 
 %% Let $\calltwo{\tt push}{\tt d}$ and $\returntwo{\tt push}{\tt d}$ denote the
 %% action of calling or returning from a ${\tt push}$ method with data parameter ${\tt d}$.

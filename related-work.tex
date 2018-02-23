@@ -2,17 +2,17 @@
 A large number of techniques have been developed for representing heap structures
 in automated analysis, including,
 e.g., separation logic and various related graph formalisms
-\cite{InvaderCAV08,rival11,dudka13}, other logics \cite{Sagiv02},
-automata \cite{habermehl:forest}, or graph grammars \cite{juggrnaut10}. 
+\cite{InvaderCAV08,rival11,dudka13}, other logics \cite{SRW:threevalued},
+automata \cite{boxes13}, or graph grammars \cite{juggrnaut10}. 
 Most works apply these to sequential programs.
 
 Approaches for automated verification of concurrent algorithms are limited to the
 case of singly-linked
-lists~\cite{AHHR:integrated,meyer:vmcai16,Quy:sas16,Sagiv:correlation,Vafeiadis:cav10}.
+lists~\cite{AHHR:integrated:short,meyer:vmcai16,Quy:sas16,Sagiv:correlation,Vafeiadis:cav10}.
 Furthermore, many of these techniques impose additional restrictions on the considered verification problem, such as bounding the number of accessing
 threads~\cite{Amit:comparisonAbstraction,Vechev:spin09,CernyRZCA:CAV10}.
 
-In~\cite{AHHR:integrated}, concurrent programs operating on SLLs are analyzed
+In~\cite{AHHR:integrated:short}, concurrent programs operating on SLLs are analyzed
 using an adaptation of a transitive closure logic~\cite{BiRa:vmcai06}, combined with
 tracking of simple sortedness properties between data elements; the approach does
 not allow to represent patterns observed by threads when following sequences of
@@ -47,14 +47,14 @@ several concurrent ones, such as~\cite{ArtOfMpP,Linden:opodis13}.
 Concurrent algorithms based on arrays of SLLs, and including timestamps, e.g.,
 for verifying the algorithms in~\cite{ts-stack} have shown to be rather challenging. Only
 recently has the TS stack been verified by non-automated
-techniques~\cite{bouajjani:icalp17:rep} using a non-trivial extension of
+techniques~\cite{BEEM:cav17} using a non-trivial extension of
 forward simulation, and the TS queue been verified manually by a new technique
 based on partial orders~\cite{Khyzha:esop17,singh:issre16}..
 We have verified both these algorithms automatically using fragment abstraction,
 
 Our fragment abstraction is related in spirit to other formalisms that
 abstract dynamic graph structures by defining some form of equivalence on
-its nodes (e.g.,~\cite{spotlight07,Sagiv02,habermehl:forest}). These have
+its nodes (e.g.,~\cite{spotlight07,SRW:threevalued,boxes13}). These have
 been applied to verify functional correctness fine-grained concurrent
 algorithms for a limited number of SLL-based algorithms. Fragment
 abstraction's representation of both local and global information allows to
