@@ -1,0 +1,55 @@
+%\documentclass[acmsmall,review,anonymous]{llncs}
+\documentclass{llncs}  
+
+%\settopmatter{printfolios=true}
+
+\usepackage{epsfig}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+
+%\citestyle{acmauthoryear}
+\usepackage{adjustbox}
+\usepackage{algorithmicx} 
+\usepackage{courier}
+
+\newif\ifesop
+\esoptrue
+% \esopfalse
+
+\newif\ifreport
+\reporttrue
+%\reportfalse
+
+
+\input init
+\input comm
+\sloppy
+
+ 
+\begin{document}
+\maketitle
+
+\input abstract.tex
+\input introduction
+\input related-work
+\input overview
+\input programs
+\input sll-view-abstraction
+\input timestamp
+\input experiments
+\input conclusion
+\vfill
+\newpage
+%\bibliographystyle{ACM-Reference-Format}
+\bibliographystyle{splncs03}
+\bibliography{bibdatabase,literature}
+\ifreport
+\appendix
+\input overview-ts   %% This was commented out previously
+%% \input old-related-work
+\input skiplist-shape-appendix
+\input codes
+\fi
+%\input textbank
+\end{document}
